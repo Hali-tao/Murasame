@@ -1,0 +1,11 @@
+{
+	"Version": 3,
+	"Type": "Live2D Expression",
+	"Parameters": [
+		{
+			"Id": "ParamEyeBallX4",
+			"Value": 10,
+			"Blend": "Add"
+		}
+	]
+}

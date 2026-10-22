@@ -1,0 +1,15 @@
+node_modules/
+out/
+release/
+dist/
+coverage/
+playwright-report/
+test-results/
+previews/
+*.log
+.DS_Store
+.env
+pet-inspect.png
+pet-dev-inspect.png
+desktop-current.png
+electron-v*-win32-x64.zip

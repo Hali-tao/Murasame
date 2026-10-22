@@ -1,0 +1,33 @@
+appId: com.murasame.desktop
+productName: Murasame
+copyright: Copyright © 2026 Murasame
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+extraResources:
+  - from: resources
+    to: resources
+asar: true
+compression: maximum
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: ${productName}-Setup-${version}.${ext}
+  requestedExecutionLevel: asInvoker
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Murasame
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  uninstallDisplayName: Murasame
+publish: null

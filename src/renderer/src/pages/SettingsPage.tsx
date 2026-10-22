@@ -1,0 +1,225 @@
+import { Download, FolderOpen, HelpCircle, Power, ShieldCheck, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import type { DeleteScope, Permissions } from '@shared/types'
+import { ClearScopeDialog } from '../components/dialogs'
+import { Button, Card, CardHead, ConfirmDialog, Field, Modal, Pill, ToggleRow } from '../components/ui'
+import { downloadJson } from '../lib/utils'
+import { useAppStore } from '../store'
+
+export function SettingsPage(): React.JSX.Element {
+  const data = useAppStore((state) => state.data)!
+  const info = useAppStore((state) => state.info)
+  const updateSettings = useAppStore((state) => state.updateSettings)
+  const notify = useAppStore((state) => state.notify)
+  const [clearOpen, setClearOpen] = useState(false)
+  const [quitOpen, setQuitOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
+  const [busyClear, setBusyClear] = useState(false)
+  const [checkingUpdate, setCheckingUpdate] = useState(false)
+  const runningTasks = data.tasks.filter((task) => task.status === '执行中' || task.status === '等待批准')
+
+  const update = async (patch: Parameters<typeof updateSettings>[0]): Promise<void> => {
+    await updateSettings(patch)
+  }
+
+  const updatePermission = async (key: keyof Permissions, value: boolean): Promise<void> => {
+    const saved = await updateSettings({ permissions: { ...data.settings.permissions, [key]: value } })
+    if (saved) notify(value ? '权限已授权' : '权限已撤销', value ? 'green' : 'amber')
+  }
+
+  const clearData = async (scopes: DeleteScope[]): Promise<void> => {
+    setBusyClear(true)
+    try {
+      if (scopes.includes('logs')) await window.murasame.app.clearLogs()
+      if (scopes.includes('memory')) await window.murasame.core.clearMemories()
+      let conversations = data.conversations
+      if (scopes.includes('history') && conversations.length) {
+        const last = await window.murasame.core.deleteConversation(conversations[0].id, ['history'])
+        if (last.ok) conversations = last.data
+        for (const conversation of data.conversations.slice(1)) {
+          await window.murasame.core.deleteConversation(conversation.id, ['history'])
+        }
+        conversations = []
+      }
+      useAppStore.setState((state) => ({
+        data: state.data
+          ? {
+              ...state.data,
+              conversations,
+              memories: scopes.includes('memory') ? [] : state.data.memories
+            }
+          : null,
+        selectedConversationId: scopes.includes('history') ? null : state.selectedConversationId
+      }))
+      notify('已按所选范围清除本地数据')
+      setClearOpen(false)
+    } catch {
+      notify('清除未完成，请检查本地文件权限', 'red')
+    } finally {
+      setBusyClear(false)
+    }
+  }
+
+  const exportData = (): void => {
+    downloadJson(`murasame-export-${new Date().toISOString().slice(0, 10)}.json`, {
+      exportedAt: new Date().toISOString(),
+      settings: data.settings,
+      character: data.character,
+      conversations: data.conversations,
+      memories: data.memories,
+      tasks: data.tasks
+    })
+    notify('已导出可为人工检查的 JSON 副本', 'blue')
+  }
+
+  const checkUpdates = async (): Promise<void> => {
+    setCheckingUpdate(true)
+    try {
+      const result = await window.murasame.updates.check()
+      notify(result.message, result.status === 'error' ? 'red' : result.status === 'disabled' ? 'amber' : 'green')
+    } catch {
+      notify('更新检查失败，请稍后再试', 'red')
+    } finally {
+      setCheckingUpdate(false)
+    }
+  }
+
+  const openPath = async (kind: 'logs' | 'userData'): Promise<void> => {
+    try {
+      if (kind === 'logs') await window.murasame.app.openLogs()
+      else await window.murasame.app.openUserData()
+    } catch {
+      notify('无法打开目录，请检查系统权限', 'red')
+    }
+  }
+
+  return (
+    <div className="page settings-page">
+      <div className="runtime-banner">
+        <div>
+          <Pill tone="green">本地运行</Pill>
+          <strong>Murasame 正在运行</strong>
+          <p>隐藏到托盘不会取消任务；退出前会说明运行中活动的状态。</p>
+        </div>
+        <div className="runtime-actions">
+          <Button onClick={() => void window.murasame.app.hideToTray()} icon={<FolderOpen size={15} />}>隐藏到托盘</Button>
+          <Button variant="danger" onClick={() => setQuitOpen(true)} icon={<Power size={15} />} data-testid="quit-app">退出应用</Button>
+        </div>
+      </div>
+
+      <div className="settings-columns">
+        <div className="settings-left">
+          <Card>
+            <CardHead title="运行行为" subtitle="常驻桌面时保持低打扰" />
+            <ToggleRow title="开机时启动" description="仅在登录后加载轻量控制台。" checked={data.settings.startAtLogin} onCheckedChange={(checked) => void update({ startAtLogin: checked })} />
+            <ToggleRow title="最小化到托盘" description="隐藏后仍可从托盘重新唤醒。" checked={data.settings.minimizeToTray} onCheckedChange={(checked) => void update({ minimizeToTray: checked })} />
+            <ToggleRow title="忙时免打扰" description="全屏应用或正在输入时暂停主动互动。" checked={data.settings.doNotDisturb} onCheckedChange={(checked) => void update({ doNotDisturb: checked })} />
+            <ToggleRow title="任务完成通知" description="任务失败、需要批准或结束时分别展示。" checked={data.settings.taskNotifications} onCheckedChange={(checked) => void update({ taskNotifications: checked })} />
+            <Field label="关闭窗口时" className="settings-select-field">
+              <select className="select" value={data.settings.closeBehavior} onChange={(event) => void update({ closeBehavior: event.target.value as 'tray' | 'ask' | 'quit' })}>
+                <option value="tray">最小化到托盘</option>
+                <option value="ask">每次询问</option>
+                <option value="quit">询问后退出</option>
+              </select>
+            </Field>
+          </Card>
+
+          <Card>
+            <CardHead title="系统权限" subtitle="拒绝授权后仍可使用不依赖该权限的功能" />
+            <div className="permission-row">
+              <div><strong>屏幕读取</strong><span>单次截取；不自动持续观察</span></div>
+              <Pill tone={data.settings.permissions.screen ? 'green' : 'red'}>{data.settings.permissions.screen ? '已授权' : '未授权'}</Pill>
+              <Button size="sm" onClick={() => void updatePermission('screen', !data.settings.permissions.screen)}>{data.settings.permissions.screen ? '撤销' : '申请'}</Button>
+            </div>
+            <div className="permission-row">
+              <div><strong>麦克风</strong><span>本地语音转写；不保留原始录音</span></div>
+              <Pill tone={data.settings.permissions.microphone ? 'green' : 'red'}>{data.settings.permissions.microphone ? '已授权' : '未授权'}</Pill>
+              <Button size="sm" onClick={() => void updatePermission('microphone', !data.settings.permissions.microphone)}>{data.settings.permissions.microphone ? '撤销' : '申请'}</Button>
+            </div>
+            <div className="permission-row">
+              <div><strong>辅助功能</strong><span>读取窗口信息与执行已批准操作</span></div>
+              <Pill tone={data.settings.permissions.accessibility ? 'green' : 'red'}>{data.settings.permissions.accessibility ? '已授权' : '未授权'}</Pill>
+              <Button size="sm" onClick={() => void updatePermission('accessibility', !data.settings.permissions.accessibility)}>{data.settings.permissions.accessibility ? '撤销' : '申请'}</Button>
+            </div>
+            <p className="fineprint">系统权限可在操作系统设置中撤销，撤销后应用会显示受限状态。</p>
+          </Card>
+        </div>
+
+        <div className="settings-right">
+          <Card>
+            <CardHead title="数据与隐私" subtitle="本地存储 · 清除范围明确" />
+            <ToggleRow title="加密本地数据" description="对话、记忆与任务记录由系统密钥保护。" checked={data.settings.encryptLocalData} onCheckedChange={(checked) => void update({ encryptLocalData: checked })} />
+            <Field label="运行日志保留" hint="日志不记录完整 API Key、原始截图或不必要个人信息。">
+              <select className="select" value={data.settings.logRetentionDays} onChange={(event) => void update({ logRetentionDays: Number(event.target.value) })}>
+                {[7, 14, 30, 90, 180].map((days) => <option key={days} value={days}>{days} 天</option>)}
+              </select>
+            </Field>
+            <div className="data-actions">
+              <Button variant="danger" onClick={() => setClearOpen(true)} icon={<Trash2 size={14} />} data-testid="clear-data">清除历史与记忆…</Button>
+              <Button onClick={exportData} icon={<Download size={14} />}>导出我的数据</Button>
+            </div>
+            <p className="fineprint">导出不包含手动移出应用的文档；备份是否包含在清除范围内需单独确认。</p>
+          </Card>
+
+          <Card className="about-card">
+            <CardHead title="关于与帮助" subtitle={`Murasame ${info?.version ?? '0.9.0'}`} />
+            <div className="about-list">
+              <div><span>版本</span><strong>{info?.version ?? '0.9.0'} · Electron</strong></div>
+              <div><span>运行方式</span><strong>{info?.isPackaged ? '已安装应用' : '开发构建'}</strong></div>
+              <div><span>当前模型</span><strong>{data.models.find((model) => model.default)?.name ?? '未配置'}</strong></div>
+              <div><span>数据位置</span><strong className="path-text">{info?.userDataPath ?? '加载中…'}</strong></div>
+              <div><span>日志位置</span><strong className="path-text">{info?.logsPath ?? '加载中…'}</strong></div>
+            </div>
+            <div className="about-actions">
+              <Button size="sm" onClick={() => void openPath('userData')}>打开数据目录</Button>
+              <Button size="sm" onClick={() => void openPath('logs')}>打开日志</Button>
+              <Button size="sm" onClick={() => setHelpOpen(true)} icon={<HelpCircle size={14} />}>使用说明</Button>
+              <Button size="sm" onClick={() => void checkUpdates()} disabled={checkingUpdate}>{checkingUpdate ? '检查中…' : '检查更新'}</Button>
+            </div>
+            <div className="security-line"><ShieldCheck size={14} />渲染进程无 Node 权限；所有敏感参数通过校验后的 IPC 传递。</div>
+          </Card>
+        </div>
+      </div>
+
+      <ClearScopeDialog open={clearOpen} onOpenChange={setClearOpen} onConfirm={clearData} busy={busyClear} title="清除本地数据" description="应用会严格按勾选范围执行；取消不会产生任何更改。" confirmLabel="执行清除" />
+
+      <ConfirmDialog
+        open={quitOpen}
+        onOpenChange={setQuitOpen}
+        title="退出 Murasame？"
+        description="退出会关闭控制台与桌宠窗口，并结束当前本地进程。"
+        confirmLabel="退出应用"
+        tone="red"
+        onConfirm={async () => { await window.murasame.app.quit() }}
+      >
+        <div className="quit-summary">
+          {runningTasks.length ? (
+            <>
+              <p><strong>{runningTasks.length} 个任务仍在运行或等待批准。</strong></p>
+              <p>退出后任务会中断，不会自动标记为完成。已完成步骤与产物仍可查看。</p>
+            </>
+          ) : (
+            <p>当前没有运行中的任务。退出不会删除对话、记忆或设置。</p>
+          )}
+          <div className="inline-note">若只是暂时离开，可取消并选择「隐藏到托盘」，任务会继续保留。</div>
+        </div>
+      </ConfirmDialog>
+
+      <Modal
+        open={helpOpen}
+        onOpenChange={setHelpOpen}
+        title="Murasame 使用说明"
+        description="当前版本是产品壳演示，AI、工具执行与数据持久化仍使用本地 mock。"
+        footer={<Button variant="primary" onClick={() => setHelpOpen(false)}>知道了</Button>}
+      >
+        <div className="help-copy">
+          <p><strong>单实例：</strong>再次从开始菜单启动会唤醒已有窗口，不会开启第二份进程。</p>
+          <p><strong>托盘：</strong>关闭窗口默认隐藏到托盘；右键托盘可显示桌宠、检查更新或退出。</p>
+          <p><strong>桌宠：</strong>透明置顶窗口，按住角色拖动，悬停后显示缩放、隐藏与复位按钮。</p>
+          <p><strong>数据：</strong>设置与窗口位置保存在 electron-store；mock 业务数据会在应用重启后恢复初始状态。</p>
+          <p><strong>Live2D：</strong>应用内置白猫 tororo、鲸鱼娘与奶龙三套预置形象；当前版本不提供应用内模型导入、动作编辑或任意第三方资源兼容。</p>
+        </div>
+      </Modal>
+    </div>
+  )
+}

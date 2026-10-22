@@ -1,0 +1,101 @@
+import { expect, test } from '@playwright/test'
+import { spawn } from 'node:child_process'
+import { join } from 'node:path'
+import {
+  closeApp,
+  configureTestModel,
+  findMainPage,
+  launchApp,
+  startModelServer,
+  testUserData
+} from './helpers'
+
+const root = join(__dirname, '..', '..')
+const electronBinary = join(root, 'node_modules', 'electron', 'dist', 'electron.exe')
+
+test('history clearing, memory editing and model switching are end-to-end usable', async () => {
+  const server = await startModelServer()
+  const app = await launchApp()
+  try {
+    const page = await findMainPage(app)
+    await expect(page.getByTestId('nav-overview')).toBeVisible()
+
+    await page.getByTestId('nav-history').click()
+    await expect(page.getByTestId('history-item').first()).toBeVisible()
+    const historyBefore = await page.getByTestId('history-item').count()
+    await page.getByTestId('clear-history').click()
+    await page.getByRole('dialog').getByRole('button', { name: '按范围清除' }).click()
+    await expect.poll(() => page.getByTestId('history-item').count()).toBeLessThan(historyBefore)
+
+    await page.getByTestId('nav-memory').click()
+    await page.getByTestId('add-memory').click()
+    const memoryDialog = page.getByRole('dialog')
+    await memoryDialog.getByTestId('memory-category').fill('E2E 偏好')
+    await memoryDialog.getByTestId('memory-text').fill('E2E 临时记忆')
+    await memoryDialog.getByRole('button', { name: '添加记忆' }).click()
+
+    const memoryCard = page.getByTestId('memory-card').filter({ hasText: 'E2E 临时记忆' })
+    await expect(memoryCard).toBeVisible()
+    await memoryCard.getByRole('button', { name: '编辑' }).click()
+    await page.getByRole('dialog').getByTestId('memory-text').fill('E2E 记忆已编辑')
+    await page.getByRole('dialog').getByRole('button', { name: '保存更正' }).click()
+    await expect(page.getByText('E2E 记忆已编辑', { exact: true })).toBeVisible()
+
+    const editedCard = page.getByTestId('memory-card').filter({ hasText: 'E2E 记忆已编辑' })
+    await editedCard.getByRole('button', { name: '删除' }).click()
+    await page.getByRole('dialog').getByRole('button', { name: '删除记忆' }).click()
+    await expect(page.getByText('E2E 记忆已编辑', { exact: true })).toHaveCount(0)
+
+    await configureTestModel(page, server.url, '本地 Qwen · 隐私模式')
+  } finally {
+    await closeApp(app)
+    await server.close()
+  }
+})
+
+test('a second launch exits and the existing instance remains available', async () => {
+  const app = await launchApp()
+  try {
+    const page = await findMainPage(app)
+    await expect(page.getByTestId('nav-overview')).toBeVisible()
+
+    const second = spawn(electronBinary, [root], {
+      cwd: root,
+      stdio: 'ignore',
+      env: { ...process.env, MURASAME_USER_DATA: testUserData(app) }
+    })
+    const exitCode = await Promise.race([
+      new Promise<number | null>((resolve) => second.once('exit', (code) => resolve(code))),
+      new Promise<'timeout'>((resolve) => setTimeout(() => resolve('timeout'), 15_000))
+    ])
+    if (exitCode === 'timeout') second.kill()
+    expect(exitCode).toBe(0)
+
+    await expect.poll(async () => app.evaluate(({ BrowserWindow }) => {
+      const main = BrowserWindow.getAllWindows().find((window) => window.getTitle().includes('AI 桌面伙伴'))
+      return Boolean(main?.isVisible())
+    })).toBeTruthy()
+  } finally {
+    await closeApp(app)
+  }
+})
+
+test('the console hides to the tray and can be restored', async () => {
+  const app = await launchApp()
+  try {
+    const page = await findMainPage(app)
+    await page.getByTestId('hide-to-tray').click()
+    await expect.poll(async () => app.evaluate(({ BrowserWindow }) => {
+      const main = BrowserWindow.getAllWindows().find((window) => window.getTitle().includes('AI 桌面伙伴'))
+      return main?.isVisible()
+    })).toBeFalsy()
+
+    await page.evaluate(async () => window.murasame.window.showMain())
+    await expect.poll(async () => app.evaluate(({ BrowserWindow }) => {
+      const main = BrowserWindow.getAllWindows().find((window) => window.getTitle().includes('AI 桌面伙伴'))
+      return main?.isVisible()
+    })).toBeTruthy()
+  } finally {
+    await closeApp(app)
+  }
+})
