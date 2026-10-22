@@ -1,0 +1,8 @@
+{
+  "id": "example-note",
+  "name": "示例笔记",
+  "ability": "返回一条本地说明，不访问数据库或凭据",
+  "sensitive": false,
+  "entry": "index.js",
+  "parameters": { "type": "object" }
+}

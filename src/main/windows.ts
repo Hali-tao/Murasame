@@ -2,17 +2,36 @@ import { app, BrowserWindow, dialog, nativeImage, screen, shell } from 'electron
 import { join } from 'node:path'
 import { isQuitting, markQuitting, quitApplication } from './app-state'
 import { getPetState, getSettings, getWindowBounds, saveWindowBounds, savePetPosition, updateSettings } from './settings'
+import { hardenWebContents } from './security/hardening'
 import log from './logger'
-import type { PetBounds, PetState } from '../shared/types'
+import { choosePetChatSide, recoverPosition, resetAnchor, type WorkArea } from './desktop/placement'
+import type { PetBounds, PetChatLayout, PetState } from '../shared/types'
 import { IPC } from '../shared/ipc'
 
 let mainWindow: BrowserWindow | null = null
 let petWindow: BrowserWindow | null = null
 let saveBoundsTimer: NodeJS.Timeout | null = null
 let savePetTimer: NodeJS.Timeout | null = null
+let petChatOpen = false
+let petChatSide: 'left' | 'right' = 'right'
+
+const PET_WIDTH = 360
+const PET_HEIGHT = 500
+const PET_CHAT_WIDTH = 300
 
 const rendererUrl = process.env.ELECTRON_RENDERER_URL
 const preload = join(__dirname, '../preload/index.js')
+
+function displayAreas(): WorkArea[] {
+  return screen.getAllDisplays().map((display) => ({
+    id: String(display.id),
+    x: display.workArea.x,
+    y: display.workArea.y,
+    width: display.workArea.width,
+    height: display.workArea.height,
+    scaleFactor: display.scaleFactor
+  }))
+}
 
 function clampPetPosition(
   x: number,
@@ -20,11 +39,8 @@ function clampPetPosition(
   width: number,
   height: number
 ): { x: number; y: number } {
-  const workArea = screen.getDisplayNearestPoint({ x, y }).workArea
-  return {
-    x: Math.min(Math.max(x, workArea.x), workArea.x + Math.max(0, workArea.width - width)),
-    y: Math.min(Math.max(y, workArea.y), workArea.y + Math.max(0, workArea.height - height))
-  }
+  const next = recoverPosition({ x, y, width, height }, displayAreas())
+  return { x: next.x, y: next.y }
 }
 
 function resourcePath(name: string): string {
@@ -58,17 +74,7 @@ function secureWebContents(window: BrowserWindow): void {
       if (isMainFrame) log.warn(`Renderer failed to load ${url}: ${code} ${description}`)
     })
   }
-  window.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:\/\//i.test(url)) void shell.openExternal(url)
-    return { action: 'deny' }
-  })
-  window.webContents.on('will-navigate', (event, url) => {
-    const current = window.webContents.getURL()
-    if (url !== current && !url.startsWith('devtools://')) {
-      event.preventDefault()
-      if (/^https?:\/\//i.test(url)) void shell.openExternal(url)
-    }
-  })
+  hardenWebContents(window.webContents, shell.openExternal.bind(shell))
   window.webContents.on('render-process-gone', (_event, details) => {
     log.error('Renderer process gone', details.reason)
   })
@@ -193,11 +199,12 @@ export function createMainWindow(): BrowserWindow {
 export function createPetWindow(): BrowserWindow {
   if (petWindow && !petWindow.isDestroyed()) return petWindow
   const state = getPetState()
-  const workArea = screen.getPrimaryDisplay().workArea
   const width = 360
   const height = 500
-  const preferredX = state.x || workArea.x + workArea.width - width - 24
-  const preferredY = state.y || workArea.y + workArea.height - height - 24
+  const cursor = screen.getCursorScreenPoint()
+  const anchor = resetAnchor({ x: state.x || cursor.x, y: state.y || cursor.y, width, height }, displayAreas())
+  const preferredX = state.x || anchor.x
+  const preferredY = state.y || anchor.y
   const { x, y } = clampPetPosition(preferredX, preferredY, width, height)
   savePetPosition(x, y)
 
@@ -258,7 +265,7 @@ export function createPetWindow(): BrowserWindow {
     const [x, y] = petWindow.getPosition()
     if (savePetTimer) clearTimeout(savePetTimer)
     savePetTimer = setTimeout(() => {
-      savePetPosition(x, y)
+      savePetPosition(characterOriginX(x), y)
       broadcastPetState(getPetStateSafe())
     }, 120)
   })
@@ -270,10 +277,28 @@ export function createPetWindow(): BrowserWindow {
   return petWindow
 }
 
+export function broadcastPetPerformance(cue: unknown): void {
+  const window = getPetWindow()
+  if (window && !window.isDestroyed()) window.webContents.send(IPC.pet.performance, cue)
+}
+
+export function isPetHidden(): boolean {
+  const window = getPetWindow()
+  return !window || !window.isVisible()
+}
+
 export function initializeWindows(): void {
   const main = createMainWindow()
   const pet = createPetWindow()
   if (!getSettings().petVisible) pet.hide()
+  screen.on('display-removed', () => {
+    const window = getPetWindow()
+    if (!window) return
+    const bounds = window.getBounds()
+    const next = recoverPosition(bounds, displayAreas())
+    window.setBounds(next)
+    savePetPosition(next.x, next.y)
+  })
   main.show()
 }
 
@@ -322,7 +347,8 @@ export function getPetStateSafe(): PetState {
     scale: settings.petScale,
     x,
     y,
-    preset: settings.petPreset
+    preset: settings.petPreset,
+    importedModelUrl: settings.importedModelUrl
   }
 }
 
@@ -339,31 +365,32 @@ export function setPetScale(scale: number): PetState {
     scale,
     x,
     y,
-    preset: getSettings().petPreset
+    preset: getSettings().petPreset,
+    importedModelUrl: getSettings().importedModelUrl
   })
 }
 
 export function setPetPosition(x: number, y: number): PetState {
   const window = getPetWindow()
   const bounds = window?.getBounds()
-  const position = clampPetPosition(x, y, bounds?.width ?? 360, bounds?.height ?? 500)
+  const position = clampPetPosition(x, y, bounds?.width ?? PET_WIDTH, bounds?.height ?? PET_HEIGHT)
   window?.setPosition(position.x, position.y, false)
-  savePetPosition(position.x, position.y)
+  savePetPosition(characterOriginX(position.x), position.y)
   return broadcastPetState({
     visible: Boolean(window?.isVisible()),
     scale: getSettings().petScale,
     x: position.x,
     y: position.y,
-    preset: getSettings().petPreset
+    preset: getSettings().petPreset,
+    importedModelUrl: getSettings().importedModelUrl
   })
 }
 
 export function resetPetPosition(): PetState {
-  const workArea = screen.getPrimaryDisplay().workArea
   const window = getPetWindow()
-  const width = window?.getBounds().width ?? 360
-  const height = window?.getBounds().height ?? 500
-  return setPetPosition(workArea.x + workArea.width - width - 24, workArea.y + workArea.height - height - 24)
+  const bounds = window?.getBounds() ?? { x: 0, y: 0, width: 360, height: 500 }
+  const next = resetAnchor(bounds, displayAreas())
+  return setPetPosition(next.x, next.y)
 }
 
 export function getPetBounds(): PetBounds {
@@ -372,6 +399,75 @@ export function getPetBounds(): PetBounds {
   return window.getBounds()
 }
 
+export async function confirmQuit(): Promise<void> {
+  const result = await dialog.showMessageBox({
+    type: 'question',
+    title: '退出 Murasame？',
+    message: '退出会关闭控制台和桌宠。',
+    detail: '未完成的任务不会被记成成功。已经产生的文件会保留。',
+    buttons: ['退出应用', '取消'],
+    defaultId: 1,
+    cancelId: 1
+  })
+  if (result.response !== 0) return
+  markQuitting()
+  quitApplication()
+}
+
 export function setPetMousePassthrough(ignore: boolean): void {
   getPetWindow()?.setIgnoreMouseEvents(ignore, { forward: true })
+}
+
+function characterOriginX(windowX: number): number {
+  return petChatOpen && petChatSide === 'left' ? windowX + PET_CHAT_WIDTH : windowX
+}
+
+export function setPetChatOpen(open: boolean): PetChatLayout {
+  const window = getPetWindow()
+  if (!window) {
+    petChatOpen = open
+    return { open, side: petChatSide }
+  }
+  const bounds = window.getBounds()
+  const originX = characterOriginX(bounds.x)
+  if (!open) {
+    petChatOpen = false
+    const position = clampPetPosition(originX, bounds.y, PET_WIDTH, PET_HEIGHT)
+    window.setBounds({ x: position.x, y: position.y, width: PET_WIDTH, height: PET_HEIGHT })
+    savePetPosition(position.x, position.y)
+    return { open: false, side: petChatSide }
+  }
+  const display = screen.getDisplayMatching({
+    x: originX,
+    y: bounds.y,
+    width: PET_WIDTH,
+    height: PET_HEIGHT
+  })
+  const area = display.workArea
+  petChatSide = choosePetChatSide({
+    characterX: originX,
+    characterWidth: PET_WIDTH,
+    chatWidth: PET_CHAT_WIDTH,
+    areaX: area.x,
+    areaWidth: area.width
+  })
+  petChatOpen = true
+  const rawX = petChatSide === 'left' ? originX - PET_CHAT_WIDTH : originX
+  const position = clampPetPosition(rawX, bounds.y, PET_WIDTH + PET_CHAT_WIDTH, PET_HEIGHT)
+  window.setBounds({
+    x: position.x,
+    y: position.y,
+    width: PET_WIDTH + PET_CHAT_WIDTH,
+    height: PET_HEIGHT
+  })
+  savePetPosition(characterOriginX(position.x), position.y)
+  return { open: true, side: petChatSide }
+}
+
+export function focusPetChat(): void {
+  const window = getPetWindow() ?? createPetWindow()
+  showPet()
+  window.show()
+  window.focus()
+  window.webContents.send(IPC.pet.focusChat)
 }

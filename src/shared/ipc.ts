@@ -5,7 +5,10 @@ export const IPC = {
     hideToTray: 'app:hide-to-tray',
     openLogs: 'app:open-logs',
     openUserData: 'app:open-user-data',
-    clearLogs: 'app:clear-logs'
+    clearLogs: 'app:clear-logs',
+    pickOpen: 'app:pick-open',
+    pickSave: 'app:pick-save',
+    hotkey: 'app:hotkey'
   },
   window: {
     showMain: 'window:show-main',
@@ -22,6 +25,9 @@ export const IPC = {
     setIgnoreMouseEvents: 'pet:set-ignore-mouse-events',
     getBounds: 'pet:get-bounds',
     resetPosition: 'pet:reset-position',
+    setChatOpen: 'pet:set-chat-open',
+    focusChat: 'pet:focus-chat',
+    performance: 'pet:performance',
     stateChanged: 'pet:state-changed'
   },
   settings: {
@@ -36,7 +42,13 @@ export const IPC = {
     getBootstrap: 'core:get-bootstrap',
     createConversation: 'core:create-conversation',
     sendMessage: 'core:send-message',
+    setActiveConversation: 'core:set-active-conversation',
     messageDelta: 'core:message-delta',
+    messageStarted: 'core:message-started',
+    messageFailed: 'core:message-failed',
+    conversationUpdated: 'core:conversation-updated',
+    taskUpdated: 'core:task-updated',
+    activeChanged: 'core:active-changed',
     deleteConversation: 'core:delete-conversation',
     addMemory: 'core:add-memory',
     updateMemory: 'core:update-memory',
@@ -49,9 +61,50 @@ export const IPC = {
     verifyModel: 'core:verify-model',
     createModel: 'core:create-model',
     saveModel: 'core:save-model',
+    deleteModel: 'core:delete-model',
     setDefaultModel: 'core:set-default-model',
     saveCharacter: 'core:save-character',
-    analyzeScreen: 'core:analyze-screen'
+    analyzeScreen: 'core:analyze-screen',
+    searchHistory: 'core:search-history',
+    denyTask: 'core:deny-task'
+  },
+  screen: {
+    capture: 'screen:capture',
+    watchStart: 'screen:watch-start',
+    watchStop: 'screen:watch-stop'
+  },
+  voice: {
+    start: 'voice:start',
+    stop: 'voice:stop',
+    transcribe: 'voice:transcribe',
+    speak: 'voice:speak',
+    readiness: 'voice:readiness'
+  },
+  autonomy: {
+    environment: 'autonomy:environment',
+    start: 'autonomy:start',
+    open: 'autonomy:open',
+    look: 'autonomy:look',
+    browse: 'autonomy:browse',
+    watch: 'autonomy:watch',
+    buildImage: 'autonomy:build-image',
+    buildProgress: 'autonomy:build-progress',
+    stop: 'autonomy:stop',
+    status: 'autonomy:status'
+  },
+  character: {
+    importAsset: 'character:import-asset'
+  },
+  relationship: {
+    get: 'relationship:get',
+    reset: 'relationship:reset'
+  },
+  data: {
+    exportBundle: 'data:export-bundle',
+    importBundle: 'data:import-bundle'
+  },
+  task: {
+    progress: 'task:progress'
   }
 } as const
 

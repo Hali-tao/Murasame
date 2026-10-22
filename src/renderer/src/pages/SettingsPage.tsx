@@ -1,8 +1,10 @@
 import { Download, FolderOpen, HelpCircle, Power, ShieldCheck, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { DeleteScope, Permissions } from '@shared/types'
 import { ClearScopeDialog } from '../components/dialogs'
-import { Button, Card, CardHead, ConfirmDialog, Field, Modal, Pill, ToggleRow } from '../components/ui'
+import { Button, Card, CardHead, ConfirmDialog, Field, Input, Modal, Pill, ToggleRow } from '../components/ui'
+import { StatusPill } from '../components/StatusPill'
+import { PLATFORM_CAPABILITIES } from '@shared/platform'
 import { downloadJson } from '../lib/utils'
 import { useAppStore } from '../store'
 
@@ -12,14 +14,37 @@ export function SettingsPage(): React.JSX.Element {
   const updateSettings = useAppStore((state) => state.updateSettings)
   const notify = useAppStore((state) => state.notify)
   const [clearOpen, setClearOpen] = useState(false)
+  const [plainOpen, setPlainOpen] = useState(false)
+  const [bundle, setBundle] = useState<null | { mode: 'export' | 'import'; path: string; passphrase: string }>(null)
   const [quitOpen, setQuitOpen] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const [busyClear, setBusyClear] = useState(false)
+  const [hotkey, setHotkey] = useState('正在读取快捷键')
+  const [hotkeyDraft, setHotkeyDraft] = useState(data.settings.petHotkey)
+  const [voiceDetail, setVoiceDetail] = useState('')
   const [checkingUpdate, setCheckingUpdate] = useState(false)
   const runningTasks = data.tasks.filter((task) => task.status === '执行中' || task.status === '等待批准')
 
+  useEffect(() => {
+    void window.murasame.app.hotkey().then(setHotkey)
+    void window.murasame.voice.readiness().then((ready) => setVoiceDetail(ready.detail))
+  }, [])
+
   const update = async (patch: Parameters<typeof updateSettings>[0]): Promise<void> => {
     await updateSettings(patch)
+  }
+
+  const applyHotkeyDraft = async (): Promise<void> => {
+    const wanted = hotkeyDraft.trim()
+    await updateSettings({ petHotkey: wanted })
+    const [status, current] = await Promise.all([window.murasame.app.hotkey(), window.murasame.settings.get()])
+    setHotkey(status)
+    if (current.petHotkey === wanted) notify('快捷键已更换', 'green')
+    else {
+      setHotkeyDraft(current.petHotkey)
+      await updateSettings({ petHotkey: current.petHotkey })
+      notify(status, 'amber')
+    }
   }
 
   const updatePermission = async (key: keyof Permissions, value: boolean): Promise<void> => {
@@ -69,7 +94,49 @@ export function SettingsPage(): React.JSX.Element {
       memories: data.memories,
       tasks: data.tasks
     })
-    notify('已导出可为人工检查的 JSON 副本', 'blue')
+    setPlainOpen(false)
+    notify('已导出未加密的 JSON。里面有完整对话和记忆，请自行保管。', 'amber')
+  }
+
+  const exportPackage = async (): Promise<void> => {
+    const path = await window.murasame.app.pickSave({
+      title: '保存加密数据包',
+      defaultPath: `murasame-${new Date().toISOString().slice(0, 10)}.murapack`
+    })
+    if (!path) return
+    setBundle({ mode: 'export', path, passphrase: '' })
+  }
+
+  const importPackage = async (): Promise<void> => {
+    const path = await window.murasame.app.pickOpen({
+      title: '选择数据包',
+      filters: [{ name: 'Murasame 数据包', extensions: ['murapack'] }]
+    })
+    if (!path) return
+    setBundle({ mode: 'import', path, passphrase: '' })
+  }
+
+  const submitBundle = async (): Promise<void> => {
+    if (!bundle || bundle.passphrase.trim().length < 6) {
+      notify('口令至少 6 位', 'amber')
+      return
+    }
+    if (bundle.mode === 'export') {
+      const result = await window.murasame.data.exportBundle(bundle.passphrase, bundle.path)
+      if (!result.ok) {
+        notify(result.error, 'red')
+        return
+      }
+      notify(`已导出到 ${bundle.path}。数据包已加密，不含明文密钥。`, 'green')
+    } else {
+      const result = await window.murasame.data.importBundle(bundle.path, bundle.passphrase)
+      if (!result.ok) {
+        notify(result.error, 'red')
+        return
+      }
+      notify(`${result.data.note} 新会话 ${result.data.conversations} 个，新记忆 ${result.data.memories} 条`, 'green')
+    }
+    setBundle(null)
   }
 
   const checkUpdates = async (): Promise<void> => {
@@ -97,7 +164,7 @@ export function SettingsPage(): React.JSX.Element {
     <div className="page settings-page">
       <div className="runtime-banner">
         <div>
-          <Pill tone="green">本地运行</Pill>
+          <StatusPill status="app-running" />
           <strong>Murasame 正在运行</strong>
           <p>隐藏到托盘不会取消任务；退出前会说明运行中活动的状态。</p>
         </div>
@@ -114,6 +181,7 @@ export function SettingsPage(): React.JSX.Element {
             <ToggleRow title="开机时启动" description="仅在登录后加载轻量控制台。" checked={data.settings.startAtLogin} onCheckedChange={(checked) => void update({ startAtLogin: checked })} />
             <ToggleRow title="最小化到托盘" description="隐藏后仍可从托盘重新唤醒。" checked={data.settings.minimizeToTray} onCheckedChange={(checked) => void update({ minimizeToTray: checked })} />
             <ToggleRow title="忙时免打扰" description="全屏应用或正在输入时暂停主动互动。" checked={data.settings.doNotDisturb} onCheckedChange={(checked) => void update({ doNotDisturb: checked })} />
+            <ToggleRow title="回复时朗读" description="桌宠说出回复。关掉后只显示文字。声音不可用时会说明原因。" checked={data.settings.speakReplies} onCheckedChange={(checked) => void update({ speakReplies: checked })} />
             <ToggleRow title="任务完成通知" description="任务失败、需要批准或结束时分别展示。" checked={data.settings.taskNotifications} onCheckedChange={(checked) => void update({ taskNotifications: checked })} />
             <Field label="关闭窗口时" className="settings-select-field">
               <select className="select" value={data.settings.closeBehavior} onChange={(event) => void update({ closeBehavior: event.target.value as 'tray' | 'ask' | 'quit' })}>
@@ -127,28 +195,51 @@ export function SettingsPage(): React.JSX.Element {
           <Card>
             <CardHead title="系统权限" subtitle="拒绝授权后仍可使用不依赖该权限的功能" />
             <div className="permission-row">
-              <div><strong>屏幕读取</strong><span>单次截取；不自动持续观察</span></div>
-              <Pill tone={data.settings.permissions.screen ? 'green' : 'red'}>{data.settings.permissions.screen ? '已授权' : '未授权'}</Pill>
+              <div><strong>屏幕读取</strong><span>{data.settings.screenWatchEnabled ? `持续观察，每 ${data.settings.screenWatchSeconds} 秒一次；勿扰或桌宠隐藏时暂停` : '只在你提问时截取一次'}</span></div>
+              <StatusPill status={data.settings.permissions.screen ? 'granted' : 'denied'} />
               <Button size="sm" onClick={() => void updatePermission('screen', !data.settings.permissions.screen)}>{data.settings.permissions.screen ? '撤销' : '申请'}</Button>
             </div>
             <div className="permission-row">
               <div><strong>麦克风</strong><span>本地语音转写；不保留原始录音</span></div>
-              <Pill tone={data.settings.permissions.microphone ? 'green' : 'red'}>{data.settings.permissions.microphone ? '已授权' : '未授权'}</Pill>
+              <StatusPill status={data.settings.permissions.microphone ? 'granted' : 'denied'} />
               <Button size="sm" onClick={() => void updatePermission('microphone', !data.settings.permissions.microphone)}>{data.settings.permissions.microphone ? '撤销' : '申请'}</Button>
             </div>
             <div className="permission-row">
               <div><strong>辅助功能</strong><span>读取窗口信息与执行已批准操作</span></div>
-              <Pill tone={data.settings.permissions.accessibility ? 'green' : 'red'}>{data.settings.permissions.accessibility ? '已授权' : '未授权'}</Pill>
+              <StatusPill status={data.settings.permissions.accessibility ? 'granted' : 'denied'} />
               <Button size="sm" onClick={() => void updatePermission('accessibility', !data.settings.permissions.accessibility)}>{data.settings.permissions.accessibility ? '撤销' : '申请'}</Button>
             </div>
-            <p className="fineprint">系统权限可在操作系统设置中撤销，撤销后应用会显示受限状态。</p>
+            <p className="fineprint">系统权限可在操作系统设置中撤销，撤销后应用会显示受限状态。日志默认保留 {data.settings.logRetentionDays} 天，不记录完整密钥和原始屏幕。</p>
+            <Field label="持续观察" className="settings-select-field">
+              <select className="select" value={data.settings.screenWatchEnabled ? String(data.settings.screenWatchSeconds) : 'off'} onChange={(event) => {
+                const value = event.target.value
+                if (value === 'off') void update({ screenWatchEnabled: false })
+                else void update({ screenWatchEnabled: true, screenWatchSeconds: Number(value) as 5 | 15 | 60 })
+              }}>
+                <option value="off">关闭，只在分析时截取</option>
+                <option value="5">每 5 秒</option>
+                <option value="15">每 15 秒</option>
+                <option value="60">每 60 秒</option>
+              </select>
+            </Field>
           </Card>
         </div>
 
         <div className="settings-right">
           <Card>
+            <CardHead title="平台能力" subtitle="非 Windows 上不支持的能力标成不可用" />
+            {PLATFORM_CAPABILITIES.map((item) => (
+              <div className="permission-row" key={item.id}>
+                <div><strong>{item.label}</strong><span>{item.note}</span></div>
+                <Pill tone={item.windows === '可用' ? 'green' : 'amber'}>{item.windows}</Pill>
+              </div>
+            ))}
+            <Button onClick={() => void update({ onboardingDone: false })}>重新查看使用说明</Button>
+          </Card>
+          <Card>
             <CardHead title="数据与隐私" subtitle="本地存储 · 清除范围明确" />
-            <ToggleRow title="加密本地数据" description="对话、记忆与任务记录由系统密钥保护。" checked={data.settings.encryptLocalData} onCheckedChange={(checked) => void update({ encryptLocalData: checked })} />
+            <ToggleRow title="加密本地数据" description="数据库始终加密，不能关闭。" checked disabled onCheckedChange={() => undefined} />
+            <ToggleRow title="允许把截图发给模型" description="屏幕分析会把画面发给当前模型服务。关掉后只在本机阅读文字，不会外发截图。" checked={data.settings.outboundImages} onCheckedChange={(checked) => void update({ outboundImages: checked })} />
             <Field label="运行日志保留" hint="日志不记录完整 API Key、原始截图或不必要个人信息。">
               <select className="select" value={data.settings.logRetentionDays} onChange={(event) => void update({ logRetentionDays: Number(event.target.value) })}>
                 {[7, 14, 30, 90, 180].map((days) => <option key={days} value={days}>{days} 天</option>)}
@@ -156,7 +247,9 @@ export function SettingsPage(): React.JSX.Element {
             </Field>
             <div className="data-actions">
               <Button variant="danger" onClick={() => setClearOpen(true)} icon={<Trash2 size={14} />} data-testid="clear-data">清除历史与记忆…</Button>
-              <Button onClick={exportData} icon={<Download size={14} />}>导出我的数据</Button>
+              <Button onClick={() => setPlainOpen(true)} icon={<Download size={14} />}>导出我的数据</Button>
+              <Button onClick={() => void exportPackage()}>导出加密数据包</Button>
+              <Button onClick={() => void importPackage()}>导入数据包</Button>
             </div>
             <p className="fineprint">导出不包含手动移出应用的文档；备份是否包含在清除范围内需单独确认。</p>
           </Card>
@@ -164,9 +257,18 @@ export function SettingsPage(): React.JSX.Element {
           <Card className="about-card">
             <CardHead title="关于与帮助" subtitle={`Murasame ${info?.version ?? '0.9.0'}`} />
             <div className="about-list">
-              <div><span>版本</span><strong>{info?.version ?? '0.9.0'} · Electron</strong></div>
+              <div><span>版本</span><strong>{info?.version ?? '0.9.0'}</strong></div>
               <div><span>运行方式</span><strong>{info?.isPackaged ? '已安装应用' : '开发构建'}</strong></div>
               <div><span>当前模型</span><strong>{data.models.find((model) => model.default)?.name ?? '未配置'}</strong></div>
+              <div><span>唤起桌宠</span><strong>{hotkey}</strong></div>
+              <div>
+                <span>换一个快捷键</span>
+                <strong className="hotkey-edit">
+                  <input className="input" value={hotkeyDraft} onChange={(event) => setHotkeyDraft(event.target.value)} aria-label="唤起桌宠的快捷键" placeholder="例如 Ctrl+Alt+M" />
+                  <Button size="sm" onClick={() => void applyHotkeyDraft()} disabled={!hotkeyDraft.trim() || hotkeyDraft.trim() === data.settings.petHotkey}>应用</Button>
+                </strong>
+              </div>
+              <div><span>语音</span><strong>{voiceDetail || '正在检查本地语音文件'}</strong></div>
               <div><span>数据位置</span><strong className="path-text">{info?.userDataPath ?? '加载中…'}</strong></div>
               <div><span>日志位置</span><strong className="path-text">{info?.logsPath ?? '加载中…'}</strong></div>
             </div>
@@ -176,12 +278,32 @@ export function SettingsPage(): React.JSX.Element {
               <Button size="sm" onClick={() => setHelpOpen(true)} icon={<HelpCircle size={14} />}>使用说明</Button>
               <Button size="sm" onClick={() => void checkUpdates()} disabled={checkingUpdate}>{checkingUpdate ? '检查中…' : '检查更新'}</Button>
             </div>
-            <div className="security-line"><ShieldCheck size={14} />渲染进程无 Node 权限；所有敏感参数通过校验后的 IPC 传递。</div>
+            <div className="security-line"><ShieldCheck size={14} />对话、记忆和截图只在你允许时才会发给当前模型。密钥不会出现在日志里。</div>
           </Card>
         </div>
       </div>
 
       <ClearScopeDialog open={clearOpen} onOpenChange={setClearOpen} onConfirm={clearData} busy={busyClear} title="清除本地数据" description="应用会严格按勾选范围执行；取消不会产生任何更改。" confirmLabel="执行清除" />
+      <ConfirmDialog
+        open={plainOpen}
+        onOpenChange={setPlainOpen}
+        title="导出未加密的 JSON？"
+        description="这个文件不加密，里面有完整对话、记忆和任务。请自行保管，不要发到不受信任的地方。"
+        confirmLabel="仍然导出"
+        tone="red"
+        onConfirm={exportData}
+      />
+      <Modal
+        open={bundle !== null}
+        onOpenChange={(open) => { if (!open) setBundle(null) }}
+        title={bundle?.mode === 'import' ? '输入数据包口令' : '设置导出口令'}
+        description="口令至少 6 位。数据包加密，不含明文密钥。"
+        footer={<Button variant="primary" onClick={() => void submitBundle()}>确定</Button>}
+      >
+        <Field label="口令">
+          <Input type="password" value={bundle?.passphrase ?? ''} onChange={(event) => setBundle((current) => current ? { ...current, passphrase: event.target.value } : current)} />
+        </Field>
+      </Modal>
 
       <ConfirmDialog
         open={quitOpen}
@@ -209,15 +331,16 @@ export function SettingsPage(): React.JSX.Element {
         open={helpOpen}
         onOpenChange={setHelpOpen}
         title="Murasame 使用说明"
-        description="当前版本是产品壳演示，AI、工具执行与数据持久化仍使用本地 mock。"
+        description="模型、对话、记忆和任务都保存在这台电脑上。做不到的事情会直接说明，不会显示成已经完成。"
         footer={<Button variant="primary" onClick={() => setHelpOpen(false)}>知道了</Button>}
       >
         <div className="help-copy">
-          <p><strong>单实例：</strong>再次从开始菜单启动会唤醒已有窗口，不会开启第二份进程。</p>
-          <p><strong>托盘：</strong>关闭窗口默认隐藏到托盘；右键托盘可显示桌宠、检查更新或退出。</p>
-          <p><strong>桌宠：</strong>透明置顶窗口，按住角色拖动，悬停后显示缩放、隐藏与复位按钮。</p>
-          <p><strong>数据：</strong>设置与窗口位置保存在 electron-store；mock 业务数据会在应用重启后恢复初始状态。</p>
-          <p><strong>Live2D：</strong>应用内置白猫 tororo、鲸鱼娘与奶龙三套预置形象；当前版本不提供应用内模型导入、动作编辑或任意第三方资源兼容。</p>
+          <p><strong>模型：</strong>在模型服务里填写地址和密钥，验证通过后才会用于对话、看图和任务。</p>
+          <p><strong>形象：</strong>可以换内置形象，也可以导入 Cubism 目录或 zip。加载失败的形象不会被当成当前形象。</p>
+          <p><strong>记忆和历史：</strong>历史是对话原文。长期记忆是单独保存的偏好。清除历史不会自动清掉全部记忆。</p>
+          <p><strong>任务：</strong>涉及写文件或执行命令时会先请求批准。拒绝或超时都不会执行，也不会记成成功。</p>
+          <p><strong>自主活动：</strong>只在隔离桌面里进行。Docker 或镜像没准备好时不会去操作你正在用的窗口，也不会编造活动记录。</p>
+          <p><strong>桌宠：</strong>单击打开对话，按住拖动。右键可以隐藏或退出。回复默认朗读，可以在设置里关掉。</p>
         </div>
       </Modal>
     </div>

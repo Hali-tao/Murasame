@@ -1,5 +1,5 @@
 import { _electron as electron, expect, type ElectronApplication, type Page } from '@playwright/test'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -10,6 +10,8 @@ const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(
 
 export async function launchApp(): Promise<ElectronApplication> {
   const userData = mkdtempSync(join(tmpdir(), 'murasame-e2e-'))
+  // 首次引导默认会挡在前面，端到端用例直接从主控制台开始。
+  writeFileSync(join(userData, 'murasame.json'), JSON.stringify({ settings: { onboardingDone: true } }))
   const app = await electron.launch({
     args: ['.'],
     cwd: root,
@@ -123,10 +125,12 @@ export async function startModelServer(): Promise<TestModelServer> {
 export async function configureTestModel(
   page: Page,
   endpoint: string,
-  targetName = 'OpenAI · 主模型'
+  targetName = '端到端测试服务'
 ): Promise<void> {
+  // 应用不预置任何服务商，用例自己新建一条配置。
   await page.getByTestId('nav-models').click()
-  await page.getByTestId('model-item').filter({ hasText: targetName }).click()
+  await page.getByTestId('add-model').click()
+  await page.getByTestId('model-config-name').fill(targetName)
   await page.getByTestId('model-provider').selectOption('OpenAI Compatible')
   await page.getByTestId('model-endpoint').fill(endpoint)
   await page.getByTestId('model-key').fill('test-key')

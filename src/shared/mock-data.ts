@@ -1,5 +1,4 @@
 import type {
-  AppSettings,
   BootstrapData,
   CharacterProfile,
   Conversation,
@@ -10,7 +9,7 @@ import type {
   ToolCapability,
   Tone
 } from './types'
-import { DEFAULT_PET_PRESET } from './pet-presets'
+import { initialSettings } from './default-settings'
 
 export interface ActivityItem {
   time: string
@@ -35,25 +34,8 @@ export interface UsageStat {
   tone: Tone
 }
 
-export const initialSettings: AppSettings = {
-  startAtLogin: false,
-  minimizeToTray: true,
-  doNotDisturb: true,
-  taskNotifications: true,
-  encryptLocalData: true,
-  closeBehavior: 'tray',
-  logRetentionDays: 30,
-  memoryEnabled: true,
-  memoryAutoExtract: true,
-  petVisible: true,
-  petScale: 0.9,
-  petPreset: DEFAULT_PET_PRESET,
-  permissions: {
-    screen: true,
-    microphone: false,
-    accessibility: true
-  }
-}
+/** 只给测试用的样例数据。正式代码的默认设置在 default-settings.ts。 */
+export { initialSettings }
 
 const conversations: Conversation[] = [
   {
@@ -206,6 +188,7 @@ const tasks: Task[] = [
     progress: 62,
     created: '今天 17:16',
     model: 'OpenAI · 主模型',
+    modelProfileId: 'openai-main',
     scope: '本地目录 D:\\Research\\papers',
     summary: '扫描 42 篇论文，提取元数据，按主题聚类并生成可编辑的相关工作草稿。',
     steps: [
@@ -216,6 +199,8 @@ const tasks: Task[] = [
     ],
     artifacts: ['papers_index.csv', 'related_work.md', 'topic_map.json'],
     approval: null,
+    toolCalls: [],
+    verdict: null,
     result: '尚未结束。已完成索引与聚类，草稿正在生成。'
   },
   {
@@ -226,6 +211,7 @@ const tasks: Task[] = [
     progress: 45,
     created: '今天 16:52',
     model: 'OpenAI · 主模型',
+    modelProfileId: 'openai-main',
     scope: 'D:\\Projects\\etl\\load.py',
     summary: '定位 CSV 编码问题，并准备一个最小补丁；写入文件前需要用户批准。',
     steps: [
@@ -239,6 +225,8 @@ const tasks: Task[] = [
       impact: '修改 1 个文件，新增 encoding 参数并保留原文件备份。不会删除数据。',
       tool: '文件系统工具'
     },
+    toolCalls: [],
+    verdict: null,
     result: '等待批准，尚未修改用户文件。'
   },
   {
@@ -249,6 +237,7 @@ const tasks: Task[] = [
     progress: 100,
     created: '10 月 17 日 21:03',
     model: 'Claude · 长文备选',
+    modelProfileId: 'claude-long',
     scope: '任务记录与本地文档',
     summary: '根据本周任务与对话记录生成三段式周报，并附带原始链接。',
     steps: [
@@ -258,13 +247,15 @@ const tasks: Task[] = [
     ],
     artifacts: ['weekly_2026-10-17.md'],
     approval: null,
+    toolCalls: [],
+    verdict: 'confirmed',
     result: '已完成并核验。产物可查看，未发现失败步骤。'
   }
 ]
 
 const tools: ToolCapability[] = [
   { id: 'filesystem', name: '文件系统', kind: '工具', ability: '读取与写入授权目录', permission: '读写', enabled: true, last: '今天 17:24', note: '需要目录授权' },
-  { id: 'terminal', name: '终端命令', kind: '工具', ability: '在沙箱中执行命令', permission: '需确认', enabled: true, last: '今天 16:58', note: '敏感命令逐次审批' },
+  { id: 'terminal', name: '终端命令', kind: '工具', ability: '在授权目录中执行命令，不是沙箱', permission: '需确认', enabled: true, last: '', note: '工作目录限制在授权目录，挡掉管道和父目录跳转' },
   { id: 'browser', name: '浏览器', kind: '插件', ability: '打开网页并读取可见内容', permission: '受限', enabled: true, last: '今天 15:31', note: '不共享登录状态' },
   { id: 'screen', name: '屏幕读取', kind: '内置', ability: '单次截取或持续观察', permission: '已授权', enabled: true, last: '今天 18:32', note: '仅当前问题使用' },
   { id: 'voice', name: '语音输入', kind: '内置', ability: '麦克风录音与本地转写', permission: '未授权', enabled: false, last: '从未', note: '授权后可启用' },
@@ -284,6 +275,8 @@ const models: ModelProfile[] = [
     hasKey: true,
     model: 'gpt-5.1',
     caps: ['文本', '图像', '工具调用'],
+    capabilities: [],
+    probeNote: '',
     status: '在线',
     tone: 'green',
     default: true,
@@ -298,6 +291,8 @@ const models: ModelProfile[] = [
     hasKey: true,
     model: 'claude-sonnet-4.5',
     caps: ['文本', '图像', '工具调用'],
+    capabilities: [],
+    probeNote: '',
     status: '在线',
     tone: 'green',
     default: false,
@@ -312,6 +307,8 @@ const models: ModelProfile[] = [
     hasKey: false,
     model: 'qwen3:14b',
     caps: ['文本', '工具调用'],
+    capabilities: [],
+    probeNote: '',
     status: '未验证',
     tone: 'gray',
     default: false,
@@ -328,7 +325,11 @@ const screenAnalysis: ScreenAnalysis = {
     '改动读取参数即可，不需要重写原始文件。',
     '建议补一个包含中文与车牌号列的回归用例。'
   ],
-  action: '生成最小修复补丁'
+  action: '生成最小修复补丁',
+  sourceWindow: 'Visual Studio Code · main.py',
+  resolution: '2560 × 1440',
+  capturedAt: '18:32',
+  continuous: false
 }
 
 const character: CharacterProfile = {
@@ -384,6 +385,7 @@ export function initialBootstrap(): BootstrapData {
     models: structuredClone(models),
     screenAnalysis: structuredClone(screenAnalysis),
     character: structuredClone(character),
-    settings: structuredClone(initialSettings)
+    settings: structuredClone(initialSettings),
+    activeConversationId: conversations[0]?.id ?? null
   }
 }

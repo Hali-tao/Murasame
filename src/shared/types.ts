@@ -1,4 +1,5 @@
 import type { PetPresetId } from './pet-presets'
+import type { ToolCallRecord, Verdict } from './evidence'
 
 export type Tone = 'coral' | 'green' | 'amber' | 'blue' | 'violet' | 'gray' | 'red'
 
@@ -29,7 +30,20 @@ export interface MemoryEntry {
   updated: string
 }
 
-export type TaskStepState = '完成' | '进行中' | '待执行' | '等待批准' | '已取消'
+export type TaskStepState = '完成' | '进行中' | '待执行' | '等待批准' | '已取消' | '正在停止'
+
+export type TaskStatus =
+  | '待确认'
+  | '已确认'
+  | '规划中'
+  | '执行中'
+  | '等待批准'
+  | '正在停止'
+  | '已完成'
+  | '部分完成'
+  | '失败'
+  | '已取消'
+  | '已中断'
 
 export interface TaskStep {
   id: string
@@ -49,17 +63,20 @@ export interface ApprovalRequest {
 export interface Task {
   id: string
   title: string
-  status: '执行中' | '等待批准' | '已完成' | '已取消'
+  status: TaskStatus
   tone: Tone
   progress: number
   created: string
   model: string
+  modelProfileId: string | null
   scope: string
   summary: string
   steps: TaskStep[]
   artifacts: string[]
   approval: ApprovalRequest | null
   result: string
+  toolCalls: ToolCallRecord[]
+  verdict: Verdict | null
 }
 
 export interface ToolCapability {
@@ -75,6 +92,22 @@ export interface ToolCapability {
 
 export type ModelStatus = '在线' | '未验证' | '离线'
 
+export type ModelCapabilityId =
+  | 'text.chat'
+  | 'text.stream'
+  | 'vision.image-input'
+  | 'tools.function-calling'
+  | 'output.json-schema'
+
+export type CapabilityStatus = 'unknown' | 'declared' | 'verified' | 'unsupported'
+
+export interface ModelCapability {
+  id: ModelCapabilityId
+  status: CapabilityStatus
+  detail: string
+  probedAt: string
+}
+
 export interface ModelProfile {
   id: string
   name: string
@@ -84,6 +117,8 @@ export interface ModelProfile {
   hasKey: boolean
   model: string
   caps: string[]
+  capabilities: ModelCapability[]
+  probeNote: string
   status: ModelStatus
   tone: Tone
   default: boolean
@@ -104,12 +139,34 @@ export interface ChatDelta {
   delta: string
 }
 
+export interface ChatTurnStarted {
+  conversationId: string
+  userText: string
+}
+
+export interface ChatTurnFailed {
+  conversationId: string
+  error: string
+}
+
 export interface ScreenAnalysis {
   title: string
   confidence: string
   summary: string
   bullets: string[]
   action: string
+  sourceWindow: string
+  resolution: string
+  capturedAt: string
+  continuous: boolean
+  tree?: string
+  image?: string
+  untrusted?: boolean
+  marks?: Array<{ id: number; name: string }>
+  refusal?: string
+  needsTaskConfirm?: boolean
+  timings?: { captureMs: number; waitMs: number; generateMs: number }
+  watch?: string
 }
 
 export interface CharacterProfile {
@@ -140,6 +197,19 @@ export interface AppSettings {
   petVisible: boolean
   petScale: number
   petPreset: PetPresetId
+  /** 唤起桌宠对话的全局快捷键，Electron accelerator 写法。 */
+  petHotkey: string
+  importedModelUrl: string
+  importedCharacterName: string
+  screenWatchEnabled: boolean
+  screenWatchSeconds: 5 | 15 | 60
+  voiceRoute: 'local' | 'windows' | 'cloud'
+  speakReplies: boolean
+  userName: string
+  /** 是否允许把屏幕截图发给当前模型服务。 */
+  outboundImages: boolean
+  proactivePace: 'low' | 'mid' | 'high'
+  onboardingDone: boolean
   permissions: Permissions
 }
 
@@ -152,6 +222,10 @@ export interface BootstrapData {
   screenAnalysis: ScreenAnalysis
   character: CharacterProfile
   settings: AppSettings
+  activeConversationId: string | null
+  memoryNote?: string
+  /** 向量服务和记忆模型都就绪时为 true；否则记忆不会被带进对话。 */
+  memoryReady?: boolean
 }
 
 export interface AppInfo {
@@ -162,12 +236,27 @@ export interface AppInfo {
   userDataPath: string
 }
 
+export interface PerformanceCue {
+  intent: string
+  motion: string | null
+  expression: string | null
+  degraded: boolean
+  pad: { pleasure: number; arousal: number; dominance: number }
+  text?: string
+}
+
+export interface PetChatLayout {
+  open: boolean
+  side: 'left' | 'right'
+}
+
 export interface PetState {
   visible: boolean
   scale: number
   x: number
   y: number
   preset: PetPresetId
+  importedModelUrl: string
 }
 
 export interface PetBounds {
@@ -183,7 +272,26 @@ export interface UpdateCheckResult {
   version?: string
 }
 
+export interface HistoryHit {
+  id: string
+  title: string
+  preview: string
+}
+
+export type HistorySearchResult =
+  | { status: 'ok'; items: HistoryHit[] }
+  | { status: 'empty' }
+  | { status: 'error'; message: string }
+
 export type DeleteScope = 'history' | 'memory' | 'cache' | 'logs'
+
+export interface RelationshipView {
+  stage: string
+  since: string
+  history: Array<{ stage: string; since: string }>
+  lineId: string
+  address: string
+}
 
 export interface MurasameCore {
   getBootstrap(): Promise<Result<BootstrapData>>
@@ -193,21 +301,25 @@ export interface MurasameCore {
     text: string,
     onDelta?: (delta: string) => void
   ): Promise<Result<Conversation>>
+  setActiveConversation(id: string): Promise<Result<{ id: string }>>
   deleteConversation(id: string, scopes: DeleteScope[]): Promise<Result<Conversation[]>>
   addMemory(category: string, text: string): Promise<Result<MemoryEntry>>
   updateMemory(id: string, category: string, text: string): Promise<Result<MemoryEntry>>
   deleteMemory(id: string): Promise<Result<string>>
   clearMemories(): Promise<Result<MemoryEntry[]>>
   createTask(title: string): Promise<Result<Task>>
-  approveTask(id: string): Promise<Result<Task>>
+  approveTask(id: string, scope?: 'once' | 'task'): Promise<Result<Task>>
   cancelTask(id: string): Promise<Result<Task>>
   setToolEnabled(id: string, enabled: boolean): Promise<Result<ToolCapability>>
   verifyModel(id: string, input?: ModelInput): Promise<Result<ModelProfile>>
   createModel(): Promise<Result<ModelProfile>>
   saveModel(id: string, input: ModelInput): Promise<Result<ModelProfile>>
+  deleteModel(id: string): Promise<Result<ModelProfile[]>>
   setDefaultModel(id: string): Promise<Result<ModelProfile[]>>
   saveCharacter(profile: CharacterProfile): Promise<Result<CharacterProfile>>
   analyzeScreen(): Promise<Result<ScreenAnalysis>>
+  searchHistory(keyword: string): Promise<Result<HistorySearchResult>>
+  denyTask(id: string): Promise<Result<Task>>
 }
 
 export interface MurasameApi {
@@ -218,6 +330,9 @@ export interface MurasameApi {
     openLogs(): Promise<void>
     openUserData(): Promise<void>
     clearLogs(): Promise<void>
+    pickOpen(options?: { title?: string; directory?: boolean; filters?: Array<{ name: string; extensions: string[] }> }): Promise<string | null>
+    pickSave(options?: { title?: string; defaultPath?: string }): Promise<string | null>
+    hotkey(): Promise<string>
   }
   window: {
     showMain(): Promise<void>
@@ -234,7 +349,10 @@ export interface MurasameApi {
     setIgnoreMouseEvents(ignore: boolean): Promise<void>
     getBounds(): Promise<PetBounds>
     resetPosition(): Promise<PetState>
+    setChatOpen(open: boolean): Promise<PetChatLayout>
+    onFocusChat(listener: () => void): () => void
     onStateChanged(listener: (state: PetState) => void): () => void
+    onPerformance(listener: (cue: PerformanceCue) => void): () => void
   }
   settings: {
     get(): Promise<AppSettings>
@@ -245,7 +363,40 @@ export interface MurasameApi {
     check(): Promise<UpdateCheckResult>
   }
   core: MurasameCore
+  character: {
+    importAsset(path: string): Promise<Result<{ ok: boolean; reason: string; id: string; modelUrl: string }>>
+  }
+  relationship: {
+    get(): Promise<RelationshipView>
+    reset(): Promise<RelationshipView>
+  }
+  data: {
+    exportBundle(passphrase: string, path?: string): Promise<Result<{ path: string; note: string }>>
+    importBundle(path: string, passphrase: string): Promise<Result<{ conversations: number; memories: number; note: string }>>
+  }
+  voice: {
+    readiness(): Promise<{ stt: boolean; tts: boolean; detail: string }>
+    transcribe(samples: number[]): Promise<{ text: string; accepted: boolean; message: string }>
+    speak(text: string): Promise<{ samples: number[]; sampleRate: number; played: boolean; message: string }>
+  }
+  autonomy: {
+    status(): Promise<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>
+    start(options?: { confirmed?: boolean; allowNetwork?: boolean }): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    environment(): Promise<{ docker: boolean; image: boolean; detail: string }>
+    openPage(url: string): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    look(): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    browse(goal: string): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    watch(url: string): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    buildImage(): Promise<{ ok: boolean; detail: string }>
+    onBuildProgress(listener: (line: string) => void): () => void
+    stop(): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+  }
   events: {
     onMessageDelta(listener: (payload: ChatDelta) => void): () => void
+    onMessageStarted(listener: (payload: ChatTurnStarted) => void): () => void
+    onMessageFailed(listener: (payload: ChatTurnFailed) => void): () => void
+    onConversationUpdated(listener: (conversation: Conversation) => void): () => void
+    onTaskUpdated(listener: (task: Task) => void): () => void
+    onActiveConversation(listener: (payload: { id: string }) => void): () => void
   }
 }

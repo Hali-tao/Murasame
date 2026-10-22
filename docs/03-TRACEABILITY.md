@@ -1,4 +1,4 @@
-﻿# murasame 执行方案 · 需求追溯矩阵
+# murasame 执行方案 · 需求追溯矩阵
 
 > NFR-M02 要求「测试应能独立覆盖正常输入、权限拒绝、服务失败、取消与部分完成等情形，并将结果关联到 FR、UC 或 NFR 编号」。
 > 本文档是该要求的交付载体，也是课程验收的主要凭据。
@@ -21,12 +21,12 @@
 | --- | --- | --- | --- | --- |
 | FR-01 | 文字与语音交流 | 部分 | P1-01, P1-04, P2-03, P6-01~06 | D-25, D-28 |
 | FR-02 | 点击与待机互动 | 部分 | P6-03~06, P7-02 | D-28 |
-| FR-03 | 主动互动 | 待实现 | P6-07 | D-01 |
+| FR-03 | 主动互动 | 部分 | P6-07 | D-01 |
 | FR-04 | 交互异常处理 | 部分 | P1-01, P6-01 | |
-| FR-05 | 获取屏幕内容 | 待实现 | P4-00, P4-01, P4-05 | D-02, D-24 |
-| FR-06 | 理解与分析 | 待实现 | P0-07, P4-02 | D-16, D-23 |
-| FR-07 | 辅助转为任务 | 待实现 | P4-03 | D-14 |
-| FR-08 | 采集与模型异常处理 | 待实现 | P4-04 | |
+| FR-05 | 获取屏幕内容 | 部分 | P4-00, P4-01, P4-05 | D-02, D-24 |
+| FR-06 | 理解与分析 | 部分 | P0-07, P4-02 | D-16, D-23 |
+| FR-07 | 辅助转为任务 | 部分 | P4-03 | D-14 |
+| FR-08 | 采集与模型异常处理 | 部分 | P4-04 | |
 | FR-09 | 角色设定 | 部分 | P1-04 | |
 | FR-10 | 形象与表现定制 | 部分 | P1-05 | D-03 |
 | FR-11 | 资源加载检查 | 部分 | P1-05 | D-03 |
@@ -46,16 +46,16 @@
 | FR-25 | 模型保存与切换 | **重写** | P0-07, P3-01（配置快照） | D-08, D-16 |
 | FR-26 | 显示与应用控制 | 部分 | P7-01, P7-02 | |
 | FR-27 | 运行状态提示 | 部分 | P8-04 | D-09 |
-| FR-28 | 隔离环境内活动 | 待实现 | P5-01, P5-03, P5-04 | D-15, D-19, D-23, D-27 |
-| FR-29 | 启停与环境隔离 | 待实现 | P5-02 | D-15 |
-| FR-30 | 活动状态管理 | 待实现 | P5-05 | |
+| FR-28 | 隔离环境内活动 | 部分 | P5-01, P5-03, P5-04 | D-15, D-19, D-23, D-27 |
+| FR-29 | 启停与环境隔离 | 部分 | P5-02 | D-15 |
+| FR-30 | 活动状态管理 | 部分 | P5-05 | |
 
 ## 2. 用例（UC）
 
 | 编号 | 名称 | 状态 | 交付任务 | 验收依据（SRS 原文摘要） |
 | --- | --- | --- | --- | --- |
 | UC-01 | 与桌宠交流互动 | 部分 | P1-01, P1-04, P6-01~03 | 成功产生可见回应；失败明确标识未完成 |
-| UC-02 | 获取屏幕内容辅助 | 待实现 | P4-01~05 | 以已知文档/代码/错误画面核对；拒绝授权不得产生新采集；操作意图必须出现任务确认 |
+| UC-02 | 获取屏幕内容辅助 | 部分 | P4-01~05 | 以已知文档/代码/错误画面核对；拒绝授权不得产生新采集；操作意图必须出现任务确认 |
 | UC-03 | 个性化设置桌宠 | 部分 | P1-04, P1-05 | 有效配置已保存生效，或原配置保持不变 |
 | UC-04 | 检索与管理对话历史 | 部分 | P1-01, P1-02, P1-03 | 成功清除的记录不再出现；失败范围保留为未完成 |
 | UC-05 | 管理长期记忆 | 部分 | P2-01~04 | 更正后使用新值；删除后不再返回；关闭后不个性化 |
@@ -63,7 +63,7 @@
 | UC-07 | 管理工具和插件 | 待实现 | P3-02 | 禁用后不接受新调用；运行中调用单独显示状态 |
 | UC-08 | 配置与选择模型服务 | **重写** | P0-07, P0-08 | 配置成功保存并显示状态，或原配置不变 |
 | UC-09 | 控制桌宠的显示与运行 | 部分 | P7-01, P7-02, P8-04 | 隐藏不等同取消；退出后不再安排新操作 |
-| UC-10 | 桌宠自主活动 | 待实现 | P5-03~07 | 活动状态清楚可见；用户软件环境不被直接控制 |
+| UC-10 | 桌宠自主活动 | 部分 | P5-03~07 | 活动状态清楚可见；用户软件环境不被直接控制 |
 
 ## 3. 外部接口需求（IF）
 
@@ -72,28 +72,28 @@
 | IF-01 | 桌宠与对话界面入口 | 部分 | P8-04 |
 | IF-02 | 任务确认与审批分别显示、状态可区分 | 待实现 | P3-06, P5-07, P8-04 |
 | IF-03 | 记忆界面可读、错误提示含可采取操作 | 部分 | P1-03, P2-01, P8-04 |
-| IF-04 | 硬件接口（显示/麦克风/音频） | 待实现 | P4-01, P6-01 |
+| IF-04 | 硬件接口（显示/麦克风/音频） | 部分 | P4-01, P6-01 |
 | IF-05 | 模型接口（文本/图像/语音/工具能力） | 部分 | P0-07, P4-02 |
 | IF-06 | 角色资源与工具插件接口契约 | 待实现 | P1-05, P3-02 |
-| IF-07 | 应用操作的目标环境识别 | 待实现 | P5-03 |
-| IF-08 | 通信传输保护 | 待实现 | P8-01 |
-| IF-09 | 外发数据的用途与授权边界 | 待实现 | P2-05, P8-01 |
+| IF-07 | 应用操作的目标环境识别 | 部分 | P5-03 |
+| IF-08 | 通信传输保护 | 部分 | P8-01 |
+| IF-09 | 外发数据的用途与授权边界 | 部分 | P2-05, P8-01 |
 
 ## 4. 性能与质量属性（NFR）
 
 | 编号 | 主题 | 状态 | 交付任务 | 口径 |
 | --- | --- | --- | --- | --- |
-| NFR-P01 | 常驻资源占用（五场景分别测） | 待实现 | P5-02, P7-03, P8-03 | D-10 |
+| NFR-P01 | 常驻资源占用（五场景分别测） | 部分 | P5-02, P7-03, P8-03 | D-10 |
 | NFR-P02 | 耗时调用不阻塞关键入口 | 待实现 | P2-02, P3-08, P3-12, P8-03 | D-10 |
-| NFR-P03 | 屏幕理解三段耗时可分测 | 待实现 | P4-05, P8-03 | D-10 |
+| NFR-P03 | 屏幕理解三段耗时可分测 | 部分 | P4-05, P8-03 | D-10 |
 | NFR-S01 | 加密存储与凭据保护 | 待实现 | P0-01, P0-02, P0-10, P4-06, P8-01 | D-22, D-24 |
 | NFR-S02 | 可清除且清除后不再出现 | 待实现 | P1-03, P8-01 | D-13 |
-| NFR-S03 | 环境隔离可测试验证 | 待实现 | P5-02, P5-06 | D-15 |
+| NFR-S03 | 环境隔离可测试验证 | 部分 | P5-02, P5-06 | D-15 |
 | NFR-R01 | 失败不被解释为成功 | 待实现 | P3-07, P8-02 | |
 | NFR-R02 | 失败保留既有有效状态 | 待实现 | P1-05, P3-12, P8-02 | |
 | NFR-R03 | 崩溃后不自动重放副作用 | 待实现 | P3-01, P8-02 | D-11 |
 | NFR-U01 | 入口可发现、状态可区分 | 待实现 | P0-09, P8-04 | |
-| NFR-U02 | 不持续打断用户工作 | 待实现 | P6-04, P8-04 | D-01 |
+| NFR-U02 | 不持续打断用户工作 | 部分 | P6-04, P8-04 | D-01 |
 | NFR-U03 | 本地功能不因外部服务失效而阻断 | 待实现 | P5-02, P8-04 | |
 | NFR-C01 | 多系统支持与能力明示 | 待实现 | P8-05 | D-12 |
 | NFR-C02 | 配置能力说明、不重建角色与记忆 | 待实现 | P0-07, P3-11, P8-05 | D-16 |
@@ -105,11 +105,11 @@
 | 编号 | SRS 原文要求 | 状态 | 交付任务 |
 | --- | --- | --- | --- |
 | CON-01 | 桌宠形象采用 Live2D，导入的角色、动作与表情资源须与所用运行组件兼容 | 部分 | P1-05, P6-03 |
-| CON-02 | 系统需常驻个人计算机，资源使用应兼顾其他软件，避免影响正常工作 | 待实现 | P5-02, P6-07, P7-03, P8-03 |
-| CON-03 | 屏幕采集、录音和应用操作须遵循操作系统权限机制并取得用户授权 | 待实现 | P4-01, P6-01, P8-04 |
-| CON-04 | 自主活动须在独立隔离环境运行，不得直接占用或控制用户正在使用的应用会话 | 待实现 | P5-02、P5-06 |
-| **CON-05** | **角色、声音及第三方插件的使用与分发须符合相应许可；模型调用须遵守服务提供方使用规则** | **⏸ 暂缓** | **P8-08**（须在 P7-04 打包前有结论） |
-| ASM-01 | 依赖失效时应提示受影响功能，并保留退出、取消和状态查询入口 | 待实现 | P0-06, P0-09, P5-02, P8-04 |
+| CON-02 | 系统需常驻个人计算机，资源使用应兼顾其他软件，避免影响正常工作 | 部分 | P5-02, P6-07, P7-03, P8-03 |
+| CON-03 | 屏幕采集、录音和应用操作须遵循操作系统权限机制并取得用户授权 | 部分 | P4-01, P6-01, P8-04 |
+| CON-04 | 自主活动须在独立隔离环境运行，不得直接占用或控制用户正在使用的应用会话 | 部分 | P5-02、P5-06 |
+| **CON-05** | **角色、声音及第三方插件的使用与分发须符合相应许可；模型调用须遵守服务提供方使用规则** | **⏸ 暂缓** | **P8-08**（须在公开打包前有结论） |
+| ASM-01 | 依赖失效时应提示受影响功能，并保留退出、取消和状态查询入口 | 部分 | P0-06, P0-09, P5-02, P8-04 |
 
 **CON-05 是初版方案的实质性遗漏**：现有仓库已捆绑三套 Live2D 资源，其中 `whale-girl` 为 CC BY-NC-SA 4.0（非商业 + 相同方式共享）、`naiwa` 标注为「仅用于本项目课程演示」且来源待确认，另有 Live2D Cubism SDK 自身的许可约束。这不是文档工作，而是会影响**能否分发安装包**的硬约束。
 
@@ -119,7 +119,7 @@
 | --- | --- | --- | --- | --- |
 | OR-01 | 使用说明；未支持功能不得展示为已实现 | 待实现 | P0-03, P3-02, P3-10, P8-07 | |
 | OR-02 | 保存与清除范围；迁移、备份、卸载、容量 | 待实现 | P0-02, P1-03, P3-14, P8-07, P8-09 | D-13, D-26 |
-| OR-03 | 不擅自扩权；退出说明与隐藏差异一致 | 待实现 | P7-04, P8-07, P8-09 | D-09 |
+| OR-03 | 不擅自扩权；退出说明与隐藏差异一致 | 部分 | P7-04, P8-07, P8-09 | D-09 |
 
 ---
 
@@ -143,5 +143,82 @@
 ## 7. 需求 → 测试用例矩阵（自动生成区）
 
 <!-- TRACE:BEGIN -->
-*尚未生成。完成 P0-05 后运行 `npm run trace` 填充本区域。*
+| 需求 | 测试 |
+| --- | --- |
+| FR-01 | tests/unit/p4-p6.test.ts |
+| FR-02 | tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
+| FR-03 | tests/unit/p4-p6.test.ts |
+| FR-04 | tests/unit/p4-p6.test.ts |
+| FR-05 | tests/unit/p4-p6.test.ts |
+| FR-06 | tests/unit/p4-p6.test.ts |
+| FR-07 | tests/unit/p4-p6.test.ts |
+| FR-08 | tests/unit/p4-p6.test.ts |
+| FR-09 | tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
+| FR-10 | tests/unit/p7-p8.test.ts |
+| FR-11 | tests/unit/p1-p3.test.ts |
+| FR-12 | tests/unit/p1-p3.test.ts |
+| FR-13 | tests/unit/p1-p3.test.ts |
+| FR-14 | tests/unit/p1-p3.test.ts |
+| FR-15 | tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
+| FR-16 | tests/unit/p1-p3.test.ts |
+| FR-17 | tests/unit/p1-p3.test.ts |
+| FR-18 | tests/unit/p1-p3.test.ts |
+| FR-19 | tests/unit/p1-p3.test.ts |
+| FR-20 | tests/unit/p1-p3.test.ts |
+| FR-21 | tests/unit/errors.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-status.test.ts<br>tests/unit/traceability.test.ts |
+| FR-22 | tests/unit/p1-p3.test.ts |
+| FR-23 | tests/unit/p1-p3.test.ts |
+| FR-24 | tests/unit/p0-finish.test.ts<br>tests/unit/p7-p8.test.ts |
+| FR-25 | tests/unit/gateway-contract.test.ts<br>tests/unit/p7-p8.test.ts |
+| FR-26 | tests/unit/p7-p8.test.ts |
+| FR-27 | tests/unit/p7-p8.test.ts |
+| FR-28 | tests/unit/p4-p6.test.ts |
+| FR-29 | tests/unit/p4-p6.test.ts |
+| FR-30 | tests/unit/p4-p6.test.ts |
+| UC-01 | tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
+| UC-02 | tests/unit/p4-p6.test.ts |
+| UC-03 | tests/unit/p1-p3.test.ts |
+| UC-04 | tests/unit/p1-p3.test.ts |
+| UC-05 | tests/unit/p1-p3.test.ts |
+| UC-06 | tests/unit/p1-p3.test.ts |
+| UC-07 | tests/unit/p1-p3.test.ts |
+| UC-08 | tests/unit/p7-p8.test.ts |
+| UC-09 | tests/unit/p0-finish.test.ts<br>tests/unit/p7-p8.test.ts |
+| UC-10 | tests/unit/p4-p6.test.ts |
+| IF-01 | tests/unit/p7-p8.test.ts |
+| IF-02 | tests/unit/p0-finish.test.ts |
+| IF-03 | tests/unit/errors.test.ts<br>tests/unit/p7-p8.test.ts |
+| IF-04 | tests/unit/p4-p6.test.ts |
+| IF-05 | tests/unit/gateway-contract.test.ts<br>tests/unit/model-client.test.ts |
+| IF-06 | tests/unit/p1-p3.test.ts |
+| IF-07 | tests/unit/p4-p6.test.ts |
+| IF-08 | tests/unit/p7-p8.test.ts |
+| IF-09 | tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-P01 | tests/unit/p7-p8.test.ts |
+| NFR-P02 | tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-P03 | tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-S01 | tests/electron/migrate-entry.ts<br>tests/unit/native-encryption.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/traceability.test.ts |
+| NFR-S02 | tests/unit/p1-p3.test.ts |
+| NFR-S03 | tests/integration/isolation.spec.ts<br>tests/unit/p4-p6.test.ts |
+| NFR-R01 | tests/unit/gateway-contract.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-R02 | tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-R03 | tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-U01 | tests/unit/p0-finish.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-U02 | tests/unit/p4-p6.test.ts |
+| NFR-U03 | tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-C01 | tests/unit/p7-p8.test.ts |
+| NFR-C02 | tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-M01 | tests/unit/errors.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-M02 | tests/unit/p0-finish.test.ts<br>tests/unit/traceability.test.ts |
+| OR-01 | tests/unit/murasame-core.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
+| OR-02 | tests/unit/capacity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| OR-03 | tests/unit/p7-p8.test.ts |
+| CON-01 | tests/unit/p4-p6.test.ts |
+| CON-02 | tests/unit/p7-p8.test.ts |
+| CON-03 | tests/unit/p4-p6.test.ts |
+| CON-04 | tests/unit/p4-p6.test.ts |
+| CON-05 | tests/unit/p7-p8.test.ts |
+| ASM-01 | tests/unit/p7-p8.test.ts |
+
+未覆盖：无
 <!-- TRACE:END -->

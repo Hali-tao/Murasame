@@ -6,7 +6,7 @@ import { useAppStore } from '../store'
 const scopeOptions: Array<{ value: DeleteScope; title: string; hint: string }> = [
   { value: 'history', title: '对话历史', hint: '删除所选会话与消息正文。' },
   { value: 'memory', title: '相关长期记忆', hint: '只删除由本次选择产生的可识别条目。' },
-  { value: 'cache', title: '本地缓存', hint: '清除界面缩略图与分析缓存。' },
+  { value: 'cache', title: '本地缓存', hint: '清除界面缩略图、分析缓存和检索索引。导出的备份不在范围内。' },
   { value: 'logs', title: '运行日志', hint: '清除包含诊断信息的本地日志文件。' }
 ]
 
@@ -212,11 +212,20 @@ export function ApprovalDialog({
   task: Task | null
 }): React.JSX.Element {
   const approveTask = useAppStore((state) => state.approveTask)
+  const denyTask = useAppStore((state) => state.denyTask)
   const busy = useAppStore((state) => Boolean(state.busy['task:approve']))
+
+  const [scope, setScope] = useState<'once' | 'task'>('once')
 
   const approve = async (): Promise<void> => {
     if (!task) return
-    const next = await approveTask(task.id)
+    const next = await approveTask(task.id, scope)
+    if (next) onOpenChange(false)
+  }
+
+  const deny = async (): Promise<void> => {
+    if (!task) return
+    const next = await denyTask(task.id)
     if (next) onOpenChange(false)
   }
 
@@ -225,9 +234,11 @@ export function ApprovalDialog({
       open={open}
       onOpenChange={onOpenChange}
       title="批准敏感操作"
-      description="本次批准只对下面列出的动作生效，不会扩大工具权限。"
+      description="可以选择只批准这一次，或在这个任务里继续使用同一项能力。超过 10 分钟未批准则任务受阻，不会记为失败。"
       confirmLabel="批准并继续"
+      cancelLabel="拒绝"
       onConfirm={approve}
+      onCancel={deny}
       busy={busy}
     >
       {task?.approval ? (
@@ -235,11 +246,17 @@ export function ApprovalDialog({
           <div className="approval-row"><span>调用能力</span><strong>{task.approval.tool}</strong></div>
           <div className="approval-row"><span>操作对象</span><strong>{task.approval.target}</strong></div>
           <div className="approval-row"><span>可能影响</span><p>{task.approval.impact}</p></div>
+          <label className="approval-row">范围
+            <select value={scope} onChange={(event) => setScope(event.target.value as 'once' | 'task')}>
+              <option value="once">仅这一次</option>
+              <option value="task">本任务内有效</option>
+            </select>
+          </label>
         </div>
       ) : (
         <p className="muted">当前任务没有待批准操作。</p>
       )}
-      <div className="inline-note amber-note">批准后执行仍受沙箱和原授权范围约束。拒绝不会把任务标记为完成。</div>
+      <div className="inline-note amber-note">拒绝后任务受阻，不会执行，也不会标记为失败。批准后仍受原授权范围约束。</div>
     </ConfirmDialog>
   )
 }

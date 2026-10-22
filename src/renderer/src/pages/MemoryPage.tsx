@@ -76,7 +76,7 @@ export function MemoryPage(): React.JSX.Element {
       <div className="stat-grid four">
         <StatTile label="记忆条目" value={data.memories.length} caption="可逐条更正或删除" tone="violet" />
         <StatTile label="自动提取" value={data.settings.memoryAutoExtract ? '开启' : '关闭'} caption="失败时不展示未保存内容" tone="green" />
-        <StatTile label="最近更新" value="今天" caption="3 条来自对话与任务" tone="coral" />
+        <StatTile label="记忆条数" value={String(data.memories.length)} caption="只统计当前还保留的条目" tone="coral" />
         <StatTile label="隐私边界" value="本地" caption="加密存储，不默认外发" tone="blue" />
       </div>
 
@@ -146,7 +146,7 @@ export function MemoryPage(): React.JSX.Element {
         onConfirm={confirmClear}
         busy={busyClear}
       >
-        <p className="muted">当前共有 {data.memories.length} 条记忆条目。清空后，村雨将不再使用这些跨会话信息。</p>
+        <p className="muted">{data.memoryNote || '正在检查记忆服务。'} 当前共有 {data.memories.length} 条记忆。清空后，这些内容不再被带进之后的对话。</p>
       </ConfirmDialog>
     </div>
   )

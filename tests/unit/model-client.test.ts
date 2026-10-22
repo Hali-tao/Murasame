@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createServer, type Server } from 'node:http'
-import { ModelApiClient } from '../../src/main/core/model-client'
-import type { ResolvedModel } from '../../src/main/core/model-repository'
+import { ModelGateway } from '../../src/main/model/gateway'
+import type { ResolvedModel } from '../../src/main/model/registry'
 
 let server: Server
 let baseUrl = ''
@@ -16,6 +16,8 @@ function profile(overrides: Partial<ResolvedModel>): ResolvedModel {
     hasKey: true,
     model: 'test-model',
     caps: ['文本'],
+    capabilities: [],
+    probeNote: '',
     status: '未验证',
     tone: 'gray',
     default: true,
@@ -79,11 +81,11 @@ afterAll(async () => {
   await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()))
 })
 
-describe('ModelApiClient', () => {
-  it('streams an OpenAI-compatible response and reports deltas', async () => {
-    const client = new ModelApiClient()
+describe('[IF-05] 模型网关', () => {
+  it('[IF-05] 流式接收 OpenAI 兼容响应', async () => {
+    const client = new ModelGateway()
     const deltas: string[] = []
-    const result = await client.stream(
+    const result = await client.chat(
       profile({ endpoint: `${baseUrl}/v1` }),
       [{ role: 'user', content: '你好' }],
       (delta) => deltas.push(delta)
@@ -93,28 +95,28 @@ describe('ModelApiClient', () => {
   })
 
   it('tests an OpenAI-compatible connection without streaming', async () => {
-    const client = new ModelApiClient()
-    const outcome = await client.test(profile({ endpoint: `${baseUrl}/v1` }))
+    const client = new ModelGateway()
+    const outcome = await client.testConnection(profile({ endpoint: `${baseUrl}/v1` }))
     expect(outcome.preview).toBe('OK')
     expect(outcome.latencyMs).toBeGreaterThanOrEqual(0)
   })
 
   it('adds the /v1 path when only a host URL is supplied', async () => {
-    const client = new ModelApiClient()
-    const outcome = await client.test(profile({ endpoint: baseUrl }))
+    const client = new ModelGateway()
+    const outcome = await client.testConnection(profile({ endpoint: baseUrl }))
     expect(outcome.preview).toBe('OK')
   })
 
   it('reports an invalid API key without exposing the key', async () => {
-    const client = new ModelApiClient()
-    await expect(client.test(profile({ endpoint: `${baseUrl}/v1`, apiKey: 'wrong-key' })))
+    const client = new ModelGateway()
+    await expect(client.testConnection(profile({ endpoint: `${baseUrl}/v1`, apiKey: 'wrong-key' })))
       .rejects.toThrow(/API Key 无效/)
   })
 
   it('streams an Anthropic Messages response', async () => {
-    const client = new ModelApiClient()
+    const client = new ModelGateway()
     const deltas: string[] = []
-    const result = await client.stream(
+    const result = await client.chat(
       profile({
         provider: 'Anthropic',
         endpoint: `${baseUrl}/v1`,

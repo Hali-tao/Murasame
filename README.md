@@ -1,12 +1,82 @@
 # Murasame Desktop
 
-Murasame 的 Windows 桌面端产品壳，使用 Electron + React + TypeScript 构建。当前版本已经接入真实的大模型 HTTP API，同时保留任务、记忆、工具和屏幕辅助等演示数据。
+Murasame 的 Windows 桌面伙伴。文字对话、历史、长期记忆、任务核验、屏幕读取和隔离活动策略已经接到本地数据上。语音在没有本地模型时会标明 Windows 降级。自主活动在 Docker 未启动时停止，不控制当前桌面。naiwa 的分发许可仍未确认，见 `docs/05-LICENSES.md`。
+
+## 当前范围
+
+- 已接入：加密本地库、可配置模型、对话与历史、长期记忆、任务状态与工具核验、屏幕读取与 OCR、自主活动的隔离容器、本地语音输入与输出、角色表现与主动开口、首次使用说明、加密数据包导出导入。
+- 需本机准备：语音模型（见下）与隔离镜像（`node scripts/build-isolation.mjs`，需 Docker）。
+- 未公开分发：来源未确认的 naiwa 形象不得放进面向公众的安装包，见 `docs/05-LICENSES.md`。
+
+## 本地语音模型
+
+语音不走云端，也不使用系统语音兜底。模型放在 `userData/models` 下：
+
+```powershell
+node scripts/fetch-builder-binaries.mjs   # 打包用的 NSIS 等组件
+& "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File scripts\fetch-whisper.ps1
+& "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File scripts\fetch-kokoro.ps1
+```
+
+识别用 `onnx-community/whisper-base`，合成用 `onnx-community/Kokoro-82M-v1.0-ONNX`。中文合成的汉字转音素由本机 Python 完成，需要一次性安装：
+
+```powershell
+python -m pip install "misaki[zh]"
+```
+
+这一步只做音素转换，不装 PyTorch，ONNX 推理仍在应用进程内。模型文件不全时，界面会说明缺哪些，不改用其他来源。
+
+## 打包
+
+```powershell
+npm run package:win
+```
+
+产物在 `release\Murasame-Setup-0.9.0.exe`。没有代码签名证书，打包脚本关闭了自动签名，安装器以当前用户权限安装，卸载默认保留数据。
 
 ## 环境要求
 
 - Windows 10/11 x64
 - Node.js 22 或更新版本
 - npm
+
+## 加密数据库（SQLCipher）
+
+本地对话、记忆和任务存在 SQLCipher 加密库里，绑定是 `better-sqlite3-multiple-ciphers`，必须按 Electron 44 的 ABI 编译。`npm install` 会通过 `postinstall` 执行：
+
+```powershell
+npx electron-rebuild -f -w better-sqlite3-multiple-ciphers
+```
+
+需要本机已安装 Visual Studio 的 C++ 构建工具。Electron 本体不在 npm 包里，若 `node_modules/electron/dist/electron.exe` 不存在，下载 `electron-v44.9.1-win32-x64.zip`（SHA256 `41bd7900bd42d0f49110a81617876137041fbbf473466920248ddb076349ef91`）放到仓库根目录后解压到 `node_modules/electron/dist`，并在 `node_modules/electron/path.txt` 写入 `electron.exe`。
+
+验收：
+
+```powershell
+npm run verify:native
+```
+
+脚本在 Electron 主进程里建一个 SQLCipher（legacy 4）库，确认错误口令无法读取、文件中没有明文、正确口令能读回。这一步没有降级方案。
+
+## 屏幕感知（UI Automation 与 Windows OCR）
+
+前台窗口的标题、进程和控件树通过 .NET `UIAutomationClient` 在 Electron 主进程里读取。图中文字使用 Windows.Media.Ocr，不把截图发给模型来代替这一步。密码窗口、声明排除于系统截图的窗口、以及 KeePass 一类进程不会被采集。
+
+```powershell
+npm run verify:perception
+```
+
+脚本会打印当前前台窗口的控件树，并对一张程序生成的文字图片做一次 OCR。任一环节失败就退出，不改用假数据。
+
+## 隔离桌面
+
+`isolation/Dockerfile` 构建 Debian、XFCE、TigerVNC、noVNC、Firefox、LibreOffice 和 code-server。默认不挂载宿主目录、不透传设备。Docker 没启动时，自主活动会说明原因并停在隔离环境，不会改去控制当前桌面。
+
+```powershell
+node scripts/build-isolation.mjs
+```
+
+镜像体积大约数 GB，构建脚本会打印大小和耗时。
 
 ## 启动
 
@@ -20,7 +90,7 @@ npm run dev
 
 ## Live2D 桌宠
 
-角色设置页提供三套内置预置形象：白猫 `tororo`、鲸鱼娘和奶龙。当前版本不提供应用内导入、动作/表情编辑，也不承诺兼容任意第三方资源包；新增形象需按 Cubism 资源结构在构建时内置。
+角色设置页提供三套内置预置形象：白猫 `tororo`、鲸鱼娘和奶龙。可以导入带 `model3.json`、`moc3` 和贴图的 Cubism 4/5 目录；缺少贴图或 Cubism 2.1 的 `.moc` 会被拒绝，并保留原来的角色。动作和表情编辑仍不提供。
 
 白猫 `tororo` 的资源位于：
 

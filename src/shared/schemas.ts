@@ -74,6 +74,17 @@ export const settingsPatchSchema = z.object({
   petVisible: z.boolean().optional(),
   petScale: z.number().min(0.6).max(1.4).optional(),
   petPreset: z.enum(PET_PRESET_IDS).optional(),
+  importedModelUrl: z.string().max(500).optional(),
+  importedCharacterName: z.string().max(80).optional(),
+  screenWatchEnabled: z.boolean().optional(),
+  screenWatchSeconds: z.union([z.literal(5), z.literal(15), z.literal(60)]).optional(),
+  voiceRoute: z.enum(['local', 'windows', 'cloud']).optional(),
+  speakReplies: z.boolean().optional(),
+  userName: z.string().max(40).optional(),
+  outboundImages: z.boolean().optional(),
+  petHotkey: z.string().trim().min(1).max(40).optional(),
+  proactivePace: z.enum(['low', 'mid', 'high']).optional(),
+  onboardingDone: z.boolean().optional(),
   permissions: z
     .object({
       screen: z.boolean().optional(),
@@ -89,5 +100,14 @@ export const petPositionSchema = z.object({
   y: z.number().int()
 })
 export const ignoreMouseSchema = z.object({ ignore: z.boolean() })
+export const petChatSchema = z.object({ open: z.boolean() })
 
-export const emptySchema = z.undefined()
+export const screenCaptureSchema = z.object({ continuous: z.boolean().optional() })
+export const voiceControlSchema = z.object({ enabled: z.boolean() })
+export const autonomyControlSchema = z.object({
+  scope: z.string().trim().max(500).optional()
+})
+export const characterImportSchema = z.object({
+  path: z.string().trim().min(1).max(1000)
+})
+export const taskProgressSchema = z.object({ id: z.string().min(1) })

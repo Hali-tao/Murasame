@@ -37,7 +37,10 @@ function createApi(): MurasameApi {
       setIgnoreMouseEvents: vi.fn(async () => undefined),
       getBounds: vi.fn(async () => ({ x: 0, y: 0, width: 360, height: 500 })),
       resetPosition: vi.fn(async () => ({ visible: true, scale: 0.9, x: 0, y: 0, preset: 'tororo' as const })),
-      onStateChanged: vi.fn(() => () => undefined)
+      onStateChanged: vi.fn(() => () => undefined),
+      onPerformance: vi.fn(() => () => undefined),
+      setChatOpen: vi.fn(async () => ({ open: true, side: 'right' as const })),
+      onFocusChat: vi.fn(() => () => undefined)
     },
     settings: {
       get: vi.fn(async () => bootstrap.settings),
@@ -48,7 +51,12 @@ function createApi(): MurasameApi {
       check: vi.fn(async () => ({ status: 'disabled' as const, message: '未配置更新源' }))
     },
     events: {
-      onMessageDelta: vi.fn(() => () => undefined)
+      onMessageDelta: vi.fn(() => () => undefined),
+      onMessageStarted: vi.fn(() => () => undefined),
+      onMessageFailed: vi.fn(() => () => undefined),
+      onConversationUpdated: vi.fn(() => () => undefined),
+      onActiveConversation: vi.fn(() => () => undefined),
+      onTaskUpdated: vi.fn(() => () => undefined)
     },
     core: {
       getBootstrap: vi.fn(async (): Promise<Result<typeof bootstrap>> => ({ ok: true, data: initialBootstrap() })),

@@ -47,12 +47,14 @@ interface AppStore {
   deleteMemory(id: string): Promise<boolean>
   clearMemories(): Promise<boolean>
   createTask(title: string): Promise<Task | null>
-  approveTask(id: string): Promise<Task | null>
+  approveTask(id: string, scope?: 'once' | 'task'): Promise<Task | null>
   cancelTask(id: string): Promise<Task | null>
+  denyTask(id: string): Promise<Task | null>
   setToolEnabled(id: string, enabled: boolean): Promise<ToolCapability | null>
   verifyModel(id: string, input?: ModelInput): Promise<ModelProfile | null>
   createModel(): Promise<ModelProfile | null>
   saveModel(id: string, input: ModelInput): Promise<ModelProfile | null>
+  deleteModel(id: string): Promise<boolean>
   setDefaultModel(id: string): Promise<boolean>
   saveCharacter(profile: CharacterProfile): Promise<boolean>
   analyzeScreen(): Promise<ScreenAnalysis | null>
@@ -138,13 +140,41 @@ export const useAppStore = create<AppStore>((set, get) => {
           info,
           loading: false,
           startupError: null,
-          selectedConversationId: data.conversations[0]?.id ?? null,
+          selectedConversationId: data.activeConversationId ?? data.conversations[0]?.id ?? null,
           selectedTaskId: data.tasks[0]?.id ?? null,
           selectedModelId: data.models.find((model) => model.default)?.id ?? data.models[0]?.id ?? null
         })
         window.murasame.settings.onChanged((next) => {
           const current = get().data
           if (current) set({ data: { ...current, settings: next } })
+        })
+        window.murasame.events.onConversationUpdated((conversation) => {
+          const current = get().data
+          if (!current) return
+          const exists = current.conversations.some((item) => item.id === conversation.id)
+          set({
+            data: {
+              ...current,
+              conversations: exists
+                ? current.conversations.map((item) => (item.id === conversation.id ? conversation : item))
+                : [conversation, ...current.conversations]
+            },
+            selectedConversationId: conversation.id
+          })
+        })
+        window.murasame.events.onActiveConversation(({ id }) => {
+          set({ selectedConversationId: id })
+        })
+        window.murasame.events.onTaskUpdated((task) => {
+          const current = get().data
+          if (!current) return
+          const exists = current.tasks.some((item) => item.id === task.id)
+          set({
+            data: {
+              ...current,
+              tasks: exists ? current.tasks.map((item) => (item.id === task.id ? task : item)) : [task, ...current.tasks]
+            }
+          })
         })
       } catch (error) {
         set({
@@ -168,6 +198,7 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     selectConversation(id) {
       set({ selectedConversationId: id })
+      if (id) void window.murasame?.core.setActiveConversation(id)
     },
 
     selectTask(id) {
@@ -197,8 +228,14 @@ export const useAppStore = create<AppStore>((set, get) => {
         if (!conversation) return null
         const data = get().data
         if (data) {
+          const exists = data.conversations.some((item) => item.id === conversation.id)
           set({
-            data: { ...data, conversations: [conversation, ...data.conversations] },
+            data: {
+              ...data,
+              conversations: exists
+                ? data.conversations.map((item) => (item.id === conversation.id ? conversation : item))
+                : [conversation, ...data.conversations]
+            },
             selectedConversationId: conversation.id
           })
         }
@@ -306,13 +343,13 @@ export const useAppStore = create<AppStore>((set, get) => {
       })
     },
 
-    async approveTask(id) {
+    async approveTask(id, scope = 'once') {
       return busyRun('task:approve', async () => {
-        const result = await window.murasame.core.approveTask(id)
+        const result = await window.murasame.core.approveTask(id, scope)
         const task = unwrap(result, get().notify)
         if (task) {
           replaceTask(task)
-          get().notify('敏感操作已批准，任务继续执行')
+          get().notify('已批准，任务在后台执行，进度会实时更新')
         }
         return task
       })
@@ -324,7 +361,19 @@ export const useAppStore = create<AppStore>((set, get) => {
         const task = unwrap(result, get().notify)
         if (task) {
           replaceTask(task)
-          get().notify('任务已取消；已完成步骤与产物仍可查看', 'amber')
+          get().notify(task.status === '正在停止' ? '正在停止，手上这个文件处理完就停' : '任务已取消；已完成步骤与产物仍可查看', 'amber')
+        }
+        return task
+      })
+    },
+
+    async denyTask(id) {
+      return busyRun('task:approve', async () => {
+        const result = await window.murasame.core.denyTask(id)
+        const task = unwrap(result, get().notify)
+        if (task) {
+          replaceTask(task)
+          get().notify('已拒绝。任务受阻，没有执行敏感操作', 'amber')
         }
         return task
       })
@@ -363,7 +412,11 @@ export const useAppStore = create<AppStore>((set, get) => {
             }
           })
         }
-        get().notify(`连接验证成功 · ${model.latency}`)
+        if (model.status === '在线') get().notify(`连接验证成功 · ${model.latency}`)
+        else {
+          const chat = model.capabilities.find((item) => item.id === 'text.chat')
+          get().notify(chat?.detail ? `还不能使用：${chat.detail}` : '验证未通过，还不能开始使用', 'red')
+        }
         return model
       })
     },
@@ -404,6 +457,18 @@ export const useAppStore = create<AppStore>((set, get) => {
       })
     },
 
+    async deleteModel(id) {
+      return busyRun('model:delete', async () => {
+        const result = await window.murasame.core.deleteModel(id)
+        const models = unwrap(result, get().notify)
+        if (!models) return false
+        const data = get().data
+        if (data) set({ data: { ...data, models }, selectedModelId: models[0]?.id ?? null })
+        get().notify('配置已删除')
+        return true
+      })
+    },
+
     async setDefaultModel(id) {
       return busyRun('model:default', async () => {
         const result = await window.murasame.core.setDefaultModel(id)
@@ -413,7 +478,8 @@ export const useAppStore = create<AppStore>((set, get) => {
         }
         const data = get().data
         if (data) set({ data: { ...data, models: result.data }, selectedModelId: id })
-        get().notify('已设为当前服务；新任务将使用该配置')
+        const note = result.data.find((model) => model.probeNote)?.probeNote
+        get().notify(note ? `已设为当前服务。${note}` : '已设为当前服务；新任务将使用该配置')
         return true
       })
     },

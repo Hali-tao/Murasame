@@ -1,15 +1,33 @@
-import { Eye, EyeOff, PlugZap, Plus, ShieldCheck } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Eye, EyeOff, PlugZap, Plus, ShieldCheck, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import type { ModelInput, ModelProfile } from '@shared/types'
-import { Button, Card, CardHead, Field, Input, Pill, Spinner } from '../components/ui'
+import { matchPreset, MODEL_PRESETS, presetById } from '@shared/model-presets'
+import { Button, Card, CardHead, EmptyState, Field, Input, Pill, Spinner } from '../components/ui'
+import { StatusPill } from '../components/StatusPill'
 import { useAppStore } from '../store'
 
-const capabilityOptions = ['文本', '图像', '语音', '工具调用']
 const providerOptions = [
-  { value: 'OpenAI Compatible', label: 'OpenAI Compatible / 兼容接口' },
+  { value: 'OpenAI Compatible', label: 'OpenAI 兼容接口' },
   { value: 'Anthropic', label: 'Anthropic Messages' },
   { value: 'Ollama', label: 'Ollama（OpenAI 兼容）' }
 ]
+
+const capabilityLabel: Record<string, string> = {
+  'text.chat': '对话',
+  'text.stream': '流式输出',
+  'vision.image-input': '看图',
+  'tools.function-calling': '工具调用',
+  'output.json-schema': '结构化输出'
+}
+
+const blankDraft = (): ModelInput => ({
+  name: '',
+  provider: 'OpenAI Compatible',
+  endpoint: '',
+  key: '',
+  model: '',
+  caps: []
+})
 
 function toDraft(model: ModelProfile): ModelInput {
   return { name: model.name, provider: model.provider, endpoint: model.endpoint, key: '', model: model.model, caps: [...model.caps] }
@@ -26,108 +44,207 @@ function normalizedDraft(draft: ModelInput): ModelInput {
   }
 }
 
+function hostOf(endpoint: string): string {
+  if (!endpoint) return '自己填地址'
+  try {
+    return new URL(endpoint).host
+  } catch {
+    return endpoint
+  }
+}
+
+function friendlyFailure(detail: string, modelName: string): string {
+  if (/401|403|API Key/.test(detail)) {
+    return `密钥没有通过。确认贴的是这家运营商的 Key，前后没有空格。${detail}`
+  }
+  if (modelName === 'deepseek' || (/HTTP 400/.test(detail) && /deepseek/i.test(`${detail} ${modelName}`) && !/deepseek-flash|deepseek-v4-pro|deepseek-chat/.test(modelName))) {
+    return `模型名称不对。DeepSeek 不能填 deepseek，请改成 deepseek-flash 或 deepseek-v4-pro 后再验证。${detail}`
+  }
+  if (/模型名称不存在|model.+not found|HTTP 404/i.test(detail)) {
+    return `模型名称在这家服务里不存在。请改成上面列出的名称，或按运营商文档填写。${detail}`
+  }
+  return detail
+}
+
 export function ModelsPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const selectedId = useAppStore((state) => state.selectedModelId)
   const selectModel = useAppStore((state) => state.selectModel)
   const createModel = useAppStore((state) => state.createModel)
   const verifyModel = useAppStore((state) => state.verifyModel)
-  const saveModel = useAppStore((state) => state.saveModel)
+  const deleteModel = useAppStore((state) => state.deleteModel)
   const setDefaultModel = useAppStore((state) => state.setDefaultModel)
   const busy = useAppStore((state) => state.busy)
   const notify = useAppStore((state) => state.notify)
   const selected = data.models.find((model) => model.id === selectedId) ?? data.models.find((model) => model.default) ?? data.models[0]
   const [showKey, setShowKey] = useState(false)
-  const [draft, setDraft] = useState<ModelInput>(() => selected ? toDraft(selected) : { name: '', provider: 'OpenAI Compatible', endpoint: '', key: '', model: '', caps: [] })
+  const [localFailure, setLocalFailure] = useState('')
+  const [draft, setDraft] = useState<ModelInput>(() => selected ? toDraft(selected) : blankDraft())
   const defaultModel = data.models.find((model) => model.default)
+  const using = Boolean(defaultModel && defaultModel.status === '在线')
+  const activePreset = matchPreset(draft.endpoint, draft.provider)
+  const preset = presetById(activePreset)
+  const verifying = Boolean(busy['model:verify'])
 
   useEffect(() => {
     if (!selectedId && data.models[0]) selectModel(data.models[0].id)
   }, [selectedId, data.models, selectModel])
 
   const dirty = useMemo(() => {
-    if (!selected) return false
+    if (!selected) return Boolean(draft.name || draft.endpoint || draft.model || draft.key)
     const original = toDraft(selected)
-    return original.name !== draft.name || original.provider !== draft.provider || original.endpoint !== draft.endpoint || original.key !== draft.key || original.model !== draft.model || original.caps.join('|') !== draft.caps.join('|')
+    return original.name !== draft.name || original.provider !== draft.provider || original.endpoint !== draft.endpoint || original.key !== draft.key || original.model !== draft.model
   }, [selected, draft])
 
-  const updateDraft = (patch: Partial<ModelInput>): void => setDraft((current) => ({ ...current, ...patch }))
+  const updateDraft = (patch: Partial<ModelInput>): void => {
+    setLocalFailure('')
+    setDraft((current) => ({ ...current, ...patch }))
+  }
 
-  const toggleCap = (capability: string): void => {
-    setDraft((current) => ({
-      ...current,
-      caps: current.caps.includes(capability)
-        ? current.caps.filter((item) => item !== capability)
-        : [...current.caps, capability]
-    }))
+  const applyPreset = (presetId: string): void => {
+    const next = presetById(presetId)
+    if (!next) return
+    setLocalFailure('')
+    setDraft((current) => {
+      const namedLikePreset = MODEL_PRESETS.some((item) => item.label === current.name.trim())
+      const genericName = !current.name.trim() || current.name.trim() === '新的模型配置' || namedLikePreset
+      const belongsToNext = next.models.some((model) => model.id === current.model.trim())
+      const belongedElsewhere = MODEL_PRESETS.some((item) =>
+        item.id !== next.id && (item.suggestedModel === current.model.trim() || item.models.some((model) => model.id === current.model.trim()))
+      )
+      const alreadyCustom = matchPreset(current.endpoint, current.provider) === 'custom'
+      return {
+        ...current,
+        name: genericName ? (next.id === 'custom' ? '自定义服务' : next.label) : current.name,
+        provider: next.provider,
+        endpoint: next.id === 'custom' ? (alreadyCustom ? current.endpoint : '') : next.endpoint,
+        model: belongsToNext ? current.model : (next.suggestedModel || (belongedElsewhere ? '' : current.model)),
+        caps: current.caps
+      }
+    })
+  }
+
+  const chooseModel = (model: ModelProfile): void => {
+    selectModel(model.id)
+    setDraft(toDraft(model))
+    setLocalFailure('')
+    setShowKey(false)
+  }
+
+  const removeModel = async (): Promise<void> => {
+    if (!selected) return
+    const removed = await deleteModel(selected.id)
+    if (!removed) return
+    const next = useAppStore.getState().data?.models[0]
+    setDraft(next ? toDraft(next) : blankDraft())
+    setLocalFailure('')
+    setShowKey(false)
   }
 
   const addModel = async (): Promise<void> => {
     const model = await createModel()
-    if (model) setDraft(toDraft(model))
+    if (!model) return
+    setDraft(toDraft(model))
+    setLocalFailure('')
     setShowKey(false)
   }
 
-  const save = async (): Promise<void> => {
-    if (!selected) return
-    if (!draft.name.trim() || !draft.endpoint.trim() || !draft.model.trim()) {
-      notify('请填写配置名称、服务地址与模型名称', 'amber')
-      return
-    }
-    const saved = await saveModel(selected.id, normalizedDraft(draft))
-    if (saved) {
-      setDraft(toDraft(saved))
-      setShowKey(false)
-    }
+  const explain = (model: ModelProfile): string => {
+    const chat = model.capabilities.find((item) => item.id === 'text.chat')
+    return friendlyFailure(chat?.detail || '没有连上，请检查密钥、服务地址和模型名称', model.model.trim())
   }
 
-  const saveAndDefault = async (): Promise<void> => {
-    if (!selected) return
+  const verifyAndUse = async (): Promise<void> => {
     if (!draft.name.trim() || !draft.endpoint.trim() || !draft.model.trim()) {
-      notify('请填写配置名称、服务地址与模型名称', 'amber')
+      const text = '还不能验证：先点一个运营商。服务地址和模型名称都会自动填上，确认无误后再验证。'
+      setLocalFailure(text)
+      notify(text, 'amber')
       return
     }
-    const saved = await saveModel(selected.id, normalizedDraft(draft))
-    if (saved) {
-      setDraft(toDraft(saved))
-      setShowKey(false)
-      await setDefaultModel(saved.id)
+    if (preset?.needsKey !== false && !draft.key.trim() && !selected?.hasKey) {
+      const text = '还没有 API Key。把密钥贴进下面的输入框，再点验证并开始使用。'
+      setLocalFailure(text)
+      notify(text, 'amber')
+      return
     }
+    setLocalFailure('')
+    let id = selected?.id
+    if (!id) {
+      const created = await createModel()
+      if (!created) return
+      id = created.id
+    }
+    const tested = await verifyModel(id, normalizedDraft(draft))
+    if (!tested) {
+      const toast = useAppStore.getState().toasts.filter((item) => item.tone === 'red').at(-1)
+      setLocalFailure(toast?.message || '验证失败，请检查密钥、服务地址和模型名称')
+      return
+    }
+    setDraft(toDraft(tested))
+    setShowKey(false)
+    if (tested.status !== '在线') {
+      setLocalFailure(explain(tested))
+      return
+    }
+    const enabled = await setDefaultModel(tested.id)
+    if (!enabled) {
+      setLocalFailure('连接是通的，但没有切换成当前服务。再点一次「设为当前使用」。')
+      return
+    }
+    setLocalFailure('')
   }
 
-  const testConnection = async (): Promise<void> => {
+  const activateSaved = async (): Promise<void> => {
     if (!selected) return
-    if (!draft.name.trim() || !draft.endpoint.trim() || !draft.model.trim()) {
-      notify('请填写配置名称、服务地址与模型名称', 'amber')
+    const enabled = await setDefaultModel(selected.id)
+    if (enabled) setLocalFailure('')
+  }
+
+  const recheckCurrent = async (): Promise<void> => {
+    if (!defaultModel) return
+    setLocalFailure('')
+    const tested = await verifyModel(defaultModel.id)
+    if (!tested) {
+      const toast = useAppStore.getState().toasts.filter((item) => item.tone === 'red').at(-1)
+      setLocalFailure(toast?.message || '验证失败')
       return
     }
-    const tested = await verifyModel(selected.id, normalizedDraft(draft))
-    if (tested) {
-      setDraft(toDraft(tested))
-      setShowKey(false)
-    }
+    if (tested.id === selected?.id) setDraft(toDraft(tested))
+    if (tested.status !== '在线') setLocalFailure(explain(tested))
   }
+
+  const chatDetail = selected?.capabilities.find((item) => item.id === 'text.chat')?.detail ?? ''
+  const staleFailure = !dirty && selected?.status === '离线'
+    ? friendlyFailure(chatDetail || '上次验证没有通过', draft.model.trim())
+    : ''
+  const shownFailure = localFailure || staleFailure
+  const readyHere = Boolean(selected && selected.status === '在线' && selected.default && !dirty && !shownFailure)
+  const verifiedNotCurrent = Boolean(selected && selected.status === '在线' && !selected.default && !dirty && !shownFailure)
 
   return (
     <div className="page models-page">
-      <div className="current-service-banner">
-        <div className="current-service-icon"><PlugZap size={18} /></div>
+      <div className={`current-service-banner${using ? ' ready' : ' pending'}`}>
+        <div className="current-service-icon">{using ? <CheckCircle2 size={18} /> : <PlugZap size={18} />}</div>
         <div>
-          <span>当前服务</span>
+          <span>{using ? '正在使用' : '还不能聊天'}</span>
           <strong data-testid="current-service-name">{defaultModel?.name ?? '未选择默认模型'}</strong>
-          <p>{defaultModel ? `${defaultModel.model || '未填写模型'} · ${defaultModel.hasKey ? '密钥已保存' : '未配置密钥'} · ${defaultModel.latency}` : '请选择一个有效配置'}</p>
+          <p>
+            {using
+              ? `${defaultModel?.model} · 验证成功 · 响应 ${defaultModel?.latency}。左侧「交流」会走这个服务。`
+              : '选运营商，贴上 API Key，点「验证并开始使用」。这里变成绿色，才算开始用。'}
+          </p>
         </div>
-        <Pill tone={defaultModel?.status === '在线' ? 'green' : 'amber'}>{defaultModel?.status ?? '未验证'}</Pill>
-        <Button size="sm" disabled={!defaultModel || Boolean(busy['model:verify'])} onClick={() => defaultModel && void verifyModel(defaultModel.id)}>
-          验证当前服务
+        <StatusPill status={using ? 'in-use' : 'not-started'} />
+        <Button size="sm" disabled={!defaultModel || verifying} onClick={() => void recheckCurrent()}>
+          再测一次
         </Button>
       </div>
 
       <div className="model-layout">
         <Card className="model-list-card">
           <CardHead
-            title="服务配置"
-            subtitle="切换失败时保留原配置"
+            title="已保存的配置"
+            subtitle="只有「正在使用」的那条会接到对话"
             aside={<Button size="sm" onClick={() => void addModel()} disabled={Boolean(busy['model:create'])} icon={<Plus size={15} />} aria-label="添加模型配置" data-testid="add-model" />}
           />
           <div className="model-list">
@@ -137,89 +254,193 @@ export function ModelsPage(): React.JSX.Element {
                 key={model.id}
                 data-testid="model-item"
                 className={`model-list-item${model.id === selected?.id ? ' active' : ''}`}
-                onClick={() => {
-                  selectModel(model.id)
-                  setDraft(toDraft(model))
-                }}
+                onClick={() => chooseModel(model)}
               >
-                <div className="model-list-top"><strong>{model.name}</strong><Pill tone={model.tone}>{model.status}</Pill></div>
-                <p>{model.provider} · {model.model || '未填写模型'}</p>
-                <div className="model-list-foot"><span>{model.hasKey ? `密钥已保存 · ${model.latency}` : '未配置密钥'}</span>{model.default ? <Pill tone="coral">当前</Pill> : null}</div>
+                <div className="model-list-top">
+                  <strong>{model.name}</strong>
+                  {model.status === '在线' ? <StatusPill status="verified" /> : <Pill tone={model.tone}>{model.status}</Pill>}
+                </div>
+                <p>{model.model || '未填模型'} · {hostOf(model.endpoint)}</p>
+                <div className="model-list-foot">
+                  <span>{model.hasKey ? '密钥已保存' : '未配置密钥'}</span>
+                  {model.default ? <StatusPill status={model.status === '在线' ? 'in-use' : 'not-in-use'} /> : null}
+                </div>
               </button>
             ))}
+            {!data.models.length ? (
+              <EmptyState
+                title="还没有保存的配置"
+                description="右边选一个运营商，贴上 Key，验证成功后会出现在这里。"
+              />
+            ) : null}
           </div>
-          <p className="fineprint"><ShieldCheck size={13} />凭据加密保存；错误提示与日志不会展示完整密钥。</p>
+          <p className="fineprint"><ShieldCheck size={13} />密钥加密保存在本机，不会写进日志。</p>
         </Card>
 
         <Card className="model-editor-card">
-          {selected ? (
-            <>
-              <div className="model-editor-head">
-                <div><h2>{selected.name}</h2><p>{selected.provider} · 配置更改在验证和保存后生效</p></div>
-                <div className="model-editor-pills"><Pill tone={selected.tone}>{selected.status}</Pill>{dirty ? <Pill tone="amber">未保存</Pill> : null}</div>
-              </div>
-              <div className="form-grid two">
-                <Field label="配置名称"><Input value={draft.name} onChange={(event) => updateDraft({ name: event.target.value })} maxLength={80} data-testid="model-config-name" /></Field>
-                <Field label="接口协议">
-                  <select className="select" value={draft.provider} onChange={(event) => updateDraft({ provider: event.target.value })} data-testid="model-provider">
-                    {providerOptions.map((provider) => <option key={provider.value} value={provider.value}>{provider.label}</option>)}
-                  </select>
-                </Field>
-                <Field label="模型名称"><Input value={draft.model} onChange={(event) => updateDraft({ model: event.target.value })} placeholder="gpt-5.1" maxLength={200} data-testid="model-name" /></Field>
-                <Field label="服务地址" className="span-two" hint="OpenAI 兼容服务通常填写到 /v1，例如 https://api.openai.com/v1"><Input value={draft.endpoint} onChange={(event) => updateDraft({ endpoint: event.target.value })} maxLength={500} data-testid="model-endpoint" /></Field>
-                <Field label="API Key" className="span-two" hint={selected.hasKey ? '已使用 Windows 安全存储保存；留空表示保持不变。' : '密钥只发送到主进程并加密保存，不会写入日志。'}>
-                  <div className="secret-field">
-                    <Input
-                      type={showKey ? 'text' : 'password'}
-                      value={draft.key}
-                      onChange={(event) => updateDraft({ key: event.target.value })}
-                      maxLength={500}
-                      autoComplete="off"
-                      spellCheck={false}
-                      placeholder={selected.hasKey ? '已保存，留空保持不变' : '填写服务商提供的 API Key'}
-                      data-testid="model-key"
-                    />
-                    <button type="button" className="secret-toggle" onClick={() => setShowKey((value) => !value)} aria-label={showKey ? '隐藏密钥' : '显示密钥'}>
-                      {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+          <div className="model-editor-head">
+            <div>
+              <h2>{draft.name.trim() || '接入一个模型'}</h2>
+              <p>先选运营商，地址和推荐模型会自动填上。验证变绿之后，对话才用它。</p>
+            </div>
+            <div className="model-editor-pills">
+              {readyHere ? <StatusPill status="in-use" /> : null}
+              {dirty ? <StatusPill status="unverified" /> : null}
+            </div>
+          </div>
+
+          <section className={`use-result${verifying ? ' wait' : shownFailure ? ' bad' : readyHere ? ' ok' : verifiedNotCurrent ? ' wait' : dirty ? ' wait' : ' guide'}`}>
+            {verifying ? (
+              <>
+                <strong><Spinner size={14} /> 正在验证 {draft.model || '模型'}…</strong>
+                <p>会真实请求 {draft.endpoint || '服务地址'}。通了就自动设为当前服务，不通会把原因留在这里。</p>
+              </>
+            ) : shownFailure ? (
+              <>
+                <strong><AlertCircle size={16} /> 验证没有通过，所以还没开始使用</strong>
+                <p>{shownFailure}</p>
+              </>
+            ) : readyHere ? (
+              <>
+                <strong><CheckCircle2 size={16} /> 验证成功，已经开始使用</strong>
+                <p>{selected?.name} · {selected?.model} · 响应 {selected?.latency}。打开左侧「交流」发一句话，就会走这个服务。</p>
+              </>
+            ) : verifiedNotCurrent ? (
+              <>
+                <strong>验证成功，但对话还没在用它</strong>
+                <p>点下面的「设为当前使用」。只有标成正在使用的配置才会接到对话。</p>
+              </>
+            ) : dirty && selected?.status === '在线' ? (
+              <>
+                <strong>改过配置，还没生效</strong>
+                <p>再点一次「验证并开始使用」。变成绿色，才算开始用新的地址或模型。</p>
+              </>
+            ) : (
+              <>
+                <strong>怎样才算能用</strong>
+                <ol>
+                  <li>点选运营商，例如 DeepSeek。服务地址会自动变成 api.deepseek.com。</li>
+                  <li>模型名称用 deepseek-flash，不要只写 deepseek。再贴上 API Key。</li>
+                  <li>点「验证并开始使用」。这里变成绿色，并写着「验证成功，已经开始使用」，然后去「交流」发消息。</li>
+                </ol>
+              </>
+            )}
+          </section>
+
+          <section className="model-step">
+            <div className="model-step-title"><span>1</span>选择运营商</div>
+            <div className="provider-grid">
+              {MODEL_PRESETS.map((item) => (
+                <button
+                  type="button"
+                  key={item.id}
+                  className={`provider-card${activePreset === item.id ? ' active' : ''}`}
+                  onClick={() => applyPreset(item.id)}
+                  data-testid={`model-preset-${item.id}`}
+                >
+                  <strong>{item.label}</strong>
+                  <span>{hostOf(item.endpoint)}</span>
+                </button>
+              ))}
+            </div>
+            {preset ? <p className="model-step-note">{preset.note}</p> : null}
+          </section>
+
+          <section className="model-step">
+            <div className="model-step-title"><span>2</span>确认地址、模型和密钥</div>
+            <div className="form-grid two">
+              <Field label="配置名称">
+                <Input value={draft.name} onChange={(event) => updateDraft({ name: event.target.value })} maxLength={80} data-testid="model-config-name" />
+              </Field>
+              <Field label="接口协议" hint="选了运营商后会自动对上，一般不用改。">
+                <select className="select" value={draft.provider} onChange={(event) => updateDraft({ provider: event.target.value })} data-testid="model-provider">
+                  {providerOptions.map((provider) => <option key={provider.value} value={provider.value}>{provider.label}</option>)}
+                </select>
+              </Field>
+              <Field label="服务地址" className="span-two" hint={preset?.endpoint ? `已按${preset.label}填好，可以改。` : '兼容接口一般填到 /v1。'}>
+                <Input value={draft.endpoint} onChange={(event) => updateDraft({ endpoint: event.target.value })} maxLength={500} placeholder="https://api.deepseek.com" data-testid="model-endpoint" />
+              </Field>
+              <Field label="模型名称" className="span-two" hint="必须是运营商文档里的完整 ID。">
+                {preset && preset.models.length > 0 ? (
+                  <div className="model-choice-row">
+                    {preset.models.map((model) => (
+                      <button
+                        type="button"
+                        key={model.id}
+                        className={draft.model === model.id ? 'keyword-chip active' : 'keyword-chip'}
+                        onClick={() => updateDraft({ model: model.id })}
+                      >
+                        {model.label}
+                      </button>
+                    ))}
                   </div>
-                </Field>
-              </div>
-              <div className="model-credential-line">
-                <Pill tone={selected.hasKey ? 'green' : 'amber'}>{selected.hasKey ? '密钥已安全保存' : '尚未保存密钥'}</Pill>
-                <span>关闭窗口或重启应用后配置仍会保留。</span>
-              </div>
-              <div className="capability-editor">
-                <span className="field-label">能力声明</span>
-                <div className="capability-chips">
-                  {capabilityOptions.map((capability) => (
-                    <button
-                      type="button"
-                      key={capability}
-                      className={draft.caps.includes(capability) ? 'cap-chip active' : 'cap-chip'}
-                      onClick={() => toggleCap(capability)}
-                    >
-                      {capability}
-                    </button>
-                  ))}
+                ) : null}
+                <Input value={draft.model} onChange={(event) => updateDraft({ model: event.target.value })} placeholder={preset?.suggestedModel || '填写模型 ID'} maxLength={200} data-testid="model-name" />
+              </Field>
+              <Field
+                label="API Key"
+                className="span-two"
+                hint={preset?.needsKey === false ? '本机 Ollama 通常留空。' : selected?.hasKey ? '已经加密保存。留空表示继续用原来的密钥。' : '只发到本机主进程加密保存，不会出现在日志里。'}
+              >
+                <div className="secret-field">
+                  <Input
+                    type={showKey ? 'text' : 'password'}
+                    value={draft.key}
+                    onChange={(event) => updateDraft({ key: event.target.value })}
+                    maxLength={500}
+                    autoComplete="off"
+                    spellCheck={false}
+                    placeholder={selected?.hasKey ? '已保存，留空保持不变' : '粘贴 API Key'}
+                    data-testid="model-key"
+                  />
+                  <button type="button" className="secret-toggle" onClick={() => setShowKey((value) => !value)} aria-label={showKey ? '隐藏密钥' : '显示密钥'}>
+                    {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
-                <p>如果服务不支持图像或语音，对应入口会显示为不可用，不会静默降级。</p>
+              </Field>
+            </div>
+          </section>
+
+          <section className="model-step">
+            <div className="model-step-title"><span>3</span>验证成功后才会开始使用</div>
+            <div className="model-actions model-actions-primary">
+              <Button
+                variant="primary"
+                className="model-use-button"
+                onClick={() => void verifyAndUse()}
+                disabled={verifying || Boolean(busy['model:default']) || Boolean(busy['model:create'])}
+                icon={verifying ? <Spinner size={14} /> : <PlugZap size={15} />}
+                data-testid="verify-model"
+              >
+                {verifying ? '正在验证…' : '验证并开始使用'}
+              </Button>
+              <Button
+                onClick={() => void activateSaved()}
+                disabled={!selected || selected.status !== '在线' || dirty || Boolean(busy['model:default']) || verifying}
+                data-testid="set-default-model"
+              >
+                设为当前使用
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => void removeModel()}
+                disabled={!selected || Boolean(busy['model:delete'])}
+                icon={<Trash2 size={14} />}
+                data-testid="delete-model"
+              >
+                删除
+              </Button>
+            </div>
+            {selected && selected.capabilities.length > 0 ? (
+              <div className="capability-chips probed-caps">
+                {selected.capabilities.map((item) => (
+                  <span key={item.id} className="cap-chip">
+                    {capabilityLabel[item.id] ?? item.id} · {item.status === 'verified' ? '可用' : item.status === 'unsupported' ? '不支持' : '未确认'}
+                  </span>
+                ))}
               </div>
-              <div className="verify-strip">
-                <div><strong>上次验证</strong><span>{selected.status === '在线' ? `连接正常 · 响应 ${selected.latency}` : '尚未验证此配置'}</span></div>
-                <Button size="sm" onClick={() => void testConnection()} disabled={Boolean(busy['model:verify'])} icon={busy['model:verify'] ? <Spinner size={13} /> : <PlugZap size={14} />} data-testid="verify-model">
-                  {busy['model:verify'] ? '正在请求…' : '保存并测试连接'}
-                </Button>
-              </div>
-              <div className="inline-note blue-note"><strong>切换策略</strong> 新任务使用新配置，运行中任务保持原配置。切换失败时，已有有效配置不会失效。</div>
-              <div className="model-actions">
-                <Button onClick={() => void save()} disabled={Boolean(busy['model:save'])} data-testid="save-model">保存修改</Button>
-                <Button variant="primary" onClick={() => void saveAndDefault()} disabled={Boolean(busy['model:save']) || Boolean(busy['model:default'])} data-testid="set-default-model">保存并设为当前服务</Button>
-              </div>
-            </>
-          ) : (
-            <div className="model-empty">还没有服务配置，点击左上角「+」创建一个。</div>
-          )}
+            ) : null}
+          </section>
         </Card>
       </div>
     </div>

@@ -71,7 +71,9 @@ test('pet window is created and can be hidden or restored through IPC', async ()
       document.body.style.background = 'transparent'
     })
     await petPage.locator('.pet-character').click()
-    await expect(petPage.locator('.pet-bubble')).toContainText('今天也一起把问题拆小一点')
+    await expect(petPage.getByTestId('pet-chat')).toBeVisible()
+    await expect(petPage.getByRole('textbox', { name: '对桌宠说' })).toBeVisible()
+    await expect(petPage.locator('.pet-bubble')).toHaveCount(0)
     expect(pageErrors).toEqual([])
     await page.getByRole('button', { name: '隐藏桌宠' }).click()
     await expect.poll(async () => app.evaluate(async ({ BrowserWindow }) => {

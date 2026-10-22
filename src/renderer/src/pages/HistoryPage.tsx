@@ -1,8 +1,9 @@
 import { Pin, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { DeleteScope } from '@shared/types'
+import type { DeleteScope, HistorySearchResult } from '@shared/types'
 import { ClearScopeDialog } from '../components/dialogs'
 import { Button, Card, CardHead, EmptyState, Pill } from '../components/ui'
+import { searchHistory } from '@shared/history-search'
 import { useAppStore } from '../store'
 
 export function HistoryPage(): React.JSX.Element {
@@ -10,33 +11,40 @@ export function HistoryPage(): React.JSX.Element {
   const selectedId = useAppStore((state) => state.selectedConversationId)
   const selectConversation = useAppStore((state) => state.selectConversation)
   const deleteConversation = useAppStore((state) => state.deleteConversation)
-  const notify = useAppStore((state) => state.notify)
   const busy = useAppStore((state) => Boolean(state.busy['history:delete']))
   const [search, setSearch] = useState('')
   const [clearOpen, setClearOpen] = useState(false)
-
-  const filtered = data.conversations.filter((conversation) =>
-    `${conversation.title}${conversation.preview}${conversation.time}`.toLowerCase().includes(search.trim().toLowerCase())
+  const [remote, setRemote] = useState<HistorySearchResult | null>(null)
+  const local = searchHistory(
+    data.conversations.map((conversation) => ({ id: conversation.id, title: conversation.title, preview: conversation.preview })),
+    search
   )
+  const result = remote ?? local
+  const filtered = result.status === 'ok' ? data.conversations.filter((conversation) => result.items.some((item) => item.id === conversation.id)) : []
   const selected = data.conversations.find((item) => item.id === selectedId) ?? filtered[0] ?? data.conversations[0]
+
+  useEffect(() => {
+    if (!window.murasame) return
+    let cancelled = false
+    void window.murasame.core.searchHistory(search).then((response) => {
+      if (cancelled) return
+      setRemote(response.ok ? response.data : { status: 'error', message: `${response.error} 可以重试。` })
+    }).catch(() => {
+      if (!cancelled) setRemote({ status: 'error', message: '历史读取失败，可以重试。' })
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [search, data.conversations])
 
   useEffect(() => {
     if (!selectedId && data.conversations[0]) selectConversation(data.conversations[0].id)
   }, [selectedId, data.conversations, selectConversation])
 
   const clear = async (scopes: DeleteScope[]): Promise<void> => {
-    if (!selected) return
-    try {
-      if (scopes.includes('logs')) await window.murasame.app.clearLogs()
-      if (scopes.includes('history')) {
-        await deleteConversation(selected.id, scopes)
-      } else {
-        notify('已清除所选范围；会话正文仍保留', 'gray')
-      }
-      setClearOpen(false)
-    } catch {
-      notify('清除操作未完成，请检查本地权限', 'red')
-    }
+    const id = selected?.id ?? data.conversations[0]?.id ?? 'none'
+    const conversations = await deleteConversation(id, scopes)
+    if (conversations) setClearOpen(false)
   }
 
   return (
@@ -68,7 +76,8 @@ export function HistoryPage(): React.JSX.Element {
                 </div>
               </button>
             ))}
-            {!filtered.length ? <EmptyState title="没有匹配的会话" description="试试标题、正文中的关键词或日期。" /> : null}
+            {result.status === 'empty' ? <EmptyState title="没有匹配的会话" description="试试标题或正文中的关键词。" /> : null}
+            {result.status === 'error' ? <EmptyState title="读取失败" description="可以重试。本次没有把失败说成没有记录。" /> : null}
           </div>
         </Card>
 
@@ -90,7 +99,7 @@ export function HistoryPage(): React.JSX.Element {
                   <div className={`message-row ${message.role}`} key={message.id}>
                     {message.role === 'assistant' ? <div className="message-avatar">雨</div> : null}
                     <div className="message-wrap">
-                      <div className="message-meta"><strong>{message.role === 'assistant' ? data.character.name : '林澈'}</strong><time>{message.time}</time></div>
+                      <div className="message-meta"><strong>{message.role === 'assistant' ? (data.character.name.trim() || '桌宠') : (data.settings.userName.trim() || '你')}</strong><time>{message.time}</time></div>
                       <div className="message-bubble">
                         {message.text.split('\n').map((line, index) => <span key={`${message.id}-${index}`}>{line || '\u00A0'}</span>)}
                       </div>

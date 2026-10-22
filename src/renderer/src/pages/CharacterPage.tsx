@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { getPetPreset, PET_PRESETS } from '@shared/pet-presets'
 import type { CharacterProfile } from '@shared/types'
 import { Button, Card, CardHead, Field, Input, Pill, Textarea, ToggleRow } from '../components/ui'
+import { StatusPill } from '../components/StatusPill'
 import { useAppStore } from '../store'
 
 const keywordSuggestions = ['温柔克制', '冷静专业', '简洁', '少量俏皮', '活跃']
@@ -15,6 +16,9 @@ export function CharacterPage(): React.JSX.Element {
   const busy = useAppStore((state) => Boolean(state.busy['character:save']))
   const [draft, setDraft] = useState<CharacterProfile>(data.character)
   const [customKeyword, setCustomKeyword] = useState('')
+  const [importPath, setImportPath] = useState('')
+  const [importNote, setImportNote] = useState('')
+  const [importedUrl, setImportedUrl] = useState('')
   const [switching, setSwitching] = useState(false)
   const activePreset = getPetPreset(data.settings.petPreset)
 
@@ -48,11 +52,31 @@ export function CharacterPage(): React.JSX.Element {
 
   const reset = (): void => setDraft(data.character)
 
+  const importAsset = async (): Promise<void> => {
+    const path = importPath.trim()
+    if (!path) return
+    const result = await window.murasame.character.importAsset(path)
+    if (!result.ok) {
+      setImportedUrl('')
+      setImportNote(result.error)
+      notify(result.error, 'red')
+      return
+    }
+    setImportedUrl(result.data.modelUrl)
+    setImportNote('资源已校验并复制。当前形象保持不变，确认使用后才会替换。')
+  }
+
+  const applyImported = async (): Promise<void> => {
+    if (!importedUrl) return
+    const saved = await updateSettings({ importedModelUrl: importedUrl, importedCharacterName: draft.name || '导入的形象' })
+    if (saved) notify('已切换到导入的形象')
+  }
+
   const selectPreset = async (presetId: (typeof PET_PRESETS)[number]['id']): Promise<void> => {
     if (presetId === data.settings.petPreset || switching) return
     setSwitching(true)
     const preset = getPetPreset(presetId)
-    const saved = await updateSettings({ petPreset: presetId })
+    const saved = await updateSettings({ petPreset: presetId, importedModelUrl: '', importedCharacterName: '' })
     setSwitching(false)
     if (saved) notify(`桌宠形象已切换为「${preset.name}」`)
   }
@@ -79,7 +103,7 @@ export function CharacterPage(): React.JSX.Element {
                     <span className="preset-copy">
                       <strong>{preset.name}</strong>
                       <span>{preset.summary}</span>
-                      <span className="preset-meta">{preset.format} · {preset.motionCount}</span>
+                      <span className="preset-meta">{preset.format} · {preset.license}</span>
                     </span>
                     <span className="preset-state">
                       {active ? <><Check size={13} />使用中</> : '选择'}
@@ -88,11 +112,11 @@ export function CharacterPage(): React.JSX.Element {
                 )
               })}
             </div>
-            <p className="fineprint">切换后桌宠会自动重新加载，无需重启应用。</p>
+            <p className="fineprint">奶龙只用于课程演示，公开安装包不应包含它。鲸鱼娘是 CC BY-NC-SA，非商业并需署名。</p>
           </Card>
 
           <Card>
-            <CardHead title="资源包格式" subtitle="当前版本只读取随应用提供的预置资源" />
+            <CardHead title="资源包格式" subtitle="可导入带 model3.json、moc3 和贴图的 Cubism 4/5 目录或 zip" />
             <div className="resource-list">
               <div><span>当前模型</span><Pill tone="green">{activePreset.name}</Pill></div>
               <div><span>模型描述</span><Pill tone="violet">{activePreset.format}</Pill></div>
@@ -102,7 +126,19 @@ export function CharacterPage(): React.JSX.Element {
               <div><span>素材来源</span><span>{activePreset.source}</span></div>
               <div><span>许可说明</span><span>{activePreset.license}</span></div>
             </div>
-            <p className="fineprint">当前版本不提供模型导入、动作或表情编辑，也不承诺兼容任意第三方资源包。新增形象需在构建时按 Cubism 资源结构内置。</p>
+            <p className="fineprint">Cubism 2.1 的 .moc 和缺少贴图的包会被拒绝，原来的角色保持不变。未确认使用前，不会把新资源显示为当前形象。</p>
+            <Field label="形象文件">
+              <div className="editor-actions">
+                <Input value={importPath} placeholder="用下面的按钮选择目录或 zip" onChange={(event) => setImportPath(event.target.value)} />
+                <Button onClick={() => void window.murasame.app.pickOpen({ title: '选择形象目录或 zip', filters: [{ name: 'Live2D', extensions: ['zip'] }] }).then((path) => { if (path) setImportPath(path) })}>选择文件</Button>
+                <Button onClick={() => void window.murasame.app.pickOpen({ title: '选择形象目录', directory: true }).then((path) => { if (path) setImportPath(path) })}>选择目录</Button>
+              </div>
+            </Field>
+            <div className="editor-actions">
+              <Button onClick={() => void importAsset()} disabled={!importPath.trim()}>校验并导入</Button>
+              <Button variant="primary" onClick={() => void applyImported()} disabled={!importedUrl}>使用该形象</Button>
+            </div>
+            {importNote ? <p className="fineprint">{importNote}</p> : null}
           </Card>
         </div>
 
@@ -110,7 +146,7 @@ export function CharacterPage(): React.JSX.Element {
           <CardHead
             title="角色设定"
             subtitle="后续交流使用新的有效配置；取消不会保存未确认修改"
-            aside={dirty ? <Pill tone="amber">未保存</Pill> : <Pill tone="green">已保存</Pill>}
+            aside={<StatusPill status={dirty ? 'unsaved' : 'saved'} />}
           />
           <Field label="名称"><Input value={draft.name} maxLength={40} onChange={(event) => update({ name: event.target.value })} /></Field>
           <div className="field-block">

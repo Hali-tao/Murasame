@@ -16,21 +16,29 @@ declare global {
 
 export interface Live2DPetHandle {
   playMotion(action: PetMotionAction): void
+  playNamedMotion(group: string, expression: string | null): void
+  setMouth(open: number | null): void
 }
 
 interface Live2DPetProps {
   preset: PetPreset
   className?: string
+  paused?: boolean
+  fps?: number
+  blinkMs?: number
+  breath?: number
   onReady?: () => void
 }
 
 export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Live2DPet(
-  { preset, className = '', onReady },
+  { preset, className = '', paused = false, fps = 24, blinkMs = 4200, breath = 0.5, onReady },
   ref
 ) {
   const hostRef = useRef<HTMLDivElement>(null)
   const modelRef = useRef<Live2DModel | null>(null)
+  const appRef = useRef<Application | null>(null)
   const returnTimer = useRef<number | null>(null)
+  const mouthRef = useRef<number | null>(null)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -45,6 +53,25 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       returnTimer.current = window.setTimeout(() => {
         void model.motion(preset.idleMotion, 0)
       }, action === 'tap' ? 4500 : 2600)
+    },
+    playNamedMotion(group: string, expression: string | null): void {
+      const model = modelRef.current
+      if (!model) return
+      void model.motion(group)
+      if (expression) {
+        try {
+          void model.expression(expression)
+        } catch {
+          // 形象没有这个表情时只播动作，不中断。
+        }
+      }
+      if (returnTimer.current !== null) window.clearTimeout(returnTimer.current)
+      returnTimer.current = window.setTimeout(() => {
+        void model.motion(preset.idleMotion, 0)
+      }, 3200)
+    },
+    setMouth(open: number | null): void {
+      mouthRef.current = open
     }
   }), [preset])
 
@@ -79,6 +106,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
         autoDensity: true,
         resolution: Math.min(window.devicePixelRatio || 1, 2)
       })
+      appRef.current = app
     } catch (cause) {
       console.error('[Live2D] WebGL application initialization failed', cause)
       setError(cause instanceof Error ? cause.message : 'WebGL 初始化失败')
@@ -159,6 +187,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       if (returnTimer.current !== null) window.clearTimeout(returnTimer.current)
       returnTimer.current = null
       modelRef.current = null
+      appRef.current = null
       model?.destroy({ children: true })
       model = null
       app?.destroy(false)
@@ -166,6 +195,54 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       canvas.remove()
     }
   }, [onReady, preset])
+
+  useEffect(() => {
+    const app = appRef.current
+    if (!app || !ready) return
+    const applyMouth = (): void => {
+      const open = mouthRef.current
+      if (open === null) return
+      const core = modelRef.current?.internalModel?.coreModel as { setParameterValueById?: (id: string, value: number) => void } | undefined
+      if (!core?.setParameterValueById) return
+      core.setParameterValueById('ParamMouthOpenY', open)
+      core.setParameterValueById('PARAM_MOUTH_OPEN_Y', open)
+    }
+    app.ticker.add(applyMouth)
+    return () => {
+      // 卸载时主 effect 会先销毁应用，ticker 已经是 null。
+      app.ticker?.remove(applyMouth)
+    }
+  }, [ready])
+
+  useEffect(() => {
+    const ticker = appRef.current?.ticker
+    if (!ticker) return
+    if (paused || fps <= 0) {
+      ticker.stop()
+      return
+    }
+    ticker.maxFPS = fps
+    ticker.start()
+  }, [paused, fps, ready])
+
+  useEffect(() => {
+    const model = modelRef.current
+    if (!model || paused) return
+    const timer = window.setInterval(() => {
+      const core = model.internalModel?.coreModel as { setParameterValueById?: (id: string, value: number) => void } | undefined
+      if (!core?.setParameterValueById) return
+      core.setParameterValueById('ParamEyeLOpen', 0)
+      core.setParameterValueById('ParamEyeROpen', 0)
+      const breathValue = 0.3 + Math.sin(Date.now() / 900) * breath
+      core.setParameterValueById('ParamBreath', breathValue)
+      core.setParameterValueById('PARAM_BREATH', breathValue)
+      window.setTimeout(() => {
+        core.setParameterValueById?.('ParamEyeLOpen', 1)
+        core.setParameterValueById?.('ParamEyeROpen', 1)
+      }, 120)
+    }, blinkMs)
+    return () => window.clearInterval(timer)
+  }, [blinkMs, breath, paused, ready])
 
   return (
     <div

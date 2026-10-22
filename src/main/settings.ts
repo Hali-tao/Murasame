@@ -1,6 +1,7 @@
 import Store from 'electron-store'
 import type { AppSettings, PetState } from '../shared/types'
-import { initialSettings } from '../shared/mock-data'
+import { initialSettings } from '../shared/default-settings'
+import { advanceRelationship, blankRelationship, type RelationshipRecord } from './core/services/relationship-service'
 
 interface PersistedShape {
   settings: AppSettings
@@ -14,16 +15,28 @@ interface PersistedShape {
     width: number
     height: number
   } | null
+  relationship: RelationshipRecord | null
+  toolEnabled: Record<string, boolean>
 }
 
-const store = new Store<PersistedShape>({
-  name: 'murasame',
-  defaults: {
-    settings: initialSettings,
-    pet: { x: null, y: null },
-    windowBounds: null
+let cached: Store<PersistedShape> | null = null
+
+/** ? keys.ts??????? userData ???????? app ????? */
+function store(): Store<PersistedShape> {
+  if (!cached) {
+    cached = new Store<PersistedShape>({
+      name: 'murasame',
+      defaults: {
+        settings: initialSettings,
+        pet: { x: null, y: null },
+        windowBounds: null,
+        relationship: null,
+        toolEnabled: {}
+      }
+    })
   }
-})
+  return cached
+}
 
 type SettingsListener = (settings: AppSettings) => void
 const listeners = new Set<SettingsListener>()
@@ -43,7 +56,7 @@ const mergeSettings = (value: Partial<AppSettings> | undefined): AppSettings => 
 })
 
 export function getSettings(): AppSettings {
-  return mergeSettings(store.get('settings'))
+  return mergeSettings(store().get('settings'))
 }
 
 export function updateSettings(patch: Partial<AppSettings>): AppSettings {
@@ -55,27 +68,52 @@ export function updateSettings(patch: Partial<AppSettings>): AppSettings {
       ...(patch.permissions ?? {})
     }
   })
-  store.set('settings', next)
+  store().set('settings', next)
   listeners.forEach((listener) => listener(next))
   return next
 }
 
+export function readToolEnabled(): Record<string, boolean> {
+  return store().get('toolEnabled') ?? {}
+}
+
+export function writeToolEnabled(id: string, enabled: boolean): void {
+  store().set('toolEnabled', { ...readToolEnabled(), [id]: enabled })
+}
+
+export function readRelationship(): RelationshipRecord {
+  return store().get('relationship') ?? blankRelationship()
+}
+
+export function writeRelationship(record: RelationshipRecord): RelationshipRecord {
+  store().set('relationship', record)
+  return record
+}
+
+export function bumpRelationship(): RelationshipRecord {
+  const current = readRelationship()
+  const elapsed = Date.now() - Date.parse(current.since)
+  const days = Number.isFinite(elapsed) ? Math.max(current.days, Math.floor(elapsed / 86_400_000)) : current.days
+  const next = advanceRelationship({ ...current, turns: current.turns + 1, days })
+  return writeRelationship(next)
+}
+
 export function getPetState(): PetState {
   const settings = getSettings()
-  const position = store.get('pet')
+  const position = store().get('pet')
   const x = typeof position?.x === 'number' ? position.x : 0
   const y = typeof position?.y === 'number' ? position.y : 0
-  return { visible: settings.petVisible, scale: settings.petScale, x, y, preset: settings.petPreset }
+  return { visible: settings.petVisible, scale: settings.petScale, x, y, preset: settings.petPreset, importedModelUrl: settings.importedModelUrl }
 }
 
 export function savePetPosition(x: number, y: number): void {
-  store.set('pet', { x, y })
+  store().set('pet', { x, y })
 }
 
 export function saveWindowBounds(bounds: { x?: number; y?: number; width: number; height: number }): void {
-  store.set('windowBounds', bounds)
+  store().set('windowBounds', bounds)
 }
 
 export function getWindowBounds(): PersistedShape['windowBounds'] {
-  return store.get('windowBounds')
+  return store().get('windowBounds')
 }

@@ -9,7 +9,7 @@ export function Sidebar(): React.JSX.Element {
   const activeWork = useAppStore((state) =>
     state.data?.tasks.some((task) => task.status === '执行中' || task.status === '等待批准')
   )
-  const characterName = character?.name ?? '村雨'
+  const characterName = character?.name?.trim() || '未命名'
 
   return (
     <aside className="sidebar">
@@ -17,7 +17,7 @@ export function Sidebar(): React.JSX.Element {
         <div className="brand-mark">m</div>
         <div className="brand-copy">
           <div className="brand-title">murasame</div>
-          <div className="brand-subtitle">AI DESKTOP COMPANION</div>
+          <div className="brand-subtitle">桌面伙伴</div>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export function Sidebar(): React.JSX.Element {
             <span><i className={busy['chat:send'] ? 'status-dot thinking' : 'status-dot'} />{activeWork ? '任务运行中 · 本地加密' : '运行中 · 本地加密'}</span>
           </div>
         </div>
-        <div className="version-line">v0.9.0 · Electron product shell</div>
+        <div className="version-line">v0.9.0 · 本机运行</div>
       </div>
     </aside>
   )

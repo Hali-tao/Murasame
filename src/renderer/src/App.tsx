@@ -13,6 +13,8 @@ import { MemoryPage } from './pages/MemoryPage'
 import { ToolsPage } from './pages/ToolsPage'
 import { ModelsPage } from './pages/ModelsPage'
 import { CharacterPage } from './pages/CharacterPage'
+import { AutonomyPage } from './pages/AutonomyPage'
+import { OnboardingPage } from './pages/OnboardingPage'
 import { SettingsPage } from './pages/SettingsPage'
 
 export function App(): React.JSX.Element {
@@ -52,6 +54,8 @@ export function App(): React.JSX.Element {
     )
   }
 
+  if (!data.settings.onboardingDone) return <OnboardingPage />
+
   return (
     <div className="app-shell">
       <Sidebar />
@@ -62,6 +66,7 @@ export function App(): React.JSX.Element {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/screen" element={<ScreenPage />} />
+            <Route path="/autonomy" element={<AutonomyPage />} />
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/memory" element={<MemoryPage />} />

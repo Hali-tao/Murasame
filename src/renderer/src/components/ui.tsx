@@ -261,6 +261,7 @@ export function ConfirmDialog({
   cancelLabel = '取消',
   tone = 'coral',
   onConfirm,
+  onCancel,
   busy
 }: {
   open: boolean
@@ -272,6 +273,7 @@ export function ConfirmDialog({
   cancelLabel?: string
   tone?: 'coral' | 'red' | 'green'
   onConfirm: () => void | Promise<void>
+  onCancel?: () => void | Promise<void>
   busy?: boolean
 }): React.JSX.Element {
   return (
@@ -282,7 +284,13 @@ export function ConfirmDialog({
       description={description}
       footer={
         <>
-          <Button onClick={() => onOpenChange(false)} disabled={busy}>
+          <Button
+            onClick={() => {
+              if (onCancel) void onCancel()
+              else onOpenChange(false)
+            }}
+            disabled={busy}
+          >
             {cancelLabel}
           </Button>
           <Button

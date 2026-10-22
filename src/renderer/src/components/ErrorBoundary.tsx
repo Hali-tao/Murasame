@@ -2,6 +2,10 @@ import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
+  /** 桌宠窗口只有几百像素宽，用小号提示，不铺满整个窗口。 */
+  compact?: boolean
+  /** 值变化时清掉错误状态，例如换了形象就重新尝试加载。 */
+  resetKey?: string
 }
 
 interface State {
@@ -19,8 +23,21 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error('Renderer error boundary', error, info.componentStack)
   }
 
+  componentDidUpdate(previous: Props): void {
+    if (this.state.error && previous.resetKey !== this.props.resetKey) this.setState({ error: null })
+  }
+
   render(): ReactNode {
     if (!this.state.error) return this.props.children
+    if (this.props.compact) {
+      return (
+        <div className="live2d-fallback" title={this.state.error.message}>
+          <strong>!</strong>
+          <span>形象出错了：{this.state.error.message}</span>
+          <button type="button" className="btn" onClick={() => this.setState({ error: null })}>重新加载形象</button>
+        </div>
+      )
+    }
     return (
       <div className="fatal-screen">
         <div className="fatal-card">
