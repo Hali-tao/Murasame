@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process'
 import { describe, expect, it } from 'vitest'
 import { reportClear, searchHistory } from '../../src/main/history/search'
 import { activeMemories, applyMemoryAction, extractCandidates } from '../../src/main/memory/facts'
-import { embedLocally, recallMemories, vectorsCompatible } from '../../src/main/local/embedding'
+import { EMBEDDING_DIM, EMBEDDING_MODEL_ID, embedLocally, recallMemories, vectorsCompatible } from '../../src/main/local/embedding'
 import { interruptOnRestart, transition } from '../../src/main/agent/state-machine'
 import { judgeCall, summarizeCalls, visibleTrace } from '../../src/main/agent/verifier'
 import { resolveInside, verifyWritten, writeInside } from '../../src/main/tools/filesystem'
@@ -214,17 +214,27 @@ describe('[FR-15] 长期记忆', () => {
   })
 
   it('[IF-09] 记忆内容不外发第三方', async () => {
-    let called = ''
-    await embedLocally('秘密偏好', async (url) => {
-      called = String(url)
-      return { ok: false, json: async () => ({}) } as Response
-    })
-    expect(called.startsWith('http://127.0.0.1:11434/')).toBe(true)
+    // 向量在本机算，整个过程不碰网络；模型缺失时返回 null 而不是悄悄换个来源。
+    const original = globalThis.fetch
+    let called = false
+    globalThis.fetch = (async () => {
+      called = true
+      return new Response('')
+    }) as typeof fetch
+    try {
+      const vector = await embedLocally('秘密偏好', join(tmpdir(), 'murasame-no-models'))
+      expect(called).toBe(false)
+      expect(vector).toBeNull()
+    } finally {
+      globalThis.fetch = original
+    }
   })
 
   it('[NFR-C02] 更换配置不要求重建全部记忆', () => {
-    expect(vectorsCompatible('nomic-embed-text', 768)).toBe('ok')
-    expect(vectorsCompatible('other-model', 768)).toBe('recompute')
+    expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM)).toBe('ok')
+    expect(vectorsCompatible('other-model', EMBEDDING_DIM)).toBe('recompute')
+    // 换了向量模型要重算，否则旧向量和新向量不在一个空间里。
+    expect(vectorsCompatible('nomic-embed-text', 768)).toBe('recompute')
   })
 
   it('[NFR-U03] embedding 不可用时降级而非阻断', () => {

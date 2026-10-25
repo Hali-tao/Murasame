@@ -69,6 +69,7 @@ import {
   setPetMousePassthrough,
   setPetPosition,
   setPetScale,
+  openMainPath,
   showMain,
   showPet,
   togglePet
@@ -226,6 +227,10 @@ export function registerIpcHandlers(core: DesktopCore): void {
   ipcMain.handle(IPC.window.showMain, () => showMain())
   ipcMain.handle(IPC.window.hideMain, () => hideMain())
   ipcMain.handle(IPC.window.minimize, () => getMainWindow()?.minimize())
+  ipcMain.handle(IPC.window.openPath, (_event, raw: unknown) => {
+    const path = typeof raw === 'string' ? raw : ''
+    openMainPath(path)
+  })
 
   ipcMain.handle(IPC.pet.show, () => showPet())
   ipcMain.handle(IPC.pet.hide, () => hidePet())

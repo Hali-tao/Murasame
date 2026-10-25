@@ -1,15 +1,13 @@
 !macro customInstall
-  DetailPrint "正在安装记忆服务 Ollama，并下载记忆模型。这一步需要联网。"
-  nsExec::ExecToLog 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\resources\install-ollama.ps1"'
+  ; 记忆用的向量模型随安装包一起装，这里不需要联网准备任何东西。
+  ; extraResources 的 to: resources 会落在 $INSTDIR\resources\resources 下。
+  DetailPrint "正在准备中文朗读所需的 Python。"
+  nsExec::ExecToLog 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\resources\resources\install-python.ps1"'
   Pop $0
-  ${If} $0 != 0
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Ollama 没有安装完成。Murasame 仍可使用，但记忆不会按意思被想起来。可以稍后重新运行安装程序。"
-  ${EndIf}
-  DetailPrint "正在安装中文朗读所需的 Python。"
-  nsExec::ExecToLog 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\resources\install-python.ps1"'
-  Pop $1
-  ${If} $1 != 0
-    MessageBox MB_OK|MB_ICONEXCLAMATION "中文朗读组件没有安装完成。文字对话仍可使用。可以稍后重新运行安装程序。"
+  ${If} $0 == 2
+    DetailPrint "现在连不上下载源，中文朗读组件没有安装。联网后重新运行一次安装程序即可，其他功能不受影响。"
+  ${ElseIf} $0 != 0
+    MessageBox MB_OK|MB_ICONEXCLAMATION "中文朗读组件没有安装完成。对话、记忆和桌宠都不受影响，只是不会出声。联网后重新运行安装程序可以再装一次。"
   ${EndIf}
 !macroend
 

@@ -12,7 +12,7 @@ import { recognizeImage } from '../local/ocr'
 import { readForeground } from '../local/uia'
 import type { ModelRegistry } from '../model/registry'
 import type { SqliteDatabase } from '../data/sqlite-types'
-import { ollamaReady, ollamaStatusText } from '../local/ollama-status'
+import { memoryReady, memoryStatusText } from '../local/memory-status'
 import { bumpRelationship, getSettings } from '../settings'
 import { chooseTool } from '../agent/executor'
 import { getActiveConversationId, rememberActiveConversation } from './active-conversation'
@@ -78,7 +78,7 @@ export class MurasameCore implements CoreApi {
     characterService?: CharacterService,
     userDataDir = ''
   ) {
-    this.memory = memory ?? new MemoryService(db)
+    this.memory = memory ?? new MemoryService(db, userDataDir)
     this.tasks = tasks ?? new TaskService(db)
     this.characterService = characterService ?? new CharacterService(db)
     this.tools = new ToolService(db)
@@ -94,7 +94,7 @@ export class MurasameCore implements CoreApi {
   }
 
   static create(db: SqliteDatabase, models: ModelRegistry, userDataDir = ''): MurasameCore {
-    const memory = new MemoryService(db)
+    const memory = new MemoryService(db, userDataDir)
     const characterService = new CharacterService(db)
     const gateway = new ModelGateway()
     const affect = new AffectService()
@@ -233,8 +233,8 @@ export class MurasameCore implements CoreApi {
         character: this.characterService.load(),
         settings: getSettings(),
         activeConversationId,
-        memoryNote: ollamaStatusText(),
-        memoryReady: ollamaReady()
+        memoryNote: memoryStatusText(),
+        memoryReady: memoryReady()
       }
     }
   }

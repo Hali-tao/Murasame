@@ -12,7 +12,8 @@ import { createTray, destroyTray } from './tray'
 import { initializeUpdater, stopUpdater } from './updater'
 import { contentSecurityPolicy } from './security/hardening'
 import { broadcastPetPerformance, focusPetChat, hideMain, initializeWindows, isPetHidden, showMain } from './windows'
-import { refreshOllamaStatus } from './local/ollama-status'
+import { refreshMemoryStatus } from './local/memory-status'
+import { setBundledModelsRoot } from './local/model-env'
 import { applyHotkey } from './hotkey-status'
 import { logExpired } from './privacy/redact'
 import { statSync } from 'node:fs'
@@ -111,6 +112,7 @@ if (!gotSingleInstanceLock) {
   app.whenReady().then(() => {
     hardenSession()
     registerRendererProtocol()
+    if (app.isPackaged) setBundledModelsRoot(join(process.resourcesPath, 'models'))
     try {
       getDatabase()
     } catch (error) {
@@ -124,7 +126,10 @@ if (!gotSingleInstanceLock) {
     if (capacityWarning) log.warn(capacityWarning)
     const settings = getSettings()
     const core = MurasameCore.create(getDatabase(), new ModelRegistry(), app.getPath('userData'))
-    core.tools.loadDirectory(join(app.getAppPath(), 'plugins'))
+    // 打包后随附的插件在 resources/plugins，asar 里没有这个目录。
+    core.tools.loadDirectory(
+      app.isPackaged ? join(process.resourcesPath, 'plugins') : join(app.getAppPath(), 'plugins')
+    )
     core.tools.loadDirectory(join(app.getPath('userData'), 'plugins'))
 
     app.setLoginItemSettings({
@@ -136,7 +141,7 @@ if (!gotSingleInstanceLock) {
     initializeWindows()
     createTray()
     const hotkey = applyHotkey(getSettings().petHotkey, () => focusPetChat())
-    void refreshOllamaStatus()
+    refreshMemoryStatus(app.getPath('userData'))
     if (!hotkey.ok) log.warn(hotkey.message)
     try {
       const file = log.transports.file.getFile()

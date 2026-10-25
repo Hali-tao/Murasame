@@ -41,7 +41,10 @@ export class MemoryService {
   private suppressed = new Set<string>()
   enabled = true
 
-  constructor(private readonly db?: SqliteDatabase) {
+  constructor(
+    private readonly db?: SqliteDatabase,
+    private readonly userDataDir = ''
+  ) {
     this.load()
   }
 
@@ -55,7 +58,7 @@ export class MemoryService {
 
   async recall(query: string): Promise<{ text: string; ids: string[]; degraded: boolean }> {
     if (!this.enabled) return { text: '', ids: [], degraded: true }
-    const queryVector = await embedLocally(query)
+    const queryVector = await embedLocally(query, this.userDataDir)
     const entries = this.active().map((fact) => ({
       id: fact.id,
       text: fact.text,
@@ -199,7 +202,7 @@ export class MemoryService {
         next.push(fact)
         continue
       }
-      next.push({ ...fact, vector: await embedLocally(fact.text) })
+      next.push({ ...fact, vector: await embedLocally(fact.text, this.userDataDir) })
     }
     return next
   }

@@ -338,6 +338,8 @@ export interface MurasameApi {
     showMain(): Promise<void>
     hideMain(): Promise<void>
     minimize(): Promise<void>
+    openPath(path: '/tasks' | '/chat' | '/settings'): Promise<void>
+    onNavigated(listener: (path: string) => void): () => void
   }
   pet: {
     show(): Promise<PetState>

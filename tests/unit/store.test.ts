@@ -25,7 +25,9 @@ function createApi(): MurasameApi {
     window: {
       showMain: vi.fn(async () => undefined),
       hideMain: vi.fn(async () => undefined),
-      minimize: vi.fn(async () => undefined)
+      minimize: vi.fn(async () => undefined),
+      openPath: vi.fn(async () => undefined),
+      onNavigated: vi.fn(() => () => undefined)
     },
     pet: {
       show: vi.fn(async () => ({ visible: true, scale: 0.9, x: 0, y: 0, preset: 'tororo' as const })),

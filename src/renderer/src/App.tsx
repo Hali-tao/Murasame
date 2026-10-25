@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar'
 import { TopBar } from './components/TopBar'
 import { ToastHost } from './components/ToastHost'
@@ -18,6 +18,7 @@ import { OnboardingPage } from './pages/OnboardingPage'
 import { SettingsPage } from './pages/SettingsPage'
 
 export function App(): React.JSX.Element {
+  const navigate = useNavigate()
   const init = useAppStore((state) => state.init)
   const loading = useAppStore((state) => state.loading)
   const startupError = useAppStore((state) => state.startupError)
@@ -26,6 +27,12 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     void init()
   }, [init])
+
+  useEffect(() => {
+    return window.murasame.window.onNavigated((path) => {
+      if (path === '/tasks' || path === '/chat' || path === '/settings') navigate(path)
+    })
+  }, [navigate])
 
   if (loading) {
     return (

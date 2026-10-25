@@ -15,7 +15,7 @@ import { emptyReport, renderReport } from '../../src/main/perf/report'
 import { statusPresentation } from '../../src/renderer/src/lib/status'
 import { shouldRetry } from '../../src/main/agent/runtime'
 import { interruptOnRestart } from '../../src/main/agent/state-machine'
-import { vectorsCompatible } from '../../src/main/local/embedding'
+import { EMBEDDING_DIM, EMBEDDING_MODEL_ID, vectorsCompatible } from '../../src/main/local/embedding'
 import { dockerUnavailableMessage } from '../../src/main/isolation/docker-runtime'
 
 const primary = { id: 'a', x: 0, y: 0, width: 1920, height: 1080, scaleFactor: 1 }
@@ -192,11 +192,11 @@ describe('[NFR-U01] 易用性', () => {
 
 describe('[NFR-C02] 配置', () => {
   it('[NFR-C02] 新增配置不要求重建记忆', () => {
-    expect(vectorsCompatible('nomic-embed-text', 768)).toBe('ok')
+    expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM)).toBe('ok')
   })
 
   it('[UC-08] 更换模型不删除已有记忆', () => {
-    expect(vectorsCompatible('other', 768)).toBe('recompute')
+    expect(vectorsCompatible('other', EMBEDDING_DIM)).toBe('recompute')
   })
 
   it('[NFR-C01] 非 Windows 能力标为不可用', () => {

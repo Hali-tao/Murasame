@@ -7,11 +7,30 @@ directories:
 files:
   - out/**/*
   - package.json
+  # 这几个包自带全平台二进制，Windows 安装包只需要 win32-x64 那一份。
+  - '!node_modules/onnxruntime-node/bin/napi-v3/{darwin,linux}/**'
+  - '!node_modules/onnxruntime-node/bin/napi-v3/win32/arm64/**'
+  - '!node_modules/better-sqlite3-multiple-ciphers/prebuilds/{darwin,linux,linuxmusl}-*.node'
+  - '!node_modules/better-sqlite3-multiple-ciphers/prebuilds/win32-arm64.node'
+  - '!node_modules/better-sqlite3-multiple-ciphers/{deps,src}/**'
+  # 界面依赖已经被打进 out/renderer，node_modules 里那份运行时用不到。
+  - '!node_modules/{react,react-dom,react-router,react-router-dom}/**'
+  - '!node_modules/{lucide-react,zustand,clsx,tailwind-merge}/**'
+  - '!node_modules/{pixi.js,pixi-live2d-display}/**'
+  - '!node_modules/@pixi/**'
+  - '!node_modules/@radix-ui/**'
+  # 本地语音直接用 @huggingface/transformers，这个包没有被引用。
+  - '!node_modules/kokoro-js/**'
 extraResources:
   - from: resources
     to: resources
   - from: isolation
     to: isolation
+  - from: plugins
+    to: plugins
+  # 语音模型太大不进仓库，打包前由 scripts/package-win.mjs 放进这个目录。
+  - from: build/bundled-models
+    to: models
 asar: true
 compression: maximum
 # 本机已解压的 Electron，避免打包时再去 GitHub 下载同一份。

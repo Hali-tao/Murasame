@@ -12,4 +12,8 @@ previews/
 pet-inspect.png
 pet-dev-inspect.png
 desktop-current.png
+packaged-pet.png
 electron-v*-win32-x64.zip
+build/bundled-models/
+tmp-zh.wav
+tts-err.txt

@@ -2,7 +2,8 @@ import { Mic, Minus, Plus, RotateCcw, Send, X } from 'lucide-react'
 import { StrictMode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { DEFAULT_PET_PRESET, getPetPreset } from '@shared/pet-presets'
-import type { Conversation, PerformanceCue, PetChatLayout, PetState } from '@shared/types'
+import { pickPetActivity } from '@shared/pet-activity'
+import type { Conversation, PerformanceCue, PetChatLayout, PetState, Task } from '@shared/types'
 import { Live2DPet, type Live2DPetHandle } from './components/Live2DPet'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { allowHitSample, targetFps } from '@shared/render-budget'
@@ -42,6 +43,9 @@ function PetApp(): React.JSX.Element {
   const [speakReplies, setSpeakReplies] = useState(true)
   const [dragging, setDragging] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [dismissedActivity, setDismissedActivity] = useState<ReadonlySet<string>>(() => new Set())
+  const [activityBusy, setActivityBusy] = useState(false)
   const lastTapAt = useRef(0)
   const live2dRef = useRef<Live2DPetHandle>(null)
   const ignoringRef = useRef(true)
@@ -140,7 +144,7 @@ function PetApp(): React.JSX.Element {
       if (currentId && payload.conversationId !== currentId) return
       setPendingUser('')
       setStreaming('')
-      if (chatRef.current.open) setNotice(payload.error)
+      setNotice(payload.error)
     })
     const stopFocus = window.murasame.pet.onFocusChat(() => {
       void openChatRef.current()
@@ -167,6 +171,24 @@ function PetApp(): React.JSX.Element {
         setBubbleExpanded(false)
       }
       layerRef.current = 'idle'
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!window.murasame) return
+    void window.murasame.core.getBootstrap().then((result) => {
+      if (result.ok) setTasks(result.data.tasks)
+    })
+    return window.murasame.events.onTaskUpdated((task) => {
+      setTasks((current) => [task, ...current.filter((item) => item.id !== task.id)])
+      if (task.status === '执行中' || task.status === '规划中' || task.status === '等待批准' || task.status === '待确认' || task.status === '正在停止') {
+        setDismissedActivity((current) => {
+          if (!current.has(task.id)) return current
+          const next = new Set(current)
+          next.delete(task.id)
+          return next
+        })
+      }
     })
   }, [])
 
@@ -416,6 +438,28 @@ function PetApp(): React.JSX.Element {
     }
   }
 
+  const activity = pickPetActivity(tasks, dismissedActivity)
+
+  const decideActivity = async (allow: boolean): Promise<void> => {
+    if (!activity || activityBusy) return
+    setActivityBusy(true)
+    setNotice('')
+    const result = allow
+      ? await window.murasame.core.approveTask(activity.id, 'once')
+      : await window.murasame.core.cancelTask(activity.id)
+    setActivityBusy(false)
+    if (!result.ok) setNotice(result.error)
+  }
+
+  const openActivity = (): void => {
+    void window.murasame.window.openPath('/tasks')
+  }
+
+  const dismissActivity = (): void => {
+    if (!activity) return
+    setDismissedActivity((current) => new Set(current).add(activity.id))
+  }
+
   const hidden = !pet.visible
   const idle = idlePresentation({ hidden, blinkMs: idleFromPad(pad, hidden)?.blinkMs ?? 4200 })
   const fps = targetFps({ hidden, interacting: dragging || chat.open || sending, idleMs: idle ? 120_000 : 0 })
@@ -473,6 +517,24 @@ function PetApp(): React.JSX.Element {
           <button type="button" onClick={() => void window.murasame.pet.resetPosition()} aria-label="复位桌宠位置"><RotateCcw size={14} /></button>
           <button type="button" onClick={() => void window.murasame.pet.hide()} aria-label="隐藏桌宠"><X size={14} /></button>
         </div>
+        {notice && !chat.open ? <p className="pet-toast" data-pet-hit>{notice}</p> : null}
+        {activity ? (
+          <div className={`pet-activity is-${activity.kind}`} data-pet-hit>
+            <button type="button" className="pet-activity-main" onClick={openActivity}>
+              <strong>{activity.label}</strong>
+              <span>{activity.detail}</span>
+              {activity.waiting > 1 ? <em>还有 {activity.waiting - 1} 件也在等你</em> : null}
+            </button>
+            {activity.canApprove ? (
+              <div className="pet-activity-actions">
+                <button type="button" disabled={activityBusy} onClick={() => void decideActivity(true)}>允许</button>
+                <button type="button" disabled={activityBusy} onClick={() => void decideActivity(false)}>先不做</button>
+              </div>
+            ) : activity.kind === 'running' ? null : (
+              <button type="button" className="pet-activity-dismiss" onClick={dismissActivity} aria-label="收起这条状态">收起</button>
+            )}
+          </div>
+        ) : null}
         <div className="pet-brand" data-pet-hit><span />MURASAME</div>
         {menuOpen ? (
           <div className="pet-menu" data-pet-hit role="menu">

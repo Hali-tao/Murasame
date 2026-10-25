@@ -1,4 +1,5 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseKnownError, needsMoreContext } from '../../src/main/local/error-patterns'
@@ -10,6 +11,7 @@ import { vncView } from '../../src/main/isolation/vnc-bridge'
 import { activityLimitReason, planActivityStep, understandVideo, verifyAfterAction } from '../../src/main/isolation/input-injector'
 import { AutonomyService } from '../../src/main/core/services/autonomy-service'
 import { desktopStepSchema, firstJsonObject } from '../../src/main/model/contracts'
+import { modelsRoot, setBundledModelsRoot } from '../../src/main/local/model-env'
 import { transcribe, speak } from '../../src/main/local/audio'
 import { capabilityOf } from '../../src/shared/avatar/capability'
 import { resolveIntent } from '../../src/shared/avatar/intent'
@@ -649,5 +651,59 @@ describe('[FR-02] 情绪与关系', () => {
     const fresh = startNewLine(grown, 't2')
     expect(fresh.lineId).not.toBe(grown.lineId)
     expect(fresh.stage).toBe('初识')
+  })
+})
+
+describe('[DEP-01][DEP-02] Windows 安装包', () => {
+  it('[DEP-02] userData 没有模型时改用安装包自带的那份', () => {
+    const userData = mkdtempSync(join(tmpdir(), 'murasame-ud-'))
+    const bundled = mkdtempSync(join(tmpdir(), 'murasame-bundled-'))
+    try {
+      setBundledModelsRoot(bundled)
+      expect(modelsRoot(userData)).toBe(bundled)
+      mkdirSync(join(userData, 'models'), { recursive: true })
+      expect(modelsRoot(userData)).toBe(join(userData, 'models'))
+    } finally {
+      setBundledModelsRoot('')
+      rmSync(userData, { recursive: true, force: true })
+      rmSync(bundled, { recursive: true, force: true })
+    }
+  })
+
+  it('[DEP-02] 开发态没有自带目录时仍指向 userData', () => {
+    setBundledModelsRoot('')
+    expect(modelsRoot(join(tmpdir(), 'nowhere'))).toBe(join(tmpdir(), 'nowhere', 'models'))
+  })
+
+  it('[DEP-01] 安装脚本路径与 extraResources 的落点一致', () => {
+    const nsh = readFileSync(join(process.cwd(), 'build', 'installer.nsh'), 'utf8')
+    expect(nsh).toContain('$INSTDIR\\resources\\resources\\install-python.ps1')
+  })
+
+  it('[AGENT-11] 安装程序不再依赖国内装不上的 Ollama', () => {
+    const nsh = readFileSync(join(process.cwd(), 'build', 'installer.nsh'), 'utf8')
+    expect(nsh).not.toContain('install-ollama.ps1')
+    expect(existsSync(join(process.cwd(), 'resources', 'install-ollama.ps1'))).toBe(false)
+  })
+
+  it('[DEP-01] 连不上下载源时安装程序提示跳过而不是报失败', () => {
+    const nsh = readFileSync(join(process.cwd(), 'build', 'installer.nsh'), 'utf8')
+    expect(nsh).toContain('$0 == 2')
+    const script = readFileSync(join(process.cwd(), 'resources', 'install-python.ps1'), 'utf8')
+    expect(script).toContain('exit 2')
+    // 国内直连 python.org 太慢，镜像必须排在官方源前面。
+    expect(script.indexOf('mirrors.aliyun.com')).toBeLessThan(script.indexOf('www.python.org'))
+    // pip 引导脚本随包带着，不再依赖 bootstrap.pypa.io。
+    expect(existsSync(join(process.cwd(), 'resources', 'get-pip.py'))).toBe(true)
+  })
+
+  it('[DEP-03][FR-30] 隔离环境、插件和模型都随安装包一起装', () => {
+    const config = readFileSync(join(process.cwd(), 'electron-builder.yml'), 'utf8')
+    for (const entry of ['to: isolation', 'to: plugins', 'to: models']) {
+      expect(config).toContain(entry)
+    }
+    // 只带 Windows 的原生二进制，不把 mac/linux 那几份塞进安装包。
+    expect(config).toContain('onnxruntime-node/bin/napi-v3/{darwin,linux}')
+    expect(config).toContain('prebuilds/{darwin,linux,linuxmusl}-*.node')
   })
 })

@@ -1,9 +1,26 @@
+import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 let configured = false
+let bundledRoot = ''
 
+/**
+ * 安装包自带的语音模型目录。主进程启动时写一次；开发态为空。
+ */
+export function setBundledModelsRoot(dir: string): void {
+  bundledRoot = dir
+  configured = false
+}
+
+/**
+ * 用户自己下载的模型放在 userData 下，优先用这一份；
+ * 没有时才退回安装包自带的那份（装在 Program Files 里，只读就够了）。
+ */
 export function modelsRoot(userDataDir: string): string {
-  return join(userDataDir, 'models')
+  const local = join(userDataDir, 'models')
+  if (existsSync(local)) return local
+  if (bundledRoot && existsSync(bundledRoot)) return bundledRoot
+  return local
 }
 
 /**

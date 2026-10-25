@@ -310,6 +310,15 @@ export function getPetWindow(): BrowserWindow | null {
   return petWindow && !petWindow.isDestroyed() ? petWindow : null
 }
 
+const MAIN_PATHS = new Set(['/tasks', '/chat', '/settings'])
+
+/** 把控制台唤到前面，并让它打开指定页面。桌宠上的「去看看」走这里。 */
+export function openMainPath(path: string): void {
+  if (!MAIN_PATHS.has(path)) return
+  showMain()
+  getMainWindow()?.webContents.send(IPC.window.navigated, path)
+}
+
 export function showMain(): void {
   const window = getMainWindow() ?? createMainWindow()
   if (window.isMinimized()) window.restore()

@@ -149,7 +149,7 @@
 | FR-02 | tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
 | FR-03 | tests/unit/p4-p6.test.ts |
 | FR-04 | tests/unit/p4-p6.test.ts |
-| FR-05 | tests/unit/p4-p6.test.ts |
+| FR-05 | tests/unit/memory-extraction.test.ts<br>tests/unit/p4-p6.test.ts |
 | FR-06 | tests/unit/p4-p6.test.ts |
 | FR-07 | tests/unit/p4-p6.test.ts |
 | FR-08 | tests/unit/p4-p6.test.ts |
@@ -158,14 +158,14 @@
 | FR-11 | tests/unit/p1-p3.test.ts |
 | FR-12 | tests/unit/p1-p3.test.ts |
 | FR-13 | tests/unit/p1-p3.test.ts |
-| FR-14 | tests/unit/p1-p3.test.ts |
-| FR-15 | tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
+| FR-14 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-15 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
 | FR-16 | tests/unit/p1-p3.test.ts |
-| FR-17 | tests/unit/p1-p3.test.ts |
+| FR-17 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-18 | tests/unit/p1-p3.test.ts |
-| FR-19 | tests/unit/p1-p3.test.ts |
-| FR-20 | tests/unit/p1-p3.test.ts |
-| FR-21 | tests/unit/errors.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-status.test.ts<br>tests/unit/traceability.test.ts |
+| FR-19 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-20 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-21 | tests/unit/errors.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-status.test.ts<br>tests/unit/traceability.test.ts |
 | FR-22 | tests/unit/p1-p3.test.ts |
 | FR-23 | tests/unit/p1-p3.test.ts |
 | FR-24 | tests/unit/p0-finish.test.ts<br>tests/unit/p7-p8.test.ts |
@@ -179,7 +179,7 @@
 | UC-02 | tests/unit/p4-p6.test.ts |
 | UC-03 | tests/unit/p1-p3.test.ts |
 | UC-04 | tests/unit/p1-p3.test.ts |
-| UC-05 | tests/unit/p1-p3.test.ts |
+| UC-05 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | UC-06 | tests/unit/p1-p3.test.ts |
 | UC-07 | tests/unit/p1-p3.test.ts |
 | UC-08 | tests/unit/p7-p8.test.ts |
@@ -208,7 +208,7 @@
 | NFR-U03 | tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-C01 | tests/unit/p7-p8.test.ts |
 | NFR-C02 | tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
-| NFR-M01 | tests/unit/errors.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-M01 | tests/unit/errors.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-M02 | tests/unit/p0-finish.test.ts<br>tests/unit/traceability.test.ts |
 | OR-01 | tests/unit/murasame-core.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
 | OR-02 | tests/unit/capacity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |

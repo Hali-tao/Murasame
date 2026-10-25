@@ -13,7 +13,9 @@ export const IPC = {
   window: {
     showMain: 'window:show-main',
     hideMain: 'window:hide-main',
-    minimize: 'window:minimize'
+    minimize: 'window:minimize',
+    openPath: 'window:open-path',
+    navigated: 'window:navigated'
   },
   pet: {
     show: 'pet:show',

@@ -1,5 +1,24 @@
-export const EMBEDDING_MODEL_ID = 'nomic-embed-text'
-export const EMBEDDING_DIM = 768
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { configureLocalModels, modelsRoot } from './model-env'
+
+/**
+ * 记忆向量在本机算，不依赖 Ollama。国内直连装不上 Ollama，
+ * 而记忆只需要一个中文向量模型，随安装包带走即可。
+ */
+export const EMBEDDING_MODEL_ID = 'bge-small-zh-v1.5'
+export const EMBEDDING_DIM = 512
+export const EMBEDDING_FILES = [
+  'config.json',
+  'tokenizer.json',
+  'tokenizer_config.json',
+  join('onnx', 'model_quantized.onnx')
+]
+
+export function missingEmbeddingFiles(userDataDir: string): string[] {
+  const base = join(modelsRoot(userDataDir), EMBEDDING_MODEL_ID)
+  return EMBEDDING_FILES.filter((file) => !existsSync(join(base, file)))
+}
 
 export function vectorsCompatible(storedModelId: string, storedDim: number): 'ok' | 'recompute' {
   if (storedModelId !== EMBEDDING_MODEL_ID || storedDim !== EMBEDDING_DIM) return 'recompute'
@@ -69,18 +88,33 @@ function limitTokens(entries: RecallEntry[]): RecallEntry[] {
   return kept
 }
 
-export async function embedLocally(text: string, fetchImpl: typeof fetch = fetch): Promise<number[] | null> {
+type Extractor = (
+  text: string,
+  options: { pooling: 'mean'; normalize: boolean }
+) => Promise<{ data: Float32Array }>
+
+let extractor: Extractor | null = null
+
+async function load(userDataDir: string): Promise<Extractor> {
+  if (extractor) return extractor
+  await configureLocalModels(userDataDir)
+  const { pipeline } = await import('@huggingface/transformers')
+  const loaded = await pipeline('feature-extraction', EMBEDDING_MODEL_ID, { dtype: 'q8', device: 'cpu' })
+  extractor = loaded as unknown as Extractor
+  return extractor
+}
+
+/**
+ * 算不出来时返回 null，调用方会如实降级，不会拿关键词硬凑当成语义召回。
+ * BGE 官方建议的查询前缀在这里实测反而更差（长前缀会盖过短记忆），所以不加。
+ */
+export async function embedLocally(text: string, userDataDir: string): Promise<number[] | null> {
+  if (missingEmbeddingFiles(userDataDir).length > 0) return null
   try {
-    const response = await fetchImpl('http://127.0.0.1:11434/api/embeddings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: EMBEDDING_MODEL_ID, prompt: text }),
-      signal: AbortSignal.timeout(800)
-    })
-    if (!response.ok) return null
-    const payload = await response.json() as { embedding?: number[] }
-    if (!payload.embedding || payload.embedding.length !== EMBEDDING_DIM) return null
-    return payload.embedding
+    const run = await load(userDataDir)
+    const output = await run(text, { pooling: 'mean', normalize: true })
+    if (output.data.length !== EMBEDDING_DIM) return null
+    return Array.from(output.data)
   } catch {
     return null
   }

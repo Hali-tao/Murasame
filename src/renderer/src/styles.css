@@ -836,6 +836,18 @@ a:focus-visible {
 .pet-controls button { display: grid; width: 27px; height: 27px; padding: 0; place-items: center; cursor: pointer; color: #c8c7c7; background: transparent; border: 0; border-radius: 6px; }
 .pet-controls button:hover { color: #fff; background: rgba(255,255,255,.1); }
 .pet-controls span { color: #8e9098; font-family: "Cascadia Mono", Consolas, monospace; font-size: 8px; }
+.pet-toast { position: absolute; z-index: 4; bottom: 108px; left: 50%; width: max-content; max-width: 230px; margin: 0; padding: 6px 8px; color: #f0c36a; background: rgba(30,33,42,.94); border-radius: 8px; font-size: 11px; line-height: 1.4; text-align: center; transform: translateX(-50%); }
+.pet-activity { position: absolute; z-index: 5; bottom: 22px; left: 50%; display: flex; flex-direction: column; gap: 6px; width: 196px; padding: 8px; color: #f3efe9; background: rgba(30,33,42,.94); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; box-shadow: 0 10px 24px rgba(13,15,20,.28); transform: translateX(-50%); }
+.pet-activity.is-needs-input { border-color: rgba(240,195,106,.55); }
+.pet-activity.is-blocked { border-color: rgba(232,112,112,.55); }
+.pet-activity-main { display: flex; flex-direction: column; gap: 2px; padding: 0; color: inherit; background: transparent; border: 0; text-align: left; cursor: pointer; }
+.pet-activity-main strong { font-size: 12px; font-weight: 650; }
+.pet-activity-main span { color: rgba(243,239,233,.82); font-size: 11px; line-height: 1.4; }
+.pet-activity-main em { color: #f0c36a; font-size: 10px; font-style: normal; }
+.pet-activity-actions { display: flex; gap: 6px; }
+.pet-activity-actions button, .pet-activity-dismiss { flex: 1; padding: 4px 6px; color: #f3efe9; background: rgba(255,255,255,.08); border: 0; border-radius: 7px; font-size: 11px; cursor: pointer; }
+.pet-activity-actions button:first-child { background: rgba(240,195,106,.22); }
+.pet-activity-actions button:disabled { opacity: .5; cursor: default; }
 .pet-brand { position: absolute; bottom: 3px; left: 50%; display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,.62); font-size: 7px; font-weight: 700; letter-spacing: .14em; text-shadow: 0 1px 4px rgba(20,21,27,.85); transform: translateX(-50%); }
 .pet-brand span { width: 4px; height: 4px; background: var(--coral); border-radius: 50%; }
 .pet-hidden-root { width: 100%; height: 100%; background: transparent; }
