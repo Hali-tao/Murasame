@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button, Card, CardHead } from '../components/ui'
 import { useAppStore } from '../store'
 
@@ -22,6 +23,7 @@ const steps = [
 ]
 
 export function OnboardingPage(): React.JSX.Element {
+  const navigate = useNavigate()
   const updateSettings = useAppStore((state) => state.updateSettings)
   const saveCharacter = useAppStore((state) => state.saveCharacter)
   const data = useAppStore((state) => state.data)
@@ -30,11 +32,12 @@ export function OnboardingPage(): React.JSX.Element {
   const [userName, setUserName] = useState(data?.settings.userName ?? '')
   const step = steps[index]
 
-  const finish = async (): Promise<void> => {
+  const finish = async (configure = false): Promise<void> => {
     if (data && characterName.trim()) {
       await saveCharacter({ ...data.character, name: characterName.trim() })
     }
     await updateSettings({ onboardingDone: true, userName: userName.trim() })
+    if (useAppStore.getState().data?.settings.onboardingDone) navigate(configure ? '/models?setup=1' : '/')
   }
 
   return (
@@ -58,7 +61,7 @@ export function OnboardingPage(): React.JSX.Element {
           {index < steps.length - 1 ? (
             <Button variant="primary" onClick={() => setIndex((value) => value + 1)}>下一步</Button>
           ) : (
-            <Button variant="primary" onClick={() => void finish()}>完成</Button>
+            <Button variant="primary" onClick={() => void finish(true)}>配置模型并开始聊天</Button>
           )}
         </div>
       </Card>

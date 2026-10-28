@@ -1,17 +1,19 @@
+import { createHash, randomUUID } from 'node:crypto'
+import { readFileSync, statSync } from 'node:fs'
+import { organizeManifest, resolveInside } from '../../tools/filesystem'
+import type { IsolatedRunner } from '../../tools/terminal'
 import { Notification } from 'electron'
 import type { SqliteDatabase } from '../../data/sqlite-types'
-import { approvalExpired, approvalKey, consumeOnce, grant, type ApprovalScope } from '../../agent/approval-gate'
+import { approvalExpired, type ApprovalScope } from '../../agent/approval-gate'
 import { isAbsolute } from 'node:path'
-import { executeGoal, extractRoot, type GoalOutcome, type TaskPlan } from '../../agent/executor'
+import { executeGoal, extractRoot, chooseTool, localRulePlan, type GoalOutcome, type TaskPlan, type StepCheckpoint } from '../../agent/executor'
 import { recognizeIntent } from '../../agent/planner'
-import { overBudget } from '../../agent/runtime'
 import { summarizeCalls } from '../../agent/verifier'
 import { interruptOnRestart, transition, type TaskPhase } from '../../agent/state-machine'
 import type { Evidence, ToolCallRecord, Verdict } from '../../../shared/evidence'
 import type { ApprovalRequest, Result, Task, TaskStep, Tone } from '../../../shared/types'
 import { getSettings } from '../../settings'
 
-const taskGrants = new Map<string, ApprovalScope>()
 
 function notifyTask(task: Task): void {
   if (!getSettings().taskNotifications) return
@@ -37,19 +39,31 @@ interface TaskRow {
   created_at: string
 }
 
+export interface TaskModelSnapshot { id: string; model?: string; name?: string; provider?: string; endpoint?: string }
+
 export type TaskPlanner = (goal: string) => Promise<TaskPlan | null>
 
 export class TaskService {
+  private modelSnapshotProvider?: () => TaskModelSnapshot | null
   private planner: TaskPlanner | null = null
   private toolGate: ((tool: string) => string | null) | null = null
   private changed: ((task: Task) => void) | null = null
   private readonly plans = new Map<string, TaskPlan>()
-  private readonly running = new Map<string, { stop: boolean }>()
+  private readonly running = new Map<string, { stop: boolean; controller: AbortController }>()
+  private isolatedRunner?: IsolatedRunner
+  private readonly executionGuards = new Map<string, () => string | null>()
   private readonly pending = new Map<string, Promise<void>>()
 
   constructor(private readonly db?: SqliteDatabase) {
+    this.db?.exec('CREATE TABLE IF NOT EXISTS task_execution_plans(task_id TEXT PRIMARY KEY, plan_json TEXT NOT NULL)')
+    this.db?.exec('CREATE TABLE IF NOT EXISTS task_execution_checkpoints(task_id TEXT NOT NULL, step_id TEXT NOT NULL, checkpoint_json TEXT NOT NULL, PRIMARY KEY(task_id,step_id))')
+    this.db?.exec('CREATE TABLE IF NOT EXISTS task_model_snapshots(task_id TEXT PRIMARY KEY, snapshot_json TEXT NOT NULL)')
     this.recover()
   }
+
+  setModelSnapshotProvider(provider: () => TaskModelSnapshot | null): void { this.modelSnapshotProvider = provider }
+
+  setIsolatedRunner(runner: IsolatedRunner): void { this.isolatedRunner = runner }
 
   /** 返回不能用的原因；返回 null 表示这个工具当前已启用。 */
   setToolGate(gate: (tool: string) => string | null): void {
@@ -81,8 +95,8 @@ export class TaskService {
     if (!this.planner) return null
     try {
       return await this.planner(title)
-    } catch {
-      return null
+    } catch (error) {
+      throw new Error(`计划生成失败，没有执行：${error instanceof Error ? error.message : String(error)}`, { cause: error })
     }
   }
 
@@ -101,6 +115,7 @@ export class TaskService {
   /** 判定只认证据：把执行器产出的 ToolCallRecord 交给 Verifier 汇总。 */
   private judge(outcome: GoalOutcome): TaskPhase {
     const verdict = summarizeCalls(outcome.calls.map((call) => ({
+      agentRole: call.agentRole,
       execution: { status: call.executionStatus, raw: call.raw, startedAt: '', endedAt: '' },
       verification: { method: call.evidence[0]?.kind ?? 'fs-stat', evidence: call.evidence, verdict: call.verdict }
     })))
@@ -114,70 +129,122 @@ export class TaskService {
     if (!this.db) return fail('任务存储不可用')
     const intent = recognizeIntent(title, true)
     if (intent.question) return fail(intent.question)
-    const plan = await this.plan(title)
-    const id = `task-${Date.now()}`
+    const selected = this.modelSnapshotProvider?.()
+    const snapshot: TaskModelSnapshot | null = selected ? { id: selected.id, model: selected.model, name: selected.name, provider: selected.provider, endpoint: selected.endpoint ? (() => { try { const url = new URL(selected.endpoint!); url.username = ''; url.password = ''; url.search = ''; url.hash = ''; return url.href } catch { return undefined } })() : undefined } : null
+    let plan: TaskPlan | null
+    try { plan = await this.plan(title) ?? localRulePlan(title) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
+    const id = `task-${randomUUID()}`
     const planned = plan?.root && isAbsolute(plan.root) ? plan.root.replace(/[\\/]+$/, '') : null
-    const root = planned ?? extractRoot(title)
+    const root = extractRoot(title)
+    if (planned && root && planned.toLowerCase() !== root.toLowerCase()) return fail('计划目录与用户指定目录不一致，需重新确认')
     const now = new Date().toISOString()
     this.db.prepare(
       `INSERT INTO tasks(id, title, status, tone, progress, scope, summary, result, artifacts_json, created_at, updated_at)
        VALUES (?, ?, '待确认', 'blue', 0, ?, '', '', '[]', ?, ?)`
     ).run(id, title, root ?? '', now, now)
-    if (plan) this.plans.set(id, plan)
+    if (snapshot) { this.db.prepare('INSERT INTO task_model_snapshots(task_id, snapshot_json) VALUES (?, ?)').run(id, JSON.stringify(snapshot)); this.db.prepare('UPDATE tasks SET model_profile_id = ? WHERE id = ?').run(snapshot.id, id) }
+    if (plan) { try { this.savePlan(id, plan) } catch (error) { this.touch(id, error instanceof Error ? error.message : String(error), '计划产物范围需要确认'); return ok(this.emit(id)) } }
     const blocked = plan ? this.toolGate?.(plan.tool) : null
     if (blocked) {
       this.touch(id, `任务受阻：${blocked}`, '需要的工具已停用，没有执行')
-      return ok(this.require(id))
+      return ok(this.emit(id))
     }
     const question = plan?.question.trim()
     if (question && question !== '无') {
       this.touch(id, `${question} 回答之前不会执行。`, '计划还缺信息')
-      return ok(this.require(id))
+      return ok(this.emit(id))
     }
-    if (!root && plan?.tool !== 'browser') {
+    if (!root && (plan?.tool ?? chooseTool(title)) !== 'browser') {
       this.touch(id, '要处理哪个目录或文件？未确认具体对象前不会执行。', '还缺少具体目录')
-      return ok(this.require(id))
+      return ok(this.emit(id))
     }
     this.move(id, '已确认')
     this.move(id, '规划中')
-    const preview = await executeGoal({ goal: title, root, approved: false, cancelled: false, plan })
+    const preview = await executeGoal({ goal: title, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan })
     if (preview.status === '等待批准') {
       this.move(id, '执行中')
       this.move(id, '等待批准')
       this.saveOutcome(id, preview)
-      return ok(this.require(id))
+      return ok(this.emit(id))
     }
     if (preview.status === '待确认') {
       this.touch(id, preview.result, preview.summary)
-      return ok(this.require(id))
+      return ok(this.emit(id))
     }
     this.move(id, '执行中')
     this.move(id, this.judge(preview))
     this.saveOutcome(id, preview)
     notifyTask(this.require(id))
-    return ok(this.require(id))
+    return ok(this.emit(id))
   }
+
+  /** 队友直接记下的任务。状态按结果写入，不经过整理文件的计划器。 */
+  openTeammateTask(input: {
+    title: string
+    status: '等待批准' | '失败' | '已完成' | '待确认' | '已取消' | '部分完成'
+    progress?: number
+    summary: string
+    result: string
+    scope?: string
+    approval?: { target: string; impact: string; tool: string; requestedAt: number; containerPath?: string; hostPath?: string } | null
+    artifacts?: string[]
+  }): Task {
+    if (!this.db) throw new Error('任务存储不可用')
+    const id = `task-${randomUUID()}`
+    const now = new Date().toISOString()
+    this.db.prepare(
+      `INSERT INTO tasks(id, title, status, tone, progress, scope, summary, result, approval_json, artifacts_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(
+      id,
+      input.title,
+      input.status,
+      toneOf(input.status),
+      input.status === '已完成' ? 100 : Math.max(0, Math.min(99, input.progress ?? 0)),
+      input.scope ?? '',
+      input.summary,
+      input.result,
+      input.approval ? JSON.stringify(input.approval) : null,
+      JSON.stringify(input.artifacts ?? []),
+      now,
+      now
+    )
+    return this.emit(id)
+  }
+
+  setCopyImage(handler: (approval: { containerPath?: string; hostPath?: string; signal?: AbortSignal; taskId?: string }) => Promise<{ ok: true; path: string; bytes: number; hash?: string; sourceHash?: string; note?: string; procedureId?: string } | { ok: false; reason: string; path?: string; bytes?: number; hash?: string; outcomeKnown?: boolean }>): void {
+    this.copyImage = handler
+  }
+
+  private copyImage?: (approval: { containerPath?: string; hostPath?: string; signal?: AbortSignal; taskId?: string }) => Promise<{ ok: true; path: string; bytes: number; hash?: string; sourceHash?: string; note?: string; procedureId?: string } | { ok: false; reason: string; path?: string; bytes?: number; hash?: string; outcomeKnown?: boolean }>
 
   /** 批准后立即返回「执行中」，执行在后台按文件推进，进度和结果经 onChange 推送。 */
   approve(id: string, scope: ApprovalScope = 'once'): Promise<Result<Task>> {
     const current = this.read(id)
     if (current.status !== '等待批准') return Promise.resolve(fail('当前没有待批准的操作'))
-    const approval = current.approval_json ? JSON.parse(current.approval_json) as { requestedAt?: number; tool?: string } : {}
-    if (approval.requestedAt && approvalExpired(approval.requestedAt, Date.now())) {
+    const approval = current.approval_json ? JSON.parse(current.approval_json) as { requestedAt?: number; tool?: string; containerPath?: string; hostPath?: string } : {}
+    const gateTool = approval.tool === 'copy-image' ? 'filesystem' : this.getPlan(id)?.tool ?? approval.tool ?? 'filesystem'
+    const gateReason = this.toolGate?.(gateTool)
+    if (gateReason) { this.touch(id, `任务受阻：${gateReason}`, '工具已停用'); return Promise.resolve(ok(this.emit(id))) }
+    if (typeof approval.requestedAt !== 'number' || approvalExpired(approval.requestedAt, Date.now())) { this.touch(id, '审批无效或已过期，没有执行；请补充要求后重新确认。', '审批需要更新'); return Promise.resolve(ok(this.emit(id))) }
+    if (approval.tool === 'copy-image') this.appendCall(id, { agentRole: 'Planner', toolId: 'approval', declared: '批准本次准确图片目标', executionStatus: 'ok', raw: JSON.stringify({ taskId: id, scope, approval }), evidence: [], verdict: 'confirmed', stepId: 'approval', traceId: randomUUID() })
+    if (approval.tool === 'copy-image') return this.copyApprovedImage(id, approval)
+    if (typeof approval.requestedAt !== 'number' || approvalExpired(approval.requestedAt, Date.now())) {
       this.touch(id, '任务受阻：批准已超过 10 分钟，没有执行。', current.summary)
-      return Promise.resolve(ok(this.require(id)))
+      return Promise.resolve(ok(this.emit(id)))
     }
-    const tool = this.plans.get(id)?.tool ?? approval.tool ?? 'filesystem'
+    const tool = this.getPlan(id)?.tool ?? approval.tool ?? 'filesystem'
     const blocked = this.toolGate?.(tool)
     if (blocked) {
       this.touch(id, `任务受阻：${blocked}`, '需要的工具已停用，没有执行')
-      return Promise.resolve(ok(this.require(id)))
+      return Promise.resolve(ok(this.emit(id)))
     }
     this.move(id, '执行中')
-    const key = approvalKey(tool, current.scope || id)
-    grant(key, scope, taskGrants)
-    if (scope === 'once') consumeOnce(key, taskGrants)
-    const control = { stop: false }
+    this.appendCall(id, { agentRole: 'Planner', toolId: 'approval', declared: `批准范围：${scope === 'once' ? '本次一项操作' : '本任务此版本计划'}`, executionStatus: 'ok', raw: JSON.stringify({ taskId: id, scope, root: current.scope, approvedAt: Date.now(), requestedAt: approval.requestedAt, plan: this.getPlan(id) }), evidence: [], verdict: 'confirmed', stepId: 'approval', traceId: randomUUID(), args: { scope, taskId: id, root: current.scope } })
+    const control = { stop: false, controller: new AbortController() }
+    const approvedPlan = JSON.stringify(this.getPlan(id) ?? null)
+    const approvedAt = approval.requestedAt!
+    this.executionGuards.set(id, () => approvalExpired(approvedAt, Date.now()) ? '批准已过期，未开始后续操作' : approvedPlan !== JSON.stringify(this.getPlan(id) ?? null) ? '计划变更，需重新批准' : null)
     this.running.set(id, control)
     this.db?.prepare(`UPDATE tasks SET approval_json = NULL, summary = ?, result = ?, updated_at = ? WHERE id = ?`).run(
       '执行中',
@@ -185,20 +252,81 @@ export class TaskService {
       new Date().toISOString(),
       id
     )
-    this.pending.set(id, this.run(id, current, control))
+    this.pending.set(id, this.run(id, current, control, scope))
     return Promise.resolve(ok(this.emit(id)))
   }
 
-  private async run(id: string, current: TaskRow, control: { stop: boolean }): Promise<void> {
+  private async copyApprovedImage(id: string, approval: { requestedAt?: number; containerPath?: string; hostPath?: string }): Promise<Result<Task>> {
+    if (typeof approval.requestedAt !== 'number' || approvalExpired(approval.requestedAt, Date.now())) {
+      this.touch(id, '任务受阻：审批无效或已超过 10 分钟，未复制。', '需要重新确认'); return ok(this.emit(id))
+    }
+    this.move(id, '执行中')
+    const control = { stop: false, controller: new AbortController() }; this.running.set(id, control)
+    const job = (async (): Promise<void> => {
+      const startedAt = new Date().toISOString()
+      const traceId = randomUUID()
+      this.appendCall(id, { agentRole: 'Worker', toolId: 'filesystem', declared: '开始本次已批准图片复制；结果尚未知', executionStatus: 'error', raw: '开始复制，结果尚未知；恢复时先核对，不能重放', evidence: [], verdict: 'inconclusive', stepId: 'copy-image', traceId, phase: 'started', startedAt, args: { hostPath: approval.hostPath, containerPath: approval.containerPath } })
+      let knownOutcome = true
+      let copiedPath: string | undefined
+      try {
+        if (!this.copyImage || !approval.hostPath) throw new Error('没有可核对的图片路径')
+        const blocked = this.toolGate?.('filesystem'); if (blocked) throw new Error(blocked)
+        const copied = await this.copyImage({ ...approval, signal: control.controller.signal, taskId: id })
+        if (copied.path) {
+          const intended = resolveInside(approval.hostPath, '.')
+          if (resolveInside(intended, copied.path) === intended) {
+            copiedPath = intended
+            this.db?.prepare('UPDATE tasks SET artifacts_json = ?, updated_at = ? WHERE id = ?').run(JSON.stringify([intended]), new Date().toISOString(), id)
+          }
+        }
+        if (!copied.ok) { knownOutcome = copied.outcomeKnown ?? !/清理失败|停止尚未核实/.test(copied.reason); throw new Error(copied.reason) }
+        copiedPath = resolveInside(approval.hostPath, '.')
+        if (resolveInside(copiedPath, copied.path) !== copiedPath) throw new Error('实际复制位置不符合本次批准目标')
+        const stat = statSync(copiedPath)
+        if (!stat.isFile() || stat.size <= 0 || stat.size !== copied.bytes) throw new Error('复制结果大小或类型核验失败')
+        const hash = createHash('sha256').update(readFileSync(copiedPath)).digest('hex')
+        if ((copied.hash && copied.hash !== hash) || (copied.sourceHash && copied.sourceHash !== hash)) throw new Error('图片原件与导出目标哈希不一致')
+        this.db?.prepare('UPDATE tasks SET artifacts_json = ?, progress = ?, updated_at = ? WHERE id = ?').run(JSON.stringify([copiedPath]), 100, new Date().toISOString(), id)
+        this.appendCall(id, { agentRole: 'Worker', toolId: 'filesystem', declared: '按批准目标复制图片', executionStatus: control.stop ? 'aborted' : 'ok', raw: `${copiedPath} (${stat.size} bytes)`, evidence: [{ kind: 'fs-stat', target: copiedPath, expected: `${copied.bytes} bytes`, actual: `${stat.size} bytes`, matched: true }, { kind: 'fs-hash', target: copiedPath, expected: copied.sourceHash ?? copied.hash ?? hash, actual: hash, matched: true }], verdict: 'confirmed', stepId: 'copy-image', traceId, phase: 'result', args: { containerPath: approval.containerPath, hostPath: approval.hostPath, outcomeKnown: true, sourceHash: copied.sourceHash, procedureId: copied.procedureId }, startedAt, endedAt: new Date().toISOString() })
+        this.move(id, control.stop ? '已取消' : '已完成')
+        this.touch(id, `${control.stop ? '取消前已复制' : '已复制'} ${copiedPath}，${stat.size} 字节。${copied.note ?? ''}`, control.stop ? '已取消，保留实际产物' : '图片已核验')
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        this.appendCall(id, { agentRole: 'Worker', toolId: 'filesystem', declared: '复制图片', executionStatus: control.stop ? 'aborted' : 'error', raw: `${message}${copiedPath ? `；可能已写入 ${copiedPath}` : ''}`, evidence: [], verdict: 'refuted', stepId: 'copy-image', traceId, phase: 'result', args: { hostPath: approval.hostPath, containerPath: approval.containerPath, outcomeKnown: knownOutcome }, startedAt, endedAt: new Date().toISOString() })
+        this.move(id, control.stop ? '已取消' : '失败'); this.touch(id, message, '复制未通过核验')
+      } finally { this.running.delete(id); this.pending.delete(id); notifyTask(this.emit(id)) }
+    })()
+    this.pending.set(id, job)
+    // Avoid a stale pending entry if a synchronous handler immediately settles.
+    void job.finally(() => this.pending.delete(id))
+    return ok(this.emit(id))
+  }
+
+  private async run(id: string, current: TaskRow, control: { stop: boolean; controller: AbortController }, scope: ApprovalScope): Promise<void> {
     try {
       const done = await executeGoal({
         goal: current.title,
         root: current.scope || null,
         approved: true,
         cancelled: false,
-        plan: this.plans.get(id) ?? null,
+        plan: this.getPlan(id) ?? null,
+        runner: this.isolatedRunner,
+        taskId: id,
+        approvalScope: scope,
+        checkpoints: this.checkpoints(id),
+        onCheckpoint: (checkpoint) => { this.db?.prepare('INSERT INTO task_execution_checkpoints(task_id, step_id, checkpoint_json) VALUES (?, ?, ?) ON CONFLICT(task_id,step_id) DO UPDATE SET checkpoint_json = excluded.checkpoint_json').run(id, checkpoint.stepId, JSON.stringify(checkpoint)) },
+        toolGate: (tool) => this.toolGate?.(tool) ?? null,
+        executionGuard: this.executionGuards.get(id),
+        onCall: (call) => this.appendCall(id, call),
         control: {
           stopped: () => control.stop,
+          signal: control.controller.signal,
+          effect: (effect) => {
+            const task = this.read(id); const artifacts = JSON.parse(task.artifacts_json ?? '[]') as string[]
+            if (effect.status === 'moved') artifacts.push(effect.destination)
+            this.db?.prepare('UPDATE tasks SET artifacts_json = ?, updated_at = ? WHERE id = ?').run(JSON.stringify([...new Set(artifacts)]), new Date().toISOString(), id)
+            this.appendCall(id, { agentRole: 'Worker', toolId: 'filesystem.effect', declared: '逐文件实际影响', executionStatus: effect.status === 'moved' ? 'ok' : 'error', raw: JSON.stringify(effect), evidence: [], verdict: 'inconclusive', stepId: `effect-${randomUUID()}`, args: effect })
+          },
           progress: (count, total, note) => {
             this.db?.prepare(`UPDATE tasks SET progress = ?, summary = ?, updated_at = ? WHERE id = ?`).run(
               Math.round(count / Math.max(total, 1) * 100),
@@ -210,8 +338,7 @@ export class TaskService {
           }
         }
       })
-      const budget = overBudget(done.calls.length, 24)
-      this.move(id, control.stop ? '已取消' : budget === '部分完成' ? '部分完成' : this.judge(done))
+      this.move(id, control.stop ? '已取消' : done.status)
       this.saveOutcome(id, done)
     } catch (error) {
       const message = error instanceof Error ? error.message : '执行出错'
@@ -219,6 +346,7 @@ export class TaskService {
       this.touch(id, `执行中断：${message}。已经移动的文件保持原样。`, '执行出错')
     } finally {
       this.running.delete(id)
+      this.executionGuards.delete(id)
       this.pending.delete(id)
       notifyTask(this.emit(id))
     }
@@ -227,24 +355,27 @@ export class TaskService {
   deny(id: string): Promise<Result<Task>> {
     const current = this.read(id)
     if (current.status !== '等待批准') return Promise.resolve(fail('当前没有待批准的操作'))
-    this.touch(id, '任务受阻：敏感操作未获批准，没有执行。', '未批准，文件系统没有变化')
-    return Promise.resolve(ok(this.require(id)))
+    this.db?.prepare('UPDATE tasks SET status = ?, approval_json = NULL, updated_at = ? WHERE id = ?').run('待确认', new Date().toISOString(), id)
+    this.touch(id, '任务受阻：敏感操作未获批准，没有执行。可以补充要求后重新确认。', '未批准，未执行')
+    return Promise.resolve(ok(this.emit(id)))
   }
 
   cancel(id: string): Promise<Result<Task>> {
     const control = this.running.get(id)
     if (control) {
       control.stop = true
+      control.controller.abort()
       if (this.read(id).status === '执行中') this.move(id, '正在停止')
       this.touch(id, '正在停止：手上这个文件处理完就停，不再移动新文件。', '正在停止')
       return Promise.resolve(ok(this.emit(id)))
     }
     const current = this.read(id)
+    if (['已完成', '失败', '部分完成', '已取消', '已中断'].includes(current.status)) return Promise.resolve(ok(this.emit(id)))
     if (current.status === '执行中') this.move(id, '正在停止')
     const latest = this.read(id)
     this.move(latest.status === '正在停止' || latest.status === '等待批准' || latest.status === '待确认' || latest.status === '已确认' || latest.status === '规划中' ? latest.id : id, '已取消')
     this.touch(id, '任务已取消。进行中的操作已停止安排，已经产生的文件保持原样。', '已停止安排后续操作')
-    return Promise.resolve(ok(this.require(id)))
+    return Promise.resolve(ok(this.emit(id)))
   }
 
   private recover(): void {
@@ -287,7 +418,7 @@ export class TaskService {
       outcome.result,
       outcome.steps.filter((step) => step.state === '完成').length / Math.max(outcome.steps.length, 1) * 100,
       outcome.approval ? JSON.stringify(outcome.approval) : null,
-      JSON.stringify(outcome.artifacts),
+      JSON.stringify([...new Set([...(JSON.parse(this.read(id).artifacts_json ?? '[]') as string[]), ...outcome.artifacts])]),
       now,
       id
     )
@@ -298,24 +429,69 @@ export class TaskService {
     outcome.steps.forEach((step, index) => {
       insertStep.run(`${id}-${step.id}`, id, step.title, step.detail, step.state, step.tone, '', index)
     })
-    this.db.prepare(`DELETE FROM tool_calls WHERE task_id = ?`).run(id)
-    const insertCall = this.db.prepare(
-      `INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    )
-    outcome.calls.forEach((item, index) => {
-      insertCall.run(
-        `${id}-call-${index}`,
-        id,
-        `${id}-work`,
-        item.toolId,
-        JSON.stringify({ intent: item.declared, args: { agentRole: item.agentRole } }),
-        JSON.stringify({ status: item.executionStatus, raw: item.raw, startedAt: now, endedAt: now }),
-        JSON.stringify({ method: item.evidence[0]?.kind ?? 'fs-stat', evidence: item.evidence, verdict: item.verdict }),
-        now,
-        item.agentRole
-      )
+    outcome.calls.forEach((item) => this.appendCall(id, item))
+  }
+
+  private appendCall(id: string, item: GoalOutcome['calls'][number]): void {
+    const now = new Date().toISOString()
+    const snapshot = item.agentRole === 'Planner' && item.toolId === 'model' ? this.db?.prepare('SELECT snapshot_json FROM task_model_snapshots WHERE task_id = ?').get(id) as { snapshot_json: string } | undefined : undefined
+    const callId = `${id}-${item.traceId ?? item.stepId ?? 'work'}-${item.agentRole}-${item.phase ?? 'result'}`
+    this.db?.prepare(`INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET execution_json = excluded.execution_json, verification_json = excluded.verification_json`).run(callId, id, `${id}-${item.stepId ?? 'work'}`, item.toolId, JSON.stringify({ intent: item.declared, args: { ...(typeof item.args === 'object' && item.args ? item.args : {}), traceId: item.traceId, phase: item.phase, ...(snapshot ? { modelSnapshot: JSON.parse(snapshot.snapshot_json) as TaskModelSnapshot } : {}) } }), JSON.stringify({ status: item.executionStatus, raw: item.raw, startedAt: item.startedAt ?? now, endedAt: item.endedAt ?? now }), JSON.stringify({ method: 'independent', evidence: item.evidence, verdict: item.verdict }), now, item.agentRole)
+  }
+
+  private savePlan(id: string, plan: TaskPlan, approvedRoot?: string): void {
+    const root = approvedRoot ?? this.read(id).scope
+    plan = structuredClone(plan)
+    for (const step of plan.steps) {
+      const tool = step.tool ?? plan.tool
+      const needsFiles = tool === 'filesystem' || Boolean(step.outputs?.length)
+      if (needsFiles) { const blocked = this.toolGate?.('filesystem'); if (blocked) throw new Error(blocked) }
+      if (tool === 'filesystem' && (step.args?.action === 'organize' || plan.steps.length === 1 && /按类型|按扩展名|归类/.test(step.title))) {
+        step.args = { ...step.args, action: 'organize', ...(root ? { files: organizeManifest(resolveInside(root, step.workspace ?? '.')) } : {}) }
+      }
+    }
+    for (const step of plan.steps) for (const output of step.outputs ?? []) {
+      const path = resolveInside(resolveInside(root, step.workspace ?? '.'), output.path)
+      try { if (!statSync(path).isFile()) throw new Error('声明的产物目标不是文件'); output.baselineHash = createHash('sha256').update(readFileSync(path)).digest('hex') } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') output.baselineHash = null; else throw error }
+      const check = step.checks?.find((item) => item.path === output.path && (item.kind === 'file-content' || item.kind === 'file-hash'))
+      if (check?.kind === 'file-content' && output.expectedContent === undefined) output.expectedContent = check.value
+      if (check?.kind === 'file-hash' && output.expectedHash === undefined) output.expectedHash = check.value
+    }
+    this.plans.set(id, structuredClone(plan))
+    this.db?.prepare('INSERT INTO task_execution_plans(task_id, plan_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET plan_json = excluded.plan_json').run(id, JSON.stringify(plan))
+  }
+  private getPlan(id: string): TaskPlan | undefined {
+    const current = this.plans.get(id); if (current) return current
+    const row = this.db?.prepare('SELECT plan_json FROM task_execution_plans WHERE task_id = ?').get(id) as { plan_json: string } | undefined
+    if (!row) return undefined
+    const plan = JSON.parse(row.plan_json) as TaskPlan; this.plans.set(id, plan); return plan
+  }
+
+  private checkpoints(id: string): StepCheckpoint[] {
+    const rows = this.db?.prepare('SELECT checkpoint_json FROM task_execution_checkpoints WHERE task_id = ?').all(id) as Array<{ checkpoint_json: string }> | undefined
+    return (rows ?? []).map((row) => JSON.parse(row.checkpoint_json) as StepCheckpoint)
+  }
+
+  async continueTask(id: string, answer: string): Promise<Result<Task>> {
+    const current = this.read(id)
+    if (!['待确认', '已中断', '失败', '部分完成', '已取消'].includes(current.status)) return fail('当前任务不在可补充或恢复的状态')
+    const checkpoints = this.checkpoints(id)
+    const unknown = this.require(id).toolCalls.some((call) => {
+      if (call.agentRole !== 'Worker' || call.toolId === 'filesystem.effect') return false
+      const args = call.declared.args as { phase?: string; traceId?: string }
+      return args.phase === 'started' ? !checkpoints.some((checkpoint) => checkpoint.traceId === args.traceId && checkpoint.outcomeKnown) && !this.require(id).toolCalls.some((result) => { const final = result.declared.args as { traceId?: string; phase?: string; outcomeKnown?: boolean }; return final.traceId === args.traceId && final.phase === 'result' && final.outcomeKnown === true }) : !args.traceId && checkpoints.length === 0
     })
+    if (unknown || checkpoints.some((checkpoint) => !checkpoint.outcomeKnown)) return fail('仍有实际副作用未知的调用，需先核对结果；不会重放')
+    const resume = checkpoints.length > 0 && /^\s*(继续|恢复|resume|continue)\s*$/i.test(answer)
+    const goal = resume ? current.title : `${current.title}\n用户补充：${answer}`
+    let plan: TaskPlan | null
+    try { plan = resume ? this.getPlan(id) ?? null : await this.plan(goal) ?? localRulePlan(goal) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
+    const root = extractRoot(answer) ?? (current.scope || null)
+    if (!root && (plan?.tool ?? chooseTool(goal)) !== 'browser') return fail('仍缺少明确授权目录')
+    if (plan && !resume) this.savePlan(id, plan, root ?? '')
+    const preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan, taskId: id, checkpoints })
+    this.db?.prepare('UPDATE tasks SET title = ?, scope = ?, status = ?, updated_at = ? WHERE id = ?').run(goal, root ?? '', preview.status, new Date().toISOString(), id)
+    this.saveOutcome(id, preview); return ok(this.emit(id))
   }
 
   private require(id: string): Task {

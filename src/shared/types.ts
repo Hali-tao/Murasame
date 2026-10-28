@@ -20,6 +20,15 @@ export interface Conversation {
   count: number
   pinned: boolean
   messages: Message[]
+  recalledMemoryIds?: string[]
+  recalledAtMessageId?: string
+}
+
+export interface MemoryExtractionStatus {
+  conversationId: string
+  status: 'processing' | 'saved' | 'unchanged' | 'skipped' | 'failed'
+  reason?: string
+  updatedAt: string
 }
 
 export interface MemoryEntry {
@@ -208,6 +217,8 @@ export interface AppSettings {
   userName: string
   /** 是否允许把屏幕截图发给当前模型服务。 */
   outboundImages: boolean
+  /** 写图片到桌面或图片文件夹：ask 每次问，allow 提前允许后不再问。 */
+  fileApproval: 'ask' | 'allow'
   proactivePace: 'low' | 'mid' | 'high'
   onboardingDone: boolean
   permissions: Permissions
@@ -291,6 +302,7 @@ export interface RelationshipView {
   history: Array<{ stage: string; since: string }>
   lineId: string
   address: string
+  archivedLines?: Array<{ lineId: string; stage: string; since: string; history: Array<{ stage: string; since: string }> }>
 }
 
 export interface MurasameCore {
@@ -309,6 +321,8 @@ export interface MurasameCore {
   clearMemories(): Promise<Result<MemoryEntry[]>>
   createTask(title: string): Promise<Result<Task>>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Result<Task>>
+  continueTask(id: string, answer: string): Promise<Result<Task>>
+  openArtifact(id: string, artifact: string): Promise<Result<string>>
   cancelTask(id: string): Promise<Result<Task>>
   setToolEnabled(id: string, enabled: boolean): Promise<Result<ToolCapability>>
   verifyModel(id: string, input?: ModelInput): Promise<Result<ModelProfile>>
@@ -338,7 +352,7 @@ export interface MurasameApi {
     showMain(): Promise<void>
     hideMain(): Promise<void>
     minimize(): Promise<void>
-    openPath(path: '/tasks' | '/chat' | '/settings'): Promise<void>
+    openPath(path: string): Promise<void>
     onNavigated(listener: (path: string) => void): () => void
   }
   pet: {
@@ -346,12 +360,16 @@ export interface MurasameApi {
     hide(): Promise<PetState>
     toggle(): Promise<PetState>
     getState(): Promise<PetState>
+    getAffect(): Promise<PerformanceCue['pad']>
     setScale(scale: number): Promise<PetState>
     setPosition(x: number, y: number): Promise<PetState>
     setIgnoreMouseEvents(ignore: boolean): Promise<void>
     getBounds(): Promise<PetBounds>
     resetPosition(): Promise<PetState>
     setChatOpen(open: boolean): Promise<PetChatLayout>
+    beginDrag(screenX: number, screenY: number): Promise<void>
+    dragMove(screenX: number, screenY: number): Promise<void>
+    endDrag(): Promise<void>
     onFocusChat(listener: () => void): () => void
     onStateChanged(listener: (state: PetState) => void): () => void
     onPerformance(listener: (cue: PerformanceCue) => void): () => void
@@ -371,6 +389,8 @@ export interface MurasameApi {
   relationship: {
     get(): Promise<RelationshipView>
     reset(): Promise<RelationshipView>
+    changeAppearance(input: { patch: Pick<Partial<AppSettings>, 'petPreset' | 'importedModelUrl' | 'importedCharacterName'>; mode: 'continue' | 'new' }): Promise<{ settings: AppSettings; relationship: RelationshipView }>
+    onChanged(listener: (relationship: RelationshipView) => void): () => void
   }
   data: {
     exportBundle(passphrase: string, path?: string): Promise<Result<{ path: string; note: string }>>
@@ -398,7 +418,10 @@ export interface MurasameApi {
     onMessageStarted(listener: (payload: ChatTurnStarted) => void): () => void
     onMessageFailed(listener: (payload: ChatTurnFailed) => void): () => void
     onConversationUpdated(listener: (conversation: Conversation) => void): () => void
+    onScreenUpdated(listener: (analysis: ScreenAnalysis) => void): () => void
     onTaskUpdated(listener: (task: Task) => void): () => void
+    onMemoriesUpdated(listener: (memories: MemoryEntry[]) => void): () => void
+    onMemoryExtractionStatus(listener: (status: MemoryExtractionStatus) => void): () => void
     onActiveConversation(listener: (payload: { id: string }) => void): () => void
   }
 }

@@ -14,12 +14,15 @@ const root = join(__dirname, '..', '..')
 const electronBinary = join(root, 'node_modules', 'electron', 'dist', 'electron.exe')
 
 test('history clearing, memory editing and model switching are end-to-end usable', async () => {
+  test.setTimeout(90_000)
   const server = await startModelServer()
   const app = await launchApp()
   try {
     const page = await findMainPage(app)
     await expect(page.getByTestId('nav-overview')).toBeVisible()
 
+    await page.getByTestId('nav-chat').click()
+    await page.getByLabel('新建会话', { exact: true }).click()
     await page.getByTestId('nav-history').click()
     await expect(page.getByTestId('history-item').first()).toBeVisible()
     const historyBefore = await page.getByTestId('history-item').count()
@@ -30,7 +33,7 @@ test('history clearing, memory editing and model switching are end-to-end usable
     await page.getByTestId('nav-memory').click()
     await page.getByTestId('add-memory').click()
     const memoryDialog = page.getByRole('dialog')
-    await memoryDialog.getByTestId('memory-category').fill('E2E 偏好')
+    await memoryDialog.getByTestId('memory-category').fill('偏好')
     await memoryDialog.getByTestId('memory-text').fill('E2E 临时记忆')
     await memoryDialog.getByRole('button', { name: '添加记忆' }).click()
 
@@ -39,7 +42,8 @@ test('history clearing, memory editing and model switching are end-to-end usable
     await memoryCard.getByRole('button', { name: '编辑' }).click()
     await page.getByRole('dialog').getByTestId('memory-text').fill('E2E 记忆已编辑')
     await page.getByRole('dialog').getByRole('button', { name: '保存更正' }).click()
-    await expect(page.getByText('E2E 记忆已编辑', { exact: true })).toBeVisible()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(page.getByTestId('memory-card').getByText('E2E 记忆已编辑', { exact: true })).toBeVisible()
 
     const editedCard = page.getByTestId('memory-card').filter({ hasText: 'E2E 记忆已编辑' })
     await editedCard.getByRole('button', { name: '删除' }).click()

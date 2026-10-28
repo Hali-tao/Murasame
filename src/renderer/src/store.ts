@@ -7,6 +7,7 @@ import type {
   Conversation,
   DeleteScope,
   MemoryEntry,
+  MemoryExtractionStatus,
   ModelInput,
   ModelProfile,
   Result,
@@ -28,6 +29,7 @@ interface AppStore {
   loading: boolean
   startupError: string | null
   busy: Record<string, boolean>
+  memoryExtractions: Record<string, MemoryExtractionStatus>
   toasts: ToastItem[]
   selectedConversationId: string | null
   selectedTaskId: string | null
@@ -80,8 +82,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         conversations: data.conversations.map((item) =>
           item.id === conversation.id ? conversation : item
         )
-      },
-      selectedConversationId: conversation.id
+      }
     })
   }
 
@@ -98,11 +99,15 @@ export const useAppStore = create<AppStore>((set, get) => {
   }
 
   const busyRun = async <T>(key: string, action: () => Promise<T>): Promise<T> => {
-    set((state) => ({ busy: { ...state.busy, [key]: true } }))
+    set((state) => ({ busy: { ...state.busy, [key]: true, ...(key.startsWith('chat:send:') ? { 'chat:send': true } : {}) } }))
     try {
       return await action()
     } finally {
-      set((state) => ({ busy: { ...state.busy, [key]: false } }))
+      set((state) => {
+        const busy = { ...state.busy, [key]: false }
+        if (key.startsWith('chat:send:')) busy['chat:send'] = Object.entries(busy).some(([name, active]) => name.startsWith('chat:send:') && active)
+        return { busy }
+      })
     }
   }
 
@@ -112,6 +117,7 @@ export const useAppStore = create<AppStore>((set, get) => {
     loading: true,
     startupError: null,
     busy: {},
+    memoryExtractions: {},
     toasts: [],
     selectedConversationId: null,
     selectedTaskId: null,
@@ -148,6 +154,10 @@ export const useAppStore = create<AppStore>((set, get) => {
           const current = get().data
           if (current) set({ data: { ...current, settings: next } })
         })
+        window.murasame.events.onScreenUpdated?.(screenAnalysis => {
+          const current = get().data
+          if (current) set({ data: { ...current, screenAnalysis } })
+        })
         window.murasame.events.onConversationUpdated((conversation) => {
           const current = get().data
           if (!current) return
@@ -159,8 +169,21 @@ export const useAppStore = create<AppStore>((set, get) => {
                 ? current.conversations.map((item) => (item.id === conversation.id ? conversation : item))
                 : [conversation, ...current.conversations]
             },
-            selectedConversationId: conversation.id
+            busy: { ...get().busy, [`chat:remote:${conversation.id}`]: false }
           })
+        })
+        window.murasame.events.onMessageStarted(({ conversationId }) => {
+          set((state) => ({ busy: { ...state.busy, [`chat:remote:${conversationId}`]: true } }))
+        })
+        window.murasame.events.onMessageFailed(({ conversationId }) => {
+          set((state) => ({ busy: { ...state.busy, [`chat:remote:${conversationId}`]: false } }))
+        })
+        window.murasame.events.onMemoriesUpdated?.((memories) => {
+          const current = get().data
+          if (current) set({ data: { ...current, memories } })
+        })
+        window.murasame.events.onMemoryExtractionStatus?.((status) => {
+          set((state) => ({ memoryExtractions: { ...state.memoryExtractions, [status.conversationId]: status } }))
         })
         window.murasame.events.onActiveConversation(({ id }) => {
           set({ selectedConversationId: id })
@@ -244,7 +267,7 @@ export const useAppStore = create<AppStore>((set, get) => {
     },
 
     async sendMessage(conversationId, text) {
-      return busyRun('chat:send', async () => {
+      return busyRun(`chat:send:${conversationId}`, async () => {
         const result = await window.murasame.core.sendMessage(conversationId, text)
         const conversation = unwrap(result, get().notify)
         if (conversation) replaceConversation(conversation)
@@ -276,7 +299,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         const memory = unwrap(result, get().notify)
         if (!memory) return null
         const data = get().data
-        if (data) set({ data: { ...data, memories: [memory, ...data.memories] } })
+        if (data) set({ data: { ...data, memories: [memory, ...data.memories.filter((item) => item.id !== memory.id)] } })
         get().notify('已添加记忆条目')
         return memory
       })
@@ -292,7 +315,7 @@ export const useAppStore = create<AppStore>((set, get) => {
           set({
             data: {
               ...data,
-              memories: data.memories.map((item) => (item.id === id ? memory : item))
+              memories: [memory, ...data.memories.filter((item) => item.id !== id && item.id !== memory.id)]
             }
           })
         }
@@ -520,6 +543,7 @@ export function resetStoreForTests(): void {
     loading: true,
     startupError: null,
     busy: {},
+    memoryExtractions: {},
     toasts: [],
     selectedConversationId: null,
     selectedTaskId: null,

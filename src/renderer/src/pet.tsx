@@ -1,8 +1,10 @@
-import { Mic, Minus, Plus, RotateCcw, Send, X } from 'lucide-react'
+import { Mic, Minus, Plus, RotateCcw, Send, SquarePen, X } from 'lucide-react'
 import { StrictMode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { DEFAULT_PET_PRESET, getPetPreset } from '@shared/pet-presets'
-import { pickPetActivity } from '@shared/pet-activity'
+import { listPetActivities, type PetActivity } from '@shared/pet-activity'
+import { petDimensions } from '@shared/pet-geometry'
+import { petSpeech } from '@shared/pet-speech'
 import type { Conversation, PerformanceCue, PetChatLayout, PetState, Task } from '@shared/types'
 import { Live2DPet, type Live2DPetHandle } from './components/Live2DPet'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -16,6 +18,27 @@ function clipBubble(text: string, expanded: boolean): string {
   const flat = text.replace(/\s+/g, ' ').trim()
   if (expanded || flat.length <= 72) return flat
   return `${flat.slice(0, 72)}…`
+}
+
+function isolationViewSrc(url: string): string {
+  try {
+    const parsed = new URL(url)
+    parsed.searchParams.set('autoconnect', '1')
+    parsed.searchParams.set('resize', 'scale')
+    return parsed.toString()
+  } catch {
+    return url
+  }
+}
+
+function readDismissed(): Set<string> {
+  try {
+    const raw = window.localStorage.getItem('murasame-pet-dismissed')
+    const parsed = raw ? JSON.parse(raw) as unknown : []
+    return new Set(Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [])
+  } catch {
+    return new Set()
+  }
 }
 
 function PetApp(): React.JSX.Element {
@@ -35,18 +58,26 @@ function PetApp(): React.JSX.Element {
   const [dimmedText, setDimmedText] = useState('')
   const [chat, setChat] = useState<PetChatLayout>({ open: false, side: 'right' })
   const [draft, setDraft] = useState('')
-  const [sending, setSending] = useState(false)
+  const [sendingIds, setSendingIds] = useState<Record<string, boolean>>({})
+  const sending = Boolean(sendingIds[conversation?.id ?? 'new'])
   const [recording, setRecording] = useState(false)
   const [notice, setNotice] = useState('')
   const [voiceNote, setVoiceNote] = useState('')
   const [microphone, setMicrophone] = useState(false)
+  const [fileApproval, setFileApproval] = useState<'ask' | 'allow'>('ask')
   const [speakReplies, setSpeakReplies] = useState(true)
   const [dragging, setDragging] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
-  const [dismissedActivity, setDismissedActivity] = useState<ReadonlySet<string>>(() => new Set())
+  const [dismissedActivity, setDismissedActivity] = useState<ReadonlySet<string>>(() => readDismissed())
   const [activityBusy, setActivityBusy] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const [isoUrl, setIsoUrl] = useState('')
+  const [isoOpen, setIsoOpen] = useState(true)
   const lastTapAt = useRef(0)
+  const lastInteraction = useRef(0)
+  const [idleMs, setIdleMs] = useState(0)
+  const [speaking, setSpeaking] = useState(false)
   const live2dRef = useRef<Live2DPetHandle>(null)
   const ignoringRef = useRef(true)
   const lastHitAt = useRef(0)
@@ -62,16 +93,17 @@ function PetApp(): React.JSX.Element {
     ready: boolean
     started: boolean
   } | null>(null)
-  const rafRef = useRef<number | null>(null)
-  const latestPosition = useRef<{ x: number; y: number } | null>(null)
   const chatRef = useRef(chat)
   const conversationRef = useRef(conversation)
+  const activeIdRef = useRef<string | null>(null)
+  const selectionVersion = useRef(0)
   const recordingRef = useRef<Recording | null>(null)
   const composerRef = useRef<HTMLTextAreaElement>(null)
   const openChatRef = useRef<() => Promise<void>>(async () => undefined)
   const speakRef = useRef(true)
-  const speakingRef = useRef(false)
-  const queuedSpeech = useRef<string | null>(null)
+  const speechController = useRef<AbortController | null>(null)
+  const recordingController = useRef<AbortController | null>(null)
+  const recordingOrigin = useRef<{ id: string | null; version: number } | null>(null)
   const seenAssistantId = useRef<string | null | undefined>(undefined)
   const logRef = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
@@ -87,7 +119,15 @@ function PetApp(): React.JSX.Element {
   }, [pet.importedModelUrl, pet.preset])
 
   const lastAssistant = [...(conversation?.messages ?? [])].reverse().find((item) => item.role === 'assistant')
-  const bubbleText = streaming || proactiveText || lastAssistant?.text || ''
+  const bubbleText = streaming || proactiveText || petSpeech(lastAssistant?.text || '')
+  useEffect(() => {
+    lastInteraction.current = Date.now()
+    const touched = (): void => { lastInteraction.current = Date.now(); setIdleMs(0) }
+    window.addEventListener('pointerdown', touched)
+    window.addEventListener('keydown', touched)
+    const timer = window.setInterval(() => setIdleMs(Date.now() - lastInteraction.current), 1000)
+    return () => { window.clearInterval(timer); window.removeEventListener('pointerdown', touched); window.removeEventListener('keydown', touched) }
+  }, [])
 
   useEffect(() => {
     if (!window.murasame) return
@@ -100,6 +140,15 @@ function PetApp(): React.JSX.Element {
     if (!window.murasame) return
     let cancelled = false
     const applyConversation = (next: Conversation | null): void => {
+      if (conversationRef.current?.id !== next?.id) {
+        speechController.current?.abort()
+        recordingController.current?.abort()
+        recordingRef.current = null
+        setRecording(false)
+        seenAssistantId.current = [...(next?.messages ?? [])].reverse().find(item => item.role === 'assistant')?.id ?? null
+      }
+      activeIdRef.current = next?.id ?? null
+      conversationRef.current = next
       setConversation(next)
       setStreaming('')
       setPendingUser((pending) => {
@@ -109,38 +158,50 @@ function PetApp(): React.JSX.Element {
       })
       setProactiveText('')
     }
+    const initialVersion = selectionVersion.current
     void window.murasame.core.getBootstrap().then((result) => {
-      if (cancelled || !result.ok) return
+      if (cancelled || !result.ok || selectionVersion.current !== initialVersion) return
       const id = result.data.activeConversationId ?? result.data.conversations[0]?.id ?? null
       setMicrophone(result.data.settings.permissions.microphone)
+      setFileApproval(result.data.settings.fileApproval ?? 'ask')
       setSpeakReplies(result.data.settings.speakReplies)
       applyConversation(result.data.conversations.find((item) => item.id === id) ?? null)
     })
     const stopUpdated = window.murasame.events.onConversationUpdated((next) => {
-      if (conversationRef.current && conversationRef.current.id !== next.id) return
+      setSendingIds(current => ({ ...current, [next.id]: false }))
+      if (activeIdRef.current && activeIdRef.current !== next.id) return
       applyConversation(next)
     })
     const stopActive = window.murasame.events.onActiveConversation(({ id }) => {
-      if (conversationRef.current?.id === id) return
+      if (activeIdRef.current === id) return
+      speechController.current?.abort()
+      recordingController.current?.abort()
+      recordingRef.current = null
+      setRecording(false)
+      activeIdRef.current = id
+      const version = ++selectionVersion.current
+      setPendingUser(''); setStreaming(''); setDraft('')
       void window.murasame.core.getBootstrap().then((result) => {
-        if (cancelled || !result.ok) return
+        if (cancelled || !result.ok || selectionVersion.current !== version) return
         applyConversation(result.data.conversations.find((item) => item.id === id) ?? null)
       })
     })
     const stopDelta = window.murasame.events.onMessageDelta((payload) => {
-      const currentId = conversationRef.current?.id
+      const currentId = activeIdRef.current
       if (currentId && payload.conversationId !== currentId) return
       setProactiveText('')
       setStreaming((value) => `${value}${payload.delta}`)
     })
     const stopStarted = window.murasame.events.onMessageStarted((payload) => {
-      const currentId = conversationRef.current?.id
+      setSendingIds(current => ({ ...current, [payload.conversationId]: true }))
+      const currentId = activeIdRef.current
       if (currentId && payload.conversationId !== currentId) return
       setPendingUser((value) => (value === payload.userText ? value : payload.userText))
       setStreaming('')
     })
     const stopFailed = window.murasame.events.onMessageFailed((payload) => {
-      const currentId = conversationRef.current?.id
+      setSendingIds(current => ({ ...current, [payload.conversationId]: false }))
+      const currentId = activeIdRef.current
       if (currentId && payload.conversationId !== currentId) return
       setPendingUser('')
       setStreaming('')
@@ -195,54 +256,51 @@ function PetApp(): React.JSX.Element {
   useEffect(() => {
     if (!window.murasame) return
     return window.murasame.settings.onChanged((settings) => {
+      speakRef.current = settings.speakReplies
       setSpeakReplies(settings.speakReplies)
+      if (!settings.speakReplies) speechController.current?.abort()
+      if (!settings.permissions.microphone) recordingController.current?.abort()
       setMicrophone(settings.permissions.microphone)
+      if (!settings.permissions.microphone && recordingRef.current) {
+        const active = recordingRef.current; recordingRef.current = null
+        void active.stop().catch(() => undefined)
+        setRecording(false); setNotice('麦克风授权已撤销，录音已停止。')
+      }
+      setFileApproval(settings.fileApproval ?? 'ask')
     })
   }, [])
 
   useEffect(() => {
-    const last = [...(conversation?.messages ?? [])].reverse().find((item) => item.role === 'assistant')
-    if (seenAssistantId.current === undefined) {
-      if (!conversation) return
-      seenAssistantId.current = last?.id ?? null
-      return
-    }
+    const last = [...(conversation?.messages ?? [])].reverse().find(item => item.role === 'assistant')
+    if (seenAssistantId.current === undefined) { if (conversation) seenAssistantId.current = last?.id ?? null; return }
     if (!last || last.id === seenAssistantId.current) return
     seenAssistantId.current = last.id
     if (!speakRef.current) return
-    const speak = async (text: string): Promise<void> => {
-      speakingRef.current = true
+    speechController.current?.abort()
+    const controller = new AbortController()
+    speechController.current = controller
+    const id = conversation?.id
+    const valid = (): boolean => !controller.signal.aborted && speakRef.current && activeIdRef.current === id
+    void (async () => {
+      setSpeaking(true)
       try {
-        const spoken = await window.murasame.voice.speak(text)
-        if (!spoken.played || spoken.samples.length === 0) {
-          setVoiceNote(spoken.message || '这次没有出声，文字还在。')
-          live2dRef.current?.setMouth(null)
-          return
-        }
+        const spoken = await window.murasame.voice.speak(petSpeech(last.text))
+        if (!valid()) return
+        if (!spoken.played || !spoken.samples.length) { setVoiceNote(spoken.message || '这次没有出声，文字还在。'); return }
         setVoiceNote('')
         const frames = mouthEnvelope(spoken.samples, spoken.sampleRate)
-        await playSamples(spoken.samples, spoken.sampleRate, (seconds) => {
-          const index = Math.min(frames.length - 1, Math.floor(seconds * 30))
-          live2dRef.current?.setMouth(frames[index] ?? 0)
-        })
-        live2dRef.current?.setMouth(0)
-        window.setTimeout(() => live2dRef.current?.setMouth(null), 120)
-      } catch (error) {
-        setVoiceNote(error instanceof Error ? error.message : '朗读失败，文字还在。')
-        live2dRef.current?.setMouth(null)
-      } finally {
-        speakingRef.current = false
-        const next = queuedSpeech.current
-        queuedSpeech.current = null
-        if (next) void speak(next)
-      }
-    }
-    if (speakingRef.current) {
-      queuedSpeech.current = last.text
-      return
-    }
-    void speak(last.text)
+        await playSamples(spoken.samples, spoken.sampleRate, seconds => {
+          if (valid()) live2dRef.current?.setMouth(frames[Math.min(frames.length - 1, Math.floor(seconds * 30))] ?? 0)
+        }, controller.signal)
+      } catch (error) { if (valid()) setVoiceNote(error instanceof Error ? error.message : '朗读失败，文字还在。') }
+      finally { if (speechController.current === controller) { setSpeaking(false); live2dRef.current?.setMouth(null) } }
+    })()
   }, [conversation])
+
+  useEffect(() => {
+    const timer = window.setInterval(() => { void window.murasame.pet.getAffect().then(setPad).catch(() => undefined) }, 5000)
+    return () => { window.clearInterval(timer); speechController.current?.abort(); recordingController.current?.abort(); void recordingRef.current?.stop() }
+  }, [])
 
   useEffect(() => {
     if (!bubbleText || chat.open || bubbleExpanded) return
@@ -262,7 +320,8 @@ function PetApp(): React.JSX.Element {
       if (!allowHitSample(now, lastHitAt.current)) return
       lastHitAt.current = now
       const target = event.target as HTMLElement | null
-      const overHitArea = Boolean(target?.closest('[data-pet-hit]'))
+      const hit = target?.closest('[data-pet-hit]')
+      const overHitArea = Boolean(hit && (!hit.classList.contains('pet-character') || live2dRef.current?.hitTest(event.clientX, event.clientY)))
       const shouldIgnore = !overHitArea
       if (shouldIgnore !== ignoringRef.current) {
         ignoringRef.current = shouldIgnore
@@ -297,11 +356,28 @@ function PetApp(): React.JSX.Element {
     setChat(layout)
   }
 
+  const startFresh = async (): Promise<void> => {
+    const created = await window.murasame.core.createConversation()
+    if (!created.ok) {
+      setNotice(created.error)
+      return
+    }
+    if (activeIdRef.current && activeIdRef.current !== created.data.id) return
+    setConversation(created.data)
+    setDraft('')
+    setNotice('')
+    setPendingUser('')
+    setStreaming('')
+    setProactiveText('')
+  }
+
   const send = async (text: string): Promise<void> => {
     const content = text.trim()
     if (!content || sending) return
     setNotice('')
-    setSending(true)
+    const pendingId = conversationRef.current?.id ?? 'new'
+    let sentId = pendingId
+    setSendingIds(current => ({ ...current, [pendingId]: true }))
     setDraft('')
     setPendingUser(content)
     setStreaming('')
@@ -319,7 +395,10 @@ function PetApp(): React.JSX.Element {
         id = created.data.id
         setConversation(created.data)
       }
+      sentId = id
+      setSendingIds(current => ({ ...current, [id]: true }))
       const result = await window.murasame.core.sendMessage(id, content)
+      if (activeIdRef.current && activeIdRef.current !== id) return
       if (!result.ok) {
         setNotice(result.error)
         setDraft(content)
@@ -331,7 +410,7 @@ function PetApp(): React.JSX.Element {
       setPendingUser('')
       setStreaming('')
     } finally {
-      setSending(false)
+      setSendingIds(current => ({ ...current, [pendingId]: false, [sentId]: false }))
     }
   }
 
@@ -341,27 +420,38 @@ function PetApp(): React.JSX.Element {
       setNotice('录音授权被拒绝。文字输入仍然可用，这次没有生成内容。')
       return
     }
+    recordingController.current?.abort()
+    const controller = new AbortController()
+    recordingController.current = controller
+    recordingOrigin.current = { id: activeIdRef.current, version: selectionVersion.current }
     const readiness = await window.murasame.voice.readiness()
+    if (controller.signal.aborted || recordingController.current !== controller) return
     if (!readiness.stt) {
       setNotice(readiness.detail)
       return
     }
     try {
-      recordingRef.current = await startRecording()
+      recordingRef.current = await startRecording(controller.signal)
       setRecording(true)
       setNotice('')
     } catch (error) {
+      if (controller.signal.aborted || recordingController.current !== controller) return
       setNotice(error instanceof Error ? error.message : '无法打开麦克风')
     }
   }
 
   const endVoice = async (): Promise<void> => {
     const current = recordingRef.current
-    if (!current) return
+    const controller = recordingController.current
+    const origin = recordingOrigin.current
+    if (!current) { controller?.abort(); return }
     recordingRef.current = null
     setRecording(false)
     const samples = await current.stop()
+    const valid = (): boolean => Boolean(controller && !controller.signal.aborted && recordingController.current === controller && origin && origin.version === selectionVersion.current && origin.id === activeIdRef.current)
+    if (!valid()) return
     const result = await window.murasame.voice.transcribe(samples)
+    if (!valid()) return
     if (!result.accepted || !result.text.trim()) {
       setNotice(result.message || '没有识别到内容。文字输入仍然可用。')
       return
@@ -381,21 +471,15 @@ function PetApp(): React.JSX.Element {
       pointerY: event.screenY,
       windowX: 0,
       windowY: 0,
-      ready: false,
+      ready: true,
       started: false
     }
-    void window.murasame.pet.getBounds().then((bounds) => {
-      const drag = dragRef.current
-      if (!drag || drag.pointerId !== event.pointerId) return
-      drag.windowX = bounds.x
-      drag.windowY = bounds.y
-      drag.ready = true
-    })
   }
 
   const moveDrag = (event: React.PointerEvent<HTMLDivElement>): void => {
     const drag = dragRef.current
     if (!drag || drag.pointerId !== event.pointerId) return
+    if (event.movementX === 0 && event.movementY === 0) return
     dragDistanceRef.current = Math.max(
       dragDistanceRef.current,
       Math.hypot(event.screenX - drag.pointerX, event.screenY - drag.pointerY)
@@ -403,29 +487,21 @@ function PetApp(): React.JSX.Element {
     if (!drag.started && dragDistanceRef.current > 4) {
       drag.started = true
       setDragging(true)
+      void window.murasame.pet.beginDrag(event.screenX, event.screenY)
     }
-    if (!drag.started || !drag.ready) return
-    latestPosition.current = {
-      x: Math.round(drag.windowX + event.screenX - drag.pointerX),
-      y: Math.round(drag.windowY + event.screenY - drag.pointerY)
-    }
-    if (rafRef.current !== null) return
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = null
-      const position = latestPosition.current
-      if (position) void window.murasame.pet.setPosition(position.x, position.y)
-    })
+    if (!drag.started) return
+    void window.murasame.pet.dragMove(event.screenX, event.screenY)
   }
 
   const endDrag = (event: React.PointerEvent<HTMLDivElement>): void => {
     const drag = dragRef.current
     if (!drag || drag.pointerId !== event.pointerId) return
     const moved = drag.started
-    const verticalDelta = event.screenY - drag.pointerY
     dragRef.current = null
     setDragging(false)
+    void window.murasame.pet.endDrag()
     if (moved) {
-      live2dRef.current?.playMotion(verticalDelta < -18 ? 'dragUp' : verticalDelta > 18 ? 'dragDown' : 'drag')
+      live2dRef.current?.playMotion('drag')
     } else if (performance.now() - lastTapAt.current > 700) {
       lastTapAt.current = performance.now()
       const bounds = event.currentTarget.getBoundingClientRect()
@@ -438,39 +514,73 @@ function PetApp(): React.JSX.Element {
     }
   }
 
-  const activity = pickPetActivity(tasks, dismissedActivity)
+  useEffect(() => {
+    if (!window.murasame) return
+    let stopped = false
+    const tick = (): void => {
+      void window.murasame.autonomy.status().then((status) => {
+        if (!stopped) setIsoUrl(status.viewUrl || '')
+      }).catch(() => undefined)
+    }
+    tick()
+    const timer = window.setInterval(tick, 3000)
+    return () => {
+      stopped = true
+      window.clearInterval(timer)
+    }
+  }, [])
 
-  const decideActivity = async (allow: boolean): Promise<void> => {
-    if (!activity || activityBusy) return
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const apply = (): void => setReducedMotion(media.matches)
+    apply()
+    media.addEventListener('change', apply)
+    return () => media.removeEventListener('change', apply)
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('murasame-pet-dismissed', JSON.stringify([...dismissedActivity]))
+  }, [dismissedActivity])
+
+  const activities = listPetActivities(tasks, dismissedActivity)
+
+  const chooseFileApproval = (mode: 'ask' | 'allow'): void => {
+    setFileApproval(mode)
+    void window.murasame.settings.update({ fileApproval: mode })
+  }
+
+  const decideActivity = async (item: PetActivity, allow: boolean): Promise<void> => {
+    if (activityBusy) return
     setActivityBusy(true)
     setNotice('')
     const result = allow
-      ? await window.murasame.core.approveTask(activity.id, 'once')
-      : await window.murasame.core.cancelTask(activity.id)
+      ? await window.murasame.core.approveTask(item.id, 'once')
+      : await window.murasame.core.cancelTask(item.id)
     setActivityBusy(false)
     if (!result.ok) setNotice(result.error)
   }
 
-  const openActivity = (): void => {
-    void window.murasame.window.openPath('/tasks')
+  const openActivity = (id: string): void => {
+    setIsoOpen(true)
+    void window.murasame.window.openPath(`/tasks?focus=${encodeURIComponent(id)}`)
   }
 
-  const dismissActivity = (): void => {
-    if (!activity) return
-    setDismissedActivity((current) => new Set(current).add(activity.id))
+  const dismissActivity = (id: string): void => {
+    setDismissedActivity((current) => new Set(current).add(id))
   }
 
   const hidden = !pet.visible
   const idle = idlePresentation({ hidden, blinkMs: idleFromPad(pad, hidden)?.blinkMs ?? 4200 })
-  const fps = targetFps({ hidden, interacting: dragging || chat.open || sending, idleMs: idle ? 120_000 : 0 })
+  const working = tasks.some((task) => task.status === '执行中' || task.status === '规划中')
+  const fps = reducedMotion ? 0 : targetFps({ hidden, interacting: dragging || chat.open || sending || working || speaking, idleMs })
+  const dimensions = petDimensions(pet.scale, chat.open)
   if (hidden) return <div className="pet-hidden-root" />
 
   const recent = conversation?.messages.slice(-8) ?? []
-  const anchor = chat.open && chat.side === 'left' ? 'anchor-right' : 'anchor-left'
 
   return (
-    <div className={`pet-stage${dragging ? ' dragging' : ''}${chat.open ? ' chat-open' : ''}`}>
-      <div className={`pet-column ${anchor}`}>
+    <div className={`pet-stage${dragging ? ' dragging' : ''}${chat.open ? ` chat-open side-${chat.side}` : ''}`} style={{ '--pet-column-width': `${dimensions.columnWidth}px`, '--pet-height': `${dimensions.height}px`, '--character-width': `${dimensions.characterWidth}px`, '--character-height': `${dimensions.characterHeight}px` } as React.CSSProperties}>
+      <div className="pet-column">
         {bubbleText ? (
           <button
             type="button"
@@ -485,7 +595,7 @@ function PetApp(): React.JSX.Element {
         <div
           className="pet-character"
           data-pet-hit
-          style={{ transform: `scale(${pet.scale})` }}
+          onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); void openChat() } }}
           onPointerDown={startDrag}
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
@@ -517,22 +627,46 @@ function PetApp(): React.JSX.Element {
           <button type="button" onClick={() => void window.murasame.pet.resetPosition()} aria-label="复位桌宠位置"><RotateCcw size={14} /></button>
           <button type="button" onClick={() => void window.murasame.pet.hide()} aria-label="隐藏桌宠"><X size={14} /></button>
         </div>
+        {isoUrl && isoOpen ? (
+          <div className="pet-iso" data-pet-hit>
+            <div className="pet-iso-bar">
+              <strong>隔离桌面</strong>
+              <button type="button" onClick={() => setIsoOpen(false)}>收起</button>
+            </div>
+            <iframe title="隔离桌面" src={isolationViewSrc(isoUrl)} />
+          </div>
+        ) : null}
+        {isoUrl && !isoOpen ? (
+          <button type="button" className="pet-iso-tab" data-pet-hit onClick={() => setIsoOpen(true)}>看隔离桌面</button>
+        ) : null}
         {notice && !chat.open ? <p className="pet-toast" data-pet-hit>{notice}</p> : null}
-        {activity ? (
-          <div className={`pet-activity is-${activity.kind}`} data-pet-hit>
-            <button type="button" className="pet-activity-main" onClick={openActivity}>
-              <strong>{activity.label}</strong>
-              <span>{activity.detail}</span>
-              {activity.waiting > 1 ? <em>还有 {activity.waiting - 1} 件也在等你</em> : null}
-            </button>
-            {activity.canApprove ? (
-              <div className="pet-activity-actions">
-                <button type="button" disabled={activityBusy} onClick={() => void decideActivity(true)}>允许</button>
-                <button type="button" disabled={activityBusy} onClick={() => void decideActivity(false)}>先不做</button>
+        {activities.length > 0 || sending ? (
+          <div className="pet-activity-stack" data-pet-hit>
+            {sending ? (
+              <div className="pet-activity is-running">
+                <div className="pet-activity-main">
+                  <strong>正在想</strong>
+                  <span>这句话还在等模型写完，没有替它念出来。</span>
+                </div>
               </div>
-            ) : activity.kind === 'running' ? null : (
-              <button type="button" className="pet-activity-dismiss" onClick={dismissActivity} aria-label="收起这条状态">收起</button>
-            )}
+            ) : null}
+            {activities.map((activity) => (
+              <div key={activity.id} className={`pet-activity is-${activity.kind}`}>
+                <button type="button" className="pet-activity-main" onClick={() => openActivity(activity.id)}>
+                  <strong>{activity.label}</strong>
+                  <span>{activity.detail}</span>
+                  {activity.waiting > 1 ? <em>还有 {activity.waiting - 1} 件也在等你</em> : null}
+                </button>
+                {activity.canApprove ? (
+                  <div className="pet-activity-actions">
+                    <button type="button" disabled={activityBusy} onClick={() => void decideActivity(activity, true)}>允许</button>
+                    <button type="button" disabled={activityBusy} onClick={() => void decideActivity(activity, false)}>先不做</button>
+                  </div>
+                ) : activity.kind === 'running' ? null : (
+                  <button type="button" className="pet-activity-dismiss" onClick={() => dismissActivity(activity.id)} aria-label="收起这条状态">收起</button>
+                )}
+              </div>
+            ))}
           </div>
         ) : null}
         <div className="pet-brand" data-pet-hit><span />MURASAME</div>
@@ -553,8 +687,11 @@ function PetApp(): React.JSX.Element {
       {chat.open ? (
         <section className={`pet-chat ${chat.side}`} data-pet-hit data-testid="pet-chat">
           <header className="pet-chat-head">
-            <strong>对话</strong>
-            <button type="button" onClick={() => void closeChat()} aria-label="收起对话"><X size={14} /></button>
+            <span />
+            <div className="pet-chat-head-actions">
+              <button type="button" onClick={() => void startFresh()} aria-label="新对话"><SquarePen size={14} /></button>
+              <button type="button" onClick={() => void closeChat()} aria-label="收起对话"><X size={14} /></button>
+            </div>
           </header>
           <div className="pet-chat-log" ref={logRef}>
             {recent.map((message) => (
@@ -562,7 +699,7 @@ function PetApp(): React.JSX.Element {
             ))}
             {pendingUser ? <p className="pet-chat-line user">{pendingUser}</p> : null}
             {streaming ? <p className="pet-chat-line assistant">{streaming}</p> : null}
-            {!recent.length && !pendingUser && !streaming ? <p className="pet-chat-empty">说点什么，控制台里能看到同一段对话。</p> : null}
+            {!recent.length && !pendingUser && !streaming ? <p className="pet-chat-empty">说点什么。</p> : null}
           </div>
           {notice ? <p className="pet-chat-notice">{notice}</p> : null}
           <form
@@ -572,6 +709,10 @@ function PetApp(): React.JSX.Element {
               void send(draft)
             }}
           >
+            <div className="pet-approval" role="group" aria-label="写图片的权限">
+              <button type="button" aria-pressed={fileApproval === 'ask'} onClick={() => chooseFileApproval('ask')}>询问</button>
+              <button type="button" aria-pressed={fileApproval === 'allow'} onClick={() => chooseFileApproval('allow')}>写图免问</button>
+            </div>
             <textarea
               ref={composerRef}
               value={draft}
@@ -591,9 +732,9 @@ function PetApp(): React.JSX.Element {
                 type="button"
                 aria-label="按住说话"
                 className={recording ? 'is-recording' : ''}
-                onPointerDown={() => void beginVoice()}
+                onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); void beginVoice() }}
                 onPointerUp={() => void endVoice()}
-                onPointerCancel={() => void endVoice()}
+                onPointerCancel={() => { recordingController.current?.abort(); recordingRef.current = null; setRecording(false) }}
               >
                 <Mic size={14} />
               </button>

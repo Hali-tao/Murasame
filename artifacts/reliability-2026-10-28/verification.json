@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-28",
+  "baseCommit": "5d5a708",
+  "platform": "Windows x64",
+  "checks": {
+    "typecheck": {
+      "passed": true
+    },
+    "lint": {
+      "passed": true
+    },
+    "unit": {
+      "files": 32,
+      "passed": 399,
+      "failed": 0
+    },
+    "electronE2E": {
+      "passed": 7,
+      "failed": 0,
+      "scenarios": [
+        "first launch/model verification/first streaming conversation",
+        "ten-page navigation and real approved file organization",
+        "pet visibility/keyboard/140 percent bounds",
+        "three bundled model presets",
+        "history clear/memory edit/delete/model switch",
+        "single instance",
+        "tray restore"
+      ]
+    },
+    "build": {
+      "passed": true
+    },
+    "traceability": {
+      "mapped": 74,
+      "total": 74,
+      "missing": 0,
+      "meaning": "Test mapping, not a substitute for manual acceptance"
+    },
+    "isolationLive": {
+      "passed": 12,
+      "failed": 0,
+      "containersCreated": 2,
+      "containersRemoved": 2,
+      "details": "isolation-verification.json"
+    }
+  },
+  "limits": [
+    "Physical mixed-DPI dragging and monitor hotplug still require manual acceptance.",
+    "Real microphone and speaker quality and long-running model-quality evaluation remain unverified.",
+    "Nailong V2 is a preview, not a finished native Cubism model.",
+    "No new Windows installer was produced."
+  ]
+}

@@ -1,5 +1,6 @@
 import { Check, Circle, Clock3, FileOutput, Plus, RefreshCw, ShieldAlert, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import type { Task } from '@shared/types'
 import { ApprovalDialog, TaskCreateDialog } from '../components/dialogs'
 import { Button, Card, CardHead, ConfirmDialog, EmptyState, Pill } from '../components/ui'
@@ -12,6 +13,7 @@ export function TasksPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const selectedId = useAppStore((state) => state.selectedTaskId)
   const selectTask = useAppStore((state) => state.selectTask)
+  const [params] = useSearchParams()
   const cancelTask = useAppStore((state) => state.cancelTask)
   const busyCancel = useAppStore((state) => Boolean(state.busy['task:cancel']))
   const notify = useAppStore((state) => state.notify)
@@ -19,6 +21,15 @@ export function TasksPage(): React.JSX.Element {
   const [createOpen, setCreateOpen] = useState(false)
   const [approvalOpen, setApprovalOpen] = useState(false)
   const [cancelOpen, setCancelOpen] = useState(false)
+  const [answers, setAnswers] = useState<Record<string, string>>({})
+  const answer = answers[selectedId ?? ''] ?? ''
+  const setAnswer = (value: string): void => setAnswers(current => ({ ...current, [selectedId ?? '']: value }))
+  const [continuing, setContinuing] = useState(false)
+
+  useEffect(() => {
+    const focus = params.get('focus')
+    if (focus) selectTask(focus)
+  }, [params, selectTask])
 
   const filtered = data.tasks.filter((task) => filter === '全部任务' || task.status === filter)
   const selected = data.tasks.find((task) => task.id === selectedId) ?? filtered[0] ?? data.tasks[0]
@@ -85,6 +96,22 @@ export function TasksPage(): React.JSX.Element {
               </div>
               <h2>{selected.title}</h2>
               <p className="task-summary">{selected.summary}</p>
+              {selected.status === '待确认' ? (
+                <form className="task-clarification" onSubmit={async event => {
+                  event.preventDefault()
+                  if (!answer.trim() || continuing) return
+                  setContinuing(true)
+                  try {
+                    const result = await window.murasame.core.continueTask(selected.id, answer.trim())
+                    if (!result.ok) notify(result.error, 'red')
+                    else setAnswer('')
+                  } finally { setContinuing(false) }
+                }}>
+                  <label htmlFor="task-answer">补充任务信息</label>
+                  <textarea id="task-answer" value={answer} onChange={event => setAnswer(event.target.value)} placeholder="回答上方问题，补充目录、目标或限制" />
+                  <Button type="submit" disabled={continuing || !answer.trim()}>继续规划</Button>
+                </form>
+              ) : null}
               <div className="task-meta-grid">
                 <div><span>创建</span><strong>{selected.created}</strong></div>
                 <div><span>模型</span><strong>{selected.model}</strong></div>
@@ -147,7 +174,10 @@ export function TasksPage(): React.JSX.Element {
               </div>
               <div className="artifact-row">
                 {selected.artifacts.length ? selected.artifacts.map((artifact) => (
-                  <button type="button" key={artifact} onClick={() => notify(artifact)}>
+                  <button type="button" key={artifact} onClick={async () => {
+                    const result = await window.murasame.core.openArtifact(selected.id, artifact)
+                    if (!result.ok) notify(result.error, 'red')
+                  }}>
                     <FileOutput size={14} />{artifact}
                   </button>
                 )) : <span className="muted">尚未生成可检查的产物。</span>}

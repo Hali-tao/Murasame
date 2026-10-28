@@ -128,7 +128,7 @@ export function TaskCreateDialog({
         <Input
           autoFocus
           value={title}
-          maxLength={120}
+          maxLength={4000}
           placeholder="例如：整理本周任务记录并生成周报初稿"
           onChange={(event) => setTitle(event.target.value)}
           onKeyDown={(event) => {

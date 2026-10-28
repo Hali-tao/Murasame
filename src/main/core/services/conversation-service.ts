@@ -4,7 +4,8 @@ import { ModelGateway } from '../../model/gateway'
 import { composePrompt } from '../../agent/prompts'
 import type { ModelRegistry } from '../../model/registry'
 import { searchHistory, type HistorySearchResult } from '../../history/search'
-import { compactContext } from '../../agent/runtime'
+import { compactContext, RequestQueue } from '../../agent/runtime'
+import { petLine, petSpeech, routeUtterance, type StepPose, type TeammateRoute } from '../../agent/teammates'
 import { addressSequence } from '../../data/repositories/trace-repository'
 import type { Conversation, Result } from '../../../shared/types'
 
@@ -46,12 +47,17 @@ export interface ConversationContext {
   character?: () => { name: string; style: string; example: string }
   recall?: (query: string) => { text: string; ids: string[] } | Promise<{ text: string; ids: string[] }>
   memoryEnabled?: () => boolean
+  relationship?: () => { stage: string; tone?: string; joke?: string }
+  onRecall?: (conversationId: string, detail: { turnId: string; ids: string[] }) => void
   onTurn?: (userText: string, conversationId: string) => void
   noticeTask?: (userText: string) => Promise<string | null>
-  onReply?: (reply: string) => void
+  onReply?: (reply: string, pose?: StepPose) => void
+  /** 非闲聊在调用对话模型之前交给队友。返回桌宠要说的那一句，以及这一步该做的动作。 */
+  handleTeammate?: (userText: string, route: TeammateRoute) => Promise<{ say: string; pose?: StepPose }>
 }
 
 export class ConversationService {
+  private readonly queues = new Map<string, RequestQueue>()
   constructor(
     private readonly db: SqliteDatabase,
     private readonly models: ModelAccess,
@@ -65,6 +71,8 @@ export class ConversationService {
       .all() as ConversationRow[]
     return rows.map((row) => this.hydrate(row))
   }
+
+  has(id: string | null): boolean { return Boolean(id && this.findRow(id)) }
 
   search(keyword: string): HistorySearchResult {
     try {
@@ -100,7 +108,7 @@ export class ConversationService {
       .prepare(`INSERT INTO conversations(id, title, pinned, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`)
       .run(id, '新的对话', 0, now, now)
     const name = this.context.character?.().name?.trim()
-    this.insertMessage(id, 'assistant', `${name ? `${name}在。` : '我在。'}想继续聊，还是从一件新事情开始？`, nowStamp())
+    this.insertMessage(id, 'assistant', name ? `${name}在。` : '我在。', nowStamp())
     return this.require(id)
   }
 
@@ -110,17 +118,58 @@ export class ConversationService {
     onDelta?: (delta: string) => void,
     onStart?: () => void
   ): Promise<Result<Conversation>> {
+    return this.inConversation(conversationId, () => this.sendTurn(conversationId, text, onDelta, onStart))
+  }
+
+  private async sendTurn(
+    conversationId: string, text: string, onDelta?: (delta: string) => void, onStart?: () => void
+  ): Promise<Result<Conversation>> {
     const existing = this.findRow(conversationId)
     if (!existing) return fail('会话不存在或已被清除')
+    const userAt = nowStamp()
+    const turnId = uid('msg')
+    const route = routeUtterance(text)
+    if (route.teammate !== 'chat') {
+      onStart?.()
+      let say = route.say
+      let pose: StepPose = 'act'
+      if (this.context.handleTeammate) {
+        try {
+          const handled = await this.context.handleTeammate(text, route)
+          if (handled.say.trim()) say = handled.say.trim()
+          if (handled.pose) pose = handled.pose
+        } catch (error) {
+          say = `这件事没交出去。${error instanceof Error ? error.message : '队友没有开始。'}`
+          pose = 'fail'
+        }
+      }
+      if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+      this.db.transaction(() => {
+        this.insertMessage(conversationId, 'user', text, userAt)
+        this.insertMessage(conversationId, 'assistant', say, nowStamp(), turnId)
+        this.recordRecall(conversationId, turnId, [], [])
+      })()
+      const title = existing.title === '新的对话' ? text.slice(0, 24) : existing.title
+      this.db.prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`).run(title, new Date().toISOString(), conversationId)
+      try {
+        this.context.onTurn?.(text, conversationId)
+        this.context.onRecall?.(conversationId, { turnId, ids: [] })
+        this.context.onReply?.(petSpeech(say), pose)
+      } catch {
+        // 台词已经记下。提取或表演失败不改这句。
+      }
+      return ok(this.require(conversationId))
+    }
     const model = this.models.getDefault()
-    if (!model) return fail('尚未配置模型，请先到「模型服务」填写服务地址、API Key 和模型名称')
+    const characterName = this.context.character?.().name
+    if (!model) return fail(petLine(characterName, 'no-model'))
     if (!model.model.trim()) return fail('当前模型尚未填写模型名称，请到「模型服务」补全配置')
     if (!model.endpoint.trim()) return fail('当前模型尚未填写服务地址，请到「模型服务」补全配置')
 
     const history = this.messages(conversationId)
     const compacted = compactContext(
       text,
-      history.map((message) => ({ id: message.id, evidence: message.text.slice(0, 80) })),
+      history.map((message) => ({ id: message.id, evidence: message.text, role: message.role, time: message.created_at })),
       24
     )
     const recentIds = new Set(compacted.recent.map((step) => step.id))
@@ -129,50 +178,38 @@ export class ConversationService {
       .map((message) => ({ role: message.role, content: message.text }))
     messages.push({ role: 'user', content: text })
     const character = this.context.character?.() ?? { name: '', style: '', example: '' }
-    const prompt = composePrompt(character)
+    const relationship = this.context.relationship?.()
+    const prompt = composePrompt(character, relationship?.stage)
     const memoryEnabled = this.context.memoryEnabled?.() ?? false
     const recalled = memoryEnabled && this.context.recall
       ? await this.context.recall(text)
       : { text: '', ids: [] as string[] }
-    const earlier = compacted.summary ? `\n更早的对话摘要：${compacted.summary.slice(0, 800)}` : ''
-    const system = `${prompt.text}${earlier}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
+    if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+    const earlier = compacted.summary ? `\n更早的对话记录摘录（保留来源角色；更正以较新的用户陈述为准，助手陈述不等于用户事实）：\n${compacted.summary}` : ''
+    const voice = relationship ? `\n关系表达：${relationship.tone ?? ''} ${relationship.joke ?? ''}` : ''
+    const system = `${prompt.text}${voice}\n按用户需要给出完整、清楚的回答，详细说明和代码会保存在控制台。桌宠另行显示一句短话。不要自称人工智能或助手，不要声称已经操作了文件、命令或网页。${earlier}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
 
     onStart?.()
     let reply: string
     const startedAt = Date.now()
     try {
-      reply = await this.gateway.chat(model, messages, onDelta, system)
+      this.context.onRecall?.(conversationId, { turnId, ids: [...recalled.ids] })
+      // 闲聊也不把模型原文一个字一个字流进气泡，等这一句完整回来。
+      reply = await this.gateway.chat(model, messages, undefined, system)
+      void onDelta
     } catch (error) {
       this.models.markOffline(model.id)
       return fail(error instanceof Error ? error.message : '模型请求失败，请稍后重试')
     }
+    if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
     if (!reply.trim()) return fail('模型返回了空内容，这次回复没有写入会话')
-    if (this.context.noticeTask) {
-      try {
-        const note = await this.context.noticeTask(text)
-        if (note) reply = `${reply}\n\n${note}`
-      } catch {
-        // 任务识别失败时保留已经生成的回复，不把闲聊说成任务。
-      }
-    }
-
-    this.insertMessage(conversationId, 'user', text, nowStamp())
-    this.insertMessage(conversationId, 'assistant', reply, nowStamp())
-    const recordedAt = new Date().toISOString()
-    this.db.prepare(
-      `INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).run(
-      uid('call'),
-      'none',
-      'prompt',
-      'prompt',
-      JSON.stringify({ intent: 'system-prompt', args: { prompts: prompt.prompts, memoryIds: recalled.ids } }),
-      JSON.stringify({ status: 'ok', raw: null, startedAt: recordedAt, endedAt: recordedAt }),
-      JSON.stringify({ method: 'prompt-version', evidence: [], verdict: 'confirmed' }),
-      recordedAt,
-      'prompt'
-    )
+    try {
+      this.db.transaction(() => {
+        this.insertMessage(conversationId, 'user', text, userAt)
+        this.insertMessage(conversationId, 'assistant', reply, nowStamp(), turnId)
+        this.recordRecall(conversationId, turnId, recalled.ids, prompt.prompts)
+      })()
+    } catch { return fail('会话保存失败，这次回复未写入历史') }
     this.recordTrace(conversationId, [...messages.map((item) => String(item.content)), reply])
     const title = existing.title === '新的对话' ? text.slice(0, 24) : existing.title
     this.db
@@ -181,7 +218,7 @@ export class ConversationService {
     this.models.markVerified(model.id, Date.now() - startedAt)
     try {
       this.context.onTurn?.(text, conversationId)
-      this.context.onReply?.(reply)
+      this.context.onReply?.(petSpeech(reply))
     } catch {
       // 提取失败时保留已经写好的回复和既有记忆。
     }
@@ -198,9 +235,53 @@ export class ConversationService {
   }
 
   deleteHistory(id: string): Conversation[] {
-    this.db.prepare(`DELETE FROM messages WHERE conversation_id = ?`).run(id)
-    this.db.prepare(`DELETE FROM conversations WHERE id = ?`).run(id)
+    this.db.transaction(() => {
+      this.db.prepare(`DELETE FROM messages WHERE conversation_id = ?`).run(id)
+      this.db.prepare(`DELETE FROM conversations WHERE id = ?`).run(id)
+      this.db.prepare(`DELETE FROM trace_nodes WHERE trace_id = ?`).run(id)
+      this.db.prepare(`DELETE FROM trace_blobs WHERE blob_hash NOT IN (SELECT blob_hash FROM trace_nodes)`).run()
+      this.db.prepare(`DELETE FROM tool_calls WHERE task_id = ? AND tool_id = 'prompt'`).run(id)
+    })()
     return this.list()
+  }
+
+  /** Last completed turn's actual injection IDs, including an explicitly empty set. */
+  getRecall(conversationId: string): { turnId: string; ids: string[] } | undefined {
+    const row = this.db.prepare(`SELECT declared_json FROM tool_calls WHERE task_id = ? AND tool_id = 'prompt' ORDER BY created_at DESC, rowid DESC`).get(conversationId) as { declared_json: string } | undefined
+    if (!row) return undefined
+    try {
+      const args = JSON.parse(row.declared_json).args
+      return { turnId: args.turnId, ids: Array.isArray(args.memoryIds) ? args.memoryIds : [] }
+    } catch { return undefined }
+  }
+
+  /** Factual activity observations join the same serialized conversation timeline. */
+  async appendObservation(conversationId: string, text: string): Promise<Result<Conversation>> {
+    return this.inConversation(conversationId, async () => {
+      if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+      if (!text.trim()) return fail('活动记录为空')
+      this.insertMessage(conversationId, 'assistant', `活动记录：${text}`, nowStamp())
+      this.db.prepare(`UPDATE conversations SET updated_at = ? WHERE id = ?`).run(nowStamp(), conversationId)
+      this.recordTrace(conversationId, this.messages(conversationId).map((message) => message.text))
+      return ok(this.require(conversationId))
+    })
+  }
+
+  private async inConversation<T>(id: string, job: () => Promise<T>): Promise<T> {
+    const queue = this.queues.get(id) ?? new RequestQueue()
+    this.queues.set(id, queue)
+    return queue.enqueue(job)
+  }
+
+  private recordRecall(conversationId: string, turnId: string, memoryIds: string[], prompts: Array<{ id: string; version: string }>): void {
+    const now = nowStamp()
+    this.db.prepare(`INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
+      uid('call'), conversationId, 'prompt', 'prompt',
+      JSON.stringify({ intent: 'system-prompt', args: { conversationId, turnId, prompts, memoryIds } }),
+      JSON.stringify({ status: 'ok', raw: null, startedAt: now, endedAt: now }),
+      JSON.stringify({ method: 'prompt-version', evidence: [], verdict: 'confirmed' }), now, 'prompt'
+    )
   }
 
   /** 相同内容只存一份 blob，相同前缀只存一个节点，重述不额外占空间。 */
@@ -215,7 +296,8 @@ export class ConversationService {
       )
       const now = new Date().toISOString()
       nodes.forEach((node, index) => {
-        insertNode.run(node.seqHash, node.prevHash, node.blobHash, conversationId, `${conversationId}-${index}`, node.prevHash, now, now)
+        const scoped = (hash: string | null): string | null => hash ? `${conversationId}:${hash}` : null
+        insertNode.run(scoped(node.seqHash), scoped(node.prevHash), node.blobHash, conversationId, `${conversationId}-${index}`, scoped(node.prevHash), now, now)
       })
     } catch {
       // 轨迹存储失败不影响已经写好的会话内容。
@@ -223,7 +305,11 @@ export class ConversationService {
   }
 
   clearCache(): void {
-    this.db.prepare(`DELETE FROM activities`).run()
+    this.db.transaction(() => {
+      this.db.prepare(`DELETE FROM activities`).run()
+      this.db.prepare(`DELETE FROM trace_nodes`).run()
+      this.db.prepare(`DELETE FROM trace_blobs`).run()
+    })()
   }
 
   private require(id: string): Conversation {
@@ -246,12 +332,12 @@ export class ConversationService {
       .all(conversationId) as MessageRow[]
   }
 
-  private insertMessage(conversationId: string, role: 'user' | 'assistant', text: string, time: string): void {
+  private insertMessage(conversationId: string, role: 'user' | 'assistant', text: string, time: string, id = uid('msg')): void {
     this.db
       .prepare(
         `INSERT INTO messages(id, conversation_id, role, text, created_at) VALUES (?, ?, ?, ?, ?)`
       )
-      .run(uid('msg'), conversationId, role, text, time)
+      .run(id, conversationId, role, text, time)
   }
 
   private hydrate(row: ConversationRow): Conversation {
@@ -261,6 +347,7 @@ export class ConversationService {
       text: message.text,
       time: displayTime(message.created_at)
     }))
+    const recalled = this.getRecall(row.id)
     const preview = messages.at(-1)?.text.slice(0, 32).replace(/\n/g, ' ') ?? '从一个问题开始…'
     return clone({
       id: row.id,
@@ -269,7 +356,9 @@ export class ConversationService {
       preview,
       count: messages.length,
       pinned: row.pinned === 1,
-      messages
+      messages,
+      recalledMemoryIds: recalled?.ids ?? [],
+      recalledAtMessageId: recalled?.turnId
     })
   }
 }

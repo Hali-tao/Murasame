@@ -4,6 +4,7 @@ import { ShaderSystem } from '@pixi/core'
 import { install as installCspSafeShaders } from '@pixi/unsafe-eval'
 import { Live2DModel } from 'pixi-live2d-display/cubism4'
 import type { PetMotionAction, PetPreset } from '@shared/pet-presets'
+import { alphaHit } from '@shared/pet-geometry'
 
 installCspSafeShaders({ ShaderSystem })
 Live2DModel.registerTicker(Ticker)
@@ -18,6 +19,7 @@ export interface Live2DPetHandle {
   playMotion(action: PetMotionAction): void
   playNamedMotion(group: string, expression: string | null): void
   setMouth(open: number | null): void
+  hitTest(clientX: number, clientY: number): boolean
 }
 
 interface Live2DPetProps {
@@ -43,6 +45,20 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
   const [error, setError] = useState<string | null>(null)
 
   useImperativeHandle(ref, () => ({
+    hitTest(clientX: number, clientY: number): boolean {
+      const app = appRef.current
+      if (!app || !modelRef.current) return false
+      const canvas = app.view as HTMLCanvasElement
+      const rect = canvas.getBoundingClientRect()
+      if (!rect.width || !rect.height || clientX < rect.left || clientY < rect.top || clientX >= rect.right || clientY >= rect.bottom) return false
+      if (!('gl' in app.renderer)) return false
+      const gl = app.renderer.gl
+      const pixel = new Uint8Array(4)
+      const x = Math.floor((clientX - rect.left) / rect.width * gl.drawingBufferWidth)
+      const y = gl.drawingBufferHeight - 1 - Math.floor((clientY - rect.top) / rect.height * gl.drawingBufferHeight)
+      gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel)
+      return alphaHit(pixel, 1, 1, 0, 0)
+    },
     playMotion(action: PetMotionAction): void {
       const model = modelRef.current
       if (!model) return
@@ -103,6 +119,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
         resizeTo: canvas.parentElement ?? canvas,
         backgroundAlpha: 0,
         antialias: true,
+        preserveDrawingBuffer: true,
         autoDensity: true,
         resolution: Math.min(window.devicePixelRatio || 1, 2)
       })
@@ -118,9 +135,9 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       if (!app || !model) return
       const width = app.screen.width
       const height = app.screen.height
-      const naturalWidth = model.width || 640
-      const naturalHeight = model.height || 640
-      const scale = Math.min((width * 1.06) / naturalWidth, (height * 1.1) / naturalHeight)
+      const naturalWidth = model.width / (model.scale.x || 1) || 640
+      const naturalHeight = model.height / (model.scale.y || 1) || 640
+      const scale = Math.min((width * 0.96) / naturalWidth, (height * 0.98) / naturalHeight)
       model.scale.set(scale)
       model.anchor.set(0.5, 1)
       model.position.set(width / 2, height - 2)
@@ -228,6 +245,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
   useEffect(() => {
     const model = modelRef.current
     if (!model || paused) return
+    let reopen: number | undefined
     const timer = window.setInterval(() => {
       const core = model.internalModel?.coreModel as { setParameterValueById?: (id: string, value: number) => void } | undefined
       if (!core?.setParameterValueById) return
@@ -236,12 +254,12 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       const breathValue = 0.3 + Math.sin(Date.now() / 900) * breath
       core.setParameterValueById('ParamBreath', breathValue)
       core.setParameterValueById('PARAM_BREATH', breathValue)
-      window.setTimeout(() => {
+      reopen = window.setTimeout(() => {
         core.setParameterValueById?.('ParamEyeLOpen', 1)
         core.setParameterValueById?.('ParamEyeROpen', 1)
       }, 120)
     }, blinkMs)
-    return () => window.clearInterval(timer)
+    return () => { window.clearInterval(timer); window.clearTimeout(reopen) }
   }, [blinkMs, breath, paused, ready])
 
   return (

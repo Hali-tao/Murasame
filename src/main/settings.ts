@@ -110,6 +110,11 @@ export function savePetPosition(x: number, y: number): void {
   store().set('pet', { x, y })
 }
 
+export function getSavedPetPosition(): { x: number; y: number } | null {
+  const position = store().get('pet')
+  return typeof position?.x === 'number' && typeof position?.y === 'number' ? { x: position.x, y: position.y } : null
+}
+
 export function saveWindowBounds(bounds: { x?: number; y?: number; width: number; height: number }): void {
   store().set('windowBounds', bounds)
 }

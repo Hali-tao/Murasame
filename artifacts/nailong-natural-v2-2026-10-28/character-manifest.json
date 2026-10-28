@@ -1,0 +1,109 @@
+{
+  "version": 2,
+  "name": "奶龙 · 连续变形修订",
+  "canvas": {
+    "width": 1000,
+    "height": 1000
+  },
+  "rendering": "Weighted continuous mesh; not Cubism playback",
+  "parts": {
+    "body": {
+      "name": "连续头颈与身体",
+      "file": "continuous-body.png",
+      "x": 0,
+      "y": 0,
+      "w": 1000,
+      "h": 1000
+    },
+    "armL": {
+      "name": "左臂",
+      "file": "parts/armL.png",
+      "x": 230,
+      "y": 425,
+      "w": 185,
+      "h": 166,
+      "root": [
+        382,
+        450
+      ],
+      "tip": [
+        269,
+        578
+      ]
+    },
+    "armR": {
+      "name": "右臂",
+      "file": "parts/armR.png",
+      "x": 585,
+      "y": 425,
+      "w": 185,
+      "h": 166,
+      "root": [
+        618,
+        450
+      ],
+      "tip": [
+        731,
+        578
+      ]
+    },
+    "tail": {
+      "name": "尾巴",
+      "file": "parts/tail.png",
+      "x": 202,
+      "y": 679,
+      "w": 190,
+      "h": 150,
+      "root": [
+        360,
+        744
+      ],
+      "tip": [
+        232,
+        700
+      ]
+    },
+    "legL": {
+      "name": "左腿脚",
+      "file": "parts/legL.png",
+      "x": 316,
+      "y": 737,
+      "w": 150,
+      "h": 170,
+      "root": [
+        402,
+        762
+      ],
+      "tip": [
+        380,
+        896
+      ]
+    },
+    "legR": {
+      "name": "右腿脚",
+      "file": "parts/legR.png",
+      "x": 534,
+      "y": 737,
+      "w": 150,
+      "h": 170,
+      "root": [
+        598,
+        762
+      ],
+      "tip": [
+        620,
+        896
+      ]
+    },
+    "folder": {
+      "name": "文件夹",
+      "file": "parts/folder.png",
+      "x": 360,
+      "y": 593,
+      "w": 280,
+      "h": 215,
+      "root": null,
+      "tip": null
+    }
+  }
+}

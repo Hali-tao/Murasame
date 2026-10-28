@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 export type RelationshipStage = '初识' | '熟悉' | '熟络' | '默契'
 
 export interface RelationshipRecord {
@@ -8,6 +10,7 @@ export interface RelationshipRecord {
   disclosed: number
   history: Array<{ stage: RelationshipStage; since: string }>
   lineId: string
+  archivedLines?: Array<Omit<RelationshipRecord, 'archivedLines'>>
 }
 
 const order: RelationshipStage[] = ['初识', '熟悉', '熟络', '默契']
@@ -31,11 +34,12 @@ export function advanceRelationship(record: RelationshipRecord, now = new Date()
 }
 
 export function resetRelationship(record: RelationshipRecord, now = new Date().toISOString()): RelationshipRecord {
-  return { ...blankRelationship(now), lineId: record.lineId, history: [...record.history, { stage: '初识', since: now }] }
+  return { ...blankRelationship(now), lineId: record.lineId, history: [...record.history, { stage: '初识', since: now }], archivedLines: record.archivedLines }
 }
 
 export function startNewLine(record: RelationshipRecord, now = new Date().toISOString()): RelationshipRecord {
-  return { ...blankRelationship(now), lineId: `line-${record.history.length + 1}` }
+  const { archivedLines = [], ...previous } = record
+  return { ...blankRelationship(now), lineId: `line-${randomUUID()}`, archivedLines: [...archivedLines, structuredClone(previous)] }
 }
 
 export function relationshipVoice(stage: RelationshipStage): { title: string; tone: string; joke: string } {

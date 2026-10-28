@@ -20,21 +20,36 @@ export interface Recording {
 }
 
 /** 录音只在本机进行，采样后直接交给主进程的本地模型。 */
-export async function startRecording(): Promise<Recording> {
+export async function startRecording(signal?: AbortSignal): Promise<Recording> {
+  signal?.throwIfAborted()
   const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true } })
-  const context = new AudioContext()
-  const source = context.createMediaStreamSource(stream)
-  const processor = context.createScriptProcessor(4096, 1, 1)
+  if (signal?.aborted) { stream.getTracks().forEach(track => track.stop()); signal.throwIfAborted() }
+  let context: AudioContext
+  let source: MediaStreamAudioSourceNode
+  let processor: ScriptProcessorNode
+  try {
+    context = new AudioContext()
+    source = context.createMediaStreamSource(stream)
+    processor = context.createScriptProcessor(4096, 1, 1)
+    source.connect(processor)
+    processor.connect(context.destination)
+  } catch (error) {
+    stream.getTracks().forEach(track => track.stop())
+    // A browser may fail after opening the microphone but before its audio graph is ready.
+    if (context!) await context.close().catch(() => undefined)
+    throw error
+  }
   const chunks: Float32Array[] = []
 
   processor.onaudioprocess = (event) => {
     chunks.push(new Float32Array(event.inputBuffer.getChannelData(0)))
   }
-  source.connect(processor)
-  processor.connect(context.destination)
 
-  return {
-    async stop(): Promise<number[]> {
+  let stopped = false
+  const stop = async (): Promise<number[]> => {
+      if (stopped) return []
+      stopped = true
+      signal?.removeEventListener('abort', abort)
       processor.disconnect()
       source.disconnect()
       stream.getTracks().forEach((track) => track.stop())
@@ -48,12 +63,15 @@ export async function startRecording(): Promise<Recording> {
         offset += chunk.length
       }
       return Array.from(downsample(merged, rate))
-    }
   }
+  const abort = (): void => { void stop() }
+  signal?.addEventListener('abort', abort, { once: true })
+  if (signal?.aborted) { await stop(); signal.throwIfAborted() }
+  return { stop }
 }
 
-export async function playSamples(samples: number[], sampleRate: number, onTime?: (seconds: number) => void): Promise<void> {
-  if (samples.length === 0) return
+export async function playSamples(samples: number[], sampleRate: number, onTime?: (seconds: number) => void, signal?: AbortSignal): Promise<void> {
+  if (samples.length === 0 || signal?.aborted) return
   const context = new AudioContext()
   const buffer = context.createBuffer(1, samples.length, sampleRate)
   buffer.copyToChannel(Float32Array.from(samples), 0)
@@ -62,15 +80,22 @@ export async function playSamples(samples: number[], sampleRate: number, onTime?
   source.connect(context.destination)
   const started = context.currentTime
   let frame = 0
-  const tick = (): void => {
-    onTime?.(Math.max(0, context.currentTime - started))
-    frame = requestAnimationFrame(tick)
-  }
+  const tick = (): void => { onTime?.(Math.max(0, context.currentTime - started)); frame = requestAnimationFrame(tick) }
   if (onTime) frame = requestAnimationFrame(tick)
-  await new Promise<void>((resolve) => {
-    source.onended = () => resolve()
-    source.start()
-  })
-  if (frame) cancelAnimationFrame(frame)
-  await context.close()
+  let stopPlayback: (() => void) | undefined
+  try {
+    await new Promise<void>(resolve => {
+      const abort = (): void => { try { source.stop() } catch { /* already ended */ } finally { resolve() } }
+      stopPlayback = abort
+      source.onended = () => { signal?.removeEventListener('abort', abort); resolve() }
+      signal?.addEventListener('abort', abort, { once: true })
+      source.start()
+      if (signal?.aborted) abort()
+    })
+  } finally {
+    if (stopPlayback) signal?.removeEventListener('abort', stopPlayback)
+    if (frame) cancelAnimationFrame(frame)
+    source.disconnect()
+    await context.close()
+  }
 }

@@ -8,10 +8,10 @@ const root = join(__dirname, '..', '..')
 const userDataByApp = new WeakMap<ElectronApplication, string>()
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
 
-export async function launchApp(): Promise<ElectronApplication> {
+export async function launchApp(onboardingDone = true): Promise<ElectronApplication> {
   const userData = mkdtempSync(join(tmpdir(), 'murasame-e2e-'))
   // 首次引导默认会挡在前面，端到端用例直接从主控制台开始。
-  writeFileSync(join(userData, 'murasame.json'), JSON.stringify({ settings: { onboardingDone: true } }))
+  writeFileSync(join(userData, 'murasame.json'), JSON.stringify({ settings: { onboardingDone } }))
   const app = await electron.launch({
     args: ['.'],
     cwd: root,
@@ -33,11 +33,12 @@ export function testUserData(app: ElectronApplication): string {
   return userData
 }
 
-export async function findMainPage(app: ElectronApplication): Promise<Page> {
+export async function findMainPage(app: ElectronApplication, onboarding = false): Promise<Page> {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     for (const page of app.windows()) {
       if (page.isClosed() || page.url().includes('/pet.html')) continue
       if (await page.getByTestId('nav-overview').count()) return page
+      if (onboarding && await page.getByRole('button', { name: '跳过', exact: true }).count()) return page
     }
     await wait(100)
   }
@@ -75,10 +76,19 @@ export async function startModelServer(): Promise<TestModelServer> {
     request.setEncoding('utf8')
     request.on('data', (chunk: string) => { raw += chunk })
     request.on('end', () => {
-      const payload = JSON.parse(raw) as { stream?: boolean; model?: string }
+      const payload = JSON.parse(raw) as { stream?: boolean; model?: string; messages?: Array<{role:string;content:unknown}>; tools?: Array<{function?:{name:string}}> }
       if (payload.model !== 'test-model') {
         response.writeHead(404, { 'Content-Type': 'application/json' })
         response.end('{"error":"unknown model"}')
+        return
+      }
+      const tool = payload.tools?.[0]?.function?.name
+      if (tool === 'plan_task' || tool === 'performance' || tool === 'remember') {
+        const goal = String(payload.messages?.filter(item => item.role === 'user').at(-1)?.content ?? '').split('任务：').at(-1) ?? ''
+        const folder = goal.replace(/^整理文件夹\s*/, '').trim()
+        const value = tool === 'plan_task' ? { tool:'filesystem', root:folder, steps:[{id:'organize',tool:'filesystem',title:'整理文件',detail:'按类型移动并核验',expected:'文件内容保持一致',args:{action:'organize'},checks:[{kind:'file-content',path:'文档/example.txt',value:'e2e real file'}]}],question:'' } : tool === 'performance' ? { intent:'思考',relevance:0.3,consequence:0,coping:0.3,norm:0 } : { memories:[] }
+        response.writeHead(200, { 'Content-Type':'application/json' })
+        response.end(JSON.stringify({choices:[{message:{role:'assistant',tool_calls:[{type:'function',function:{name:tool,arguments:JSON.stringify(value)}}]}}]}))
         return
       }
       if (!payload.stream) {
@@ -136,7 +146,6 @@ export async function configureTestModel(
   await page.getByTestId('model-key').fill('test-key')
   await page.getByTestId('model-name').fill('test-model')
   await page.getByTestId('verify-model').click()
-  await expect(page.getByText('连接验证成功', { exact: false }).last()).toBeVisible({ timeout: 10_000 })
-  await page.getByTestId('set-default-model').click()
+  await expect(page.getByText('验证成功，已经开始使用', { exact: false }).last()).toBeVisible({ timeout: 15_000 })
   await expect(page.getByTestId('current-service-name')).toHaveText(targetName)
 }

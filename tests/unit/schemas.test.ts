@@ -40,3 +40,10 @@ describe('IPC schemas', () => {
     expect(settingsPatchSchema.safeParse({ logRetentionDays: 0 }).success).toBe(false)
   })
 })
+
+it('accepts a real long Windows task path without silently truncating it', () => {
+  const title = '整理文件夹 E:\\Desktop\\软件工程\\murasame\\' + '任务记录与核验资料'.repeat(14)
+  expect(title.length).toBeGreaterThan(120)
+  expect(taskCreateSchema.safeParse({ title }).success).toBe(true)
+  expect(taskCreateSchema.safeParse({ title: 'a'.repeat(4001) }).success).toBe(false)
+})

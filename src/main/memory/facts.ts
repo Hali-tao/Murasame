@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 export type MemoryCategory = 'user' | 'feedback' | 'project' | 'reference'
 
 export interface MemoryFact {
@@ -9,6 +11,8 @@ export interface MemoryFact {
   emotion: string
   source?: string
   vector?: number[] | null
+  createdAt?: string
+  updatedAt?: string
 }
 
 const secretPattern = /sk-[A-Za-z0-9_-]{8,}|api[_-]?key|密码是|原始屏幕|screenshot/i
@@ -66,14 +70,15 @@ export function applyMemoryAction(
   if (suppressed.has(key) && action !== 'DELETE') return existing
   if (action === 'ADD' && existing.some((item) => item.normalizedKey === key && !item.validUntil)) return existing
   if (action === 'ADD') {
-    return [...existing, { id: `mem-${key}`, category: candidate.category, text: candidate.text, normalizedKey: key, validUntil: null, emotion: emotionOf(candidate.text) }]
+    return [...existing, { id: `mem-${randomUUID()}`, category: candidate.category, text: candidate.text, normalizedKey: key, validUntil: null, emotion: emotionOf(candidate.text), createdAt: now, updatedAt: now }]
   }
   const targetKey = replaces?.trim() ? normalizeKey(replaces) : key
-  const nextId = existing.some((item) => item.id === `mem-${key}`) ? `mem-${key}-${now.replace(/\D/g, '')}` : `mem-${key}`
+  const target = existing.find((item) => (item.id === replaces || item.normalizedKey === targetKey) && !item.validUntil)
+  if (action === 'UPDATE' && !target) return existing
   return existing.map((item) =>
-    item.normalizedKey === targetKey && !item.validUntil ? { ...item, validUntil: now } : item
+    (item.id === replaces || item.normalizedKey === targetKey) && !item.validUntil ? { ...item, validUntil: now, updatedAt: now } : item
   ).concat(action === 'UPDATE'
-    ? [{ id: nextId, category: candidate.category, text: candidate.text, normalizedKey: key, validUntil: null, emotion: emotionOf(candidate.text) }]
+    ? [{ id: `mem-${randomUUID()}`, category: candidate.category, text: candidate.text, normalizedKey: key, validUntil: null, emotion: emotionOf(candidate.text), source: target?.source, createdAt: now, updatedAt: now }]
     : [])
 }
 

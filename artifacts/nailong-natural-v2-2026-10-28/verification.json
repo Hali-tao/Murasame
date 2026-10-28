@@ -1,0 +1,277 @@
+{
+  "checks": [
+    {
+      "mode": "idle",
+      "flipped": 0,
+      "min": 59.027464125305414,
+      "byPart": {},
+      "armStretch": [
+        1,
+        1
+      ]
+    },
+    {
+      "mode": "walk",
+      "flipped": 0,
+      "min": 49.96503058075905,
+      "byPart": {},
+      "armStretch": [
+        1,
+        1
+      ]
+    },
+    {
+      "mode": "carry",
+      "flipped": 0,
+      "min": 42.43587790429592,
+      "byPart": {},
+      "armStretch": [
+        0.965,
+        0.965
+      ]
+    },
+    {
+      "mode": "type",
+      "flipped": 0,
+      "min": 10.511521652340889,
+      "byPart": {},
+      "armStretch": [
+        0.975,
+        0.975
+      ]
+    },
+    {
+      "mode": "wave",
+      "flipped": 0,
+      "min": 10.541859375312924,
+      "byPart": {},
+      "armStretch": [
+        1,
+        1
+      ]
+    },
+    {
+      "mode": "celebrate",
+      "flipped": 0,
+      "min": 49.80976895149797,
+      "byPart": {},
+      "armStretch": [
+        1,
+        1
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "transitions": [
+    {
+      "from": "idle",
+      "to": "walk",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "idle",
+      "to": "carry",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "idle",
+      "to": "type",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "idle",
+      "to": "wave",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "idle",
+      "to": "celebrate",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "walk",
+      "to": "idle",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "walk",
+      "to": "carry",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "walk",
+      "to": "type",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "walk",
+      "to": "wave",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "walk",
+      "to": "celebrate",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "carry",
+      "to": "idle",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "carry",
+      "to": "walk",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "carry",
+      "to": "type",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "carry",
+      "to": "wave",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "carry",
+      "to": "celebrate",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "type",
+      "to": "idle",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "type",
+      "to": "walk",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "type",
+      "to": "carry",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "type",
+      "to": "wave",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "type",
+      "to": "celebrate",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "wave",
+      "to": "idle",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "wave",
+      "to": "walk",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "wave",
+      "to": "carry",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "wave",
+      "to": "type",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "wave",
+      "to": "celebrate",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "celebrate",
+      "to": "idle",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "celebrate",
+      "to": "walk",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "celebrate",
+      "to": "carry",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "celebrate",
+      "to": "type",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    },
+    {
+      "from": "celebrate",
+      "to": "wave",
+      "clockContinuous": true,
+      "immediateDelta": 0,
+      "folds": 0
+    }
+  ]
+}

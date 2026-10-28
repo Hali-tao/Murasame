@@ -42,6 +42,9 @@ function createApi(): MurasameApi {
       onStateChanged: vi.fn(() => () => undefined),
       onPerformance: vi.fn(() => () => undefined),
       setChatOpen: vi.fn(async () => ({ open: true, side: 'right' as const })),
+      beginDrag: vi.fn(async () => undefined),
+      dragMove: vi.fn(async () => undefined),
+      endDrag: vi.fn(async () => undefined),
       onFocusChat: vi.fn(() => () => undefined)
     },
     settings: {

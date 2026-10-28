@@ -1,12 +1,15 @@
 import { Plus, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import type { MemoryEntry } from '@shared/types'
+import type { MemoryEntry, MemoryExtractionStatus } from '@shared/types'
 import { MemoryEditDialog } from '../components/dialogs'
 import { Button, Card, ConfirmDialog, EmptyState, Pill, StatTile, ToggleSwitch } from '../components/ui'
 import { useAppStore } from '../store'
 
 export function MemoryPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
+  const extractions = useAppStore((state) => state.memoryExtractions)
+  const latestExtractions = Object.values(extractions).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 3)
+  const extractionLabels: Record<MemoryExtractionStatus['status'], string> = { processing: '正在提取', saved: '已保存新记忆', unchanged: '没有新的长期信息', skipped: '提取已暂停', failed: '提取失败' }
   const updateSettings = useAppStore((state) => state.updateSettings)
   const deleteMemory = useAppStore((state) => state.deleteMemory)
   const clearMemories = useAppStore((state) => state.clearMemories)
@@ -62,7 +65,7 @@ export function MemoryPage(): React.JSX.Element {
       <div className={`memory-banner${data.settings.memoryEnabled ? '' : ' disabled'}`}>
         <div className="banner-copy">
           <div className="banner-titleline">
-            <Pill tone="violet">{data.settings.memoryEnabled ? '自动提取已启用' : '记忆已停用'}</Pill>
+            <Pill tone="violet">{!data.settings.memoryEnabled ? '记忆已停用' : data.settings.memoryAutoExtract ? '自动提取已启用' : '自动提取已暂停'}</Pill>
             <strong>长期记忆不是对话历史</strong>
           </div>
           <p>从交流与任务中提取稳定信息，跨会话使用。关闭后停止提取与召回，已有条目仍可查看。</p>
@@ -79,6 +82,19 @@ export function MemoryPage(): React.JSX.Element {
         <StatTile label="记忆条数" value={String(data.memories.length)} caption="只统计当前还保留的条目" tone="coral" />
         <StatTile label="隐私边界" value="本地" caption="加密存储，不默认外发" tone="blue" />
       </div>
+
+      {latestExtractions.length ? (
+        <Card aria-live="polite" className="memory-extraction-status">
+          {latestExtractions.map((status) => (
+            <div key={status.conversationId}>
+              <Pill tone={status.status === 'failed' ? 'red' : status.status === 'saved' ? 'green' : 'gray'}>{extractionLabels[status.status]}</Pill>
+              <span> {data.conversations.find((conversation) => conversation.id === status.conversationId)?.title ?? '会话记忆'}</span>
+              {status.reason ? <p className="muted">{status.reason}</p> : null}
+              {status.status === 'failed' ? <p>旧记忆已保留。可重试该轮消息或手动添加需要保存的信息。</p> : null}
+            </div>
+          ))}
+        </Card>
+      ) : null}
 
       <div className="memory-toolbar">
         <div className="search-box wide">

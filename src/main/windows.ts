@@ -1,7 +1,8 @@
 import { app, BrowserWindow, dialog, nativeImage, screen, shell } from 'electron'
 import { join } from 'node:path'
 import { isQuitting, markQuitting, quitApplication } from './app-state'
-import { getPetState, getSettings, getWindowBounds, saveWindowBounds, savePetPosition, updateSettings } from './settings'
+import { getSavedPetPosition, getSettings, getWindowBounds, saveWindowBounds, savePetPosition, updateSettings } from './settings'
+import { petDimensions, resizePetAroundFeet } from '../shared/pet-geometry'
 import { hardenWebContents } from './security/hardening'
 import log from './logger'
 import { choosePetChatSide, recoverPosition, resetAnchor, type WorkArea } from './desktop/placement'
@@ -9,15 +10,20 @@ import type { PetBounds, PetChatLayout, PetState } from '../shared/types'
 import { IPC } from '../shared/ipc'
 
 let mainWindow: BrowserWindow | null = null
+let mainVisibilityRevision = 0
+export function getMainVisibilityRevision(): number { return mainVisibilityRevision }
 let petWindow: BrowserWindow | null = null
 let saveBoundsTimer: NodeJS.Timeout | null = null
 let savePetTimer: NodeJS.Timeout | null = null
 let petChatOpen = false
 let petChatSide: 'left' | 'right' = 'right'
+let petDrag: { offsetX: number; offsetY: number; lastX: number; lastY: number } | null = null
 
-const PET_WIDTH = 360
-const PET_HEIGHT = 500
 const PET_CHAT_WIDTH = 300
+
+function petWindowSize(): { width: number; height: number } {
+  return petDimensions(getSettings().petScale, petChatOpen)
+}
 
 const rendererUrl = process.env.ELECTRON_RENDERER_URL
 const preload = join(__dirname, '../preload/index.js')
@@ -91,11 +97,17 @@ function broadcastPetState(state: PetState): PetState {
 export function createMainWindow(): BrowserWindow {
   if (mainWindow && !mainWindow.isDestroyed()) return mainWindow
   const stored = getWindowBounds()
+  const width = stored?.width ?? 1400
+  const height = stored?.height ?? 880
+  const hasStoredOrigin = typeof stored?.x === 'number' && typeof stored?.y === 'number'
+  const placed = hasStoredOrigin
+    ? recoverPosition({ x: stored.x ?? 0, y: stored.y ?? 0, width, height }, displayAreas())
+    : null
   mainWindow = new BrowserWindow({
-    width: stored?.width ?? 1400,
-    height: stored?.height ?? 880,
-    x: stored?.x,
-    y: stored?.y,
+    width,
+    height,
+    x: placed?.x,
+    y: placed?.y,
     minWidth: 1180,
     minHeight: 740,
     show: false,
@@ -119,7 +131,7 @@ export function createMainWindow(): BrowserWindow {
   mainWindow.setMenuBarVisibility(false)
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow?.show()
+    if (!getSettings().onboardingDone) mainWindow?.show()
   })
 
   const rememberBounds = (): void => {
@@ -137,7 +149,7 @@ export function createMainWindow(): BrowserWindow {
   mainWindow.on('minimize', () => {
     const settings = getSettings()
     if (settings.minimizeToTray && !isQuitting()) {
-      mainWindow?.hide()
+      hideMain()
     }
   })
 
@@ -161,7 +173,7 @@ export function createMainWindow(): BrowserWindow {
             markQuitting()
             quitApplication()
           } else if (response === 1) {
-            mainWindow?.hide()
+            hideMain()
           }
         })
       return
@@ -178,7 +190,7 @@ export function createMainWindow(): BrowserWindow {
         })
         .then(({ response }) => {
           if (response === 0) {
-            mainWindow?.hide()
+            hideMain()
           } else if (response === 1) {
             markQuitting()
             quitApplication()
@@ -186,7 +198,7 @@ export function createMainWindow(): BrowserWindow {
         })
       return
     }
-    mainWindow?.hide()
+    hideMain()
   })
 
   mainWindow.on('closed', () => {
@@ -198,13 +210,12 @@ export function createMainWindow(): BrowserWindow {
 
 export function createPetWindow(): BrowserWindow {
   if (petWindow && !petWindow.isDestroyed()) return petWindow
-  const state = getPetState()
-  const width = 360
-  const height = 500
+  const saved = getSavedPetPosition()
+  const { width, height } = petWindowSize()
   const cursor = screen.getCursorScreenPoint()
-  const anchor = resetAnchor({ x: state.x || cursor.x, y: state.y || cursor.y, width, height }, displayAreas())
-  const preferredX = state.x || anchor.x
-  const preferredY = state.y || anchor.y
+  const anchor = resetAnchor({ x: cursor.x, y: cursor.y, width, height }, displayAreas())
+  const preferredX = saved?.x ?? anchor.x
+  const preferredY = saved?.y ?? anchor.y
   const { x, y } = clampPetPosition(preferredX, preferredY, width, height)
   savePetPosition(x, y)
 
@@ -261,7 +272,7 @@ export function createPetWindow(): BrowserWindow {
   })
 
   petWindow.on('moved', () => {
-    if (!petWindow || petWindow.isDestroyed()) return
+    if (petDrag || !petWindow || petWindow.isDestroyed()) return
     const [x, y] = petWindow.getPosition()
     if (savePetTimer) clearTimeout(savePetTimer)
     savePetTimer = setTimeout(() => {
@@ -291,15 +302,23 @@ export function initializeWindows(): void {
   const main = createMainWindow()
   const pet = createPetWindow()
   if (!getSettings().petVisible) pet.hide()
-  screen.on('display-removed', () => {
-    const window = getPetWindow()
-    if (!window) return
-    const bounds = window.getBounds()
-    const next = recoverPosition(bounds, displayAreas())
-    window.setBounds(next)
-    savePetPosition(next.x, next.y)
-  })
-  main.show()
+  const recoverWindows = (): void => {
+    const pet = getPetWindow()
+    if (pet) {
+      const bounds = pet.getBounds()
+      const size = petWindowSize()
+      const next = recoverPosition({ ...bounds, width: size.width, height: size.height }, displayAreas())
+      pet.setBounds({ x: next.x, y: next.y, width: size.width, height: size.height })
+      savePetPosition(characterOriginX(next.x), next.y)
+      broadcastPetState(getPetStateSafe())
+    }
+    const consoleWindow = getMainWindow()
+    if (consoleWindow) bringOntoScreen(consoleWindow)
+  }
+  screen.on('display-removed', recoverWindows)
+  screen.on('display-added', recoverWindows)
+  screen.on('display-metrics-changed', recoverWindows)
+  if (!getSettings().onboardingDone) main.show()
 }
 
 export function getMainWindow(): BrowserWindow | null {
@@ -312,21 +331,33 @@ export function getPetWindow(): BrowserWindow | null {
 
 const MAIN_PATHS = new Set(['/tasks', '/chat', '/settings'])
 
-/** 把控制台唤到前面，并让它打开指定页面。桌宠上的「去看看」走这里。 */
+/** 把控制台唤到前面，并让它打开指定页面。可以带 ?focus=任务编号。 */
 export function openMainPath(path: string): void {
-  if (!MAIN_PATHS.has(path)) return
+  const pathOnly = path.split('?')[0]
+  if (!MAIN_PATHS.has(pathOnly)) return
   showMain()
   getMainWindow()?.webContents.send(IPC.window.navigated, path)
 }
 
+function bringOntoScreen(window: BrowserWindow): void {
+  const bounds = window.getBounds()
+  const next = recoverPosition(bounds, displayAreas())
+  if (next.x === bounds.x && next.y === bounds.y) return
+  window.setBounds({ ...bounds, x: next.x, y: next.y })
+  saveWindowBounds({ ...bounds, x: next.x, y: next.y })
+}
+
 export function showMain(): void {
+  mainVisibilityRevision++
   const window = getMainWindow() ?? createMainWindow()
   if (window.isMinimized()) window.restore()
+  bringOntoScreen(window)
   window.show()
   window.focus()
 }
 
 export function hideMain(): void {
+  mainVisibilityRevision++
   getMainWindow()?.hide()
 }
 
@@ -366,8 +397,18 @@ export function refreshPetState(): PetState {
 }
 
 export function setPetScale(scale: number): PetState {
-  updateSettings({ petScale: scale })
   const window = getPetWindow()
+  const bounds = window?.getBounds()
+  const oldColumn = bounds ? bounds.width - (petChatOpen ? PET_CHAT_WIDTH : 0) : 360
+  updateSettings({ petScale: scale })
+  if (window && bounds) {
+    const size = petDimensions(scale, petChatOpen)
+    const left = petChatOpen && petChatSide === 'left' ? PET_CHAT_WIDTH : 0
+    const anchor = resizePetAroundFeet(bounds, oldColumn, size.columnWidth, size.height, left, left)
+    const position = clampPetPosition(anchor.x, anchor.y, size.width, size.height)
+    window.setBounds({ ...position, width: size.width, height: size.height })
+    savePetPosition(characterOriginX(position.x), position.y)
+  }
   const [x, y] = window?.getPosition() ?? [0, 0]
   return broadcastPetState({
     visible: Boolean(window?.isVisible()),
@@ -381,9 +422,9 @@ export function setPetScale(scale: number): PetState {
 
 export function setPetPosition(x: number, y: number): PetState {
   const window = getPetWindow()
-  const bounds = window?.getBounds()
-  const position = clampPetPosition(x, y, bounds?.width ?? PET_WIDTH, bounds?.height ?? PET_HEIGHT)
-  window?.setPosition(position.x, position.y, false)
+  const size = petWindowSize()
+  const position = clampPetPosition(x, y, size.width, size.height)
+  window?.setBounds({ x: position.x, y: position.y, width: size.width, height: size.height })
   savePetPosition(characterOriginX(position.x), position.y)
   return broadcastPetState({
     visible: Boolean(window?.isVisible()),
@@ -431,14 +472,48 @@ function characterOriginX(windowX: number): number {
   return petChatOpen && petChatSide === 'left' ? windowX + PET_CHAT_WIDTH : windowX
 }
 
+export function beginPetDrag(screenX: number, screenY: number): void {
+  const window = getPetWindow()
+  if (!window) return
+  const [x, y] = window.getPosition()
+  petDrag = { offsetX: screenX - x, offsetY: screenY - y, lastX: screenX, lastY: screenY }
+}
+
+/** 只用这次事件里的屏幕坐标。窗口自己移动产生的重复事件直接丢掉，避免按住就往下溜。 */
+export function movePetDrag(screenX: number, screenY: number): void {
+  const window = getPetWindow()
+  if (!window || !petDrag) return
+  if (screenX === petDrag.lastX && screenY === petDrag.lastY) return
+  petDrag.lastX = screenX
+  petDrag.lastY = screenY
+  const size = petWindowSize()
+  const next = clampPetPosition(screenX - petDrag.offsetX, screenY - petDrag.offsetY, size.width, size.height)
+  if (!Number.isFinite(next.x) || !Number.isFinite(next.y)) return
+  const [currentX, currentY] = window.getPosition()
+  if (next.x === currentX && next.y === currentY) return
+  // setPosition 在 125% 缩放下每次都会把窗口撑大 1 像素，聊天框就被越拉越长。
+  window.setBounds({ x: next.x, y: next.y, width: size.width, height: size.height })
+}
+
+export function endPetDrag(): void {
+  const window = getPetWindow()
+  petDrag = null
+  if (!window) return
+  const [x, y] = window.getPosition()
+  savePetPosition(characterOriginX(x), y)
+}
+
 export function setPetChatOpen(open: boolean): PetChatLayout {
   const window = getPetWindow()
   if (!window) {
     petChatOpen = open
     return { open, side: petChatSide }
   }
+  // 已经打开时再打开一次不再重算左右，否则松手时角色会跳到对话框那边。
+  if (open && petChatOpen) return { open: true, side: petChatSide }
   const bounds = window.getBounds()
   const originX = characterOriginX(bounds.x)
+  const { columnWidth: PET_WIDTH, height: PET_HEIGHT } = petDimensions(getSettings().petScale, false)
   if (!open) {
     petChatOpen = false
     const position = clampPetPosition(originX, bounds.y, PET_WIDTH, PET_HEIGHT)

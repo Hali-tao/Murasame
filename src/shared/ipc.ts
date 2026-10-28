@@ -22,12 +22,16 @@ export const IPC = {
     hide: 'pet:hide',
     toggle: 'pet:toggle',
     getState: 'pet:get-state',
+    getAffect: 'pet:get-affect',
     setScale: 'pet:set-scale',
     setPosition: 'pet:set-position',
     setIgnoreMouseEvents: 'pet:set-ignore-mouse-events',
     getBounds: 'pet:get-bounds',
     resetPosition: 'pet:reset-position',
     setChatOpen: 'pet:set-chat-open',
+    beginDrag: 'pet:begin-drag',
+    dragMove: 'pet:drag-move',
+    endDrag: 'pet:end-drag',
     focusChat: 'pet:focus-chat',
     performance: 'pet:performance',
     stateChanged: 'pet:state-changed'
@@ -50,6 +54,9 @@ export const IPC = {
     messageFailed: 'core:message-failed',
     conversationUpdated: 'core:conversation-updated',
     taskUpdated: 'core:task-updated',
+    screenUpdated: 'core:screen-updated',
+    memoriesUpdated: 'core:memories-updated',
+    memoryExtractionStatus: 'core:memory-extraction-status',
     activeChanged: 'core:active-changed',
     deleteConversation: 'core:delete-conversation',
     addMemory: 'core:add-memory',
@@ -58,6 +65,8 @@ export const IPC = {
     clearMemories: 'core:clear-memories',
     createTask: 'core:create-task',
     approveTask: 'core:approve-task',
+    continueTask: 'core:continue-task',
+    openArtifact: 'core:open-artifact',
     cancelTask: 'core:cancel-task',
     setToolEnabled: 'core:set-tool-enabled',
     verifyModel: 'core:verify-model',
@@ -99,7 +108,9 @@ export const IPC = {
   },
   relationship: {
     get: 'relationship:get',
-    reset: 'relationship:reset'
+    reset: 'relationship:reset',
+    changeAppearance: 'relationship:change-appearance',
+    changed: 'relationship:changed'
   },
   data: {
     exportBundle: 'data:export-bundle',

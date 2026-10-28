@@ -57,6 +57,7 @@ const api: MurasameApi = {
     hide: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.hide),
     toggle: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.toggle),
     getState: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.getState),
+    getAffect: () => ipcRenderer.invoke(IPC.pet.getAffect),
     setScale: (scale: number): Promise<PetState> => ipcRenderer.invoke(IPC.pet.setScale, { scale }),
     setPosition: (x: number, y: number): Promise<PetState> =>
       ipcRenderer.invoke(IPC.pet.setPosition, { x, y }),
@@ -65,6 +66,9 @@ const api: MurasameApi = {
     getBounds: (): Promise<PetBounds> => ipcRenderer.invoke(IPC.pet.getBounds),
     resetPosition: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.resetPosition),
     setChatOpen: (open: boolean): Promise<PetChatLayout> => ipcRenderer.invoke(IPC.pet.setChatOpen, { open }),
+    beginDrag: (screenX: number, screenY: number): Promise<void> => ipcRenderer.invoke(IPC.pet.beginDrag, { x: screenX, y: screenY }),
+    dragMove: (screenX: number, screenY: number): Promise<void> => ipcRenderer.invoke(IPC.pet.dragMove, { x: screenX, y: screenY }),
+    endDrag: (): Promise<void> => ipcRenderer.invoke(IPC.pet.endDrag),
     onFocusChat: (listener: () => void): (() => void) => subscribe(IPC.pet.focusChat, listener),
     onStateChanged: (listener: (state: PetState) => void): (() => void) =>
       subscribe(IPC.pet.stateChanged, listener),
@@ -82,6 +86,8 @@ const api: MurasameApi = {
     check: (): Promise<UpdateCheckResult> => ipcRenderer.invoke(IPC.updates.check)
   },
   core: {
+    continueTask: (id: string, answer: string): Promise<Result<Task>> => ipcRenderer.invoke(IPC.core.continueTask, { id, answer }),
+    openArtifact: (id: string, artifact: string): Promise<Result<string>> => ipcRenderer.invoke(IPC.core.openArtifact, { id, artifact }),
     getBootstrap: (): Promise<Result<BootstrapData>> => ipcRenderer.invoke(IPC.core.getBootstrap),
     createConversation: (): Promise<Result<Conversation>> =>
       ipcRenderer.invoke(IPC.core.createConversation),
@@ -131,7 +137,9 @@ const api: MurasameApi = {
   },
   relationship: {
     get: (): Promise<RelationshipView> => ipcRenderer.invoke(IPC.relationship.get),
-    reset: (): Promise<RelationshipView> => ipcRenderer.invoke(IPC.relationship.reset)
+    reset: (): Promise<RelationshipView> => ipcRenderer.invoke(IPC.relationship.reset),
+    changeAppearance: input => ipcRenderer.invoke(IPC.relationship.changeAppearance, input),
+    onChanged: listener => subscribe(IPC.relationship.changed, listener)
   },
   data: {
     exportBundle: (passphrase: string, path?: string): Promise<Result<{ path: string; note: string }>> =>
@@ -164,6 +172,9 @@ const api: MurasameApi = {
     stop: () => ipcRenderer.invoke(IPC.autonomy.stop)
   },
   events: {
+    onScreenUpdated: listener => subscribe(IPC.core.screenUpdated, listener),
+    onMemoriesUpdated: (listener) => subscribe(IPC.core.memoriesUpdated, listener),
+    onMemoryExtractionStatus: (listener) => subscribe(IPC.core.memoryExtractionStatus, listener),
     onMessageDelta: (listener: (payload: ChatDelta) => void): (() => void) =>
       subscribe(IPC.core.messageDelta, listener),
     onMessageStarted: (listener: (payload: ChatTurnStarted) => void): (() => void) =>

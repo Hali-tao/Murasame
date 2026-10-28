@@ -16,16 +16,40 @@ export function ChatPage(): React.JSX.Element {
   const selectConversation = useAppStore((state) => state.selectConversation)
   const createConversation = useAppStore((state) => state.createConversation)
   const sendMessage = useAppStore((state) => state.sendMessage)
-  const busy = useAppStore((state) => Boolean(state.busy['chat:send']))
+  const busy = useAppStore((state) => {
+    const id = state.selectedConversationId ?? state.data?.conversations[0]?.id
+    return Boolean(state.busy[`chat:send:${id}`] || state.busy[`chat:remote:${id}`])
+  })
   const notify = useAppStore((state) => state.notify)
   const [search, setSearch] = useState('')
-  const [draft, setDraft] = useState('')
-  const [optimistic, setOptimistic] = useState<Message[]>([])
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const [optimistic, setOptimistic] = useState<Record<string, Message[]>>({})
+  const [contextOpen, setContextOpen] = useState(true)
   const [streaming, setStreaming] = useState<Record<string, string>>({})
   const [taskDialog, setTaskDialog] = useState(false)
   const [voiceMode, setVoiceMode] = useState(false)
+  const recordingController = useRef<AbortController | null>(null)
+  const playbackController = useRef<AbortController | null>(null)
   const recordingRef = useRef<Recording | null>(null)
+  const recordingConversationRef = useRef<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  useEffect(() => window.murasame?.settings.onChanged(settings => {
+    if (!settings.speakReplies) playbackController.current?.abort()
+    if (!settings.permissions.microphone) recordingController.current?.abort()
+    if (!settings.permissions.microphone && recordingRef.current) {
+      const active = recordingRef.current; recordingRef.current = null
+      void active.stop().catch(() => undefined)
+      setVoiceMode(false)
+    }
+  }), [])
+
+  useEffect(() => () => {
+    recordingController.current?.abort()
+    playbackController.current?.abort()
+    void recordingRef.current?.stop().catch(() => undefined)
+  }, [])
+
+  useEffect(() => { playbackController.current?.abort() }, [selectedId])
 
   const conversation = data.conversations.find((item) => item.id === selectedId) ?? data.conversations[0]
   const filtered = data.conversations.filter((item) =>
@@ -33,7 +57,11 @@ export function ChatPage(): React.JSX.Element {
   )
   const currentTask = data.tasks.find((task) => task.status === '执行中' || task.status === '等待批准')
   const defaultModel = data.models.find((model) => model.default)
-  const displayMessages = conversation ? [...conversation.messages, ...optimistic] : []
+  const draft = conversation ? drafts[conversation.id] ?? '' : ''
+  const displayMessages = conversation ? [...conversation.messages, ...(optimistic[conversation.id] ?? [])] : []
+  const recalledIds = new Set(conversation?.recalledMemoryIds ?? [])
+  const recalledMemories = data.memories.filter((memory) => recalledIds.has(memory.id))
+  const setDraftFor = (id: string, value: string): void => { setDrafts((current) => ({ ...current, [id]: value })) }
   const streamingText = conversation ? streaming[conversation.id] ?? '' : ''
 
   useEffect(() => {
@@ -54,8 +82,9 @@ export function ChatPage(): React.JSX.Element {
     })
     const stopStarted = window.murasame.events.onMessageStarted((payload) => {
       setOptimistic((current) => {
-        if (current.some((item) => item.text === payload.userText)) return current
-        return [{ id: `pending-${payload.conversationId}`, role: 'user', text: payload.userText, time: clockLabel() }]
+        const pending = current[payload.conversationId] ?? []
+        if (pending.some((item) => item.text === payload.userText)) return current
+        return { ...current, [payload.conversationId]: [...pending, { id: `pending-${payload.conversationId}`, role: 'user', text: payload.userText, time: clockLabel() }] }
       })
     })
     const dropStreaming = (conversationId: string): void => {
@@ -67,11 +96,11 @@ export function ChatPage(): React.JSX.Element {
       })
     }
     const stopUpdated = window.murasame.events.onConversationUpdated((next) => {
-      setOptimistic((current) => current.filter((item) => !next.messages.some((message) => message.role === 'user' && message.text === item.text)))
+      setOptimistic((current) => ({ ...current, [next.id]: (current[next.id] ?? []).filter((item) => !next.messages.some((message) => message.role === 'user' && message.text === item.text)) }))
       dropStreaming(next.id)
     })
     const stopFailed = window.murasame.events.onMessageFailed((payload) => {
-      setOptimistic((current) => current.filter((item) => item.id !== `pending-${payload.conversationId}`))
+      setOptimistic((current) => ({ ...current, [payload.conversationId]: [] }))
       dropStreaming(payload.conversationId)
     })
     return () => {
@@ -82,59 +111,47 @@ export function ChatPage(): React.JSX.Element {
     }
   }, [])
 
+  const sendInConversation = async (id: string, text: string): Promise<void> => {
+    setDraftFor(id, '')
+    setStreaming((current) => ({ ...current, [id]: '' }))
+    setOptimistic((current) => ({ ...current, [id]: [...(current[id] ?? []), { id: `optimistic-${Date.now()}`, role: 'user', text, time: clockLabel() }] }))
+    try {
+      const saved = await sendMessage(id, text)
+      if (!saved) setDrafts((current) => ({ ...current, [id]: current[id] || text }))
+    } finally {
+      setOptimistic((current) => ({ ...current, [id]: [] }))
+      setStreaming((current) => { const next = { ...current }; delete next[id]; return next })
+    }
+  }
+
   const handleSend = async (): Promise<void> => {
     if (!conversation || !draft.trim() || busy) return
-    const text = draft.trim()
-    setDraft('')
-    setStreaming((current) => ({ ...current, [conversation.id]: '' }))
-    setOptimistic([{ id: `optimistic-${Date.now()}`, role: 'user', text, time: clockLabel() }])
-    try {
-      const saved = await sendMessage(conversation.id, text)
-      if (!saved) setDraft(text)
-    } finally {
-      setOptimistic([])
-      setStreaming((current) => {
-        const next = { ...current }
-        delete next[conversation.id]
-        return next
-      })
-    }
+    await sendInConversation(conversation.id, draft.trim())
   }
 
   const quickSend = async (text: string): Promise<void> => {
     if (!conversation || busy) return
-    setStreaming((current) => ({ ...current, [conversation.id]: '' }))
-    setOptimistic([{ id: `optimistic-${Date.now()}`, role: 'user', text, time: clockLabel() }])
-    try {
-      const saved = await sendMessage(conversation.id, text)
-      if (!saved) setDraft(text)
-    } finally {
-      setOptimistic([])
-      setStreaming((current) => {
-        const next = { ...current }
-        delete next[conversation.id]
-        return next
-      })
-    }
+    await sendInConversation(conversation.id, text)
   }
 
-  const newConversation = async (): Promise<void> => {
-    const next = await createConversation()
-    if (next) setDraft('')
-  }
+  const newConversation = async (): Promise<void> => { await createConversation() }
 
   const toggleVoice = async (): Promise<void> => {
     if (recordingRef.current) {
       const recording = recordingRef.current
+      const controller = recordingController.current
+      const id = recordingConversationRef.current
       recordingRef.current = null
       setVoiceMode(false)
       const samples = await recording.stop()
+      if (controller?.signal.aborted || recordingController.current !== controller) return
       const result = await window.murasame.voice.transcribe(samples)
+      if (controller?.signal.aborted || recordingController.current !== controller) return
       if (!result.accepted) {
         notify(result.message, 'amber')
         return
       }
-      setDraft((current) => (current ? `${current} ${result.text}` : result.text))
+      if (id) setDrafts((current) => ({ ...current, [id]: current[id] ? `${current[id]} ${result.text}` : result.text }))
       return
     }
     if (!data.settings.permissions.microphone) {
@@ -142,32 +159,42 @@ export function ChatPage(): React.JSX.Element {
       navigate('/settings')
       return
     }
+    recordingController.current?.abort()
+    const controller = new AbortController()
+    recordingController.current = controller
     const readiness = await window.murasame.voice.readiness()
+    if (controller.signal.aborted || recordingController.current !== controller) return
     if (!readiness.stt) {
       notify(readiness.detail, 'red')
       return
     }
     try {
-      recordingRef.current = await startRecording()
+      recordingConversationRef.current = conversation?.id ?? null
+      recordingRef.current = await startRecording(controller.signal)
       setVoiceMode(true)
       notify('正在录音，再点一次结束并识别', 'blue')
     } catch (error) {
+      if (controller.signal.aborted || recordingController.current !== controller) return
       notify(error instanceof Error ? error.message : '无法打开麦克风', 'red')
     }
   }
 
   const readAloud = async (text: string): Promise<void> => {
+    playbackController.current?.abort()
+    const controller = new AbortController()
+    playbackController.current = controller
     const spoken = await window.murasame.voice.speak(text)
+    if (controller.signal.aborted) return
     if (!spoken.played) {
       notify(spoken.message, 'amber')
       return
     }
-    await playSamples(spoken.samples, spoken.sampleRate)
+    await playSamples(spoken.samples, spoken.sampleRate, undefined, controller.signal)
   }
 
   return (
     <div className="page chat-page">
-      <div className="chat-layout">
+      <div className={`chat-layout${contextOpen ? '' : ' context-collapsed'}`}>
         <Card className="chat-conversations">
           <CardHead
             title="会话"
@@ -185,7 +212,6 @@ export function ChatPage(): React.JSX.Element {
                 key={item.id}
                 className={`conversation-item${item.id === conversation?.id ? ' active' : ''}`}
                 onClick={() => {
-                  setOptimistic([])
                   selectConversation(item.id)
                 }}
               >
@@ -209,6 +235,7 @@ export function ChatPage(): React.JSX.Element {
                 </div>
                 <div className="chat-thread-badges">
                   <StatusPill status={!data.settings.memoryEnabled ? 'memory-off' : data.memoryReady ? 'memory-on' : 'memory-waiting'} />
+                  <Button size="sm" aria-expanded={contextOpen} aria-controls="chat-context-panel" onClick={() => setContextOpen((open) => !open)}>{contextOpen ? '收起上下文' : '展开上下文'}</Button>
                   <Pill tone="gray">文字</Pill>
                 </div>
               </div>
@@ -256,7 +283,7 @@ export function ChatPage(): React.JSX.Element {
               <div className="chat-composer">
                 <textarea
                   value={draft}
-                  onChange={(event) => setDraft(event.target.value)}
+                  onChange={(event) => setDraftFor(conversation.id, event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
                       event.preventDefault()
@@ -299,9 +326,9 @@ export function ChatPage(): React.JSX.Element {
           )}
         </Card>
 
-        <div className="chat-context">
+        <div className="chat-context" id="chat-context-panel" hidden={!contextOpen}>
           <Card>
-            <CardHead title="本轮上下文" subtitle="回答会用到当前会话和已保存的记忆" aside={<Pill tone="gray">仅本机</Pill>} />
+            <CardHead title="本轮上下文" subtitle="显示最近一轮实际注入的长期记忆" aside={<Pill tone="gray">仅本机</Pill>} />
             <div className="context-list">
               <div><span>角色</span><strong>{data.character.name.trim() || '未命名'}{data.character.style ? ` · ${data.character.style}` : ''}</strong></div>
               <div><span>模型</span><strong>{defaultModel?.name ?? '尚未配置'}</strong></div>
@@ -310,9 +337,11 @@ export function ChatPage(): React.JSX.Element {
             </div>
             <div className="subheading">已召回的记忆</div>
             <div className="memory-chips">
-              {data.memories.slice(0, 3).map((memory) => (
+              {recalledMemories.map((memory) => (
                 <Pill key={memory.id} tone="coral">{memory.text}</Pill>
               ))}
+              {recalledIds.size === 0 ? <p className="muted">本轮未注入长期记忆</p> : null}
+              {recalledIds.size > recalledMemories.length ? <p className="muted">部分曾注入的记忆已更正或删除，当前列表不再展示。</p> : null}
             </div>
             <div className="subheading">快捷动作</div>
             <div className="quick-actions">

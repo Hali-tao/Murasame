@@ -23,7 +23,7 @@ export const memoryUpdateSchema = memoryAddSchema.extend({
 export const memoryDeleteSchema = z.object({ id: z.string().min(1) })
 
 export const taskCreateSchema = z.object({
-  title: z.string().trim().min(1).max(120)
+  title: z.string().trim().min(1).max(4000)
 })
 
 export const idSchema = z.object({ id: z.string().min(1) })
@@ -82,6 +82,7 @@ export const settingsPatchSchema = z.object({
   speakReplies: z.boolean().optional(),
   userName: z.string().max(40).optional(),
   outboundImages: z.boolean().optional(),
+  fileApproval: z.enum(['ask', 'allow']).optional(),
   petHotkey: z.string().trim().min(1).max(40).optional(),
   proactivePace: z.enum(['low', 'mid', 'high']).optional(),
   onboardingDone: z.boolean().optional(),

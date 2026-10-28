@@ -30,7 +30,8 @@ export function App(): React.JSX.Element {
 
   useEffect(() => {
     return window.murasame.window.onNavigated((path) => {
-      if (path === '/tasks' || path === '/chat' || path === '/settings') navigate(path)
+      const pathOnly = path.split('?')[0]
+      if (pathOnly === '/tasks' || pathOnly === '/chat' || pathOnly === '/settings') navigate(path)
     })
   }, [navigate])
 

@@ -832,12 +832,18 @@ a:focus-visible {
 .pet-voice-note { position: absolute; z-index: 3; top: 78px; left: 50%; width: max-content; max-width: 220px; margin: 0; padding: 4px 8px; color: #f0c36a; background: rgba(30,33,42,.9); border-radius: 8px; font-size: 11px; line-height: 1.4; text-align: center; transform: translateX(-50%); }
 .pet-bubble::after { position: absolute; bottom: -5px; left: 50%; width: 9px; height: 9px; background: rgba(30,33,42,.93); border-right: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08); content: ""; transform: translateX(-50%) rotate(45deg); }
 .pet-controls { position: absolute; z-index: 4; top: 76px; right: 17px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 5px; opacity: 0; background: rgba(30,33,42,.91); border: 1px solid rgba(255,255,255,.1); border-radius: 9px; box-shadow: 0 8px 24px rgba(13,15,20,.2); transition: opacity 150ms ease, transform 150ms ease; transform: translateX(4px); }
-.pet-stage:hover .pet-controls { opacity: 1; transform: translateX(0); }
+.pet-stage:hover .pet-controls, .pet-stage:focus-within .pet-controls { opacity: 1; transform: translateX(0); }
 .pet-controls button { display: grid; width: 27px; height: 27px; padding: 0; place-items: center; cursor: pointer; color: #c8c7c7; background: transparent; border: 0; border-radius: 6px; }
 .pet-controls button:hover { color: #fff; background: rgba(255,255,255,.1); }
 .pet-controls span { color: #8e9098; font-family: "Cascadia Mono", Consolas, monospace; font-size: 8px; }
 .pet-toast { position: absolute; z-index: 4; bottom: 108px; left: 50%; width: max-content; max-width: 230px; margin: 0; padding: 6px 8px; color: #f0c36a; background: rgba(30,33,42,.94); border-radius: 8px; font-size: 11px; line-height: 1.4; text-align: center; transform: translateX(-50%); }
-.pet-activity { position: absolute; z-index: 5; bottom: 22px; left: 50%; display: flex; flex-direction: column; gap: 6px; width: 196px; padding: 8px; color: #f3efe9; background: rgba(30,33,42,.94); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; box-shadow: 0 10px 24px rgba(13,15,20,.28); transform: translateX(-50%); }
+.pet-iso { position: absolute; z-index: 6; top: 28px; right: 8px; width: 168px; overflow: hidden; background: rgba(20,22,28,.94); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; }
+.pet-iso-bar { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; color: #f3efe9; font-size: 11px; }
+.pet-iso-bar button, .pet-iso-tab { padding: 2px 6px; color: #f3efe9; background: rgba(255,255,255,.08); border: 0; border-radius: 6px; font-size: 11px; cursor: pointer; }
+.pet-iso iframe { display: block; width: 168px; height: 96px; border: 0; background: #111; }
+.pet-iso-tab { position: absolute; z-index: 6; top: 28px; right: 8px; }
+.pet-activity-stack { position: absolute; z-index: 5; bottom: 22px; left: 50%; display: flex; flex-direction: column; gap: 6px; width: 210px; transform: translateX(-50%); }
+.pet-activity { display: flex; flex-direction: column; gap: 6px; width: 196px; padding: 8px; color: #f3efe9; background: rgba(30,33,42,.94); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; box-shadow: 0 10px 24px rgba(13,15,20,.28); }
 .pet-activity.is-needs-input { border-color: rgba(240,195,106,.55); }
 .pet-activity.is-blocked { border-color: rgba(232,112,112,.55); }
 .pet-activity-main { display: flex; flex-direction: column; gap: 2px; padding: 0; color: inherit; background: transparent; border: 0; text-align: left; cursor: pointer; }
@@ -854,11 +860,13 @@ a:focus-visible {
 .pet-menu { position: absolute; z-index: 6; top: 86px; right: 8px; display: flex; flex-direction: column; min-width: 132px; padding: 6px; background: rgba(30,33,42,.96); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; }
 .pet-menu button { padding: 6px 8px; color: #f3efe9; background: transparent; border: 0; border-radius: 6px; font-size: 12px; text-align: left; cursor: pointer; }
 .pet-menu button:hover { background: rgba(255,255,255,.08); }
-.pet-chat { position: absolute; top: 24px; bottom: 24px; z-index: 5; display: flex; flex-direction: column; width: 276px; padding: 10px; color: #f3efe9; background: rgba(30,33,42,.94); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; user-select: text; }
-.pet-chat.right { right: 12px; }
-.pet-chat.left { left: 12px; }
-.pet-chat-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.pet-chat-head strong { font-size: 13px; font-weight: 650; }
+.pet-stage.chat-open { display: flex; flex-direction: row; align-items: flex-start; }
+.pet-stage.chat-open.side-left { flex-direction: row-reverse; }
+.pet-stage.chat-open .pet-column { position: relative; left: auto; right: auto; flex: 0 0 360px; height: 500px; }
+.pet-chat { position: absolute; top: 24px; bottom: 24px; z-index: 5; display: flex; flex-direction: column; box-sizing: border-box; width: 276px; padding: 10px; color: #f3efe9; background: rgba(30,33,42,.94); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; user-select: text; }
+.pet-stage.chat-open .pet-chat { position: relative; top: auto; right: auto; bottom: auto; left: auto; flex: 0 0 276px; width: 276px; height: 452px; margin: 24px 12px; }
+.pet-chat-head { display: flex; align-items: center; justify-content: flex-end; height: 28px; margin-bottom: 6px; }
+.pet-chat-head-actions { display: flex; align-items: center; gap: 2px; }
 .pet-chat-head button, .pet-chat-actions button { display: grid; width: 28px; height: 28px; place-items: center; color: #f3efe9; background: transparent; border: 0; border-radius: 8px; cursor: pointer; }
 .pet-chat-head button:hover, .pet-chat-actions button:hover { background: rgba(255,255,255,.1); }
 .pet-chat-log { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
@@ -868,6 +876,9 @@ a:focus-visible {
 .pet-chat-empty, .pet-chat-notice { margin: 0; color: rgba(243,239,233,.72); font-size: 11px; line-height: 1.45; }
 .pet-chat-notice { margin-top: 6px; color: #f0c36a; }
 .pet-chat-form { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.pet-approval { display: flex; gap: 4px; }
+.pet-approval button { height: 22px; padding: 0 8px; color: rgba(243,239,233,.72); background: transparent; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; font-size: 11px; cursor: pointer; }
+.pet-approval button[aria-pressed="true"] { color: #f3efe9; background: rgba(227,111,97,.88); border-color: transparent; }
 .pet-chat-form textarea { width: 100%; resize: none; padding: 8px; color: #f3efe9; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 8px; font: inherit; font-size: 12px; }
 .pet-chat-form textarea:focus { outline: 1px solid rgba(227,111,97,.8); }
 .pet-chat-actions { display: flex; justify-content: flex-end; gap: 4px; }
@@ -915,3 +926,19 @@ a:focus-visible {
 
 
 
+
+/* Keep the canvas, transparent native window and chat column in the same coordinate space. */
+.pet-column { width: var(--pet-column-width, 360px); }
+.pet-character { width: var(--character-width, 326px); height: var(--character-height, 440px); }
+.pet-character:focus-visible { outline: 2px solid #e07860; outline-offset: 3px; }
+.pet-stage.chat-open .pet-column { flex-basis: var(--pet-column-width, 360px); height: var(--pet-height, 500px); }
+.pet-stage.chat-open .pet-chat { height: calc(var(--pet-height, 500px) - 48px); }
+.pet-activity-stack { max-height: 220px; overflow-y: auto; }
+.memory-toolbar { flex-wrap: wrap; }
+.memory-toolbar .search-box.wide { flex: 1 1 220px; min-width: 180px; }
+.memory-toolbar .select { flex: 0 1 170px; width: 170px; }
+.chat-layout.context-collapsed { grid-template-columns: 220px minmax(0, 1fr); }
+.chat-layout.context-collapsed .chat-context { display: none; }
+.task-clarification { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; margin: 12px 0; }
+.task-clarification label { width: 100%; font-weight: 600; }
+.task-clarification textarea { flex: 1 1 300px; min-height: 72px; padding: 10px; }

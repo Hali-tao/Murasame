@@ -25,6 +25,7 @@ export const initialSettings: AppSettings = {
   speakReplies: true,
   userName: '',
   outboundImages: false,
+  fileApproval: 'ask',
   proactivePace: 'mid',
   onboardingDone: false,
   permissions: {

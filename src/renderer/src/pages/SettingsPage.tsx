@@ -210,6 +210,16 @@ export function SettingsPage(): React.JSX.Element {
               <Button size="sm" onClick={() => void updatePermission('accessibility', !data.settings.permissions.accessibility)}>{data.settings.permissions.accessibility ? '撤销' : '申请'}</Button>
             </div>
             <p className="fineprint">系统权限可在操作系统设置中撤销，撤销后应用会显示受限状态。日志默认保留 {data.settings.logRetentionDays} 天，不记录完整密钥和原始屏幕。</p>
+            <Field label="写图片" className="settings-select-field">
+              <select
+                className="select"
+                value={data.settings.fileApproval ?? 'ask'}
+                onChange={(event) => void update({ fileApproval: event.target.value as 'ask' | 'allow' })}
+              >
+                <option value="ask">每次询问。写到桌面或图片文件夹之前要点允许</option>
+                <option value="allow">写图免问。选定之后，画到桌面或图片文件夹不再询问</option>
+              </select>
+            </Field>
             <Field label="持续观察" className="settings-select-field">
               <select className="select" value={data.settings.screenWatchEnabled ? String(data.settings.screenWatchSeconds) : 'off'} onChange={(event) => {
                 const value = event.target.value

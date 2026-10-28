@@ -1,5 +1,6 @@
 import { AlertCircle, CheckCircle2, Eye, EyeOff, PlugZap, Plus, ShieldCheck, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { ModelInput, ModelProfile } from '@shared/types'
 import { matchPreset, MODEL_PRESETS, presetById } from '@shared/model-presets'
 import { Button, Card, CardHead, EmptyState, Field, Input, Pill, Spinner } from '../components/ui'
@@ -67,6 +68,7 @@ function friendlyFailure(detail: string, modelName: string): string {
 }
 
 export function ModelsPage(): React.JSX.Element {
+  const navigate = useNavigate()
   const data = useAppStore((state) => state.data)!
   const selectedId = useAppStore((state) => state.selectedModelId)
   const selectModel = useAppStore((state) => state.selectModel)
@@ -304,6 +306,7 @@ export function ModelsPage(): React.JSX.Element {
               <>
                 <strong><CheckCircle2 size={16} /> 验证成功，已经开始使用</strong>
                 <p>{selected?.name} · {selected?.model} · 响应 {selected?.latency}。打开左侧「交流」发一句话，就会走这个服务。</p>
+                <Button variant="primary" onClick={() => void useAppStore.getState().createConversation().then((created) => { if (created) navigate('/chat') })}>开始第一次对话</Button>
               </>
             ) : verifiedNotCurrent ? (
               <>

@@ -11,8 +11,11 @@ export function judgeCall(executionStatus: ToolCallRecord['execution']['status']
   return '部分完成'
 }
 
-export function summarizeCalls(calls: readonly Pick<ToolCallRecord, 'execution' | 'verification'>[]): TaskJudgement {
+export function summarizeCalls(calls: readonly (Pick<ToolCallRecord, 'execution' | 'verification'> & Partial<Pick<ToolCallRecord, 'agentRole'>>)[]): TaskJudgement {
+  calls = calls.filter((call) => !call.agentRole || call.agentRole === 'Worker')
+  if (!calls.length) return '失败'
   const judgements = calls.map((call) => judgeCall(call.execution.status, call.verification.verdict, call.execution.raw))
+  if (!calls.some((call) => call.verification.evidence.some((e) => e.matched)) && calls.some((call) => call.agentRole)) return judgements.includes('已取消') ? '已取消' : '失败'
   if (judgements.every((item) => item === '成功')) return '成功'
   if (judgements.some((item) => item === '已取消')) return '已取消'
   if (judgements.some((item) => item === '部分完成' || item === '成功') && judgements.some((item) => item !== '成功')) return '部分完成'

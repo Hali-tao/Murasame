@@ -1,22 +1,27 @@
 export const SENSITIVE_PROCESSES = ['keepass', '1password', 'bitwarden', 'lastpass', 'dashlane', '密码']
 
 export interface WindowFacts {
+  windowId?: string
+  processId?: number
   title: string
   processName: string
   passwordField: boolean
   displayAffinity: number
   tree: string
   selectedText: string
+  sensitiveScanComplete?: boolean
+  idleMs?: number
+  fullscreen?: boolean
   /** 窗口在屏幕上的物理像素矩形，用来从整屏截图里裁出目标窗口。 */
   bounds?: { x: number; y: number; width: number; height: number }
 }
 
-/** 窗口矩形和截图对得上才裁剪，否则（例如窗口在副屏）用整屏，不裁出错位的画面。 */
+/** Unknown or out-of-range target rectangles fail closed; callers must not fall back to full screen. */
 export function cropRect(
   bounds: WindowFacts['bounds'],
   image: { width: number; height: number }
 ): { x: number; y: number; width: number; height: number } | null {
-  if (!bounds || bounds.width < 40 || bounds.height < 40) return null
+  if (!bounds || ![bounds.x, bounds.y, bounds.width, bounds.height, image.width, image.height].every(Number.isFinite) || bounds.width < 40 || bounds.height < 40 || bounds.x < 0 || bounds.y < 0 || bounds.x + bounds.width > image.width || bounds.y + bounds.height > image.height) return null
   const x = Math.max(0, Math.round(bounds.x))
   const y = Math.max(0, Math.round(bounds.y))
   const width = Math.min(image.width - x, Math.round(bounds.width + Math.min(0, bounds.x)))
@@ -25,8 +30,9 @@ export function cropRect(
   return { x, y, width, height }
 }
 
-export function isSensitiveWindow(window: Pick<WindowFacts, 'title' | 'processName' | 'passwordField' | 'displayAffinity'>): { sensitive: boolean; reason: string } {
+export function isSensitiveWindow(window: Pick<WindowFacts, 'title' | 'processName' | 'passwordField' | 'displayAffinity' | 'sensitiveScanComplete'>): { sensitive: boolean; reason: string } {
   if (window.displayAffinity === 0x11) return { sensitive: true, reason: '该窗口声明不参与系统截图，已跳过采集' }
+  if ('sensitiveScanComplete' in window && window.sensitiveScanComplete === false) return { sensitive: true, reason: '无法完整检查窗口中的敏感控件，已跳过采集' }
   if (window.passwordField) return { sensitive: true, reason: '前台正在输入密码，已跳过采集' }
   const name = `${window.processName} ${window.title}`.toLowerCase()
   if (SENSITIVE_PROCESSES.some((item) => name.includes(item))) return { sensitive: true, reason: '敏感应用不采集，请改用文字描述' }
@@ -67,4 +73,13 @@ export function operationIntent(text: string): boolean {
 
 export function screenInstructionIsExecutable(_source: 'screen' | 'ocr' | 'web' | 'tool'): boolean {
   return false
+}
+
+/** Both target and display bounds are physical pixels, including negative monitor origins. */
+export function cropDisplayRect(bounds: WindowFacts['bounds'], display: { x: number; y: number; width: number; height: number }, image: { width: number; height: number }): ReturnType<typeof cropRect> {
+  if (!bounds || ![display.x, display.y, display.width, display.height].every(Number.isFinite) || display.width <= 0 || display.height <= 0) return null
+  const sx = image.width / display.width; const sy = image.height / display.height
+  if (!Number.isFinite(sx) || !Number.isFinite(sy) || sx <= 0 || sy <= 0) return null
+  const x = (bounds.x - display.x) * sx; const y = (bounds.y - display.y) * sy
+  return cropRect({ x, y, width: bounds.width * sx, height: bounds.height * sy }, image)
 }

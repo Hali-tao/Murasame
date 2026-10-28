@@ -1,0 +1,127 @@
+{
+  "startedAt": "2026-10-28T11:06:10.675Z",
+  "finishedAt": "2026-10-28T11:07:00.696Z",
+  "allCases": 12,
+  "passed": 12,
+  "cases": [
+    {
+      "name": "production-bidi-playback",
+      "ok": true,
+      "data": {
+        "url": "http://127.0.0.1:8765/video.html",
+        "media": {
+          "time": 0,
+          "duration": 8,
+          "paused": false,
+          "ended": false,
+          "ready": 4,
+          "source": "http://127.0.0.1:8765/clip.webm",
+          "captions": [
+            {
+              "start": 0,
+              "end": 4,
+              "text": "Synthetic caption: red start."
+            },
+            {
+              "start": 4,
+              "end": 8,
+              "text": "Synthetic caption: blue ending."
+            }
+          ],
+          "captionTracks": 1,
+          "audioAvailable": true
+        },
+        "contextId": "0b266e77-3e08-4657-87ca-f52580985c47"
+      }
+    },
+    {
+      "name": "bidi-context-stability",
+      "ok": true,
+      "data": {
+        "contextId": "0b266e77-3e08-4657-87ca-f52580985c47",
+        "url": "http://127.0.0.1:8765/video.html"
+      }
+    },
+    {
+      "name": "production-png-decode",
+      "ok": true,
+      "data": {
+        "width": 1280,
+        "height": 720,
+        "digest": "4eea5c38f083019d17cc6d6f8bddb3560f24375f0615e692642459b2ad4fc6a5"
+      }
+    },
+    {
+      "name": "production-media-audio-and-local-stt",
+      "ok": true,
+      "data": {
+        "start": 0,
+        "end": 3.012365,
+        "samples": 48000,
+        "peak": 0.362592875957489,
+        "missingWhisper": [],
+        "transcript": {
+          "text": "這是何成厭受音頻?",
+          "accepted": true,
+          "message": "本地识别完成"
+        }
+      }
+    },
+    {
+      "name": "real-media-time-and-captions",
+      "ok": true,
+      "data": {
+        "from": 0,
+        "to": 0.545892,
+        "captions": [
+          {
+            "start": 0,
+            "end": 4,
+            "text": "Synthetic caption: red start."
+          },
+          {
+            "start": 4,
+            "end": 8,
+            "text": "Synthetic caption: blue ending."
+          }
+        ]
+      }
+    },
+    {
+      "name": "real-autonomy-video-lifecycle",
+      "ok": true,
+      "data": {
+        "phase": "stopped",
+        "status": "partial",
+        "times": [
+          0,
+          1.026458
+        ],
+        "captions": [
+          "Synthetic caption: red start.",
+          "Synthetic caption: red start."
+        ],
+        "cleanupSucceeded": true,
+        "completions": [
+          "partial"
+        ]
+      }
+    },
+    {
+      "name": "no-profile-container-residue",
+      "ok": true,
+      "data": {
+        "remaining": 0
+      }
+    }
+  ],
+  "cleanup": {
+    "created": 2,
+    "removed": 2
+  },
+  "limits": [
+    "Synthetic local media, no user screen or microphone.",
+    "Model vision description is controlled in lifecycle test.",
+    "Whisper output preserves actual homophone errors."
+  ]
+}

@@ -1,3 +1,4 @@
+import { runCommandAsync, type DockerRunner } from '../isolation/docker-runtime'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 
@@ -30,4 +31,10 @@ export function recognizeImage(imagePath: string, run: (command: string, args: s
 
 function defaultRun(command: string, args: string[], env: NodeJS.ProcessEnv): string {
   return execFileSync(command, args, { encoding: 'utf8', windowsHide: true, timeout: 20000, env })
+}
+
+export async function recognizeImageAsync(imagePath: string, run: DockerRunner = runCommandAsync, signal?: AbortSignal): Promise<string> {
+  return (await run(powershell, ['-NoProfile', '-NonInteractive', '-Command', script], {
+    env: { ...process.env, MURASAME_OCR_IMAGE: imagePath }, timeoutMs: 20000, signal
+  })).trim()
 }

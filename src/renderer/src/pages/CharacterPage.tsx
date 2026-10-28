@@ -1,8 +1,8 @@
 import { Check, Plus, RotateCcw, Save, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getPetPreset, PET_PRESETS } from '@shared/pet-presets'
-import type { CharacterProfile } from '@shared/types'
-import { Button, Card, CardHead, Field, Input, Pill, Textarea, ToggleRow } from '../components/ui'
+import type { AppSettings, CharacterProfile, RelationshipView } from '@shared/types'
+import { Button, Card, CardHead, ConfirmDialog, Field, Input, Modal, Pill, Textarea, ToggleRow } from '../components/ui'
 import { StatusPill } from '../components/StatusPill'
 import { useAppStore } from '../store'
 
@@ -11,7 +11,6 @@ const keywordSuggestions = ['温柔克制', '冷静专业', '简洁', '少量俏
 export function CharacterPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const saveCharacter = useAppStore((state) => state.saveCharacter)
-  const updateSettings = useAppStore((state) => state.updateSettings)
   const notify = useAppStore((state) => state.notify)
   const busy = useAppStore((state) => Boolean(state.busy['character:save']))
   const [draft, setDraft] = useState<CharacterProfile>(data.character)
@@ -20,6 +19,29 @@ export function CharacterPage(): React.JSX.Element {
   const [importNote, setImportNote] = useState('')
   const [importedUrl, setImportedUrl] = useState('')
   const [switching, setSwitching] = useState(false)
+  const [relationship, setRelationship] = useState<RelationshipView | null>(null)
+  const [relationshipError, setRelationshipError] = useState('')
+  const [resetOpen, setResetOpen] = useState(false)
+  const [relationshipBusy, setRelationshipBusy] = useState(false)
+  const [appearance, setAppearance] = useState<Pick<Partial<AppSettings>, 'petPreset' | 'importedModelUrl' | 'importedCharacterName'> | null>(null)
+  const [relationshipMode, setRelationshipMode] = useState<'continue' | 'new'>('continue')
+  const relationRevision = useRef(0)
+  const dateLabel = (value: string): string => { const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('zh-CN') }
+
+  useEffect(() => {
+    let stopped = false
+    const load = async (): Promise<void> => {
+      const revision = ++relationRevision.current
+      try {
+        const current = await window.murasame.relationship.get()
+        if (!stopped && relationRevision.current === revision) { setRelationship(current); setRelationshipError('') }
+      } catch { if (!stopped) setRelationshipError('关系状态暂时无法读取，请稍后重试。') }
+    }
+    void load()
+    const stopRelation = window.murasame.relationship.onChanged?.((current) => { relationRevision.current++; setRelationship(current) })
+    const stopConversation = window.murasame.events?.onConversationUpdated?.(() => { void load() })
+    return () => { stopped = true; stopRelation?.(); stopConversation?.() }
+  }, [])
   const activePreset = getPetPreset(data.settings.petPreset)
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(data.character)
@@ -66,19 +88,47 @@ export function CharacterPage(): React.JSX.Element {
     setImportNote('资源已校验并复制。当前形象保持不变，确认使用后才会替换。')
   }
 
-  const applyImported = async (): Promise<void> => {
-    if (!importedUrl) return
-    const saved = await updateSettings({ importedModelUrl: importedUrl, importedCharacterName: draft.name || '导入的形象' })
-    if (saved) notify('已切换到导入的形象')
+  const requestAppearance = (patch: Pick<Partial<AppSettings>, 'petPreset' | 'importedModelUrl' | 'importedCharacterName'>): void => {
+    if (switching) return
+    setRelationshipMode('continue')
+    setAppearance(patch)
   }
 
-  const selectPreset = async (presetId: (typeof PET_PRESETS)[number]['id']): Promise<void> => {
-    if (presetId === data.settings.petPreset || switching) return
+  const applyImported = (): void => {
+    if (importedUrl) requestAppearance({ importedModelUrl: importedUrl, importedCharacterName: draft.name || '导入的形象' })
+  }
+
+  const selectPreset = (presetId: (typeof PET_PRESETS)[number]['id']): void => {
+    if (presetId === data.settings.petPreset && !data.settings.importedModelUrl) return
+    requestAppearance({ petPreset: presetId, importedModelUrl: '', importedCharacterName: '' })
+  }
+
+  const confirmAppearance = async (): Promise<void> => {
+    if (!appearance || switching) return
     setSwitching(true)
-    const preset = getPetPreset(presetId)
-    const saved = await updateSettings({ petPreset: presetId, importedModelUrl: '', importedCharacterName: '' })
-    setSwitching(false)
-    if (saved) notify(`桌宠形象已切换为「${preset.name}」`)
+    relationRevision.current++
+    try {
+      const result = await window.murasame.relationship.changeAppearance({ patch: appearance, mode: relationshipMode })
+      useAppStore.setState((state) => ({ data: state.data ? { ...state.data, settings: result.settings } : null }))
+      setRelationship(result.relationship)
+      setRelationshipError('')
+      setAppearance(null)
+      notify(relationshipMode === 'new' ? '已更换形象并开始新的关系线，已有数据保留' : '已更换形象，现有记忆与关系继续保留')
+    } catch (error) { notify(error instanceof Error ? error.message : '更换形象失败，请重试', 'red') }
+    finally { setSwitching(false) }
+  }
+
+  const confirmReset = async (): Promise<void> => {
+    if (relationshipBusy) return
+    setRelationshipBusy(true)
+    relationRevision.current++
+    try {
+      setRelationship(await window.murasame.relationship.reset())
+      setRelationshipError('')
+      setResetOpen(false)
+      notify('当前关系已回到初识，演变记录仍可查看')
+    } catch (error) { notify(error instanceof Error ? error.message : '重置关系失败，请重试', 'red') }
+    finally { setRelationshipBusy(false) }
   }
 
   return (
@@ -113,6 +163,19 @@ export function CharacterPage(): React.JSX.Element {
               })}
             </div>
             <p className="fineprint">奶龙只用于课程演示，公开安装包不应包含它。鲸鱼娘是 CC BY-NC-SA，非商业并需署名。</p>
+          </Card>
+
+          <Card>
+            <CardHead title="关系演变" subtitle="随相处自然变化，历史始终可追溯" aside={<Button size="sm" onClick={() => setResetOpen(true)} disabled={!relationship || relationshipBusy}>重置关系</Button>} />
+            {relationship ? (
+              <div className="relationship-history">
+                <strong>当前阶段：{relationship.stage}</strong>
+                <p>从 {dateLabel(relationship.since)} 开始，称呼与语气以当前阶段为参考。</p>
+                <ul>{relationship.history.map((item, index) => <li key={`${item.since}-${index}`}><span>{item.stage}</span> · <time>{dateLabel(item.since)}</time></li>)}</ul>
+                {relationship.archivedLines?.length ? <details><summary>之前的关系线</summary>{relationship.archivedLines.map(line => <ul key={line.lineId}>{line.history.map((item, index) => <li key={`${item.since}-${index}`}>{item.stage} · {dateLabel(item.since)}</li>)}</ul>)}</details> : null}
+              </div>
+            ) : <p className="muted">{relationshipError || '正在读取关系状态…'}</p>}
+            <p className="fineprint">短期情绪会随空闲逐渐回归平静；重启从平静状态开始，长期关系与记忆不受影响。</p>
           </Card>
 
           <Card>
@@ -178,6 +241,15 @@ export function CharacterPage(): React.JSX.Element {
           </div>
         </Card>
       </div>
+      <ConfirmDialog open={resetOpen} onOpenChange={setResetOpen} title="重置当前关系？" description="回到初识。原有对话、记忆和演变记录会保留。" confirmLabel="确认重置" onConfirm={confirmReset} busy={relationshipBusy} />
+      <Modal open={Boolean(appearance)} onOpenChange={(open) => { if (!open && !switching) setAppearance(null) }} title="更换形象" description="选择新形象如何承接当前的相处。已有对话和长期记忆都会保留。" footer={<><Button disabled={switching} onClick={() => setAppearance(null)}>取消</Button><Button variant="primary" disabled={switching} onClick={() => void confirmAppearance()}>确认更换</Button></>}>
+        <fieldset className="relationship-choice">
+          <legend>记忆与关系</legend>
+          <label><input type="radio" name="relationship-mode" checked={relationshipMode === 'continue'} onChange={() => setRelationshipMode('continue')} />延续现有记忆与关系</label>
+          <label><input type="radio" name="relationship-mode" checked={relationshipMode === 'new'} onChange={() => setRelationshipMode('new')} />作为新角色重新开始</label>
+          <p className="muted">重新开始只建立新的关系线，之前的演变记录仍可查看，不会删除你的数据。</p>
+        </fieldset>
+      </Modal>
     </div>
   )
 }

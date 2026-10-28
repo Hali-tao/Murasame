@@ -59,21 +59,22 @@ function labelOf(status: TaskStatus): string {
 function detailOf(task: PetActivitySource): string {
   const impact = task.approval?.impact.trim()
   if (task.status === '等待批准' && impact) return impact
+  const result = task.result.trim()
+  if ((task.status === '已完成' || task.status === '部分完成') && result) return result
   const summary = task.summary.trim()
   if (summary && summary !== '执行中') return summary
-  const result = task.result.trim()
   if (result) return result
   return task.title
 }
 
 /**
- * 列表按最近更新在前。同一优先级里留最新的一件。
+ * 列表按最近更新在前。同一优先级里留原来的顺序。
  * 做完和失败可以被收起；正在做和等确认不会被收起盖住。
  */
-export function pickPetActivity(
+export function listPetActivities(
   tasks: readonly PetActivitySource[],
   dismissed: ReadonlySet<string>
-): PetActivity | null {
+): PetActivity[] {
   const ranked = tasks
     .map((task) => {
       const kind = kindOf(task.status)
@@ -84,15 +85,20 @@ export function pickPetActivity(
     .filter((item): item is { task: PetActivitySource; kind: PetActivityKind } => item !== null)
     .sort((left, right) => KIND_RANK[left.kind] - KIND_RANK[right.kind])
 
-  const top = ranked[0]
-  if (!top) return null
   const waiting = ranked.filter((item) => item.kind === 'needs-input').length
-  return {
-    id: top.task.id,
-    kind: top.kind,
-    label: labelOf(top.task.status),
-    detail: detailOf(top.task),
-    canApprove: top.task.status === '等待批准',
-    waiting
-  }
+  return ranked.slice(0, 4).map((item) => ({
+    id: item.task.id,
+    kind: item.kind,
+    label: labelOf(item.task.status),
+    detail: detailOf(item.task),
+    canApprove: item.task.status === '等待批准',
+    waiting: item.kind === 'needs-input' ? waiting : 0
+  }))
+}
+
+export function pickPetActivity(
+  tasks: readonly PetActivitySource[],
+  dismissed: ReadonlySet<string>
+): PetActivity | null {
+  return listPetActivities(tasks, dismissed)[0] ?? null
 }

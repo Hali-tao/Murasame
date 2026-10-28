@@ -69,12 +69,13 @@ export function recallMemories(
     return { ids: [], degraded: true, injected: [] }
   }
   const semantic = [...entries]
-    .filter((entry) => entry.vector)
+    .filter((entry) => entry.vector?.length === queryVector.length && cosine(queryVector, entry.vector) >= 0.45)
     .sort((a, b) => cosine(queryVector, b.vector ?? []) - cosine(queryVector, a.vector ?? []))
     .map((entry) => entry.id)
   const ids = rrf([semantic, lexical]).slice(0, 8)
   const injected = ids.map((id) => entries.find((entry) => entry.id === id)).filter((entry): entry is RecallEntry => Boolean(entry))
-  return { ids, degraded: false, injected: limitTokens(injected) }
+  const limited = limitTokens(injected)
+  return { ids: limited.map((entry) => entry.id), degraded: false, injected: limited }
 }
 
 function limitTokens(entries: RecallEntry[]): RecallEntry[] {

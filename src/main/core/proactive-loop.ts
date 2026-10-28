@@ -1,10 +1,8 @@
-import { execFileSync } from 'node:child_process'
-import { join } from 'node:path'
-import { powerMonitor, screen } from 'electron'
-import { readForeground } from '../local/uia'
+import { readForegroundAsync } from '../local/uia'
 import { proactiveDecision } from './services/proactive-service'
 import type { RelationshipStage } from './services/relationship-service'
 
+interface ForegroundActivity { title: string; idleMs: number; fullscreen: boolean }
 export interface LoopDeps {
   hidden: () => boolean
   doNotDisturb: () => boolean
@@ -13,94 +11,60 @@ export interface LoopDeps {
   stage: () => RelationshipStage
   reasons: () => string[]
   say: (text: string) => void
+  foreground?: (signal: AbortSignal) => Promise<ForegroundActivity>
 }
-
 const HOUR = 60 * 60 * 1000
 
 export class ProactiveLoop {
   private timer: NodeJS.Timeout | null = null
+  private pending: AbortController | null = null
+  private epoch = 0
   private lastSpokeAt = 0
   private spokenThisHour = 0
   private spokenToday = 0
   private hourStartedAt = Date.now()
   private dayStartedAt = Date.now()
-
   constructor(private readonly deps: LoopDeps) {}
 
   start(intervalMs = 5 * 60 * 1000): void {
     if (this.timer) return
-    this.timer = setInterval(() => this.tick(), intervalMs)
+    this.timer = setInterval(() => { void this.tick() }, intervalMs)
   }
-
   stop(): void {
     if (this.timer) clearInterval(this.timer)
     this.timer = null
+    this.epoch++
+    this.pending?.abort()
   }
 
-  /** 有理由且不打扰才开口；两者是与的关系。 */
-  tick(now = Date.now()): { spoke: boolean; reason: string } {
-    if (now - this.hourStartedAt >= HOUR) {
-      this.hourStartedAt = now
-      this.spokenThisHour = 0
-    }
-    if (now - this.dayStartedAt >= 24 * HOUR) {
-      this.dayStartedAt = now
-      this.spokenToday = 0
-    }
-
-    let front: { title: string; idleMs: number; fullscreen: boolean; typedWithinMs: number }
+  async tick(now = Date.now()): Promise<{ spoke: boolean; reason: string }> {
+    if (this.pending) return { spoke: false, reason: '上一次前台检查还未结束' }
+    if (this.deps.hidden() || this.deps.doNotDisturb() || this.deps.taskRunning() || !this.deps.reasons().length) return { spoke: false, reason: '当前不适合主动开口，或没有值得分享的新内容' }
+    const controller = new AbortController(); const epoch = this.epoch
+    this.pending = controller
     try {
-      const facts = readForeground()
-      const idleMs = Math.max(0, powerMonitor.getSystemIdleTime()) * 1000
-      front = { title: facts.title, idleMs, fullscreen: foregroundLooksFullscreen(), typedWithinMs: idleMs }
-    } catch {
-      return { spoke: false, reason: '读不到前台窗口，这次不开口' }
-    }
-
-    const decision = proactiveDecision({
-      ...front,
-      hidden: this.deps.hidden(),
-      doNotDisturb: this.deps.doNotDisturb(),
-      taskRunning: this.deps.taskRunning(),
-      minutesSinceLast: this.lastSpokeAt === 0 ? 10_000 : Math.floor((now - this.lastSpokeAt) / 60_000),
-      spokenThisHour: this.spokenThisHour,
-      spokenToday: this.spokenToday,
-      pace: this.deps.pace(),
-      reasons: this.deps.reasons(),
-      stage: this.deps.stage()
-    })
-
-    if (!decision.speak) return { spoke: false, reason: decision.reason }
-    this.lastSpokeAt = now
-    this.spokenThisHour += 1
-    this.spokenToday += 1
-    const line = this.deps.reasons()[0] ?? decision.reason
-    this.deps.say(line)
-    return { spoke: true, reason: line }
+      if (now - this.hourStartedAt >= HOUR) { this.hourStartedAt = now; this.spokenThisHour = 0 }
+      if (now - this.dayStartedAt >= 24 * HOUR) { this.dayStartedAt = now; this.spokenToday = 0 }
+      const front = await (this.deps.foreground ? this.deps.foreground(controller.signal) : this.readActivity(controller.signal))
+      if (controller.signal.aborted || epoch !== this.epoch) return { spoke: false, reason: '前台检查已取消' }
+      const reasons = this.deps.reasons()
+      const decision = proactiveDecision({
+        ...front, typedWithinMs: front.idleMs,
+        hidden: this.deps.hidden(), doNotDisturb: this.deps.doNotDisturb(), taskRunning: this.deps.taskRunning(),
+        minutesSinceLast: this.lastSpokeAt === 0 ? 10_000 : Math.floor((now - this.lastSpokeAt) / 60_000),
+        spokenThisHour: this.spokenThisHour, spokenToday: this.spokenToday, pace: this.deps.pace(), reasons, stage: this.deps.stage()
+      })
+      if (!decision.speak) return { spoke: false, reason: decision.reason }
+      this.lastSpokeAt = now; this.spokenThisHour++; this.spokenToday++
+      this.deps.say(reasons[0] ?? decision.reason)
+      return { spoke: true, reason: reasons[0] ?? decision.reason }
+    } catch { return { spoke: false, reason: '读不到可靠的前台或输入空闲状态，这次不开口' } }
+    finally { if (this.pending === controller) this.pending = null }
   }
-}
 
-function foregroundLooksFullscreen(): boolean {
-  try {
-    const powershell = join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe')
-    const raw = execFileSync(powershell, ['-NoProfile', '-NonInteractive', '-Command', `
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-public static class FgRect {
-  [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
-  [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
-  public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
-}
-"@
-$rect = New-Object FgRect+RECT
-[void][FgRect]::GetWindowRect([FgRect]::GetForegroundWindow(), [ref]$rect)
-@{ width = $rect.Right - $rect.Left; height = $rect.Bottom - $rect.Top } | ConvertTo-Json -Compress
-`], { encoding: 'utf8', windowsHide: true, timeout: 4000 })
-    const rect = JSON.parse(raw) as { width?: number; height?: number }
-    const display = screen.getPrimaryDisplay().bounds
-    return (rect.width ?? 0) >= display.width - 8 && (rect.height ?? 0) >= display.height - 8
-  } catch {
-    return false
+  private async readActivity(signal: AbortSignal): Promise<ForegroundActivity> {
+    const facts = await readForegroundAsync(undefined, signal)
+    if (facts.idleMs === undefined || !Number.isFinite(facts.idleMs) || facts.fullscreen === undefined) throw new Error('前台状态不完整')
+    return { title: facts.title, idleMs: Math.max(0, facts.idleMs), fullscreen: facts.fullscreen }
   }
 }

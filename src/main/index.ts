@@ -1,4 +1,6 @@
-import { app, dialog, globalShortcut, protocol, session } from 'electron'
+import { app, dialog, globalShortcut, powerMonitor, protocol, session } from 'electron'
+import { createHash } from 'node:crypto'
+import { cleanupOwnedContainersAsync, configureContainerOwner } from './isolation/docker-runtime'
 import { readFile } from 'node:fs/promises'
 import { extname, join, resolve, sep } from 'node:path'
 import log from './logger'
@@ -10,6 +12,7 @@ import { registerIpcHandlers } from './ipc'
 import { getSettings, readRelationship } from './settings'
 import { createTray, destroyTray } from './tray'
 import { initializeUpdater, stopUpdater } from './updater'
+import { allowMicrophone } from './security/media-permission'
 import { contentSecurityPolicy } from './security/hardening'
 import { broadcastPetPerformance, focusPetChat, hideMain, initializeWindows, isPetHidden, showMain } from './windows'
 import { refreshMemoryStatus } from './local/memory-status'
@@ -94,8 +97,11 @@ function hardenSession(): void {
       }
     })
   })
-  session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
-    callback(false)
+  const developmentOrigin = app.isPackaged ? undefined : process.env.ELECTRON_RENDERER_URL
+  session.defaultSession.setPermissionCheckHandler((_contents, permission, origin, details) => allowMicrophone({ permission, url: origin, audioOnly: details.mediaType === 'audio', enabled: getSettings().permissions.microphone, developmentOrigin }))
+  session.defaultSession.setPermissionRequestHandler((_contents, permission, callback, details) => {
+    const media = 'mediaTypes' in details ? details.mediaTypes : []
+    callback(allowMicrophone({ permission, url: details.requestingUrl, audioOnly: Array.isArray(media) && media.length > 0 && media.every(kind => kind === 'audio'), enabled: getSettings().permissions.microphone, developmentOrigin }))
   })
 }
 
@@ -109,7 +115,7 @@ if (!gotSingleInstanceLock) {
     showMain()
   })
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     hardenSession()
     registerRendererProtocol()
     if (app.isPackaged) setBundledModelsRoot(join(process.resourcesPath, 'models'))
@@ -125,6 +131,7 @@ if (!gotSingleInstanceLock) {
     const capacityWarning = databaseCapacityWarning()
     if (capacityWarning) log.warn(capacityWarning)
     const settings = getSettings()
+    configureContainerOwner(createHash('sha256').update(app.getPath('userData')).digest('hex').slice(0, 24))
     const core = MurasameCore.create(getDatabase(), new ModelRegistry(), app.getPath('userData'))
     // 打包后随附的插件在 resources/plugins，asar 里没有这个目录。
     core.tools.loadDirectory(
@@ -137,6 +144,16 @@ if (!gotSingleInstanceLock) {
       args: ['--hidden']
     })
 
+    let screenLocked = powerMonitor.getSystemIdleState(1) === 'locked'
+    let suspended = false
+    const refreshLock = (): void => core.setLocked(screenLocked || suspended)
+    powerMonitor.on('lock-screen', () => { screenLocked = true; refreshLock() })
+    powerMonitor.on('unlock-screen', () => { screenLocked = false; refreshLock() })
+    powerMonitor.on('suspend', () => { suspended = true; refreshLock() })
+    powerMonitor.on('resume', () => { suspended = false; refreshLock() })
+    refreshLock()
+    const recovery = await cleanupOwnedContainersAsync().catch(error => { log.warn('上次活动的容器恢复未完成', error); return null })
+    if (recovery?.failed.length) log.error('以下旧容器需要再次清理', recovery.failed.join(', '))
     registerIpcHandlers(core)
     initializeWindows()
     createTray()
@@ -156,14 +173,36 @@ if (!gotSingleInstanceLock) {
       if (!current.screenWatchEnabled || !current.permissions.screen || current.doNotDisturb) return
       if (Date.now() - lastWatch < current.screenWatchSeconds * 1000) return
       lastWatch = Date.now()
-      void core.analyzeScreen()
+      void core.analyzeScreen(true).catch(error => log.warn('持续观察暂停', error))
+    }, 5000)
+    let healthPending = false
+    const healthTimer = setInterval(() => {
+      if (healthPending || !core.autonomy.status().running) return
+      healthPending = true
+      void core.autonomy.health().catch(error => log.warn('活动健康检查失败', error)).finally(() => { healthPending = false })
     }, 5000)
     app.on('before-quit', () => clearInterval(watchTimer))
+    let cleanupStarted = false
+    let cleanupFinished = false
+    app.on('before-quit', event => {
+      clearInterval(healthTimer)
+      if (cleanupFinished) return
+      event.preventDefault()
+      if (cleanupStarted) return
+      cleanupStarted = true
+      core.cancelSensitiveRequests()
+      void (async () => {
+        const running = core.tasks.list().filter(task => ['执行中', '规划中', '正在停止'].includes(task.status))
+        await Promise.allSettled(running.map(async task => { await core.tasks.cancel(task.id); await core.tasks.settled(task.id) }))
+        const stopped = await core.autonomy.stop({ containerGone: false })
+        if (!stopped.ok) log.error('退出时隔离活动未完全清理', stopped.error)
+      })().catch(error => log.error('退出清理失败', error)).finally(() => { cleanupFinished = true; app.quit() })
+    })
     initializeUpdater()
 
     const proactive = new ProactiveLoop({
       hidden: () => isPetHidden(),
-      doNotDisturb: () => getSettings().doNotDisturb,
+      doNotDisturb: () => getSettings().doNotDisturb || !core.characterService.load().proactive,
       taskRunning: () => core.tasks.list().some((task) => task.status === '执行中' || task.status === '等待批准'),
       pace: () => getSettings().proactivePace,
       stage: () => readRelationship().stage,

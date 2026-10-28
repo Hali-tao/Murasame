@@ -40,7 +40,8 @@ export const desktopStepSchema = z.object({
   y: z.number().min(0).max(8000).optional(),
   text: z.string().max(200).optional(),
   key: z.string().max(40).optional(),
-  note: z.string().max(400).optional().default('')
+  note: z.string().max(400).optional().default(''),
+  expected: z.object({ text: z.string().max(200).optional(), url: z.string().max(500).optional() }).optional()
 })
 
 /** 模型常在一个 JSON 后面再跟一句或第二个对象。只取第一个完整对象，避免整段解析失败。 */
@@ -75,9 +76,19 @@ export const taskPlanSchema = z.object({
   url: z.string().max(500).optional(),
   command: z.string().max(200).optional(),
   steps: z.array(z.object({
+    id: z.string().regex(/^[a-zA-Z0-9_-]{1,60}$/).optional(),
+    dependsOn: z.array(z.string().max(60)).max(6).optional(),
     title: z.string().min(1).max(60),
     detail: z.string().max(200),
-    expected: z.string().max(200)
+    expected: z.string().max(200),
+    tool: z.enum(['filesystem', 'terminal', 'git', 'browser']).optional(),
+    network: z.enum(['none', 'bridge']).optional(),
+    workspace: z.string().max(500).optional(),
+    allowedTools: z.array(z.enum(['filesystem', 'terminal', 'git', 'browser'])).min(1).max(4).optional(),
+    limits: z.object({ timeoutMs: z.number().int().min(1).max(60000).optional() }).optional(),
+    outputs: z.array(z.object({ path: z.string().min(1).max(500), kind: z.enum(['write', 'delete']).optional(), overwrite: z.boolean().optional(), expectedHash: z.string().regex(/^[a-f0-9]{64}$/).optional(), expectedContent: z.string().max(100000).optional() })).max(100).optional(),
+    args: z.object({ action: z.enum(['organize', 'list', 'read', 'write', 'move']).optional(), path: z.string().max(500).optional(), from: z.string().max(500).optional(), to: z.string().max(500).optional(), content: z.string().max(100000).optional(), executable: z.string().max(260).optional(), argv: z.array(z.string().max(2000)).max(40).optional(), url: z.string().max(500).optional() }).optional(),
+    checks: z.array(z.object({ kind: z.enum(['file-exists', 'file-absent', 'file-content', 'file-hash', 'output-includes', 'exit-code']), path: z.string().max(500).optional(), value: z.string().max(100000).optional() })).max(40).optional()
   })).min(1).max(6),
   question: z.string().max(200)
 })

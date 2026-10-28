@@ -28,7 +28,7 @@ RUN set -eu; \
 # 办公和写代码两类活动还没实现，等实现时再把 LibreOffice 和 code-server 加回来。
 # 画面、截图和点击：Xvnc 出画面，noVNC 在浏览器里看，scrot 截图，xdotool 点击和输入。
 RUN apt-get -o Acquire::Retries=5 install -y --no-install-recommends \
-    tigervnc-standalone-server novnc websockify python3 supervisor ca-certificates dbus-x11 xdotool scrot
+    tigervnc-standalone-server novnc websockify python3 supervisor ca-certificates dbus-x11 xdotool scrot pulseaudio
 
 # 桌面。
 RUN apt-get -o Acquire::Retries=5 install -y --no-install-recommends xfce4 xfce4-terminal
@@ -43,3 +43,6 @@ COPY firefox-policies.json /usr/lib/firefox-esr/distribution/policies.json
 COPY supervisord.conf /etc/supervisor/conf.d/murasame.conf
 EXPOSE 6901
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/murasame.conf"]
+
+# Runtime contract: Firefox BiDi playback/observation endpoint and profile-scoped ownership.
+LABEL io.murasame.isolation.schema="2"

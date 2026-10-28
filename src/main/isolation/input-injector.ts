@@ -1,3 +1,4 @@
+import { decodeFrame } from './frame-evidence'
 import { markUntrusted } from '../security/hardening'
 import { chooseLocator, type MarkedElement } from '../local/set-of-mark'
 
@@ -31,9 +32,18 @@ export function planActivityStep(input: {
   }
 }
 
-export function verifyAfterAction(before: string, after: string): { verified: boolean; note: string } {
-  if (!after.trim()) return { verified: false, note: '动作后没有新的画面，不能把自述当成完成' }
-  return { verified: before !== after, note: before === after ? '画面没有变化' : '已用新画面核验' }
+export interface ActionExpectation { text?: string; url?: string }
+export interface ActionFacts { text: string; url: string }
+
+export function verifyAfterAction(before: string, after: string, expected?: ActionExpectation, facts?: ActionFacts): { verified: boolean; note: string } {
+  const oldFrame = decodeFrame(before)
+  const newFrame = decodeFrame(after)
+  if (!newFrame || !oldFrame) return { verified: false, note: '画面不是完整的可解码 PNG，不能核验动作结果' }
+  const evidence = Boolean(expected && facts && (expected.text || expected.url)
+    && (!expected.text || facts.text.includes(expected.text))
+    && (!expected.url || facts.url === expected.url))
+  if (evidence) return { verified: true, note: '已按独立页面事实核验预期结果' }
+  return { verified: false, note: oldFrame.digest === newFrame.digest ? '画面没有变化，预期结果尚未核实' : '画面发生变化，但不能证明预期动作成功；没有重复执行' }
 }
 
 export function activityLimitReason(steps: number, elapsedMs: number, limits = ACTIVITY_LIMITS): string | null {

@@ -26,17 +26,27 @@ export function scaleSize(width: number, height: number, fromScale: number, toSc
 }
 
 export function clampToDisplay(box: WindowBox, display: WorkArea): WindowBox {
+  const x = Math.min(Math.max(box.x, display.x), display.x + Math.max(0, display.width - box.width))
+  const y = Math.min(Math.max(box.y, display.y), display.y + Math.max(0, display.height - box.height))
   return {
     ...box,
-    x: Math.min(Math.max(box.x, display.x), display.x + Math.max(0, display.width - box.width)),
-    y: Math.min(Math.max(box.y, display.y), display.y + Math.max(0, display.height - box.height))
+    x: Math.round(x),
+    y: Math.round(y)
   }
 }
 
 export function recoverPosition(box: WindowBox, displays: readonly WorkArea[]): WindowBox {
   if (displays.length === 0) return box
   const current = displayContaining(box, displays)
-  const target = current ?? displays[0]
+  const overlap = (display: WorkArea): number =>
+    Math.max(0, Math.min(box.x + box.width, display.x + display.width) - Math.max(box.x, display.x)) *
+    Math.max(0, Math.min(box.y + box.height, display.y + display.height) - Math.max(box.y, display.y))
+  const distance = (display: WorkArea): number => {
+    const x = Math.max(display.x - box.x - box.width, box.x - display.x - display.width, 0)
+    const y = Math.max(display.y - box.y - box.height, box.y - display.y - display.height, 0)
+    return x * x + y * y
+  }
+  const target = current ?? [...displays].sort((a, b) => overlap(b) - overlap(a) || distance(a) - distance(b))[0]
   return clampToDisplay(box, target)
 }
 

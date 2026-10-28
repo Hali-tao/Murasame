@@ -56,6 +56,18 @@ describe('桌宠活动状态', () => {
     ], dismissed)?.label).toBe('正在做')
   })
 
+  it('做完了显示文件位置，不拿旧的「已拷到桌面」盖住路径', () => {
+    const picked = pickPetActivity([
+      task({
+        id: 'done',
+        status: '已完成',
+        summary: '已拷到桌面',
+        result: '文件在 C:\\Users\\a\\Desktop\\murasame-画.png，120 字节。'
+      })
+    ], new Set())
+    expect(picked?.detail).toContain('murasame-画.png')
+  })
+
   it('没有需要看的事时不占位置', () => {
     expect(pickPetActivity([
       task({ id: 'gone', status: '已取消' })

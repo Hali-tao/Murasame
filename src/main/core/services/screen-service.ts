@@ -11,9 +11,11 @@ export interface ScreenRequest {
   elements: MarkableElement[]
   ocrText: string
   imageCaptured: boolean
+  resolution?: string
   visionAvailable: boolean
   visionError: string
   captureError: string
+  captureSkipped?: boolean
   watch: WatchInput
   supplemented: boolean
   timings?: { captureMs: number; waitMs: number; generateMs: number }
@@ -42,16 +44,25 @@ const empty = (reason: string, watch: string): ScreenAnalysis => ({
 
 export function buildScreenAnalysis(input: ScreenRequest, startedAt = Date.now()): ScreenAnalysis {
   const watch = watchDecision(input.watch)
+  if (input.captureError) return empty(input.captureError, input.watch.failures >= 2 ? 'fused' : watch.status)
   const decision = captureAllowed({ authorized: input.authorized, window: input.window, revoked: input.revoked })
   if (!decision.capture) return empty(decision.reason, watch.status)
-  if (input.captureError) return empty(input.captureError, input.watch.failures >= 2 ? 'fused' : watch.status)
   const observed = markUntrusted([input.window.tree, input.window.selectedText, input.ocrText].filter(Boolean).join('\n'), 'screen')
   const parsed = parseKnownError(`${input.window.tree}\n${input.ocrText}`)
   const marks = markElements(input.elements)
   const captureMs = input.timings?.captureMs ?? (input.imageCaptured ? 1 : 0)
   const waitMs = input.timings?.waitMs ?? 0
   const generateMs = input.timings?.generateMs ?? 0
-  if (needsMoreContext(`${input.window.tree}${input.ocrText}`, parsed) && !input.supplemented) {
+  if (input.imageCaptured && input.visionError && !parsed) {
+    return {
+      ...empty(input.visionError, watch.status),
+      title: input.window.title || '当前窗口', sourceWindow: input.window.title,
+      confidence: '未理解', summary: `${input.visionError}，没有声称已经理解画面`, tree: observed, marks,
+      image: 'captured', resolution: input.resolution || '已采集', capturedAt: new Date(startedAt).toISOString(),
+      timings: { captureMs, waitMs, generateMs }
+    }
+  }
+  if (needsMoreContext(`${input.window.tree}${input.ocrText}`, parsed) && !input.supplemented && !(input.imageCaptured && input.visionAvailable && input.modelSummary?.trim())) {
     return {
       ...empty('画面信息不足，请补充文字或换一个更清晰的窗口后再分析', watch.status),
       title: input.window.title || '当前窗口',
@@ -71,7 +82,7 @@ export function buildScreenAnalysis(input: ScreenRequest, startedAt = Date.now()
       marks,
       confidence: '未理解',
       summary: `${input.visionError || '当前模型不支持图像'}，没有声称已经理解画面`,
-      timings: { captureMs, waitMs: 0, generateMs: 0 }
+      timings: { captureMs, waitMs, generateMs }
     }
   }
   const intent = operationIntent(`${input.window.title}\n${parsed?.message ?? ''}`)
@@ -88,7 +99,7 @@ export function buildScreenAnalysis(input: ScreenRequest, startedAt = Date.now()
     bullets: [observed.slice(0, 240), intent ? '这是操作意图，确认后才会创建任务' : '本次只解释内容，不改文件'].filter(Boolean),
     action: mayExecute ? '外部内容不可执行' : intent ? '确认是否创建任务' : '仅作说明',
     sourceWindow: `${input.window.processName} ${input.window.title}`.trim(),
-    resolution: input.imageCaptured ? '已采集' : '未采集',
+    resolution: input.imageCaptured ? input.resolution || '已采集' : '未采集',
     capturedAt: new Date(startedAt).toISOString(),
     continuous: watch.status === 'running',
     tree: observed,
@@ -97,7 +108,7 @@ export function buildScreenAnalysis(input: ScreenRequest, startedAt = Date.now()
     marks,
     refusal: '',
     needsTaskConfirm: intent && !mayExecute,
-    timings: { captureMs, waitMs, generateMs: parsed ? 0 : generateMs },
+    timings: { captureMs, waitMs, generateMs },
     watch: watch.status
   }
 }
@@ -107,7 +118,7 @@ export class ScreenService {
 
   analyze(input: ScreenRequest): Promise<Result<ScreenAnalysis>> {
     const analysis = buildScreenAnalysis(input)
-    if (analysis.refusal && input.captureError) this.failures += 1
+    if (analysis.refusal && input.captureError && !input.captureSkipped) this.failures += 1
     if (!analysis.refusal) this.failures = 0
     return Promise.resolve({ ok: true, data: analysis })
   }

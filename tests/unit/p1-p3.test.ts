@@ -502,27 +502,31 @@ describe('[P2] 提取与启停', () => {
 })
 
 describe('[FR-22] 终端 Git 浏览器', () => {
-  it('[FR-22] 终端正常路径、越权和失败', () => {
+  it('[FR-22] 终端正常路径、越权和失败', async () => {
     const root = mkdtempSync(join(tmpdir(), 'murasame-term-'))
     expect(terminalDecision('node', ['..\\secret'])).toBe('denied')
-    const denied = runTerminal(root, 'node', ['..\\secret'])
+    const denied = await runTerminal(root, 'node', ['..\\secret'])
     expect(denied.evidence.matched).toBe(false)
-    const success = runTerminal(root, process.execPath, ['-e', 'process.exit(0)'])
+    const runner: import('../../src/main/tools/terminal').IsolatedRunner = async ({ root: authorized, executable, args }) => {
+      expect(authorized).toBe(root); expect(executable).toBe('node')
+      return args[0] === '--version' ? { status: 'ok', raw: 'v22.0.0', exitCode: 0 } : { status: 'error', raw: 'controlled failure', exitCode: 2 }
+    }
+    const success = await runTerminal(root, 'node', ['--version'], { runner })
     expect(success.status).toBe('ok')
-    const failed = runTerminal(root, process.execPath, ['-e', 'process.exit(2)'])
+    const failed = await runTerminal(root, 'node', ['--fail'], { runner })
     expect(failed.status).toBe('error')
   })
 
-  it('[FR-22] Git 只读、拒绝写入、失败可核验', () => {
+  it('[FR-22] Git 只读、拒绝写入、失败可核验', async () => {
     const root = mkdtempSync(join(tmpdir(), 'murasame-git-'))
     expect(gitDecision(['commit', '-m', 'x'])).toBe('denied')
-    expect(runGit(root, ['commit', '-m', 'x']).evidence.matched).toBe(false)
+    expect((await runGit(root, ['commit', '-m', 'x'])).evidence.matched).toBe(false)
     const version = spawnSync('git', ['--version'], { encoding: 'utf8', windowsHide: true })
     if (version.status === 0) {
       spawnSync('git', ['init'], { cwd: root, windowsHide: true })
-      expect(runGit(root, ['status']).status).toBe('ok')
+      expect((await runGit(root, ['status'], { runner: async (request) => { expect(request.readOnly).toBe(true); expect(request.executable).toBe('git'); return { status: 'ok', raw: 'On branch main', exitCode: 0 } } })).status).toBe('ok')
     } else {
-      expect(runGit(root, ['status']).status).toBe('error')
+      expect((await runGit(root, ['status'])).status).toBe('error')
     }
   })
 

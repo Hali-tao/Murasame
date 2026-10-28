@@ -24,7 +24,6 @@ import {
   taskCreateSchema,
   toolToggleSchema
 } from '../shared/schemas'
-import { rememberActiveConversation } from './core/active-conversation'
 import { MurasameCore as DesktopCore } from './core/murasame-core'
 import type {
   AppInfo,
@@ -48,10 +47,13 @@ import { mergeImportedBundle } from './data/merge-bundle'
 import { exportBundle, importBundle, stripSecrets } from './data/portability'
 import { importCharacterDirectory } from './core/services/asset-service'
 import { applyHotkey, readHotkey } from './hotkey-status'
-import { buildIsolationImage, dockerAvailable, ensureDocker, friendlyBuildLine, isolationEnvironment } from './isolation/docker-runtime'
-import { relationshipVoice, resetRelationship, type RelationshipRecord } from './core/services/relationship-service'
+import { buildIsolationImage, ensureDocker, friendlyBuildLine, isolationEnvironmentAsync } from './isolation/docker-runtime'
+import { relationshipVoice, resetRelationship, startNewLine, type RelationshipRecord } from './core/services/relationship-service'
 import { readRelationship, writeRelationship } from './settings'
 import log from './logger'
+import { learnVerifiedImageSkill } from './agent/learn-verified-image-skill'
+import { performanceCue } from './core/performance-cue'
+import { petSpeech } from '../shared/pet-speech'
 import { checkForUpdates } from './updater'
 import { getSettings, onSettingsChanged, updateSettings } from './settings'
 import {
@@ -66,6 +68,9 @@ import {
   broadcastPetPerformance,
   focusPetChat,
   setPetChatOpen,
+  beginPetDrag,
+  movePetDrag,
+  endPetDrag,
   setPetMousePassthrough,
   setPetPosition,
   setPetScale,
@@ -151,27 +156,30 @@ function syncPetSettings(previous: AppSettings, next: AppSettings): void {
 export function registerIpcHandlers(core: DesktopCore): void {
   if (registered) return
   registered = true
-  let relationship: RelationshipRecord = readRelationship()
   let isolationPrepare: Promise<{ ok: boolean; detail: string }> | null = null
+  let prepareController: AbortController | null = null
+  let prepareGeneration = 0
+  const privacyKey = (): string => JSON.stringify([getSettings().permissions.screen, getSettings().outboundImages, getSettings().doNotDisturb, getSettings().screenWatchEnabled])
+  let previousPrivacy = privacyKey()
+  core.onScreenAnalysis = analysis => broadcast(IPC.core.screenUpdated, analysis)
+  core.onConversationUpdate = conversation => broadcast(IPC.core.conversationUpdated, conversation)
+  core.memory.subscribe(() => broadcast(IPC.core.memoriesUpdated, core.memory.list()))
+  core.onMemoryExtractionStatus = status => broadcast(IPC.core.memoryExtractionStatus, status)
 
   core.tasks.onChange((task) => {
+    try { learnVerifiedImageSkill(app.getPath('userData'), task) } catch (error) { log.warn('任务已记录，可复用步骤未保存', error) }
     broadcast(IPC.core.taskUpdated, task)
-    if (!['已完成', '失败', '部分完成', '已取消'].includes(task.status) || getSettings().doNotDisturb) return
-    broadcastPetPerformance({
-      intent: task.status === '已完成' ? '开心' : '思考',
-      motion: null,
-      expression: null,
-      degraded: false,
-      pad: core.affect.pad,
-      text: `任务「${task.title}」${task.status}。${task.result.split('\n')[0] ?? ''}`
-    })
+    core.invalidatePresentation()
+    if (getSettings().doNotDisturb) return
+    const intent = task.status === '已完成' ? '开心' : task.status === '失败' ? '困惑' : '思考'
+    broadcastPetPerformance({ ...performanceCue(getSettings().petPreset, intent, core.affect.pad), text: petSpeech('任务「' + task.title + '」' + task.status + '。' + (task.result.split('\n')[0] || task.summary)) })
   })
 
-  onSettingsChanged((settings) => {
-    const windows = [getMainWindow()]
-    windows.forEach((window) => {
-      if (window && !window.isDestroyed()) window.webContents.send(IPC.settings.changed, settings)
-    })
+  onSettingsChanged(settings => {
+    core.syncMemoryPolicy()
+    const nextPrivacy = privacyKey()
+    if (nextPrivacy !== previousPrivacy) { core.cancelSensitiveRequests(); previousPrivacy = nextPrivacy }
+    broadcast(IPC.settings.changed, settings)
   })
 
   ipcMain.handle(IPC.app.getInfo, (): AppInfo => {
@@ -262,6 +270,17 @@ export function registerIpcHandlers(core: DesktopCore): void {
     if (!parsed.success) throw new Error(validationError(parsed.error))
     return setPetChatOpen(parsed.data.open)
   })
+  ipcMain.handle(IPC.pet.beginDrag, (_event, raw: unknown) => {
+    const point = raw as { x?: number; y?: number }
+    if (typeof point?.x !== 'number' || typeof point?.y !== 'number') return
+    beginPetDrag(point.x, point.y)
+  })
+  ipcMain.handle(IPC.pet.dragMove, (_event, raw: unknown) => {
+    const point = raw as { x?: number; y?: number }
+    if (typeof point?.x !== 'number' || typeof point?.y !== 'number') return
+    movePetDrag(point.x, point.y)
+  })
+  ipcMain.handle(IPC.pet.endDrag, () => endPetDrag())
 
   ipcMain.handle(IPC.settings.get, () => getSettings())
 
@@ -309,9 +328,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
         () => broadcast(IPC.core.messageStarted, { conversationId, userText: text })
       )
       if (result.ok) {
-        rememberActiveConversation(conversationId)
         broadcast(IPC.core.conversationUpdated, result.data)
-        broadcast(IPC.core.activeChanged, { id: conversationId })
       } else {
         broadcast(IPC.core.messageFailed, { conversationId, error: result.error })
       }
@@ -394,17 +411,35 @@ export function registerIpcHandlers(core: DesktopCore): void {
     return { ok: true, data: imported }
   })
 
+  ipcMain.handle(IPC.pet.getAffect, () => core.affect.pad)
   const relationshipView = (record: RelationshipRecord) => ({
     stage: record.stage,
     since: record.since,
     history: record.history,
     lineId: record.lineId,
-    address: relationshipVoice(record.stage).title
+    address: relationshipVoice(record.stage).title,
+    archivedLines: record.archivedLines
   })
-  ipcMain.handle(IPC.relationship.get, () => relationshipView(relationship))
+  ipcMain.handle(IPC.relationship.get, () => relationshipView(readRelationship()))
   ipcMain.handle(IPC.relationship.reset, () => {
-    relationship = writeRelationship(resetRelationship(readRelationship()))
-    return relationshipView(relationship)
+    const relationship = writeRelationship(resetRelationship(readRelationship()))
+    const view = relationshipView(relationship)
+    broadcast(IPC.relationship.changed, view)
+    return view
+  })
+  ipcMain.handle(IPC.relationship.changeAppearance, (_event, raw: unknown) => {
+    const schema = z.object({ mode: z.enum(['continue', 'new']), patch: settingsPatchSchema.pick({ petPreset: true, importedModelUrl: true, importedCharacterName: true }).strict() })
+    const parsed = schema.safeParse(raw)
+    if (!parsed.success) throw new Error(validationError(parsed.error))
+    const previous = getSettings()
+    const next = updateSettings(parsed.data.patch)
+    const relationship = parsed.data.mode === 'new' ? writeRelationship(startNewLine(readRelationship())) : readRelationship()
+    syncPetSettings(previous, next)
+    // Import switches do not change preset ID; explicitly refresh the model URL too.
+    if (previous.importedModelUrl !== next.importedModelUrl) refreshPetState()
+    const view = relationshipView(relationship)
+    broadcast(IPC.relationship.changed, view)
+    return { settings: next, relationship: view }
   })
   ipcMain.handle(IPC.voice.readiness, () => core.voice.readiness())
   ipcMain.handle(IPC.voice.transcribe, async (_event, raw: unknown) => {
@@ -478,14 +513,16 @@ export function registerIpcHandlers(core: DesktopCore): void {
       return { ok: false, error: error instanceof Error ? error.message : '导入失败，现有数据保持不变' }
     }
   })
-  ipcMain.handle(IPC.autonomy.environment, () => isolationEnvironment())
+  ipcMain.handle(IPC.autonomy.environment, () => isolationEnvironmentAsync())
   ipcMain.handle(IPC.autonomy.status, () => core.autonomy.health())
   const prepareIsolation = (send: (line: string) => void): Promise<{ ok: boolean; detail: string }> => {
     if (isolationPrepare) return isolationPrepare
+    const controller = new AbortController()
+    prepareController = controller
     isolationPrepare = (async () => {
-      const docker = await ensureDocker({ onStatus: send })
+      const docker = await ensureDocker({ onStatus: send, signal: controller.signal })
       if (!docker.ok) return docker
-      if (isolationEnvironment().image) return { ok: true, detail: '隔离环境已经就绪。' }
+      if ((await isolationEnvironmentAsync(undefined, { signal: controller.signal })).image) return { ok: true, detail: '隔离环境已经就绪。' }
       const context = app.isPackaged ? join(process.resourcesPath, 'isolation') : join(app.getAppPath(), 'isolation')
       if (!existsSync(join(context, 'Dockerfile'))) return { ok: false, detail: '安装目录里没有隔离环境的制作文件。' }
       send('第一次使用，正在准备隔离环境，大约几分钟。')
@@ -495,9 +532,10 @@ export function registerIpcHandlers(core: DesktopCore): void {
         if (!text || text === last) return
         last = text
         send(text)
-      })
+      }, { signal: controller.signal })
     })().finally(() => {
       isolationPrepare = null
+      if (prepareController === controller) prepareController = null
     })
     return isolationPrepare
   }
@@ -507,9 +545,11 @@ export function registerIpcHandlers(core: DesktopCore): void {
   ipcMain.handle(IPC.autonomy.start, async (event, raw: unknown) => {
     const value = (raw ?? {}) as { confirmed?: boolean; allowNetwork?: boolean }
     if (!value.confirmed) return { ok: false, error: '还没有确认活动范围，容器没有启动。' }
+    const generation = prepareGeneration
     const prepared = await prepareIsolation((line) => {
       if (!event.sender.isDestroyed()) event.sender.send(IPC.autonomy.buildProgress, line)
     })
+    if (generation !== prepareGeneration) return { ok: false, error: '启动准备已取消，没有创建活动' }
     if (!prepared.ok) return { ok: false, error: prepared.detail }
     return core.autonomy.start({
       dockerAvailable: true,
@@ -523,39 +563,31 @@ export function registerIpcHandlers(core: DesktopCore): void {
     const url = String((raw as { url?: string })?.url ?? '')
     return core.autonomy.openPage(url)
   })
-  ipcMain.handle(IPC.autonomy.look, () => {
-    const settings = getSettings()
-    return core.autonomy.look(async (image) => {
-      if (!settings.outboundImages) return '截图留在本机，没有发给模型。'
-      return core.describeIsolationImage(image)
-    })
-  })
+  ipcMain.handle(IPC.autonomy.look, () => core.autonomy.look((image, signal) => core.describeIsolationImage(image, signal)))
   ipcMain.handle(IPC.autonomy.browse, (_event, raw: unknown) => {
     const goal = String((raw as { goal?: string })?.goal ?? '').trim()
     if (!goal) return { ok: false, error: '先说想让它在隔离桌面里看什么。' }
     if (!getSettings().outboundImages) return { ok: false, error: '自己逛需要把隔离桌面的截图发给看图模型。请先在设置里打开「允许把截图发给模型」。' }
-    return core.autonomy.browse(goal, (image, target, notes) => core.decideIsolationStep(image, target, notes))
+    return core.autonomy.browse(goal, (image, target, notes, signal) => core.decideIsolationStep(image, target, notes, signal))
   })
   ipcMain.handle(IPC.autonomy.watch, (_event, raw: unknown) => {
     const url = String((raw as { url?: string })?.url ?? '').trim()
     if (!getSettings().outboundImages) return { ok: false, error: '看视频需要把截到的画面发给看图模型。请先在设置里打开「允许把截图发给模型」。' }
-    return core.autonomy.watchVideo(url, (image) => core.describeIsolationImage(image))
+    return core.autonomy.watchVideo(url, (image, signal) => core.describeIsolationImage(image, signal))
   })
   ipcMain.handle(IPC.autonomy.stop, async () => {
-    const result = await core.autonomy.stop({ containerGone: !dockerAvailable() })
-    if (result.ok && result.data.notes.length > 0) {
-      broadcastPetPerformance({
-        intent: '思考',
-        motion: null,
-        expression: null,
-        degraded: false,
-        pad: core.affect.pad,
-        text: `我在隔离桌面里看到：\n${result.data.notes.join('\n')}`
-      })
-    }
-    return result
+    prepareGeneration++
+    prepareController?.abort(new Error('用户停止了活动准备'))
+    return core.autonomy.stop({ containerGone: false })
+  })
+  handleCore<Task>(IPC.core.continueTask, z.object({ id: z.string().min(1), answer: z.string().trim().min(1).max(10000) }), input => {
+    const value = input as { id: string; answer: string }
+    return core.continueTask(value.id, value.answer)
+  })
+  handleCore<string>(IPC.core.openArtifact, z.object({ id: z.string().min(1), artifact: z.string().min(1).max(2000) }), input => {
+    const value = input as { id: string; artifact: string }
+    return core.openArtifact(value.id, value.artifact)
   })
 
   log.info('IPC handlers registered')
 }
-

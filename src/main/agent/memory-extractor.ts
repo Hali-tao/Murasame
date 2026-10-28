@@ -17,7 +17,8 @@ export async function runModelExtraction(
   propose: (text: string, known: string[]) => Promise<ProposedMemory[]>
 ): Promise<{ facts: MemoryFact[]; failed: boolean }> {
   try {
-    const known = activeMemories(existing).map((item) => item.text).slice(0, 30)
+    // Every active fact is eligible for correction; a fixed prefix hides later conflicts.
+    const known = activeMemories(existing).map((item) => item.text)
     const proposals = await propose(text, known)
     const now = new Date().toISOString()
     let facts = [...existing]

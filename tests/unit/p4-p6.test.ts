@@ -1,3 +1,4 @@
+import { syntheticDesktopPng } from './helpers/autonomy-fixtures'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -6,10 +7,11 @@ import { parseKnownError, needsMoreContext } from '../../src/main/local/error-pa
 import { captureAllowed, screenInstructionIsExecutable, watchDecision, type WindowFacts } from '../../src/main/local/screen-policy'
 import { chooseLocator, markElements } from '../../src/main/local/set-of-mark'
 import { buildScreenAnalysis } from '../../src/main/core/services/screen-service'
+import type { DockerRunner } from '../../src/main/isolation/docker-runtime'
 import { buildArgs, containerPlan, createArgs, DOMESTIC_ATTEMPTS, DOMESTIC_MIRRORS, dockerDesktopPath, dockerUnavailableMessage, ensureDocker, explainBuildFailure, friendlyBuildLine, hostPathAllowed, networkFailure } from '../../src/main/isolation/docker-runtime'
 import { vncView } from '../../src/main/isolation/vnc-bridge'
 import { activityLimitReason, planActivityStep, understandVideo, verifyAfterAction } from '../../src/main/isolation/input-injector'
-import { AutonomyService } from '../../src/main/core/services/autonomy-service'
+import { AutonomyService as ProductionAutonomyService, type AutonomyDependencies } from '../../src/main/core/services/autonomy-service'
 import { desktopStepSchema, firstJsonObject } from '../../src/main/model/contracts'
 import { modelsRoot, setBundledModelsRoot } from '../../src/main/local/model-env'
 import { transcribe, speak } from '../../src/main/local/audio'
@@ -21,6 +23,13 @@ import { advanceRelationship, blankRelationship, honestFailure, relationshipVoic
 import { proactiveDecision } from '../../src/main/core/services/proactive-service'
 import { composePrompt } from '../../src/main/agent/prompts'
 import { AffectService } from '../../src/main/core/services/affect-service'
+
+// Complete external-runner fixture: an installed image must advertise its runtime contract.
+class AutonomyService extends ProductionAutonomyService {
+  constructor(run?: DockerRunner, wait?: (ms: number) => Promise<void>, deps?: AutonomyDependencies) {
+    super(run ? (command, args, options) => args[0] === 'image' && args[1] === 'inspect' ? '2' : run(command, args, options) : undefined, wait, deps)
+  }
+}
 
 const windowFacts = (patch: Partial<WindowFacts> = {}): WindowFacts => ({
   title: '记事本',
@@ -268,140 +277,97 @@ describe('[FR-28] 隔离活动', () => {
 
   it('[FR-28] 只在隔离容器里打开网页', async () => {
     const calls: string[][] = []
-    const service = new AutonomyService((_command, args) => {
-      calls.push(args)
-      return 'c0ffee1234567890'
-    })
-    const started = await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
-    expect(started.ok).toBe(true)
-    const blocked = service.openPage('file:///C:/secret')
-    expect(blocked.ok).toBe(false)
-    const opened = service.openPage('https://example.com')
-    expect(opened.ok).toBe(true)
-    expect(calls.some((args) => args.includes('firefox-esr') && args.includes('https://example.com'))).toBe(true)
+    const service = new AutonomyService((_command, args) => { calls.push(args); return args[0] === 'ps' ? '' : 'c0ffee1234567890' })
+    expect((await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })).ok).toBe(true)
+    expect((await service.openPage('https://example.com')).ok).toBe(true)
+    expect(calls.some(args => args.includes('firefox-esr') && args.includes('https://example.com'))).toBe(true)
     expect(service.status().hostExecution).toBe(false)
+    await service.stop({containerGone:false})
   })
 
   it('[FR-28] 截图和点击只发生在容器里，断网时打不开网页', async () => {
-    const calls: string[][] = []
-    const service = new AutonomyService((_command, args) => {
-      calls.push(args)
-      return 'c0ffee1234567890'
-    })
-    const offline = await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null, allowNetwork: false })
-    expect(offline.ok).toBe(true)
-    expect(service.openPage('https://example.com').ok).toBe(false)
-    const online = new AutonomyService((_command, args) => {
-      calls.push(args)
-      return 'c0ffee1234567890'
-    })
-    await online.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null, allowNetwork: true })
-    const looked = await online.look(async () => '页面标题是 Example')
-    expect(looked.ok).toBe(true)
-    expect(calls.some((args) => args.includes('scrot'))).toBe(true)
-    const acted = online.act({ kind: 'key', key: 'ctrl+l' })
-    expect(acted.ok).toBe(true)
-    expect(calls.some((args) => args.includes('xdotool'))).toBe(true)
+    const calls:string[][]=[];const image=syntheticDesktopPng()
+    const run=(_command:string,args:string[]):string=>{calls.push(args);if(args[0]==='ps')return '';if(args.includes('base64'))return image;return 'c0ffee1234567890'}
+    const offline=new AutonomyService(run)
+    await offline.start({dockerAvailable:true,approved:true,needsPermission:false,share:null,allowNetwork:false})
+    expect((await offline.openPage('https://example.com')).ok).toBe(false)
+    const online=new AutonomyService(run)
+    await online.start({dockerAvailable:true,approved:true,needsPermission:false,share:null,allowNetwork:true})
+    expect((await online.look(async()=> '页面标题是 Example')).ok).toBe(true)
+    expect(calls.some(args=>args.includes('scrot'))).toBe(true)
+    expect((await online.act({kind:'key',key:'ctrl+l'})).ok).toBe(true)
+    expect(calls.some(args=>args.includes('xdotool'))).toBe(true)
     expect(online.status().hostExecution).toBe(false)
-    expect(online.status().notes.some((note) => note.includes('不可信:web'))).toBe(true)
+    expect(online.status().notes.some(note=>note.includes('不可信:web'))).toBe(true)
+    await online.stop({containerGone:false})
   })
 
-  it('[FR-28] 自己逛：截图、决定、执行、再截图核验，画面不变最多重试两次', async () => {
-    const calls: string[][] = []
-    let frame = 0
-    let frozen = false
-    const service = new AutonomyService((_command, args) => {
-      calls.push(args)
-      if (args.includes('base64')) return frozen ? 'same-frame' : `frame-${frame++}`
-      return 'c0ffee1234567890'
-    }, async () => {})
-    await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
-    const plan = [
-      { kind: 'click' as const, x: 640, y: 40, note: '点地址栏' },
-      { kind: 'done' as const, note: '页面写着 Example Domain' }
-    ]
-    const seen: string[] = []
-    const result = await service.browse('看看这页', async (image) => {
-      seen.push(image)
-      return plan.shift() ?? { kind: 'done', note: '结束' }
-    })
+  it('[FR-28] 自己逛按独立页面事实核验，含糊结果不重复副作用', async () => {
+    const calls:string[][]=[];const frames=[syntheticDesktopPng(10),syntheticDesktopPng(220)];let frame=0
+    const service=new AutonomyService((_command,args)=>{calls.push(args);if(args[0]==='ps')return '';if(args.includes('base64'))return frames[Math.min(frame++,1)];return 'c0ffee1234567890'},async()=>{}, {observe:async()=>({url:'https://example.com',text:'Example Domain',media:null})})
+    await service.start({dockerAvailable:true,approved:true,needsPermission:false,share:null})
+    let step=0
+    const result=await service.browse('看看这页',async()=>step++===0?{kind:'click',x:640,y:40,note:'点地址栏',expected:{text:'Example Domain'}}:{kind:'done',note:'页面写着 Example Domain',expected:{text:'Example Domain',url:'https://example.com'}})
     expect(result.ok).toBe(true)
-    expect(seen).toEqual(['frame-0', 'frame-1'])
-    expect(calls.filter((args) => args.includes('xdotool'))).toHaveLength(1)
-    expect(calls.some((args) => args.includes('-u') && args.includes('DISPLAY=:1') && args.includes('xdotool'))).toBe(true)
-    const notes = service.status().notes
-    expect(notes.some((note) => note.includes('已用新画面核验'))).toBe(true)
-    expect(notes.at(-1)).toContain('[不可信:web]')
-
-    frozen = true
-    calls.length = 0
-    const stuck = await service.browse('再点一下', async () => ({ kind: 'key', key: 'Return', note: '回车' }), 1)
+    expect(calls.filter(args=>args.includes('xdotool'))).toHaveLength(1)
+    expect(calls.some(args=>args.includes('-u')&&args.includes('DISPLAY=:1')&&args.includes('xdotool'))).toBe(true)
+    expect(service.status().result?.status).toBe('completed')
+    expect(service.status().notes.some(note=>note.includes('独立页面事实核验'))).toBe(true)
+    expect(service.status().result?.cleanupSucceeded).toBe(true)
+    await service.start({dockerAvailable:true,approved:true,needsPermission:false,share:null});calls.length=0
+    const stuck=await service.browse('再点一下',async()=>({kind:'key',key:'Return',note:'回车'}),1)
     expect(stuck.ok).toBe(true)
-    expect(calls.filter((args) => args.includes('xdotool'))).toHaveLength(3)
-    expect(service.status().notes.some((note) => note.includes('记为未生效'))).toBe(true)
+    expect(calls.filter(args=>args.includes('xdotool'))).toHaveLength(1)
+    expect(service.status().result?.status).toBe('partial')
   })
 
-  it('[FR-28] 模型多给了一段内容时只取第一步，回复不完整也不停掉隔离桌面', async () => {
-    const raw = '{"kind":"click","x":12,"y":34,"note":"看到 } 号菜单"}\n{"kind":"done","note":"结束"}'
-    const parsed = desktopStepSchema.parse(JSON.parse(firstJsonObject(raw) ?? ''))
-    expect(parsed).toMatchObject({ kind: 'click', x: 12, y: 34, note: '看到 } 号菜单' })
+  it('[FR-28] 模型多给内容时只解析第一步，不完整回复停止并清理容器', async () => {
+    const raw='{"kind":"click","x":12,"y":34,"note":"看到 } 号菜单"}\n{"kind":"done","note":"结束"}'
+    expect(desktopStepSchema.parse(JSON.parse(firstJsonObject(raw)??''))).toMatchObject({kind:'click',x:12,y:34,note:'看到 } 号菜单'})
     expect(firstJsonObject('没有大括号')).toBeNull()
-
-    const service = new AutonomyService((_command, args) => (args.includes('base64') ? 'frame' : 'c0ffee1234567890'), async () => {})
-    await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
-    const viewUrl = service.status().viewUrl
-    let tries = 0
-    const result = await service.browse('随便看看', async () => {
-      tries += 1
-      if (tries === 1) throw new Error('Unexpected non whitespace character after JSON at position 120 (line 3 column 1)')
-      return { kind: 'done', note: '桌面是空的' }
-    })
-    expect(result.ok).toBe(true)
-    expect(service.status().running).toBe(true)
-    expect(service.status().viewUrl).toBe(viewUrl)
-    expect(service.status().reason).not.toContain('活动已失败')
-    expect(service.status().notes.some((note) => note.includes('隔离桌面还在'))).toBe(true)
-  })
-
-  it('[FR-28] 自己逛受步数上限约束，到上限就停，不记成完成', async () => {
-    let frame = 0
-    const service = new AutonomyService((_command, args) => (args.includes('base64') ? `frame-${frame++}` : 'c0ffee1234567890'), async () => {})
-    await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
-    const result = await service.browse('一直点', async () => ({ kind: 'click', x: 1, y: 1, note: '继续' }), 50)
+    const calls:string[][]=[];const image=syntheticDesktopPng()
+    const service=new AutonomyService((_command,args)=>{calls.push(args);return args.includes('base64')?image:args[0]==='ps'?'':'c0ffee1234567890'},async()=>{})
+    await service.start({dockerAvailable:true,approved:true,needsPermission:false,share:null})
+    const result=await service.browse('随便看看',async()=>{throw new Error('Unexpected JSON')})
     expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.error).toContain('步上限')
     expect(service.status().running).toBe(false)
+    expect(service.status().phase).toBe('failed')
+    expect(calls.some(args=>args[0]==='rm')).toBe(true)
+    expect(calls.some(args=>args.includes('xdotool'))).toBe(false)
   })
 
-  it('[FR-30] 容器中途退出时，状态检查把活动记成失败', async () => {
-    let alive = true
-    const service = new AutonomyService((_command, args) => {
-      if (args[0] === 'inspect') return alive ? 'true' : 'false'
-      return 'c0ffee1234567890'
-    })
-    await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
-    expect(service.health().running).toBe(true)
-    alive = false
-    const status = service.health()
-    expect(status.running).toBe(false)
-    expect(status.reason).toContain('隔离桌面已经退出')
-    expect(status.viewUrl).toBe('')
+  it('[FR-28] 自己逛受请求和步数上限约束，到限清理且不记成完成', async () => {
+    const calls:string[][]=[];const image=syntheticDesktopPng()
+    const service=new AutonomyService((_command,args)=>{calls.push(args);return args.includes('base64')?image:args[0]==='ps'?'':'c0ffee1234567890'},async()=>{}, {observe:async()=>({url:'https://example.com',text:'Example Domain',media:null})})
+    await service.start({dockerAvailable:true,approved:true,needsPermission:false,share:null})
+    const result=await service.browse('一直点',async()=>({kind:'click',x:1,y:1,note:'继续',expected:{text:'Example Domain'}}),50)
+    expect(result.ok).toBe(false)
+    if(!result.ok)expect(result.error).toContain('步上限')
+    expect(service.status().running).toBe(false)
+    expect(service.status().result?.status).toBe('limited')
+    expect(calls.some(args=>args[0]==='rm')).toBe(true)
   })
 
-  it('[FR-28] 看视频按间隔截帧，相同画面只交给模型一次，并说明没读字幕', async () => {
-    const frames = ['a', 'a', 'b']
-    const service = new AutonomyService((_command, args) => (args.includes('base64') ? frames.shift() ?? 'b' : 'c0ffee1234567890'), async () => {})
-    await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
-    const described: string[] = []
-    const result = await service.watchVideo('https://example.com/video', async (image) => {
-      described.push(image)
-      return `画面 ${image}`
-    }, 3, 1000)
-    expect(result.ok).toBe(true)
-    expect(described).toEqual(['a', 'b'])
-    const summary = service.status().notes.at(-1) ?? ''
-    expect(summary).toContain('没有读取字幕轨')
-    expect(summary).toContain('[不可信:video]')
+  it('[FR-30] 容器中途退出时，异步状态检查把活动记成失败并清理', async () => {
+    let alive=true;const service=new AutonomyService((_command,args)=>args[0]==='inspect'?(alive?'true':'false'):args[0]==='ps'?'':'c0ffee1234567890')
+    await service.start({dockerAvailable:true,approved:true,needsPermission:false,share:null})
+    expect((await service.health()).running).toBe(true)
+    alive=false;const status=await service.health()
+    expect(status.running).toBe(false);expect(status.reason).toContain('隔离桌面已经退出');expect(status.viewUrl).toBe('')
+    expect(status.result?.status).toBe('failed')
+  })
+
+  it('[FR-28] 看视频确认播放时间推进，像素相同只识别一次并记录字幕限制', async () => {
+    const a=syntheticDesktopPng(10),b=syntheticDesktopPng(220);const frames=[a,a,b];let time=0
+    const service=new AutonomyService((_command,args)=>args.includes('base64')?frames.shift()??b:args[0]==='ps'?'':'c0ffee1234567890',async()=>{}, {observe:async()=>({url:'https://example.com/video',text:'Synthetic video',media:{time:time++,duration:30,paused:false,ended:false,ready:4,source:'synthetic.webm',captions:[],captionTracks:0,audioAvailable:null}})})
+    await service.start({dockerAvailable:true,approved:true,needsPermission:false,share:null})
+    const described:string[]=[]
+    const result=await service.watchVideo('https://example.com/video',async image=>{described.push(image);return '合成的纯色画面'},3,1000)
+    expect(result.ok).toBe(true);expect(described).toEqual([a,b])
+    expect(service.status().result?.observations.map(o=>o.mediaTime)).toEqual([0,2])
+    expect(service.status().result?.limitations.some(s=>s.includes('字幕轨'))).toBe(true)
+    expect(service.status().result?.status).toBe('partial')
+    expect(service.status().notes.at(-1)).toContain('[不可信:video]')
   })
 
   it('[DEP-03] 构建镜像时认出国内网络的两种失败，并能换国内源', () => {
@@ -478,7 +444,8 @@ describe('[FR-28] 隔离活动', () => {
     const service = new AutonomyService(() => { throw new Error('docker daemon 未运行') })
     const started = await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
     expect(started.ok).toBe(false)
-    if (!started.ok) expect(started.error).toContain('不会改到宿主桌面')
+    if (!started.ok) expect(started.error).toContain('docker daemon 未运行')
+    expect(service.status().hostExecution).toBe(false)
     expect(service.status().viewUrl).toBe('')
   })
 
@@ -486,15 +453,16 @@ describe('[FR-28] 隔离活动', () => {
     const service = new AutonomyService(() => 'c0ffee1234567890')
     await service.start({ dockerAvailable: true, approved: true, needsPermission: false, share: null })
     const stopped = await service.stop({ containerGone: true })
-    expect(stopped.ok).toBe(true)
-    if (stopped.ok) expect(stopped.data.reason).toContain('已停止')
+    expect(stopped.ok).toBe(false)
+    expect(service.status().reason).toContain('已停止')
+    expect(service.status().result?.status).toBe('failed')
   })
 
   it('[FR-30] 自主活动与已确认任务分别管理', async () => {
     const service = new AutonomyService()
     const stopped = await service.stop({ containerGone: false })
     expect(stopped.ok).toBe(true)
-    if (stopped.ok) expect(stopped.data.taskStatus).toContain('任务状态不受影响')
+    if (stopped.ok) expect(stopped.data.taskStatus).toContain('任务')
   })
 
   it('[UC-10] 导航与启停流程', () => {
