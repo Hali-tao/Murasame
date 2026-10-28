@@ -1,0 +1,306 @@
+{
+  "generatedAt": "2026-10-28T20:57:20.076Z",
+  "label": "baseline-final",
+  "baseline": "c024fe5",
+  "componentSha256": "719f11815de763b4ba6dc6fd22985c57797fd35c288073b438933f30a521f56c",
+  "runtime": "Actual Live2DPet.tsx, React, Pixi ticker, original Cubism moc3 and physics. Controlled 60 Hz ticker steps; original three assets. No mocked model or motion manager.",
+  "checks": [
+    {
+      "name": "naiwa: a tap can interrupt initial idle",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(naiwa)",
+        "currentGroup": "Greet",
+        "currentIndex": 0,
+        "frame": 24
+      }
+    },
+    {
+      "name": "naiwa: tap cannot replace an active semantic motion",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(naiwa)",
+        "currentGroup": "Greet",
+        "currentIndex": 0,
+        "frame": 97
+      }
+    },
+    {
+      "name": "naiwa: releasing a drag cannot replace an active semantic motion",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(naiwa)",
+        "currentGroup": "DragLeft",
+        "currentIndex": 0,
+        "frame": 145
+      }
+    },
+    {
+      "name": "naiwa: a newer semantic motion can take over",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(naiwa)",
+        "currentGroup": "Comfort",
+        "currentIndex": 0,
+        "frame": 155
+      }
+    },
+    {
+      "name": "naiwa: explicit idle releases the interaction priority",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(naiwa)",
+        "currentGroup": "Greet",
+        "currentIndex": 0,
+        "frame": 179
+      }
+    },
+    {
+      "name": "naiwa: pending semantic load cannot be displaced by a tap",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(naiwa)",
+        "currentGroup": "Greet",
+        "currentIndex": 0,
+        "frame": 20
+      }
+    },
+    {
+      "name": "tororo: a tap can interrupt initial idle",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(tororo)",
+        "currentGroup": "Tap",
+        "currentIndex": 0,
+        "frame": 24
+      }
+    },
+    {
+      "name": "tororo: tap cannot replace an active semantic motion",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(tororo)",
+        "currentGroup": "Tap",
+        "currentIndex": 0,
+        "frame": 97
+      }
+    },
+    {
+      "name": "tororo: a newer semantic motion can take over",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(tororo)",
+        "currentGroup": "FlickDown",
+        "currentIndex": 0,
+        "frame": 107
+      }
+    },
+    {
+      "name": "tororo: explicit idle releases the interaction priority",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(tororo)",
+        "currentGroup": "Tap",
+        "currentIndex": 0,
+        "frame": 131
+      }
+    },
+    {
+      "name": "tororo: pending semantic load cannot be displaced by a tap",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(tororo)",
+        "currentGroup": "Tap",
+        "currentIndex": 0,
+        "frame": 22
+      }
+    },
+    {
+      "name": "whale-girl: a tap can interrupt initial idle",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(whale-girl)",
+        "currentGroup": "aidale",
+        "currentIndex": 0,
+        "frame": 24
+      }
+    },
+    {
+      "name": "whale-girl: tap cannot replace an active semantic motion",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(whale-girl)",
+        "currentGroup": "aidale",
+        "currentIndex": 0,
+        "frame": 97
+      }
+    },
+    {
+      "name": "whale-girl: a newer semantic motion can take over",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(whale-girl)",
+        "currentGroup": "bubble",
+        "currentIndex": 0,
+        "frame": 107
+      }
+    },
+    {
+      "name": "whale-girl: explicit idle releases the interaction priority",
+      "passed": true,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(whale-girl)",
+        "currentGroup": "aidale",
+        "currentIndex": 0,
+        "frame": 131
+      }
+    },
+    {
+      "name": "whale-girl: pending semantic load cannot be displaced by a tap",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(whale-girl)",
+        "currentGroup": "aidale",
+        "currentIndex": 0,
+        "frame": 20
+      }
+    },
+    {
+      "name": "whale-girl: an idle motion carrying a semantic expression keeps emotion priority",
+      "passed": false,
+      "state": {
+        "debug": false,
+        "currentPriority": 3,
+        "reservePriority": 0,
+        "tag": "MotionManager(whale-girl)",
+        "currentGroup": "aidale",
+        "currentIndex": 0,
+        "frame": 43
+      }
+    },
+    {
+      "name": "naiwa: Working transition remains continuous with original physics",
+      "passed": true,
+      "maxStep": 0.0019293427467346191,
+      "frameCount": 84
+    },
+    {
+      "name": "naiwa: Working uses a single body motion",
+      "passed": true,
+      "maxQueue": 1
+    },
+    {
+      "name": "naiwa: Greet transition remains continuous with original physics",
+      "passed": true,
+      "maxStep": 0.005587927997112274,
+      "frameCount": 55
+    },
+    {
+      "name": "naiwa: Greet uses a single body motion",
+      "passed": true,
+      "maxQueue": 1
+    },
+    {
+      "name": "naiwa: DragRight transition remains continuous with original physics",
+      "passed": true,
+      "maxStep": 0.01176413893699646,
+      "frameCount": 29
+    },
+    {
+      "name": "naiwa: DragRight uses a single body motion",
+      "passed": true,
+      "maxQueue": 1
+    },
+    {
+      "name": "naiwa: Comfort transition remains continuous with original physics",
+      "passed": true,
+      "maxStep": 0.008869260549545288,
+      "frameCount": 61
+    },
+    {
+      "name": "naiwa: Comfort uses a single body motion",
+      "passed": true,
+      "maxQueue": 1
+    },
+    {
+      "name": "naiwa: Idle transition remains continuous with original physics",
+      "passed": true,
+      "maxStep": 0.00800091028213501,
+      "frameCount": 120
+    },
+    {
+      "name": "naiwa: Idle uses a single body motion",
+      "passed": true,
+      "maxQueue": 1
+    },
+    {
+      "name": "naiwa: speech mouth wins over the authored mouth curve",
+      "passed": true,
+      "actual": 0.6299999952316284
+    },
+    {
+      "name": "naiwa: completed reaction returns to idle without a wall-clock timeout",
+      "passed": true,
+      "group": "Idle"
+    },
+    {
+      "name": "naiwa: drag reaction starts after idle is restored",
+      "passed": true,
+      "group": "DragLeft"
+    },
+    {
+      "name": "native page has no runtime errors",
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "passed": false
+}

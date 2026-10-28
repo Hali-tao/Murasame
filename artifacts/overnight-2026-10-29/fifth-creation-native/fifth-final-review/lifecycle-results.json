@@ -1,0 +1,32 @@
+{
+  "budget": {
+    "sends": 6,
+    "return": {
+      "ok": false,
+      "error": "已到6次实际模型请求上限。已重试 2 次，未使用不完整结果。"
+    },
+    "status": "failed",
+    "cleanup": true
+  },
+  "revoked": {
+    "sends": 1,
+    "return": {
+      "ok": false,
+      "error": "创作许可已撤回。已重试 2 次，未使用不完整结果。"
+    },
+    "status": "failed",
+    "cleanup": true
+  },
+  "queuedDeadline": {
+    "settled": false,
+    "running": true,
+    "busy": true,
+    "phase": "drafting"
+  },
+  "afterStop": {
+    "settled": false,
+    "running": false,
+    "busy": true,
+    "canStop": false
+  }
+}

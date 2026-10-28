@@ -1,0 +1,112 @@
+import { createElement } from 'react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
+import type { ModelProfile, MurasameApi, Result } from '../../../src/shared/types'
+import { initialBootstrap } from '../../../src/shared/mock-data'
+import { resetStoreForTests, useAppStore } from '../../../src/renderer/src/store'
+import { ModelsPage } from '../../../src/renderer/src/pages/ModelsPage'
+
+const saved: ModelProfile = { id: 'saved', name: '原服务', provider: 'OpenAI Compatible', endpoint: 'http://127.0.0.1:9999/v1', key: '', hasKey: true, model: 'synthetic-model', caps: [], capabilities: [], probeNote: '', status: '在线', tone: 'green', default: true, latency: '10 ms' }
+const other: ModelProfile = { ...saved, id: 'other', name: '第二服务', default: false }
+function deferred<T>() { let resolve!: (value: T) => void; let reject!: (error: Error) => void; return { promise: new Promise<T>((yes, no) => { resolve = yes; reject = no }), resolve: (value: T) => resolve(value), reject: (error: Error) => reject(error) } }
+const name = () => screen.getByTestId('model-config-name') as HTMLInputElement
+const disabled = () => name().matches(':disabled')
+async function mount() { await act(async () => { render(createElement(MemoryRouter, null, createElement(ModelsPage))) }) }
+beforeEach(() => {
+  resetStoreForTests()
+  useAppStore.setState({ data: { ...initialBootstrap(), models: [saved, other] }, selectedModelId: saved.id, loading: false })
+  Object.defineProperty(window, 'murasame', { configurable: true, value: { core: {
+    createModel: vi.fn(async () => ({ ok: false, error: 'unused synthetic creation' })),
+    verifyModel: vi.fn(async () => ({ ok: true, data: saved })),
+    setDefaultModel: vi.fn(async () => ({ ok: true, data: [saved, other] })),
+    deleteModel: vi.fn(async () => ({ ok: true, data: [other] }))
+  } } as unknown as MurasameApi })
+})
+afterEach(() => { cleanup(); resetStoreForTests(); vi.restoreAllMocks() })
+
+it('pending failed deletion blocks conflicting actions and retains the dirty draft', async () => {
+  const pending = deferred<Result<ModelProfile[]>>()
+  vi.mocked(window.murasame.core.deleteModel).mockReturnValue(pending.promise)
+  await mount(); fireEvent.change(name(), { target: { value: '待保存草稿' } })
+  await act(async () => { fireEvent.click(screen.getByTestId('delete-model')) })
+  expect(disabled()).toBe(true)
+  for (const id of ['add-model', 'verify-model', 'model-preset-ollama']) expect(screen.getByTestId(id).matches(':disabled')).toBe(true)
+  expect(screen.getAllByTestId('model-item').every(item => item.matches(':disabled'))).toBe(true)
+  expect(screen.getByRole('button', { name: '再测一次' }).matches(':disabled')).toBe(true)
+  await act(async () => { pending.resolve({ ok: false, error: 'synthetic delete rejected' }) })
+  expect(disabled()).toBe(false); expect(name().value).toBe('待保存草稿')
+  expect(useAppStore.getState().selectedModelId).toBe('saved')
+})
+
+it('successful deletion initializes the remaining selected model before unlocking', async () => {
+  const pending = deferred<Result<ModelProfile[]>>()
+  vi.mocked(window.murasame.core.deleteModel).mockReturnValue(pending.promise)
+  await mount(); await act(async () => { fireEvent.click(screen.getByTestId('delete-model')) })
+  expect(disabled()).toBe(true)
+  await act(async () => { pending.resolve({ ok: true, data: [other] }) })
+  expect(disabled()).toBe(false); expect(name().value).toBe(other.name)
+  expect(useAppStore.getState().selectedModelId).toBe(other.id)
+})
+
+it('rechecking the saved default preserves an unsaved selected draft', async () => {
+  const pending = deferred<Result<ModelProfile>>()
+  vi.mocked(window.murasame.core.verifyModel).mockReturnValue(pending.promise)
+  await mount(); fireEvent.change(name(), { target: { value: '默认服务的未保存草稿' } })
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '再测一次' })) })
+  expect(disabled()).toBe(true)
+  expect(window.murasame.core.verifyModel).toHaveBeenCalledWith(saved.id, undefined)
+  await act(async () => { pending.resolve({ ok: true, data: { ...saved, latency: '20 ms' } }) })
+  expect(disabled()).toBe(false); expect(name().value).toBe('默认服务的未保存草稿')
+})
+
+it('a rejected verification releases the form and preserves all user input', async () => {
+  const pending = deferred<Result<ModelProfile>>()
+  vi.mocked(window.murasame.core.verifyModel).mockReturnValue(pending.promise)
+  await mount(); fireEvent.change(name(), { target: { value: '验证前草稿' } })
+  fireEvent.change(screen.getByTestId('model-key'), { target: { value: 'synthetic-unsaved-key' } })
+  await act(async () => { fireEvent.click(screen.getByTestId('verify-model')) })
+  expect(disabled()).toBe(true)
+  await act(async () => { pending.reject(new Error('synthetic transport failed')) })
+  expect(disabled()).toBe(false); expect(name().value).toBe('验证前草稿')
+  expect((screen.getByTestId('model-key') as HTMLInputElement).value).toBe('synthetic-unsaved-key')
+  expect(document.querySelector('.use-result')?.textContent).toContain('synthetic transport failed')
+})
+
+it('failed activation releases the saved form without selecting a different configuration', async () => {
+  const pending = deferred<Result<ModelProfile[]>>()
+  vi.mocked(window.murasame.core.setDefaultModel).mockReturnValue(pending.promise)
+  useAppStore.setState({ selectedModelId: other.id })
+  await mount(); await act(async () => { fireEvent.click(screen.getByTestId('set-default-model')) })
+  expect(disabled()).toBe(true)
+  await act(async () => { pending.resolve({ ok: false, error: 'synthetic activation rejected' }) })
+  expect(disabled()).toBe(false); expect(name().value).toBe(other.name)
+  expect(useAppStore.getState().selectedModelId).toBe(other.id)
+})
+
+it('leaving and reopening during creation stays locked and initializes the returned selection', async () => {
+  const pending = deferred<Result<ModelProfile>>()
+  const created = { ...other, id: 'new-from-old-page', name: '新的模型配置', model: '', endpoint: '', hasKey: false, status: '未验证' as const }
+  vi.mocked(window.murasame.core.createModel).mockReturnValue(pending.promise)
+  await mount(); await act(async () => { fireEvent.click(screen.getByTestId('add-model')) })
+  cleanup(); await mount()
+  expect(disabled()).toBe(true)
+  await act(async () => { pending.resolve({ ok: true, data: created }) })
+  expect(disabled()).toBe(false); expect(useAppStore.getState().selectedModelId).toBe(created.id)
+  expect(name().value).toBe(created.name)
+  expect((screen.getByTestId('model-name') as HTMLInputElement).value).toBe('')
+})
+
+it('leaving and reopening during verification displays the committed result after activation', async () => {
+  const pending = deferred<Result<ModelProfile>>()
+  const verified = { ...saved, name: '已经提交的新名称' }
+  vi.mocked(window.murasame.core.verifyModel).mockReturnValue(pending.promise)
+  vi.mocked(window.murasame.core.setDefaultModel).mockResolvedValue({ ok: true, data: [verified, other] })
+  await mount(); fireEvent.change(name(), { target: { value: verified.name } })
+  await act(async () => { fireEvent.click(screen.getByTestId('verify-model')) })
+  cleanup(); await mount()
+  expect(disabled()).toBe(true)
+  await act(async () => { pending.resolve({ ok: true, data: verified }) })
+  expect(disabled()).toBe(false); expect(name().value).toBe(verified.name)
+  expect(screen.getByTestId('current-service-name').textContent).toBe(verified.name)
+})

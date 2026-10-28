@@ -157,9 +157,12 @@ const api: MurasameApi = {
       ipcRenderer.invoke(IPC.voice.speak, { text })
   },
   autonomy: {
+    preview: () => ipcRenderer.invoke(IPC.autonomy.preview),
+    create: (kind, goal) => ipcRenderer.invoke(IPC.autonomy.create, { kind, goal }),
+    exportArtifact: (id) => ipcRenderer.invoke(IPC.autonomy.exportArtifact, { id }),
     status: () => ipcRenderer.invoke(IPC.autonomy.status),
     environment: () => ipcRenderer.invoke(IPC.autonomy.environment),
-    start: (options?: { confirmed?: boolean; allowNetwork?: boolean }) => ipcRenderer.invoke(IPC.autonomy.start, options),
+    start: (options) => ipcRenderer.invoke(IPC.autonomy.start, options),
     openPage: (url: string) => ipcRenderer.invoke(IPC.autonomy.open, { url }),
     look: () => ipcRenderer.invoke(IPC.autonomy.look),
     browse: (goal: string) => ipcRenderer.invoke(IPC.autonomy.browse, { goal }),

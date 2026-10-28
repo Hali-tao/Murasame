@@ -1,0 +1,6 @@
+import { defineConfig } from 'vitest/config'
+import { resolve } from 'node:path'
+export default defineConfig({
+  resolve: { alias: { '@shared': resolve(process.cwd(), 'src/shared') } },
+  test: { environment: 'jsdom', include: ['previews/overnight-2026-10-29/fifth-final-review/model-form-review.test.ts'], maxWorkers: 1 }
+})

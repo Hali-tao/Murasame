@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:63592) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (13.8s)
+  ok 2 tests\e2e\notifications.spec.ts:41:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire (14.2s)
+
+  2 passed (28.7s)

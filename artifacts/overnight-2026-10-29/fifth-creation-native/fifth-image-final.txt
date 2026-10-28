@@ -1,0 +1,67 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.65kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.m.daocloud.io/library/debian:bookworm
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [ 1/14] FROM docker.m.daocloud.io/library/debian:bookworm
+#4 DONE 0.0s
+
+#5 [ 7/14] ADD --checksum=sha256:e4b771c98fafbe2af3990ecd71d93ba22515588db550007076768a014ae34c02 https://github.com/coder/code-server/releases/download/v4.143.1/code-server_4.143.1_amd64.deb /tmp/code-server.deb
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 583B done
+#6 DONE 0.0s
+
+#7 [ 8/14] RUN dpkg -i /tmp/code-server.deb && rm /tmp/code-server.deb
+#7 CACHED
+
+#8 [11/14] COPY supervisord.conf /etc/supervisor/conf.d/murasame.conf
+#8 CACHED
+
+#9 [ 4/14] RUN apt-get -o Acquire::Retries=5 install -y --no-install-recommends xfce4 xfce4-terminal
+#9 CACHED
+
+#10 [ 3/14] RUN apt-get -o Acquire::Retries=5 install -y --no-install-recommends     tigervnc-standalone-server novnc websockify python3 supervisor ca-certificates dbus-x11 xdotool scrot pulseaudio
+#10 CACHED
+
+#11 [ 7/14] ADD --checksum=sha256:e4b771c98fafbe2af3990ecd71d93ba22515588db550007076768a014ae34c02 https://github.com/coder/code-server/releases/download/v4.143.1/code-server_4.143.1_amd64.deb /tmp/code-server.deb
+#11 CACHED
+
+#12 [12/14] COPY creation-runner.py /opt/murasame/creation-runner.py
+#12 CACHED
+
+#13 [ 5/14] RUN apt-get -o Acquire::Retries=5 install -y --no-install-recommends firefox-esr fonts-wqy-microhei
+#13 CACHED
+
+#14 [ 9/14] RUN useradd --create-home --shell /bin/bash murasame && useradd --no-create-home --shell /usr/sbin/nologin murasame-code &&     apt-get -o Acquire::Retries=5 install -y --no-install-recommends libseccomp2
+#14 CACHED
+
+#15 [ 6/14] RUN apt-get -o Acquire::Retries=5 install -y --no-install-recommends libreoffice-writer libreoffice-calc python3-uno
+#15 CACHED
+
+#16 [ 2/14] RUN set -eu;     printf 'Acquire::Retries "2";\nAcquire::http::Timeout "30";\n' > /etc/apt/apt.conf.d/80-murasame;     if [ -n "mirrors.aliyun.com,mirrors.tuna.tsinghua.edu.cn" ]; then       uris=""; sec="";       oldifs=$IFS; IFS=',';       for host in mirrors.aliyun.com,mirrors.tuna.tsinghua.edu.cn; do         uris="$uris http://$host/debian";         sec="$sec http://$host/debian-security";       done;       IFS=$oldifs;       printf 'Types: deb\nURIs:%s\nSuites: bookworm bookworm-updates\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n\nTypes: deb\nURIs:%s\nSuites: bookworm-security\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' "$uris" "$sec" > /etc/apt/sources.list.d/debian.sources;     fi;     apt-get update
+#16 CACHED
+
+#17 [10/14] COPY firefox-policies.json /usr/lib/firefox-esr/distribution/policies.json
+#17 CACHED
+
+#18 [13/14] COPY --chown=murasame:murasame office-registry.xcu /home/murasame/.config/libreoffice/4/user/registrymodifications.xcu
+#18 CACHED
+
+#19 [14/14] COPY --chown=murasame:murasame editor-settings.json /home/murasame/.local/share/code-server/User/settings.json
+#19 DONE 0.0s
+
+#20 exporting to image
+#20 exporting layers 0.0s done
+#20 writing image sha256:a5c6f741c4ae7b9db107710d7177b6d6ecd0f40fbfd42baf01af13cc1cdbc4c8 done
+#20 naming to docker.io/library/murasame-isolation:fifth-20261029 done
+#20 DONE 0.1s

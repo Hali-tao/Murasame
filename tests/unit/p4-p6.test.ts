@@ -27,7 +27,7 @@ import { AffectService } from '../../src/main/core/services/affect-service'
 // Complete external-runner fixture: an installed image must advertise its runtime contract.
 class AutonomyService extends ProductionAutonomyService {
   constructor(run?: DockerRunner, wait?: (ms: number) => Promise<void>, deps?: AutonomyDependencies) {
-    super(run ? (command, args, options) => args[0] === 'image' && args[1] === 'inspect' ? '2' : run(command, args, options) : undefined, wait, deps)
+    super(run ? (command, args, options) => args[0] === 'image' && args[1] === 'inspect' ? '3' : run(command, args, options) : undefined, wait, deps)
   }
 }
 

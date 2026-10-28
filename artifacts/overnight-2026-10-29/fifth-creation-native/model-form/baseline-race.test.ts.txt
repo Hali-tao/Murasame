@@ -1,0 +1,51 @@
+import { createElement } from 'react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
+import type { ModelProfile, MurasameApi, Result } from '../../../src/shared/types'
+import { initialBootstrap } from '../../../src/shared/mock-data'
+import { resetStoreForTests, useAppStore } from '../../../src/renderer/src/store'
+import { ModelsPage } from '../../../src/renderer/src/pages/ModelsPage'
+
+let resolveCreation!: (value: Result<ModelProfile>) => void
+let created: ModelProfile
+beforeEach(() => {
+  resetStoreForTests()
+  const data = initialBootstrap()
+  created = { ...data.models[0], id: 'controlled-new-model', name: '新的模型配置', endpoint: '', model: '', default: false, hasKey: false, status: '未验证' }
+  data.models = []
+  useAppStore.setState({ data, loading: false })
+  Object.defineProperty(window, 'murasame', { configurable: true, value: { core: {
+    createModel: vi.fn(() => new Promise<Result<ModelProfile>>(resolve => { resolveCreation = resolve }))
+  } } as unknown as MurasameApi })
+})
+afterEach(() => { cleanup(); resetStoreForTests() })
+
+async function pendingInput(): Promise<HTMLInputElement> {
+  await act(async () => { render(createElement(MemoryRouter, null, createElement(ModelsPage))) })
+  await act(async () => { fireEvent.click(screen.getByTestId('add-model')) })
+  const input = screen.getByTestId('model-config-name') as HTMLInputElement
+  expect(input.matches(':disabled')).toBe(false)
+  return input
+}
+
+it('reproduces loss of text entered before the create response arrives', async () => {
+  const input = await pendingInput()
+  fireEvent.change(input, { target: { value: '用户已经输入的名称' } })
+  const before = input.value
+  await act(async () => { resolveCreation({ ok: true, data: created }) })
+  console.info(JSON.stringify({ sequence: ['click add', 'type while IPC pending', 'resolve create'], before, after: input.value }))
+  expect(input.value).toBe('用户已经输入的名称')
+})
+
+it('reproduces insertion after a late default-value update moves the selected caret', async () => {
+  const input = await pendingInput()
+  input.focus(); input.select()
+  const selectedBefore = [input.selectionStart, input.selectionEnd]
+  await act(async () => { resolveCreation({ ok: true, data: created }) })
+  const selectedAfter = [input.selectionStart, input.selectionEnd]
+  input.setRangeText('端到端测试服务', input.selectionStart!, input.selectionEnd!, 'end')
+  fireEvent.input(input)
+  console.info(JSON.stringify({ sequence: ['select blank name', 'resolve create before text insertion', 'insert text at current selection'], selectedBefore, selectedAfter, after: input.value }))
+  expect(input.value).toBe('端到端测试服务')
+})

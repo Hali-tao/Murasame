@@ -1,0 +1,104 @@
+
+Running 2 tests using 1 worker
+
+(node:88156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (18.1s)
+  x  2 tests\e2e\notifications.spec.ts:38:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire (38.6s)
+
+
+  1) tests\e2e\notifications.spec.ts:38:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire
+
+    TimeoutError: locator.click: Timeout 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: '再测一次', exact: true })
+        - locator resolved to <button type="button" class="btn btn-secondary btn-sm">再测一次</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> intercepts pointer events
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div role="status" aria-atomic="true" class="toast toast-green">…</div> from <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> subtree intercepts pointer events
+      2 × retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> intercepts pointer events
+      2 × retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div role="status" aria-atomic="true" class="toast toast-green">…</div> from <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> subtree intercepts pointer events
+      2 × retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> intercepts pointer events
+      - retrying click action
+        - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - <div role="status" aria-atomic="true" class="toast toast-green">…</div> from <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> subtree intercepts pointer events
+      48 × retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <div role="alert" aria-atomic="true" class="toast toast-red">…</div> from <section tabindex="0" aria-label="操作提示" class="toast-stack">…</section> subtree intercepts pointer events
+      - retrying click action
+        - waiting 500ms
+
+
+      51 |     }, IPC.core.verifyModel)
+      52 |     for (let index = 1; index <= 6; index += 1) {
+    > 53 |       await page.getByRole('button', { name: '再测一次', exact: true }).click()
+         |                                                                     ^
+      54 |       await expect(page.locator('.toast-red')).toHaveCount(index)
+      55 |     }
+      56 |     await page.getByTestId('nav-chat').click()
+        at E:\Desktop\软件工程\murasame\tests\e2e\notifications.spec.ts:53:69
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fifth-notifications\e2e\notifications-distinct-err-5cd6e-fter-routine-notices-expire\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fifth-notifications\e2e\notifications-distinct-err-5cd6e-fter-routine-notices-expire\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\fifth-notifications\e2e\notifications-distinct-err-5cd6e-fter-routine-notices-expire\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fifth-notifications\e2e\notifications-distinct-err-5cd6e-fter-routine-notices-expire\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\fifth-notifications\e2e\notifications-distinct-err-5cd6e-fter-routine-notices-expire\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\notifications.spec.ts:38:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire
+  1 passed (57.9s)

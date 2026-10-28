@@ -51,7 +51,7 @@ describe('terminal staging and explicit exports', () => {
     const { createTaskRunner } = await import('../../src/main/isolation/task-runner')
     const root = temp(); writeFileSync(join(root, 'input.txt'), 'original'); let mounted = ''; let executed = 0
     const runner = createTaskRunner(async (_command, args) => {
-      if (args[0] === 'image' && args[1] === 'inspect') return '2'
+      if (args[0] === 'image' && args[1] === 'inspect') return '3'
       if (args[0] === 'inspect') return 'true'
       if (args[0] === 'ps') return ''
       if (args[0] === 'run') { mounted = args[args.indexOf('--mount') + 1].match(/source=(.*),target=\/shared/)![1]; return 'stage-container' }
@@ -66,7 +66,7 @@ describe('terminal staging and explicit exports', () => {
   it('never overwrites a changed original while exporting an explicitly approved existing output', async () => {
     const { createTaskRunner } = await import('../../src/main/isolation/task-runner')
     const { createHash } = await import('node:crypto'); const root = temp(); writeFileSync(join(root, 'code.txt'), 'before'); let mounted = ''
-    const runner = createTaskRunner(async (_command, args) => { if (args[0] === 'image' && args[1] === 'inspect') return '2'
+    const runner = createTaskRunner(async (_command, args) => { if (args[0] === 'image' && args[1] === 'inspect') return '3'
       if (args[0] === 'inspect') return 'true'
       if (args[0] === 'ps') return ''; if (args[0] === 'run') { mounted = args[args.indexOf('--mount') + 1].match(/source=(.*),target=\/shared/)![1]; return 'conflict-container' } if (args[0] === 'exec' && args.some((arg) => arg.includes('MURASAME_EXIT_'))) { writeFileSync(join(mounted, 'code.txt'), 'model change'); writeFileSync(join(root, 'code.txt'), 'user change'); const marker = args.find((arg) => arg.includes('MURASAME_EXIT_'))!.match(/MURASAME_EXIT_[a-z0-9]+/)![0]; return `\n${marker}=0\n` } return '' })
     const result = await runner({ root, executable: 'python3', args: [], timeoutMs: 2000, outputs: [{ path: 'code.txt', overwrite: true, baselineHash: createHash('sha256').update('before').digest('hex') }] })
@@ -78,7 +78,7 @@ it('resumes a retained staging export through TaskService without repeating the 
   const { createTaskRunner } = await import('../../src/main/isolation/task-runner')
   const root = temp(); const database = db(); const service = new TaskService(database); let mounted = ''; let executed = 0
   service.setPlanner(async () => ({ tool: 'terminal', root, command: 'python3 make.py', question: '', steps: [{ id: 'create', title: 'make output', detail: 'make output', expected: '', checks: [{ kind: 'file-content', path: 'result.txt', value: 'finished' }] }] }))
-  service.setIsolatedRunner(createTaskRunner(async (_command, args) => { if (args[0] === 'image' && args[1] === 'inspect') return '2'
+  service.setIsolatedRunner(createTaskRunner(async (_command, args) => { if (args[0] === 'image' && args[1] === 'inspect') return '3'
       if (args[0] === 'inspect') return 'true'
       if (args[0] === 'ps') return ''; if (args[0] === 'run') { mounted = args[args.indexOf('--mount') + 1].match(/source=(.*),target=\/shared/)![1]; return 'service-stage-container' } if (args[0] === 'exec' && args.some((arg) => arg.includes('MURASAME_EXIT_'))) { executed += 1; writeFileSync(join(mounted, 'result.txt'), 'finished'); const marker = args.find((arg) => arg.includes('MURASAME_EXIT_'))!.match(/MURASAME_EXIT_[a-z0-9]+/)![0]; return `created\n${marker}=0\n` } return '' }))
   const created = await service.create(`创建任务 ${root}`); if (!created.ok) throw new Error(created.error)

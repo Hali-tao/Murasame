@@ -1,0 +1,180 @@
+import { createElement } from 'react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
+import type { ActivityStatus, MurasameApi, Result } from '../../src/shared/types'
+import { AutonomyPage } from '../../src/renderer/src/pages/AutonomyPage'
+
+const artifact = {
+  id: '4ea1951f-f3f1-44c3-aea7-16cfb282292b', kind: 'code' as const,
+  title: '独立UI审查的求和脚本', name: 'main.py', sha256: 'a'.repeat(64), bytes: 12,
+  preview: 'print(5050)', stdout: '5050\n', review: '满足求和目标', attempt: 0
+}
+let state: ActivityStatus
+const firstFrame = 'aW5kZXBlbmRlbnQtZnJhbWUtMQ=='
+const secondFrame = 'aW5kZXBlbmRlbnQtZnJhbWUtMg=='
+
+beforeEach(() => {
+  vi.useFakeTimers()
+  state = { running: true, canStop: true, busy: false, kind: 'code', allowNetwork: false, reason: '产物已核验并打开', viewUrl: '', notes: [], taskStatus: '独立于任务', goal: '计算1到100的和', creation: { phase: 'ready', message: '真实文件与独立审阅均通过', artifact } }
+  Object.defineProperty(window, 'murasame', { configurable: true, value: {
+    autonomy: {
+      status: vi.fn(async () => structuredClone(state)),
+      preview: vi.fn(async () => ({ ok: true, data: { image: firstFrame } })),
+      environment: vi.fn(async () => ({ docker: true, image: true, detail: '独立UI测试环境' })),
+      onBuildProgress: vi.fn(() => () => undefined),
+      start: vi.fn(async () => ({ ok: true, data: structuredClone(state) })),
+      stop: vi.fn(async () => {
+        state = { ...state, running: false, canStop: false, busy: false, viewUrl: '' }
+        return { ok: true, data: structuredClone(state) }
+      }),
+      look: vi.fn(async () => ({ ok: true, data: structuredClone(state) })),
+      exportArtifact: vi.fn(async () => ({ ok: false, error: '已取消保存，产物仍留在本次隔离活动中' }))
+    }
+  } as unknown as MurasameApi })
+})
+
+afterEach(() => { cleanup(); vi.useRealTimers() })
+
+async function mount(): Promise<void> {
+  await act(async () => { render(createElement(AutonomyPage)) })
+}
+
+it('restores the code activity form when returning to an already completed creation', async () => {
+  await mount()
+  const activity = screen.getByRole('combobox') as HTMLSelectElement
+  expect(activity.value).toBe('写代码')
+  expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('计算1到100的和')
+  expect(screen.getByRole('switch', { name: '允许隔离桌面联网' }).getAttribute('aria-checked')).toBe('false')
+})
+
+it('shows real creation progress and blocks conflicting controls when returning during execution', async () => {
+  state = { ...state, reason: '正在隔离区运行Python并核对输出', creation: { phase: 'executing', message: '正在隔离区运行Python并核对输出' } }
+  await mount()
+  expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('写代码')
+  expect(screen.getByRole('status').textContent).toContain('正在隔离区运行Python并核对输出')
+  expect((screen.getByTestId('autonomy-create') as HTMLButtonElement).disabled).toBe(true)
+  expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).disabled).toBe(false)
+})
+
+it('keeps cancellation and meaningful progress available when returning during environment preparation', async () => {
+  state = { running: false, phase: 'preparing', canStop: true, busy: true, reason: '正在准备隔离环境，离开页面不会中断；可停止准备。', viewUrl: '', notes: [], taskStatus: '独立于任务' }
+  await mount()
+  expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).disabled).toBe(false)
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('正在准备隔离环境')
+  state = { ...state, running: true, busy: false, phase: 'running', kind: 'office', allowNetwork: false, reason: '活动进行中' }
+  await act(async () => { vi.advanceTimersByTime(5000) })
+  expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('办公')
+})
+
+it('surfaces a cleanup failure immediately and keeps the documented retry action available', async () => {
+  vi.mocked(window.murasame.autonomy.stop).mockImplementation(async () => {
+    state = { ...state, running: false, canStop: true, busy: false, phase: 'failed', reason: '未确认容器退出，请重试停止。' }
+    return { ok: false, error: state.reason }
+  })
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByTestId('autonomy-stop')) })
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('请重试停止')
+  await act(async () => { vi.advanceTimersByTime(5000) })
+  expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).disabled).toBe(false)
+})
+
+it('keeps an active verified artifact available after the native save dialog is cancelled', async () => {
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByTestId('autonomy-export')) })
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('已取消保存')
+  expect(screen.getByText('独立UI审查的求和脚本')).toBeTruthy()
+  expect((screen.getByTestId('autonomy-export') as HTMLButtonElement).disabled).toBe(false)
+  await act(async () => { vi.advanceTimersByTime(10000) })
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('已取消保存')
+})
+
+it('stops polling after leaving the activity page', async () => {
+  await mount()
+  cleanup()
+  const calls = vi.mocked(window.murasame.autonomy.status).mock.calls.length
+  await act(async () => { vi.advanceTimersByTime(15000) })
+  expect(vi.mocked(window.murasame.autonomy.status).mock.calls.length).toBe(calls)
+})
+
+it('clears the polled busy flag after export and preserves the error across later status polls', async () => {
+  let resolveExport!: (value: Awaited<ReturnType<MurasameApi['autonomy']['exportArtifact']>>) => void
+  const pending = new Promise<Awaited<ReturnType<MurasameApi['autonomy']['exportArtifact']>>>(resolve => { resolveExport = resolve })
+  vi.mocked(window.murasame.autonomy.exportArtifact).mockImplementation(() => pending)
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByTestId('autonomy-export')) })
+  state = { ...state, busy: true }
+  await act(async () => { vi.advanceTimersByTime(5000) })
+  expect((screen.getByTestId('autonomy-export') as HTMLButtonElement).disabled).toBe(true)
+  state = { ...state, busy: false }
+  await act(async () => { resolveExport({ ok: false, error: '目标文件已存在，没有覆盖；请选择新文件名' }) })
+  expect((screen.getByTestId('autonomy-export') as HTMLButtonElement).disabled).toBe(false)
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('目标文件已存在')
+  await act(async () => { vi.advanceTimersByTime(10000) })
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('目标文件已存在')
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '看一眼隔离桌面' })) })
+  expect(document.querySelector('.autonomy-status')?.textContent).not.toContain('目标文件已存在')
+})
+
+it('keeps a normal action failure visible through polling until another operation begins', async () => {
+  vi.mocked(window.murasame.autonomy.look).mockResolvedValue({ ok: false, error: '当前暂时无法读取画面，请稍后重试' })
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '看一眼隔离桌面' })) })
+  await act(async () => { vi.advanceTimersByTime(10000) })
+  expect(document.querySelector('.autonomy-status')?.textContent).toContain('当前暂时无法读取画面')
+})
+
+it('refreshes offline frames serially and clears the old frame when capture is paused', async () => {
+  let resolveFrame!: (value: Result<{ image: string }>) => void
+  const pending = new Promise<Result<{ image: string }>>(resolve => { resolveFrame = resolve })
+  vi.mocked(window.murasame.autonomy.preview).mockImplementationOnce(() => pending)
+  await mount()
+  await act(async () => { vi.advanceTimersByTime(15000) })
+  expect(vi.mocked(window.murasame.autonomy.preview).mock.calls).toHaveLength(1)
+  expect(screen.queryByRole('img', { name: '离线隔离桌面实时画面' })).toBeNull()
+  await act(async () => { resolveFrame({ ok: true, data: { image: firstFrame } }) })
+  expect(screen.getByRole('img', { name: '离线隔离桌面实时画面' }).getAttribute('src')).toBe(`data:image/png;base64,${firstFrame}`)
+  vi.mocked(window.murasame.autonomy.preview).mockResolvedValue({ ok: false, error: '许可暂停，未采集' })
+  await act(async () => { vi.advanceTimersByTime(5000) })
+  expect(screen.queryByRole('img', { name: '离线隔离桌面实时画面' })).toBeNull()
+  expect(screen.getByText('正在读取离线桌面，许可暂停时不采集。')).toBeTruthy()
+})
+
+it('hides the stopped offline desktop and discards an already pending frame', async () => {
+  let resolveFrame!: (value: Result<{ image: string }>) => void
+  const pending = new Promise<Result<{ image: string }>>(resolve => { resolveFrame = resolve })
+  await mount()
+  expect(screen.getByRole('img', { name: '离线隔离桌面实时画面' })).toBeTruthy()
+  vi.mocked(window.murasame.autonomy.preview).mockImplementationOnce(() => pending)
+  await act(async () => { vi.advanceTimersByTime(5000) })
+  await act(async () => { fireEvent.click(screen.getByTestId('autonomy-stop')) })
+  expect(screen.queryByRole('img', { name: '离线隔离桌面实时画面' })).toBeNull()
+  await act(async () => { resolveFrame({ ok: true, data: { image: secondFrame } }); vi.advanceTimersByTime(15000) })
+  expect(screen.queryByRole('img', { name: '离线隔离桌面实时画面' })).toBeNull()
+  expect(vi.mocked(window.murasame.autonomy.preview).mock.calls).toHaveLength(2)
+})
+
+it('does not display a late frame from the page instance that was left', async () => {
+  let resolveOld!: (value: Result<{ image: string }>) => void
+  let resolveNew!: (value: Result<{ image: string }>) => void
+  vi.mocked(window.murasame.autonomy.preview)
+    .mockImplementationOnce(() => new Promise(resolve => { resolveOld = resolve }))
+    .mockImplementationOnce(() => new Promise(resolve => { resolveNew = resolve }))
+  await mount()
+  cleanup()
+  await mount()
+  await act(async () => { resolveOld({ ok: true, data: { image: firstFrame } }) })
+  expect(screen.queryByRole('img', { name: '离线隔离桌面实时画面' })).toBeNull()
+  await act(async () => { resolveNew({ ok: true, data: { image: secondFrame } }) })
+  expect(screen.getByRole('img', { name: '离线隔离桌面实时画面' }).getAttribute('src')).toBe(`data:image/png;base64,${secondFrame}`)
+})
+
+it('keeps online noVNC interaction and does not start the offline image loop', async () => {
+  state = { ...state, allowNetwork: true, viewUrl: 'http://127.0.0.1:6901/vnc.html' }
+  await mount()
+  await act(async () => { vi.advanceTimersByTime(10000) })
+  const desktop = screen.getByTitle('隔离桌面') as HTMLIFrameElement
+  expect(desktop.tagName).toBe('IFRAME')
+  expect(desktop.src).toContain('autoconnect=1')
+  expect(screen.queryByRole('img', { name: '离线隔离桌面实时画面' })).toBeNull()
+  expect(vi.mocked(window.murasame.autonomy.preview).mock.calls).toHaveLength(0)
+})

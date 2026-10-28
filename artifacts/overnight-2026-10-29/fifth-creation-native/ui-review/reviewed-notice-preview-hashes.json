@@ -1,0 +1,26 @@
+[
+  {
+    "Path": "E:\\Desktop\\软件工程\\murasame\\src\\renderer\\src\\pages\\AutonomyPage.tsx",
+    "Hash": "A27FA6142F373220FF0972A880CBD0E95E733F4F81C51CEEAEECF5630552B0D0"
+  },
+  {
+    "Path": "E:\\Desktop\\软件工程\\murasame\\src\\shared\\types.ts",
+    "Hash": "2076EA341624075EB4E8583783F8A88F3256C185273D912B0BEBD0ACC67E5E0B"
+  },
+  {
+    "Path": "E:\\Desktop\\软件工程\\murasame\\src\\shared\\ipc.ts",
+    "Hash": "5F72779F010B09D72121A70AD443CB7EF006A2C82EE823D4398A0FC7ABFBE1CE"
+  },
+  {
+    "Path": "E:\\Desktop\\软件工程\\murasame\\src\\preload\\index.ts",
+    "Hash": "32242373CECDA2686C3DE97D205D8CFB302D51789561D69B29E3BB8EE5AE8E3A"
+  },
+  {
+    "Path": "E:\\Desktop\\软件工程\\murasame\\src\\main\\ipc.ts",
+    "Hash": "30A6D3510594572F1692BC26763C6EBE5CFB7F62F7E1E57F2C166A46A47DC2DA"
+  },
+  {
+    "Path": "E:\\Desktop\\软件工程\\murasame\\src\\main\\core\\services\\autonomy-service.ts",
+    "Hash": "054747D19C5CDB0A52EF1170D7CF0329798316D57B8EB66834124F8B9A7A335E"
+  }
+]

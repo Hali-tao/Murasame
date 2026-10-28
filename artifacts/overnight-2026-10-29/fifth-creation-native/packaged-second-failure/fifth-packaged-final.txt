@@ -1,0 +1,73 @@
+
+Running 18 tests using 1 worker
+
+(node:77092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (9.9s)
+  ok  2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (13.5s)
+  ok  3 tests\e2e\app.spec.ts:98:5 › pet window is created and can be hidden or restored through IPC (9.2s)
+  ok  4 tests\e2e\app.spec.ts:159:5 › character page switches between the three bundled pet presets (10.7s)
+  ok  5 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (11.5s)
+  ok  6 tests\e2e\flows.spec.ts:74:5 › a second launch exits and the existing instance remains available (10.2s)
+  ok  7 tests\e2e\flows.spec.ts:101:5 › the console hides to the tray and can be restored (7.1s)
+  ok  8 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (11.3s)
+  ok  9 tests\e2e\grounded-summary.spec.ts:100:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (15.2s)
+  ok 10 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker (54.2s)
+  ok 11 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker (52.2s)
+  ok 12 tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 (10.7s)
+  ok 13 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (15.0s)
+  ok 14 tests\e2e\notifications.spec.ts:41:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire (15.2s)
+  ok 15 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (8.5s)
+  ok 16 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (9.4s)
+  ok 17 tests\e2e\task-directory.spec.ts:18:5 › [FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围 (10.3s)
+  x  18 tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 (12.4s)
+
+
+  1) tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 ────────────────────
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  getByTestId('current-service-name')
+    Expected: "端到端测试服务"
+    Received: "新的模型配置端到端测试服务"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" getByTestId('current-service-name') with timeout 5000ms
+      - waiting for getByTestId('current-service-name')
+        14 × locator resolved to <strong data-testid="current-service-name">新的模型配置端到端测试服务</strong>
+           - unexpected value "新的模型配置端到端测试服务"
+
+
+       at helpers.ts:165
+
+      163 |   await page.getByTestId('verify-model').click()
+      164 |   await expect(page.getByText('验证成功，已经开始使用', { exact: false }).last()).toBeVisible({ timeout: 15_000 })
+    > 165 |   await expect(page.getByTestId('current-service-name')).toHaveText(targetName)
+          |                                                          ^
+      166 | }
+      167 |
+        at configureTestModel (E:\Desktop\软件工程\murasame\tests\e2e\helpers.ts:165:58)
+        at E:\Desktop\软件工程\murasame\tests\e2e\task-directory.spec.ts:64:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\task-directory--FR-18-模型建议目录保持待确认，实际选择后才进入敏感操作审批\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\task-directory--FR-18-模型建议目录保持待确认，实际选择后才进入敏感操作审批\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\task-directory--FR-18-模型建议目录保持待确认，实际选择后才进入敏感操作审批\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\task-directory--FR-18-模型建议目录保持待确认，实际选择后才进入敏感操作审批\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\task-directory--FR-18-模型建议目录保持待确认，实际选择后才进入敏感操作审批\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 ─────────────────────
+  17 passed (4.8m)

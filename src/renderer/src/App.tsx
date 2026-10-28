@@ -69,6 +69,7 @@ export function App(): React.JSX.Element {
       <Sidebar />
       <div className="app-main">
         <TopBar />
+        <ToastHost />
         <main className="content-scroll">
           <Routes>
             <Route path="/" element={<DashboardPage />} />
@@ -86,7 +87,6 @@ export function App(): React.JSX.Element {
           </Routes>
         </main>
       </div>
-      <ToastHost />
     </div>
   )
 }

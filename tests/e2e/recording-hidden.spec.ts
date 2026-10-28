@@ -73,7 +73,7 @@ test('[FR-27] native tray and pet hiding end recording tracks without submitting
     await main.getByTestId('chat-input').fill('隐藏前的草稿')
     await installSyntheticMicrophone(main)
     await main.getByRole('button', { name: '语音', exact: true }).click()
-    await expect(main.getByRole('button', { name: '结束并识别' })).toBeVisible()
+    await expect(main.getByRole('button', { name: '结束并识别', exact: true })).toBeVisible()
     await main.getByTestId('hide-to-tray').click()
     await expect.poll(() => main!.evaluate(() => ({
       events: (window as MediaWindow).__recordingFixture.hiddenEvents,
@@ -121,7 +121,7 @@ test('[FR-27] a transcription returning through IPC after native hide cannot cha
     await page.getByTestId('chat-input').fill('不能被迟到录音修改')
     await installSyntheticMicrophone(page)
     await page.getByRole('button', { name: '语音', exact: true }).click()
-    await page.getByRole('button', { name: '结束并识别' }).click()
+    await page.getByRole('button', { name: '结束并识别', exact: true }).click()
     await expect.poll(() => app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.transcriptions)).toBe(1)
     await page.getByTestId('hide-to-tray').click()
     await expect.poll(() => page!.evaluate(() => (window as MediaWindow).__recordingFixture.hiddenEvents)).toBeGreaterThan(0)

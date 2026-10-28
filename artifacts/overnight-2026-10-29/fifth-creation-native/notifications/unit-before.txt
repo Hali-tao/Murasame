@@ -1,0 +1,111 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/toast-lifecycle.test.ts (6 tests | 5 failed) 51ms
+   ❯ notification lifecycle (6)
+     × combines the create, verify and activate flow into one complete model result 31ms
+     × keeps an activation failure visible after transient successes expire 9ms
+     × limits routine results while retaining every distinct error and warning until closed 2ms
+     × merges repeated identical notices and gives the latest occurrence a full reading interval 2ms
+     × uses the selected model note rather than a different saved model note 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/toast-lifecycle.test.ts > notification lifecycle > combines the create, verify and activate flow into one complete model result
+AssertionError: expected [ { …(3) }, { …(3) }, { …(3) } ] to have a length of 1 but got 3
+
+- Expected
++ Received
+
+- 1
++ 3
+
+ ❯ tests/unit/toast-lifecycle.test.ts:40:20
+     38|     await useAppStore.getState().setDefaultModel(model.id)
+     39|     const toasts = useAppStore.getState().toasts
+     40|     expect(toasts).toHaveLength(1)
+       |                    ^
+     41|     expect(toasts[0].message).toContain('独立通知测试服务')
+     42|     expect(toasts[0].message).toContain('已验证')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/toast-lifecycle.test.ts > notification lifecycle > keeps an activation failure visible after transient successes expire
+AssertionError: expected [] to match object [ { tone: 'red', …(1) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "message": "独立测试：保存当前服务失败",
+-     "tone": "red",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/toast-lifecycle.test.ts:52:43
+     50|     expect(await useAppStore.getState().setDefaultModel(model.id)).toB…
+     51|     vi.advanceTimersByTime(60_000)
+     52|     expect(useAppStore.getState().toasts).toMatchObject([{ tone: 'red'…
+       |                                           ^
+     53|   })
+     54|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/toast-lifecycle.test.ts > notification lifecycle > limits routine results while retaining every distinct error and warning until closed
+AssertionError: expected 10 to be less than or equal to 2
+ ❯ tests/unit/toast-lifecycle.test.ts:60:90
+     58|     for (let index = 0; index < 5; index += 1) notify(`保存失败 ${index}`,…
+     59|     for (let index = 0; index < 10; index += 1) notify(`已保存 ${index}`)
+     60|     expect(useAppStore.getState().toasts.filter(toast => toast.tone ==…
+       |                                                                                          ^
+     61|     vi.advanceTimersByTime(60_000)
+     62|     expect(useAppStore.getState().toasts.map(toast => toast.message)).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/toast-lifecycle.test.ts > notification lifecycle > merges repeated identical notices and gives the latest occurrence a full reading interval
+AssertionError: expected [ { …(3) }, { …(3) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/unit/toast-lifecycle.test.ts:72:43
+     70|     vi.advanceTimersByTime(3000)
+     71|     useAppStore.getState().notify('记忆已添加')
+     72|     expect(useAppStore.getState().toasts).toHaveLength(1)
+       |                                           ^
+     73|     vi.advanceTimersByTime(2500)
+     74|     expect(useAppStore.getState().toasts).toHaveLength(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/toast-lifecycle.test.ts > notification lifecycle > uses the selected model note rather than a different saved model note
+AssertionError: expected '已设为当前服务。其他服务的旧探测提示' to contain '当前服务的探测提示'
+
+Expected: "当前服务的探测提示"
+Received: "已设为当前服务。其他服务的旧探测提示"
+
+ ❯ tests/unit/toast-lifecycle.test.ts:95:54
+     93|     vi.mocked(window.murasame.core.setDefaultModel).mockResolvedValue(…
+     94|     await useAppStore.getState().setDefaultModel(model.id)
+     95|     expect(useAppStore.getState().toasts[0].message).toContain('当前服务的探…
+       |                                                      ^
+     96|     expect(useAppStore.getState().toasts[0].message).not.toContain('其他…
+     97|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  04:51:15
+   Duration  29.57s (environment 98%, transform 1%, import 1%)

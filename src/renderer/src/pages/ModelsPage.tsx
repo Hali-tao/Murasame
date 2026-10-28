@@ -1,5 +1,5 @@
 import { AlertCircle, CheckCircle2, Eye, EyeOff, PlugZap, Plus, ShieldCheck, Trash2 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { ModelInput, ModelProfile } from '@shared/types'
 import { matchPreset, MODEL_PRESETS, presetById } from '@shared/model-presets'
@@ -81,12 +81,19 @@ export function ModelsPage(): React.JSX.Element {
   const selected = data.models.find((model) => model.id === selectedId) ?? data.models.find((model) => model.default) ?? data.models[0]
   const [showKey, setShowKey] = useState(false)
   const [localFailure, setLocalFailure] = useState('')
-  const [draft, setDraft] = useState<ModelInput>(() => selected ? toDraft(selected) : blankDraft())
+  // An untouched form follows late results, including after leaving and returning.
+  // Only user edits need a local override of the saved profile.
+  const [draftOverride, setDraft] = useState<ModelInput | null>(null)
+  const draft = draftOverride ?? (selected ? toDraft(selected) : blankDraft())
+  const [formAction, setFormAction] = useState('')
+  const actionInFlight = useRef(false)
   const defaultModel = data.models.find((model) => model.default)
   const using = Boolean(defaultModel && defaultModel.status === '在线')
   const activePreset = matchPreset(draft.endpoint, draft.provider)
   const preset = presetById(activePreset)
   const verifying = Boolean(busy['model:verify'])
+  const modelBusy = Object.entries(busy).some(([key, value]) => key.startsWith('model:') && value)
+  const formBusy = Boolean(formAction) || modelBusy
 
   useEffect(() => {
     if (!selectedId && data.models[0]) selectModel(data.models[0].id)
@@ -100,14 +107,15 @@ export function ModelsPage(): React.JSX.Element {
 
   const updateDraft = (patch: Partial<ModelInput>): void => {
     setLocalFailure('')
-    setDraft((current) => ({ ...current, ...patch }))
+    setDraft((current) => ({ ...(current ?? draft), ...patch }))
   }
 
   const applyPreset = (presetId: string): void => {
     const next = presetById(presetId)
     if (!next) return
     setLocalFailure('')
-    setDraft((current) => {
+    setDraft((override) => {
+      const current = override ?? draft
       const namedLikePreset = MODEL_PRESETS.some((item) => item.label === current.name.trim())
       const genericName = !current.name.trim() || current.name.trim() === '新的模型配置' || namedLikePreset
       const belongsToNext = next.models.some((model) => model.id === current.model.trim())
@@ -128,7 +136,7 @@ export function ModelsPage(): React.JSX.Element {
 
   const chooseModel = (model: ModelProfile): void => {
     selectModel(model.id)
-    setDraft(toDraft(model))
+    setDraft(null)
     setLocalFailure('')
     setShowKey(false)
   }
@@ -137,8 +145,7 @@ export function ModelsPage(): React.JSX.Element {
     if (!selected) return
     const removed = await deleteModel(selected.id)
     if (!removed) return
-    const next = useAppStore.getState().data?.models[0]
-    setDraft(next ? toDraft(next) : blankDraft())
+    setDraft(null)
     setLocalFailure('')
     setShowKey(false)
   }
@@ -146,7 +153,7 @@ export function ModelsPage(): React.JSX.Element {
   const addModel = async (): Promise<void> => {
     const model = await createModel()
     if (!model) return
-    setDraft(toDraft(model))
+    setDraft(null)
     setLocalFailure('')
     setShowKey(false)
   }
@@ -182,7 +189,7 @@ export function ModelsPage(): React.JSX.Element {
       setLocalFailure(toast?.message || '验证失败，请检查密钥、服务地址和模型名称')
       return
     }
-    setDraft(toDraft(tested))
+    setDraft(null)
     setShowKey(false)
     if (tested.status !== '在线') {
       setLocalFailure(explain(tested))
@@ -211,8 +218,25 @@ export function ModelsPage(): React.JSX.Element {
       setLocalFailure(toast?.message || '验证失败')
       return
     }
-    if (tested.id === selected?.id) setDraft(toDraft(tested))
+    if (tested.id === selected?.id && !dirty) setDraft(null)
     if (tested.status !== '在线') setLocalFailure(explain(tested))
+  }
+
+  const runFormAction = async (label: string, action: () => Promise<void>): Promise<void> => {
+    if (actionInFlight.current || modelBusy) return
+    actionInFlight.current = true
+    setFormAction(label)
+    try {
+      await action()
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error)
+      const message = `操作没有完成：${detail}`
+      setLocalFailure(message)
+      notify(message, 'red')
+    } finally {
+      actionInFlight.current = false
+      setFormAction('')
+    }
   }
 
   const chatDetail = selected?.capabilities.find((item) => item.id === 'text.chat')?.detail ?? ''
@@ -224,7 +248,7 @@ export function ModelsPage(): React.JSX.Element {
   const verifiedNotCurrent = Boolean(selected && selected.status === '在线' && !selected.default && !dirty && !shownFailure)
 
   return (
-    <div className="page models-page">
+    <fieldset className="page models-page" disabled={formBusy} aria-busy={formBusy} aria-label="模型配置" style={{ border: 0, margin: 0, minWidth: 0 }}>
       <div className={`current-service-banner${using ? ' ready' : ' pending'}`}>
         <div className="current-service-icon">{using ? <CheckCircle2 size={18} /> : <PlugZap size={18} />}</div>
         <div>
@@ -237,7 +261,7 @@ export function ModelsPage(): React.JSX.Element {
           </p>
         </div>
         <StatusPill status={using ? 'in-use' : 'not-started'} />
-        <Button size="sm" disabled={!defaultModel || verifying} onClick={() => void recheckCurrent()}>
+        <Button size="sm" disabled={!defaultModel || verifying} onClick={() => void runFormAction('正在重新测试当前服务…', recheckCurrent)}>
           再测一次
         </Button>
       </div>
@@ -247,7 +271,7 @@ export function ModelsPage(): React.JSX.Element {
           <CardHead
             title="已保存的配置"
             subtitle="只有「正在使用」的那条会接到对话"
-            aside={<Button size="sm" onClick={() => void addModel()} disabled={Boolean(busy['model:create'])} icon={<Plus size={15} />} aria-label="添加模型配置" data-testid="add-model" />}
+            aside={<Button size="sm" onClick={() => void runFormAction('正在添加配置…', addModel)} disabled={Boolean(busy['model:create'])} icon={<Plus size={15} />} aria-label="添加模型配置" data-testid="add-model" />}
           />
           <div className="model-list">
             {data.models.map((model) => (
@@ -291,11 +315,16 @@ export function ModelsPage(): React.JSX.Element {
             </div>
           </div>
 
-          <section className={`use-result${verifying ? ' wait' : shownFailure ? ' bad' : readyHere ? ' ok' : verifiedNotCurrent ? ' wait' : dirty ? ' wait' : ' guide'}`}>
+          <section className={`use-result${formBusy ? ' wait' : shownFailure ? ' bad' : readyHere ? ' ok' : verifiedNotCurrent ? ' wait' : dirty ? ' wait' : ' guide'}`}>
             {verifying ? (
               <>
                 <strong><Spinner size={14} /> 正在验证 {draft.model || '模型'}…</strong>
                 <p>会真实请求 {draft.endpoint || '服务地址'}。通了就自动设为当前服务，不通会把原因留在这里。</p>
+              </>
+            ) : formBusy ? (
+              <>
+                <strong><Spinner size={14} /> {formAction || '正在更新模型配置…'}</strong>
+                <p>完成后即可继续编辑。</p>
               </>
             ) : shownFailure ? (
               <>
@@ -410,7 +439,7 @@ export function ModelsPage(): React.JSX.Element {
               <Button
                 variant="primary"
                 className="model-use-button"
-                onClick={() => void verifyAndUse()}
+                onClick={() => void runFormAction('正在验证并启用配置…', verifyAndUse)}
                 disabled={verifying || Boolean(busy['model:default']) || Boolean(busy['model:create'])}
                 icon={verifying ? <Spinner size={14} /> : <PlugZap size={15} />}
                 data-testid="verify-model"
@@ -418,7 +447,7 @@ export function ModelsPage(): React.JSX.Element {
                 {verifying ? '正在验证…' : '验证并开始使用'}
               </Button>
               <Button
-                onClick={() => void activateSaved()}
+                onClick={() => void runFormAction('正在切换当前服务…', activateSaved)}
                 disabled={!selected || selected.status !== '在线' || dirty || Boolean(busy['model:default']) || verifying}
                 data-testid="set-default-model"
               >
@@ -426,7 +455,7 @@ export function ModelsPage(): React.JSX.Element {
               </Button>
               <Button
                 variant="danger"
-                onClick={() => void removeModel()}
+                onClick={() => void runFormAction('正在删除配置…', removeModel)}
                 disabled={!selected || Boolean(busy['model:delete'])}
                 icon={<Trash2 size={14} />}
                 data-testid="delete-model"
@@ -446,6 +475,6 @@ export function ModelsPage(): React.JSX.Element {
           </section>
         </Card>
       </div>
-    </div>
+    </fieldset>
   )
 }

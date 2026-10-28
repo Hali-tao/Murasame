@@ -1,4 +1,8 @@
 import { randomUUID } from 'node:crypto'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { isAbsolute } from 'node:path'
+import { CREATION_LIMITS, creationDraftSchema, creationReviewSchema, creationRequest, readCreation, runCreation, verifyCreationEvidence, type CreationAgents, type CreationEvidence } from '../../isolation/creation'
+import type { CreationKind, CreationProgress } from '../../../shared/isolated-creation'
 import { containerPlan, containerRunningAsync, dockerUnavailableMessage, hostPathAllowed, runInContainerAsync, startContainerAsync, stopContainerAsync, xdotoolCommand, type DockerRunner } from '../../isolation/docker-runtime'
 import { understandVideo, ACTIVITY_LIMITS, activityLimitReason, verifyAfterAction, type ActionExpectation } from '../../isolation/input-injector'
 import { decodeFrame } from '../../isolation/frame-evidence'
@@ -27,7 +31,7 @@ export interface ActivityObservation {
 }
 export interface ActivityResult {
   activityId: string
-  kind: 'manual' | 'browse' | 'video'
+  kind: 'manual' | 'browse' | 'video' | CreationKind
   status: 'completed' | 'partial' | 'failed' | 'cancelled' | 'limited'
   goal: string
   sources: string[]
@@ -49,13 +53,19 @@ export interface AutonomyState {
   taskStatus: string
   hostExecution: false
   result?: ActivityResult
+  creation?: CreationProgress
+  kind?: ActivityResult['kind']
+  allowNetwork?: boolean
+  canStop?: boolean
+  busy?: boolean
 }
-export type ActivityBoundary = 'start' | 'capture' | 'send' | 'action'
+export type ActivityBoundary = 'start' | 'capture' | 'send' | 'action' | 'generate'
 export interface AutonomyDependencies {
   guard?: (boundary: ActivityBoundary, signal: AbortSignal) => boolean | Promise<boolean>
   onComplete?: (result: ActivityResult) => void | Promise<void>
   observe?: (containerId: string, options: { signal: AbortSignal; play: boolean; recordAudioSeconds?: number; expectedUrl?: string; contextId?: string }) => Promise<BrowserObservation>
   transcribeMediaAudio?: (samples: Float32Array, signal: AbortSignal) => Promise<string>
+  creationAllowed?: () => boolean
 }
 interface ActivityRun {
   id: string
@@ -76,6 +86,7 @@ interface ActivityRun {
   observations: ActivityObservation[]
   limitations: string[]
   deadline?: NodeJS.Timeout
+  created?: { evidence: CreationEvidence; id: string; attempt: number; kind: CreationKind }
 }
 const pause = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))
 class CancelledActivity extends Error {}
@@ -99,7 +110,7 @@ export class AutonomyService {
   private state: AutonomyState = { running: false, phase: 'idle', activityId: '', goal: '', reason: '尚未开始', viewUrl: '', notes: [], taskStatus: '独立于任务', hostExecution: false }
 
   configure(deps: AutonomyDependencies): void { this.deps = { ...this.deps, ...deps } }
-  status(): AutonomyState { return structuredClone(this.state) }
+  status(): AutonomyState { return { ...structuredClone(this.state), canStop: Boolean(this.current && (this.current.containerId || this.state.phase === 'preparing' || this.state.phase === 'stopping')), busy: Boolean(this.current?.busy) } }
 
   async health(): Promise<AutonomyState> {
     const run = this.current
@@ -109,7 +120,7 @@ export class AutonomyService {
     return this.status()
   }
 
-  start(input: { dockerAvailable: boolean; approved: boolean; needsPermission: boolean; share: string | null; allowNetwork?: boolean }): Promise<Result<AutonomyState>> {
+  start(input: { dockerAvailable: boolean; approved: boolean; needsPermission: boolean; share: string | null; allowNetwork?: boolean; kind?: ActivityResult['kind'] }): Promise<Result<AutonomyState>> {
     if (this.current && (this.state.phase === 'preparing' || this.state.phase === 'running' || this.state.phase === 'stopping' || this.current.containerId)) return Promise.resolve({ ok: false, error: '已有活动正在启动、运行或清理，请先结束它。' })
     if (!input.approved || !input.dockerAvailable) {
       const error = !input.approved ? '还没有确认活动范围，容器没有启动。' : dockerUnavailableMessage()
@@ -118,7 +129,8 @@ export class AutonomyService {
     }
     const run: ActivityRun = { id: randomUUID(), abort: new AbortController(), containerId: null, startedAt: Date.now(), steps: 0, allowNetwork: input.allowNetwork !== false, lastImage: '', busy: false, finished: false, kind: 'manual', goal: '', sources: [], observations: [], limitations: [] }
     this.current = run
-    this.state = { running: false, phase: 'preparing', activityId: run.id, goal: '', reason: '正在准备隔离桌面', viewUrl: '', notes: [], taskStatus: '独立于任务', hostExecution: false }
+    run.kind = input.kind ?? 'manual'
+    this.state = { running: false, phase: 'preparing', activityId: run.id, goal: '', kind: run.kind, allowNetwork: run.allowNetwork, reason: '正在准备隔离桌面', viewUrl: '', notes: [], taskStatus: '独立于任务', hostExecution: false }
     run.starting = this.begin(run, input.share)
     return run.starting
   }
@@ -134,7 +146,7 @@ export class AutonomyService {
       }
       run.containerId = started.id
       await this.check(run, 'start', false)
-      this.state = { ...this.state, running: true, phase: 'running', reason: `活动进行中。上限 ${ACTIVITY_LIMITS.steps} 次动作/观察请求、${ACTIVITY_LIMITS.minutes} 分钟。`, viewUrl: vncView(true, started.port).url }
+      this.state = { ...this.state, running: true, phase: 'running', reason: `活动进行中。上限 ${ACTIVITY_LIMITS.steps} 次动作/观察请求、${ACTIVITY_LIMITS.minutes} 分钟。`, viewUrl: run.allowNetwork ? vncView(true, started.port).url : '' }
       run.deadline = setTimeout(() => { void this.finish(run, 'limited', `已到 ${ACTIVITY_LIMITS.minutes} 分钟上限，活动停止，没有记成完成。`) }, Math.max(1, ACTIVITY_LIMITS.minutes * 60000 - (Date.now() - run.startedAt)))
       run.deadline.unref?.()
       return { ok: true, data: this.status() }
@@ -144,7 +156,24 @@ export class AutonomyService {
     }
   }
 
-  async openPage(url: string): Promise<Result<AutonomyState>> { return this.operate(async run => { await this.navigate(run, url); return { ok: true, data: this.status() } }) }
+  async openPage(url: string): Promise<Result<AutonomyState>> { return this.operate(async run => {
+    if (run.created) return { ok: false, error: '请先导出并结束当前创作，再开始网页活动' }
+    await this.navigate(run, url); return { ok: true, data: this.status() }
+  }) }
+
+  async preview(): Promise<Result<{ image: string }>> {
+    const run = this.current
+    if (!run || !this.live(run) || !run.containerId) return { ok: false, error: '没有运行中的隔离桌面' }
+    try {
+      await this.check(run, 'capture', false)
+      const path = `/tmp/murasame-preview-${run.id}.png`
+      await runInContainerAsync(run.containerId, ['scrot', '-o', path], this.runDocker, { desktop: true, signal: run.abort.signal, timeoutMs: 8000 })
+      const image = (await runInContainerAsync(run.containerId, ['base64', '-w', '0', path], this.runDocker, { signal: run.abort.signal, timeoutMs: 8000 })).trim()
+      await this.check(run, 'capture', false)
+      if (!decodeFrame(image)) throw new Error('隔离桌面画面无法读取')
+      return { ok: true, data: { image } }
+    } catch (error) { return { ok: false, error: error instanceof Error ? error.message : '画面暂时不可用' } }
+  }
 
   async look(describe?: (image: string, signal?: AbortSignal) => Promise<string>): Promise<Result<AutonomyState>> {
     return this.operate(async run => {
@@ -167,6 +196,7 @@ export class AutonomyService {
 
   async browse(goal: string, decide: (image: string, goal: string, notes: readonly string[], signal?: AbortSignal) => Promise<DesktopStep>, maxSteps = 6): Promise<Result<AutonomyState>> {
     return this.operate(async run => {
+      if (run.created) return { ok: false, error: '请先导出并结束当前创作，再开始浏览' }
       run.kind = 'browse'; run.goal = goal; this.state = { ...this.state, goal }
       let before = await this.capture(run)
       for (let index = 0; index < Math.max(1, Math.min(maxSteps, ACTIVITY_LIMITS.steps)); index++) {
@@ -201,6 +231,7 @@ export class AutonomyService {
 
   async watchVideo(url: string, describe: (image: string, signal?: AbortSignal) => Promise<string>, frames = 6, intervalMs = 5000): Promise<Result<AutonomyState>> {
     return this.operate(async run => {
+      if (run.created) return { ok: false, error: '请先导出并结束当前创作，再开始视频活动' }
       run.kind = 'video'; run.goal = `观看 ${url}`; this.state = { ...this.state, goal: run.goal }
       await this.navigate(run, url)
       await this.wait(1500); this.assertCurrent(run)
@@ -276,6 +307,103 @@ export class AutonomyService {
     })
   }
 
+  async produce(kind: CreationKind, goal: string, agents: CreationAgents): Promise<Result<AutonomyState>> {
+    if (!['office', 'code'].includes(kind) || !goal.trim() || goal.length > 2000) return { ok: false, error: '请填写不超过2000字的创作目标' }
+    return this.operate(async run => {
+      if (run.created) return { ok: false, error: '本次已有核验产物，请先导出并结束活动，再开始新的创作' }
+      run.kind = kind; run.goal = goal.trim(); this.state = { ...this.state, goal: run.goal, kind }
+      const controller = new AbortController()
+      const cancel = (): void => controller.abort(run.abort.signal.reason)
+      run.abort.signal.addEventListener('abort', cancel, { once: true })
+      const timer = setTimeout(() => controller.abort(new ActivityLimit('创作已到180秒上限')), CREATION_LIMITS.milliseconds)
+      let calls = 0; let feedback = ''
+      const control = { signal: controller.signal, beforeSend: (): void => {
+        this.assertCurrent(run); controller.signal.throwIfAborted()
+        if (this.deps.creationAllowed?.() === false) controller.abort(new CancelledActivity('创作许可已撤回'))
+        else if (calls >= CREATION_LIMITS.modelCalls) controller.abort(new ActivityLimit('已到6次实际模型请求上限'))
+        controller.signal.throwIfAborted()
+        calls++
+      } }
+      const phase = (value: CreationProgress['phase'], message: string): void => {
+        this.assertCurrent(run); controller.signal.throwIfAborted()
+        this.state = { ...this.state, creation: { phase: value, message }, reason: message }
+      }
+      this.note(run, `创作与独立审阅固定使用 ${agents.modelName}，最多一次修订；产物先留在隔离区。`)
+      try {
+        for (let attempt = 0; attempt < CREATION_LIMITS.attempts; attempt++) {
+          await this.check(run, 'generate')
+          phase('drafting', attempt ? '根据核验结果修订候选' : '正在生成候选内容')
+          const draft = creationDraftSchema.parse(await creationRequest(() => agents.draft({ kind, goal: run.goal, ...(feedback ? { feedback } : {}) }, control), controller.signal))
+          this.assertCurrent(run); controller.signal.throwIfAborted()
+          await this.check(run, 'action')
+          phase('executing', kind === 'office' ? '正在用LibreOffice保存并回读文档' : '正在隔离区运行Python并核对输出')
+          let evidence: CreationEvidence
+          try {
+            evidence = await runCreation(run.containerId!, run.id, attempt, kind, draft, this.runDocker, controller.signal)
+            verifyCreationEvidence(kind, draft, evidence)
+          } catch (error) {
+            this.assertCurrent(run); controller.signal.throwIfAborted()
+            feedback = `确定性核验失败：${error instanceof Error ? error.message : '运行错误'}`.slice(0, 2400)
+            this.note(run, feedback)
+            if (attempt + 1 < CREATION_LIMITS.attempts) continue
+            throw new Error(feedback, { cause: error })
+          }
+          await this.check(run, 'generate')
+          phase('reviewing', '独立审阅正在核对目标、候选和实际执行证据')
+          const report = { name: evidence.name, bytes: evidence.bytes, sha256: evidence.sha256, text: evidence.text, stdout: evidence.stdout, stderr: evidence.stderr, exitCode: evidence.exitCode, timedOut: evidence.timedOut }
+          const review = creationReviewSchema.parse(await creationRequest(() => agents.review({ kind, goal: run.goal, draft, evidence: report }, control), controller.signal))
+          this.assertCurrent(run); controller.signal.throwIfAborted()
+          if (!review.accepted) {
+            feedback = `独立审阅未通过：${review.reason}`
+            this.note(run, feedback)
+            if (attempt + 1 < CREATION_LIMITS.attempts) continue
+            throw new Error('修订后仍未通过独立审阅，未记为完成')
+          }
+          await this.check(run, 'action')
+          const path = `/home/murasame/activities/${run.id}/${attempt}/${evidence.name}`
+          const editor = new URL('http://127.0.0.1:8080/')
+          editor.searchParams.set('folder', `/home/murasame/activities/${run.id}/${attempt}`)
+          editor.searchParams.set('payload', JSON.stringify([['openFile', `vscode-remote://127.0.0.1:8080${path}`]]))
+          const viewer = kind === 'office' ? ['libreoffice', '--norestore', path] : ['firefox-esr', '--new-tab', editor.toString()]
+          await runInContainerAsync(run.containerId!, viewer, this.runDocker, { desktop: true, detach: true, signal: controller.signal, timeoutMs: 8000 })
+          this.assertCurrent(run); controller.signal.throwIfAborted()
+          const id = randomUUID()
+          run.created = { evidence, id, attempt, kind }
+          this.state = { ...this.state, reason: '产物已核验并打开。需要保留时请先导出，结束活动会清理隔离区。', creation: { phase: 'ready', message: '真实文件与独立审阅均通过', artifact: { id, kind, title: draft.title, name: evidence.name, sha256: evidence.sha256, bytes: evidence.bytes, preview: evidence.text, stdout: evidence.stdout, review: review.reason, attempt } } }
+          this.observe(run, `产物 ${evidence.name}，SHA-256 ${evidence.sha256}\n${evidence.text}\n实际输出：${evidence.stdout}\n独立审阅：${review.reason}`, '隔离创作')
+          return { ok: true, data: this.status() }
+        }
+        throw new Error('创作没有得到通过核验的产物')
+      } catch (error) {
+        if (controller.signal.aborted && (controller.signal.reason instanceof ActivityLimit || controller.signal.reason instanceof CancelledActivity)) throw controller.signal.reason
+        throw error
+      } finally { clearTimeout(timer); run.abort.signal.removeEventListener('abort', cancel) }
+    })
+  }
+
+  async exportCreation(id: string, path: string): Promise<Result<{ path: string; bytes: number; sha256: string }>> {
+    const run = this.current
+    if (!run || !this.live(run) || !run.containerId || run.busy || run.created?.id !== id) return { ok: false, error: '产物不属于当前可导出的活动' }
+    if (!isAbsolute(path)) return { ok: false, error: '请选择明确的保存位置' }
+    const created = run.created
+    run.busy = true
+    try {
+      await this.check(run, 'action')
+      const current = await readCreation(run.containerId, run.id, created.attempt, created.kind, this.runDocker, run.abort.signal)
+      await this.check(run, 'action', false)
+      if (current.sha256 !== created.evidence.sha256 || current.base64 !== created.evidence.base64) throw new Error('隔离产物已改变，请重新创作和核验，未导出')
+      // A bounded, exclusive write after the native save dialog is the only host write.
+      writeFileSync(path, Buffer.from(current.base64, 'base64'), { flag: 'wx' })
+      if (readFileSync(path).toString('base64') !== current.base64) throw new Error('导出后的文件核验失败，目标可能已留下未完成内容，未记为成功')
+      run.sources.push(path)
+      this.note(run, `已按选择导出到 ${path}，SHA-256 ${current.sha256}`)
+      this.state = { ...this.state, reason: `已保存到 ${path}，文件内容核验一致。` }
+      return { ok: true, data: { path, bytes: current.bytes, sha256: current.sha256 } }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error && 'code' in error && error.code === 'EEXIST' ? '目标文件已存在，没有覆盖；请选择新文件名' : error instanceof Error ? error.message : '导出失败' }
+    } finally { run.busy = false }
+  }
+
   async stop(input: { containerGone: boolean }): Promise<Result<AutonomyState>> {
     const run = this.current
     if (!run || run.finished && !run.containerId) return { ok: true, data: this.status() }
@@ -283,7 +411,7 @@ export class AutonomyService {
     this.state = { ...this.state, running: false, phase: 'stopping', reason: '正在停止并确认容器退出', viewUrl: '' }
     // Preparation owns the pending container ID until it settles.
     await run.starting
-    const result = await this.finish(run, input.containerGone ? 'failed' : 'cancelled', input.containerGone ? '隔离环境已失效，依赖它的活动已停止' : '容器已退出，活动已结束。')
+    const result = await this.finish(run, input.containerGone ? 'failed' : run.created ? 'completed' : 'cancelled', input.containerGone ? '隔离环境已失效，依赖它的活动已停止' : run.created ? '创作产物已核验，隔离环境已清理。' : '容器已退出，活动已结束。')
     return !input.containerGone && !run.containerId ? { ok: true, data: this.status() } : result
   }
 
@@ -310,7 +438,7 @@ export class AutonomyService {
     if (!run || !this.state.running || !this.live(run) || !run.containerId) return { ok: false, error: '活动还没开始，没有操作宿主桌面。' }
     if (run.busy) return { ok: false, error: '这个活动已有观察或操作正在进行。' }
     run.busy = true
-    try { return await work(run) }
+    try { const result = await work(run); return result.ok ? { ok: true, data: { ...result.data, busy: false } } : result }
     catch (error) {
       if (!this.live(run)) return { ok: false, error: '活动已取消，旧结果已丢弃' }
       return this.finish(run, error instanceof ActivityLimit ? 'limited' : error instanceof CancelledActivity ? 'cancelled' : 'failed', error instanceof Error ? error.message : '隔离活动失败')
@@ -377,7 +505,7 @@ export class AutonomyService {
       if (removed) run.containerId = null
       const failed = !removed || status === 'failed'
       const result: ActivityResult = { activityId: run.id, kind: run.kind, status: removed ? status : 'failed', goal: run.goal, sources: [...new Set(run.sources)], observations: structuredClone(run.observations), summary: reason, limitations: [...run.limitations, ...(!removed ? ['未确认隔离容器退出，需要重试停止。'] : [])], startedAt: new Date(run.startedAt).toISOString(), finishedAt: new Date().toISOString(), cleanupSucceeded: removed }
-      if (this.current === run) this.state = { ...this.state, running: false, phase: failed ? 'failed' : 'stopped', reason: !removed ? `${reason} 但未确认容器退出，请重试停止。` : reason, viewUrl: '', result }
+      if (this.current === run) this.state = { ...this.state, running: false, phase: failed ? 'failed' : 'stopped', reason: !removed ? `${reason} 但未确认容器退出，请重试停止。` : reason, viewUrl: '', result, ...(this.state.creation && !run.created ? { creation: { phase: 'failed', message: reason } as CreationProgress } : {}) }
       const terminalState = this.status()
       const emit = !run.finished
       run.finished = true

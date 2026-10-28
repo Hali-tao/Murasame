@@ -1,0 +1,30 @@
+{
+  "baseline": "c024fe5",
+  "allLive2dAssetsUnchanged": true,
+  "hashes": [
+    {
+      "path": "src/renderer/public/live2d/naiwa/奶蛙.moc3",
+      "sha256": "7F999CCBC7ABDDC253F682A501AD72CC86763692B73A46C12DC545880DD7BDF7"
+    },
+    {
+      "path": "src/renderer/public/live2d/naiwa/奶蛙.2048/texture_00.png",
+      "sha256": "CC835607E5DA874801A1266A8560A05E24627864E4C42BB8D5647A6E10E7BC3B"
+    },
+    {
+      "path": "src/renderer/public/live2d/naiwa/奶蛙.physics3.json",
+      "sha256": "37CDB8A450999DAC9E407F79B105FA1C1EAD8FCCB32C43B9F8F74EC7450DFB97"
+    },
+    {
+      "path": "src/renderer/public/live2d/naiwa/奶蛙.model3.json",
+      "sha256": "3D7DEDC377C0AA67E5AF4F28D75FC895749FE045FE4EFBBC21A34B1A845592A7"
+    },
+    {
+      "path": "src/renderer/src/components/Live2DPet.tsx",
+      "sha256": "017D0AD3CCE71AB14E0B8F74C3602E1A7BBFF8376AB7363BEED99A8CC77A2A13"
+    },
+    {
+      "path": "scripts/fifth-native-motion.mjs",
+      "sha256": "9C24B62ED0045BC7B78A66E0447F842FD23CBD7CA3F024A872EAFCB04EDC3492"
+    }
+  ]
+}

@@ -21,6 +21,8 @@ export interface ToastItem {
   id: string
   message: string
   tone: Tone
+  group?: string
+  count: number
 }
 
 interface AppStore {
@@ -35,7 +37,7 @@ interface AppStore {
   selectedTaskId: string | null
   selectedModelId: string | null
   init(): Promise<void>
-  notify(message: string, tone?: Tone): void
+  notify(message: string, tone?: Tone, options?: { group?: string }): void
   dismissToast(id: string): void
   selectConversation(id: string | null): void
   selectTask(id: string | null): void
@@ -65,6 +67,13 @@ interface AppStore {
 let initialized = false
 let toastCounter = 0
 const toastId = (): string => `toast-${Date.now()}-${toastCounter++}`
+const toastTimers = new Map<string, ReturnType<typeof setTimeout>>()
+const isPersistentToast = (toast: Pick<ToastItem, 'tone'>): boolean => toast.tone === 'red' || toast.tone === 'amber'
+
+function clearToastTimer(id: string): void {
+  clearTimeout(toastTimers.get(id))
+  toastTimers.delete(id)
+}
 
 function unwrap<T>(result: Result<T>, notify: (message: string, tone?: Tone) => void): T | null {
   if (result.ok) return result.data
@@ -211,15 +220,31 @@ export const useAppStore = create<AppStore>((set, get) => {
       }
     },
 
-    notify(message, tone = 'green') {
-      const id = toastId()
-      set((state) => ({ toasts: [...state.toasts, { id, message, tone }] }))
-      setTimeout(() => {
-        set((state) => ({ toasts: state.toasts.filter((toast) => toast.id !== id) }))
-      }, 3600)
+    notify(message, tone = 'green', options) {
+      const previous = get().toasts.find((toast) => options?.group && !isPersistentToast({ tone })
+        ? toast.group === options.group && !isPersistentToast(toast)
+        : toast.message === message && toast.tone === tone && !toast.group)
+      const id = previous?.id ?? toastId()
+      const toast: ToastItem = {
+        id, message, tone, group: options?.group,
+        count: previous?.message === message && previous.tone === tone ? previous.count + 1 : 1
+      }
+      const next = [...get().toasts.filter((item) => item.id !== id), toast]
+      // Only routine results are replaceable. Warnings/errors stay available until
+      // explicitly closed, even when many successful actions arrive afterwards.
+      const recent = new Set(next.filter((item) => !isPersistentToast(item)).slice(-2).map((item) => item.id))
+      const toasts = next.filter((item) => isPersistentToast(item) || recent.has(item.id))
+      for (const item of get().toasts) {
+        if (item.id === id || !toasts.some((current) => current.id === item.id)) clearToastTimer(item.id)
+      }
+      set({ toasts })
+      if (!isPersistentToast(toast)) {
+        toastTimers.set(id, setTimeout(() => get().dismissToast(id), 5000))
+      }
     },
 
     dismissToast(id) {
+      clearToastTimer(id)
       set((state) => ({ toasts: state.toasts.filter((toast) => toast.id !== id) }))
     },
 
@@ -439,7 +464,7 @@ export const useAppStore = create<AppStore>((set, get) => {
             }
           })
         }
-        if (model.status === '在线') get().notify(`连接验证成功 · ${model.latency}`)
+        if (model.status === '在线') get().notify(`${model.name} 连接验证成功 · ${model.latency}`, 'green', { group: `model:${id}` })
         else {
           const chat = model.capabilities.find((item) => item.id === 'text.chat')
           get().notify(chat?.detail ? `还不能使用：${chat.detail}` : '验证未通过，还不能开始使用', 'red')
@@ -460,7 +485,7 @@ export const useAppStore = create<AppStore>((set, get) => {
             selectedModelId: model.id
           })
         }
-        get().notify('已添加新的模型配置', 'blue')
+        get().notify('已添加新的模型配置', 'blue', { group: `model:${model.id}` })
         return model
       })
     },
@@ -479,7 +504,7 @@ export const useAppStore = create<AppStore>((set, get) => {
             }
           })
         }
-        get().notify('模型配置已保存')
+        get().notify('模型配置已保存', 'green', { group: `model:${id}` })
         return model
       })
     },
@@ -505,8 +530,11 @@ export const useAppStore = create<AppStore>((set, get) => {
         }
         const data = get().data
         if (data) set({ data: { ...data, models: result.data }, selectedModelId: id })
-        const note = result.data.find((model) => model.probeNote)?.probeNote
-        get().notify(note ? `已设为当前服务。${note}` : '已设为当前服务；新任务将使用该配置')
+        const model = result.data.find((item) => item.id === id)
+        const resultMessage = model?.status === '在线'
+          ? `${model.name} 已验证并设为当前服务 · ${model.latency}`
+          : '已设为当前服务；新任务将使用该配置'
+        get().notify(model?.probeNote ? `${resultMessage}。${model.probeNote}` : resultMessage, 'green', { group: `model:${id}` })
         return true
       })
     },
@@ -541,6 +569,7 @@ export const useAppStore = create<AppStore>((set, get) => {
 
 export function resetStoreForTests(): void {
   initialized = false
+  for (const id of toastTimers.keys()) clearToastTimer(id)
   useAppStore.setState({
     data: null,
     info: null,

@@ -1,0 +1,6 @@
+{"name":"separate-nonroot-code-identity","ok":true,"data":{"uid":"1001"}}
+{"name":"candidate-and-collector-files-are-read-only-to-code","ok":true,"data":{"actualOutput":"main.py:protected\nstdout.txt:protected\nstderr.txt:protected\n"}}
+{"name":"generated-script-cannot-connect-to-desktop-services","ok":true,"data":{"actualOutput":"network-disabled\n"}}
+{"name":"child-processes-disabled","ok":true,"data":{"exitCode":1}}
+{"name":"large-output-rejected","ok":true,"data":{"rejected":true}}
+{"name":"wall-time-bounded","ok":true,"data":{"elapsedMs":15348,"exitCode":-9}}

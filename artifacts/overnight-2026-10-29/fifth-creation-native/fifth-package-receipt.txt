@@ -1,0 +1,22 @@
+{
+  "codeFiles": 108,
+  "models": 18,
+  "isolationFiles": 6,
+  "installers": [
+    {
+      "path": "release/Murasame-Setup-0.9.0.exe",
+      "bytes": 292431074,
+      "sha256": "324a7b8735ad1e11aa0c4f3e72fcc3d8458ec353e7679a416867f6df51016c2e"
+    },
+    {
+      "path": "release/overnight-2026-10-29-verified/Murasame-Setup-0.9.0.exe",
+      "bytes": 292493216,
+      "sha256": "597bc6e41dbe73d4e5e2b6ff61c809c90761eea7af111eab31a21e6e3cc4f6aa"
+    },
+    {
+      "path": "release/overnight-2026-10-29-fifth-verified/Murasame-Setup-0.9.0.exe",
+      "bytes": 292504489,
+      "sha256": "606aad32bdbe8dc37db073506dedbf2e896406e15440c76ff61b2cba7e351b03"
+    }
+  ]
+}

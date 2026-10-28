@@ -1,0 +1,55 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (previews/overnight-2026-10-29/fifth-model-form/vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+stdout | previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts > reproduces loss of text entered before the create response arrives
+{"sequence":["click add","type while IPC pending","resolve create"],"before":"用户已经输入的名称","after":"新的模型配置"}
+
+stdout | previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts > reproduces insertion after a late default-value update moves the selected caret
+{"sequence":["select blank name","resolve create before text insertion","insert text at current selection"],"selectedBefore":[0,0],"selectedAfter":[6,6],"after":"新的模型配置端到端测试服务"}
+
+ ❯ previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts (2 tests | 2 failed) 277ms
+   × reproduces loss of text entered before the create response arrives 179ms
+   × reproduces insertion after a late default-value update moves the selected caret 95ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts > reproduces loss of text entered before the create response arrives
+AssertionError: expected '新的模型配置' to be '用户已经输入的名称' // Object.is equality
+
+Expected: "用户已经输入的名称"
+Received: "新的模型配置"
+
+ ❯ previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts:38:23
+     36|   await act(async () => { resolveCreation({ ok: true, data: created })…
+     37|   console.info(JSON.stringify({ sequence: ['click add', 'type while IP…
+     38|   expect(input.value).toBe('用户已经输入的名称')
+       |                       ^
+     39| })
+     40|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts > reproduces insertion after a late default-value update moves the selected caret
+AssertionError: expected '新的模型配置端到端测试服务' to be '端到端测试服务' // Object.is equality
+
+Expected: "端到端测试服务"
+Received: "新的模型配置端到端测试服务"
+
+ ❯ previews/overnight-2026-10-29/fifth-model-form/baseline-race.test.ts:50:23
+     48|   fireEvent.input(input)
+     49|   console.info(JSON.stringify({ sequence: ['select blank name', 'resol…
+     50|   expect(input.value).toBe('端到端测试服务')
+       |                       ^
+     51| })
+     52|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  06:02:03
+   Duration  32.69s (environment 69%, import 28%, transform 2%, tests 1%)

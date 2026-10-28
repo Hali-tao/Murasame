@@ -1,0 +1,317 @@
+{
+  "generatedAt": "2026-10-28T21:06:45.304Z",
+  "label": "baseline",
+  "baseline": "c024fe5",
+  "model3Sha256": "bd651c1d5aaa00ec6993fb6c96af953cfb4f2f8c4e8439fa4429a08b538fad0a",
+  "componentSha256": "017d0ad3cce71ab14e0b8f74c3602e1a7bbff8376ab7363beed99a8cc77a2a13",
+  "runtime": "Actual production Live2DPet, original Cubism moc3/textures/physics/motions. No mocked model. Original expression JSON is loaded through the registered model3 references.",
+  "checks": [
+    {
+      "name": "all 44 authored expression files are registered and parsed by Cubism",
+      "passed": false,
+      "expressions": [
+        {
+          "name": "love",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "兔兔贴纸",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "单边马尾",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "双手比耶",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "吐舌",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "吐魂",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "呆呆眼",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "哭",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "喵喵手~喵~动画",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "圆眼镜",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "墨镜",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "头箍",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "巴菲",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "开心兴奋",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "心跳",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "悲伤",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "情绪花花",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "感叹号",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "手机换色",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "挤",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "撤回",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "方眼镜",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "星星眼",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "晕晕",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "椭圆眼镜",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "橡皮",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "流汗",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "深色桌布",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "点菜按下",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "爱心眼",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "猫猫贴纸",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "生气",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "画笔",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "脸红",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "蛋包饭",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "蝴蝶结贴纸",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "调皮",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "闭眼口水",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "问号",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "阴暗",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "魔爪",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "魔爪换色",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "鲸鱼",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        },
+        {
+          "name": "鲸鱼放桌上",
+          "registered": false,
+          "loaded": false,
+          "nativeParameterCount": 247
+        }
+      ]
+    },
+    {
+      "name": "question mark reaches its authored parameter and exposes native drawables",
+      "passed": false,
+      "parameter": 0,
+      "newlyVisibleDrawables": []
+    },
+    {
+      "name": "tap preserves the displayed semantic question mark",
+      "passed": false,
+      "group": "idle",
+      "parameter": 0
+    },
+    {
+      "name": "switching to sadness fades away the previous question mark",
+      "passed": false,
+      "question": 0,
+      "sadness": 0,
+      "questionDrawables": []
+    },
+    {
+      "name": "switching back restores the question mark and releases sadness",
+      "passed": false,
+      "question": 0,
+      "sadness": 0
+    },
+    {
+      "name": "reloading the avatar restores neutral expression state",
+      "passed": true,
+      "question": 0,
+      "sadness": 0
+    },
+    {
+      "name": "native expression render has no runtime errors",
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "passed": false
+}

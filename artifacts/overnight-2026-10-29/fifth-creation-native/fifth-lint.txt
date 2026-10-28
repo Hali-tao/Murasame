@@ -1,0 +1,10 @@
+
+E:\Desktop\软件工程\murasame\src\main\core\services\autonomy-service.ts
+  324:13  error  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  328:27  error  '_base64' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+
+E:\Desktop\软件工程\murasame\src\main\core\services\model-service.ts
+  34:27  error  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+  40:27  error  There is no `cause` attached to the symptom error being thrown  preserve-caught-error
+
+✖ 4 problems (4 errors, 0 warnings)

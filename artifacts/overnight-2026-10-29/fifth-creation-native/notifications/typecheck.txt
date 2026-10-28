@@ -1,0 +1,5 @@
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+tests/unit/isolated-creation.test.ts(3,61): error TS2307: Cannot find module '../../src/main/isolation/creation' or its corresponding type declarations.

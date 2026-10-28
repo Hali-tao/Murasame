@@ -1,0 +1,158 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/model-form-lifecycle.test.ts (6 tests | 6 failed) 307ms
+   × does not offer editable fields until adding and initializing the new draft both finish 70ms
+   × unlocks the previous draft intact when adding a new configuration fails 24ms
+   × keeps the draft locked throughout verification and activation before exposing its final values 28ms
+   × releases the form and shows a transport failure without losing the draft 31ms
+   × prevents selecting or editing another model until deletion has initialized the remaining draft 20ms
+   × rechecks the saved current service without discarding an already edited draft 133ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > does not offer editable fields until adding and initializing the new draft both finish
+AssertionError: model-config-name must not accept input while its draft may be replaced: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:47:120
+     45|   await act(async () => { fireEvent.click(screen.getByTestId('add-mode…
+     46|   for (const id of ['model-config-name', 'model-endpoint', 'model-name…
+     47|     expect(screen.getByTestId(id).matches(':disabled'), `${id} must no…
+       |                                                                                                                        ^
+     48|   }
+     49|   await act(async () => { pending.resolve({ ok: true, data: created })…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > unlocks the previous draft intact when adding a new configuration fails
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:70:37
+     68|   fireEvent.change(name, { target: { value: '尚未保存的名称' } })
+     69|   await act(async () => { fireEvent.click(screen.getByTestId('add-mode…
+     70|   expect(name.matches(':disabled')).toBe(true)
+       |                                     ^
+     71|   expect(screen.getByTestId('model-item').matches(':disabled')).toBe(t…
+     72|   expect(screen.getByTestId('delete-model').matches(':disabled')).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > keeps the draft locked throughout verification and activation before exposing its final values
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:89:37
+     87|   fireEvent.change(name, { target: { value: '更新后的服务名称' } })
+     88|   await act(async () => { fireEvent.click(screen.getByTestId('verify-m…
+     89|   expect(name.matches(':disabled')).toBe(true)
+       |                                     ^
+     90|   expect(screen.getByTestId('model-item').matches(':disabled')).toBe(t…
+     91|   const verified = { ...existing, name: '更新后的服务名称' }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > releases the form and shows a transport failure without losing the draft
+AssertionError: expected '改过配置，还没生效再点一次「验证并开始使用」。变成绿色，才算开始用新的地址…' to contain '新增请求连接中断'
+
+Expected: "新增请求连接中断"
+Received: "改过配置，还没生效再点一次「验证并开始使用」。变成绿色，才算开始用新的地址或模型。"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:109:62
+    107|   expect(name.matches(':disabled')).toBe(false)
+    108|   expect(name.value).toBe('中断前的草稿名称')
+    109|   expect(document.querySelector('.use-result')?.textContent).toContain…
+       |                                                              ^
+    110| })
+    111|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > prevents selecting or editing another model until deletion has initialized the remaining draft
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:119:72
+    117|   await mount()
+    118|   await act(async () => { fireEvent.click(screen.getByTestId('delete-m…
+    119|   expect(screen.getByTestId('model-config-name').matches(':disabled'))…
+       |                                                                        ^
+    120|   expect(screen.getAllByTestId('model-item').every(button => button.ma…
+    121|   await act(async () => { pending.resolve({ ok: true, data: [other] })…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > rechecks the saved current service without discarding an already edited draft
+AssertionError: expected '原服务' to be '还没验证的新草稿名称' // Object.is equality
+
+Expected: "还没验证的新草稿名称"
+Received: "原服务"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:138:22
+    136|   const wasLocked = name.matches(':disabled')
+    137|   await act(async () => { pending.resolve({ ok: true, data: { ...exist…
+    138|   expect(name.value).toBe('还没验证的新草稿名称')
+       |                      ^
+    139|   expect(wasLocked).toBe(true)
+    140|   expect(name.matches(':disabled')).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: 独立测试：新增请求连接中断
+ ❯ tests/unit/model-form-lifecycle.test.ts:102:65
+    100| it('releases the form and shows a transport failure without losing the…
+    101|   useAppStore.setState({ data: { ...initialBootstrap(), models: [exist…
+    102|   vi.mocked(window.murasame.core.createModel).mockRejectedValue(new Er…
+       |                                                                 ^
+    103|   await mount()
+    104|   const name = screen.getByTestId('model-config-name') as HTMLInputEle…
+ ❯ node_modules/vitest/dist/chunks/run.BPv-BBRv.js:1632:35
+ ❯ node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:26
+ ❯ node_modules/vitest/dist/chunks/run.BPv-BBRv.js:3338:20
+ ❯ runWithCancel node_modules/vitest/dist/chunks/run.BPv-BBRv.js:3333:10
+ ❯ node_modules/vitest/dist/chunks/run.BPv-BBRv.js:3318:20
+ ❯ runWithTimeout node_modules/vitest/dist/chunks/run.BPv-BBRv.js:3276:10
+ ❯ node_modules/vitest/dist/chunks/run.BPv-BBRv.js:3904:64
+
+This error originated in "tests/unit/model-form-lifecycle.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "releases the form and shows a transport failure without losing the draft". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+     Errors  1 error
+   Start at  06:04:10
+   Duration  2.04s (environment 60%, import 20%, tests 16%, transform 3%)

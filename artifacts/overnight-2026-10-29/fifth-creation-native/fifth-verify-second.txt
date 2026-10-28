@@ -1,0 +1,258 @@
+
+> murasame-desktop@0.9.0 verify
+> npm run typecheck && npm run lint && npm test && npm run trace
+
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+
+> murasame-desktop@0.9.0 lint
+> eslint .
+
+
+> murasame-desktop@0.9.0 test
+> vitest run
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:59856) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77268) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77364) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54348) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12656) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49232) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19492) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/p4-p6.test.ts (71 tests | 10 failed) 602ms
+   ❯ [FR-28] 隔离活动 (22)
+     × [FR-28] 在隔离环境内活动并与用户交流内容 31ms
+     × [FR-28] 只在隔离容器里打开网页 3ms
+     × [FR-28] 截图和点击只发生在容器里，断网时打不开网页 49ms
+     × [FR-28] 自己逛按独立页面事实核验，含糊结果不重复副作用 73ms
+     × [FR-28] 模型多给内容时只解析第一步，不完整回复停止并清理容器 49ms
+     × [FR-28] 自己逛受请求和步数上限约束，到限清理且不记成完成 42ms
+     × [FR-30] 容器中途退出时，异步状态检查把活动记成失败并清理 4ms
+     × [FR-28] 看视频确认播放时间推进，像素相同只识别一次并记录字幕限制 113ms
+     × [FR-29] 容器拉起失败时如实说明且不改到宿主 4ms
+     × [FR-30] 隔离环境失效时停止依赖它的活动并提示原因 2ms
+ ❯ tests/unit/packaging-model-integrity.test.ts (13 tests | 1 failed) 19416ms
+   ❯ Windows package model integrity (13)
+     × packages the source bytes when a previous staged model has equal-length corruption 9512ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 在隔离环境内活动并与用户交流内容
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:246:24
+    244|     const service = new AutonomyService(() => 'c0ffee1234567890')
+    245|     const started = await service.start({ dockerAvailable: true, appro…
+    246|     expect(started.ok).toBe(true)
+       |                        ^
+    247|     const note = service.discuss(['frame-0', 'frame-30'], ['字幕：海边'])
+    248|     expect(note).toContain('字幕：海边')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 只在隔离容器里打开网页
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:281:118
+    279|     const calls: string[][] = []
+    280|     const service = new AutonomyService((_command, args) => { calls.pu…
+    281|     expect((await service.start({ dockerAvailable: true, approved: tru…
+       |                                                                                                                      ^
+    282|     expect((await service.openPage('https://example.com')).ok).toBe(tr…
+    283|     expect(calls.some(args => args.includes('firefox-esr') && args.inc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 截图和点击只发生在容器里，断网时打不开网页
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:296:63
+    294|     const online=new AutonomyService(run)
+    295|     await online.start({dockerAvailable:true,approved:true,needsPermis…
+    296|     expect((await online.look(async()=> '页面标题是 Example')).ok).toBe(tru…
+       |                                                               ^
+    297|     expect(calls.some(args=>args.includes('scrot'))).toBe(true)
+    298|     expect((await online.act({kind:'key',key:'ctrl+l'})).ok).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 自己逛按独立页面事实核验，含糊结果不重复副作用
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:311:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 模型多给内容时只解析第一步，不完整回复停止并清理容器
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:335:46
+    333|     expect(service.status().running).toBe(false)
+    334|     expect(service.status().phase).toBe('failed')
+    335|     expect(calls.some(args=>args[0]==='rm')).toBe(true)
+       |                                              ^
+    336|     expect(calls.some(args=>args.includes('xdotool'))).toBe(false)
+    337|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 自己逛受请求和步数上限约束，到限清理且不记成完成
+AssertionError: expected '活动还没开始，没有操作宿主桌面。' to contain '步上限'
+
+Expected: "步上限"
+Received: "活动还没开始，没有操作宿主桌面。"
+
+ ❯ tests/unit/p4-p6.test.ts:345:40
+    343|     const result=await service.browse('一直点',async()=>({kind:'click',x:…
+    344|     expect(result.ok).toBe(false)
+    345|     if(!result.ok)expect(result.error).toContain('步上限')
+       |                                        ^
+    346|     expect(service.status().running).toBe(false)
+    347|     expect(service.status().result?.status).toBe('limited')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-30] 容器中途退出时，异步状态检查把活动记成失败并清理
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:354:46
+    352|     let alive=true;const service=new AutonomyService((_command,args)=>…
+    353|     await service.start({dockerAvailable:true,approved:true,needsPermi…
+    354|     expect((await service.health()).running).toBe(true)
+       |                                              ^
+    355|     alive=false;const status=await service.health()
+    356|     expect(status.running).toBe(false);expect(status.reason).toContain…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-28] 看视频确认播放时间推进，像素相同只识别一次并记录字幕限制
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/p4-p6.test.ts:366:23
+    364|     const described:string[]=[]
+    365|     const result=await service.watchVideo('https://example.com/video',…
+    366|     expect(result.ok).toBe(true);expect(described).toEqual([a,b])
+       |                       ^
+    367|     expect(service.status().result?.observations.map(o=>o.mediaTime)).…
+    368|     expect(service.status().result?.limitations.some(s=>s.includes('字幕…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-29] 容器拉起失败时如实说明且不改到宿主
+AssertionError: expected '隔离桌面没有启动：隔离镜像需要升级，请先在自主活动中准备新版运行环境。' to contain 'docker daemon 未运行'
+
+Expected: "docker daemon 未运行"
+Received: "隔离桌面没有启动：隔离镜像需要升级，请先在自主活动中准备新版运行环境。"
+
+ ❯ tests/unit/p4-p6.test.ts:447:44
+    445|     const started = await service.start({ dockerAvailable: true, appro…
+    446|     expect(started.ok).toBe(false)
+    447|     if (!started.ok) expect(started.error).toContain('docker daemon 未运…
+       |                                            ^
+    448|     expect(service.status().hostExecution).toBe(false)
+    449|     expect(service.status().viewUrl).toBe('')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [FR-28] 隔离活动 > [FR-30] 隔离环境失效时停止依赖它的活动并提示原因
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/p4-p6.test.ts:456:24
+    454|     await service.start({ dockerAvailable: true, approved: true, needs…
+    455|     const stopped = await service.stop({ containerGone: true })
+    456|     expect(stopped.ok).toBe(false)
+       |                        ^
+    457|     expect(service.status().reason).toContain('已停止')
+    458|     expect(service.status().result?.status).toBe('failed')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > packages the source bytes when a previous staged model has equal-length corruption
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/packaging-model-integrity.test.ts:97:3
+     95|
+     96| describe('Windows package model integrity', () => {
+     97|   it('packages the source bytes when a previous staged model has equal…
+       |   ^
+     98|     const input = fixture()
+     99|     const model = 'bge-small-zh-v1.5/onnx/model_quantized.onnx'
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  2 failed | 51 passed (53)
+      Tests  11 failed | 649 passed (660)
+   Start at  05:18:00
+   Duration  21.03s (tests 46%, environment 24%, import 16%, transform 13%, worker 1%)
+
+    Isolate  53 workers spawned · ~1.87s startup each (spawn + environment, per file)
+             at least ~1.32s faster with isolate: false — reuses workers across files instead of one per file

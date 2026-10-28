@@ -318,7 +318,7 @@ export function createArgs(plan: ContainerPlan, port = 6901): string[] {
 
 /** One process session owns only containers carrying both labels. */
 export const OWNER_LABEL = 'io.murasame.owner=desktop'
-export const ISOLATION_IMAGE_SCHEMA = '2'
+export const ISOLATION_IMAGE_SCHEMA = '3'
 const IMAGE_SCHEMA_TEMPLATE = '{{index .Config.Labels "io.murasame.isolation.schema"}}'
 export const RUNTIME_SESSION = randomUUID()
 let ownerProfile = `unconfigured-${randomUUID()}`
@@ -327,7 +327,7 @@ export function configureContainerOwner(profile: string): void {
   if (!/^[A-Za-z0-9_-]{1,128}$/.test(profile)) throw new Error('隔离容器配置标识无效')
   ownerProfile = profile
 }
-export interface CommandOptions { signal?: AbortSignal; timeoutMs?: number; env?: NodeJS.ProcessEnv }
+export interface CommandOptions { signal?: AbortSignal; timeoutMs?: number; env?: NodeJS.ProcessEnv; input?: string }
 export type DockerRunner = (command: string, args: string[], options?: CommandOptions) => string | Promise<string>
 export interface ContainerExecOptions extends CommandOptions { desktop?: boolean; detach?: boolean }
 
@@ -335,13 +335,15 @@ export interface ContainerExecOptions extends CommandOptions { desktop?: boolean
 export function runCommandAsync(command: string, args: string[], options: CommandOptions = {}): Promise<string> {
   if (options.signal?.aborted) return Promise.reject(new Error('操作已取消'))
   return new Promise((resolve, reject) => {
-    execFile(command, args, {
+    const child = execFile(command, args, {
       encoding: 'utf8', windowsHide: true, timeout: options.timeoutMs ?? 60_000,
       maxBuffer: 24 * 1024 * 1024, signal: options.signal, env: options.env
     }, (error, stdout, stderr) => {
       if (error) reject(new Error(options.signal?.aborted ? '操作已取消' : `${command} 执行失败（${error.killed ? '超时或中止' : error.code ?? '未知状态'}）${(stderr || stdout) ? `: ${(stderr || stdout).slice(-2000)}` : ''}`))
       else resolve(stdout)
     })
+    child.stdin?.on('error', () => { /* Process exit is reported by the callback. */ })
+    child.stdin?.end(options.input)
   })
 }
 
@@ -352,7 +354,7 @@ export async function dockerAvailableAsync(run: DockerRunner = runCommandAsync, 
 
 export async function runInContainerAsync(id: string, command: readonly string[], run: DockerRunner = runCommandAsync, options: ContainerExecOptions = {}): Promise<string> {
   if (options.signal?.aborted) throw new Error('操作已取消')
-  const flags = [...(options.detach ? ['-d'] : []), ...(options.desktop ? ['-u', 'murasame'] : [])]
+  const flags = [...(options.input !== undefined ? ['-i'] : []), ...(options.detach ? ['-d'] : []), ...(options.desktop ? ['-u', 'murasame'] : [])]
   return run('docker', ['exec', ...flags, id, ...(options.desktop ? ['env', 'DISPLAY=:1'] : []), ...command], options)
 }
 
@@ -402,7 +404,7 @@ export async function startContainerAsync(plan: ContainerPlan, port = 6901, run:
     for (let attempt = 0; attempt < (options.readinessAttempts ?? 30); attempt++) {
       if (options.signal?.aborted) throw new Error('操作已取消')
       try {
-        await runInContainerAsync(id, ['sh', '-c', 'xdotool getdisplaygeometry >/dev/null && command -v scrot >/dev/null && python3 -c "import socket, urllib.request; urllib.request.urlopen(\'http://127.0.0.1:6901/vnc.html\', timeout=2).read(1); socket.create_connection((\'127.0.0.1\',9222),2).close()"'], run, { desktop: true, signal: options.signal, timeoutMs: 4000 })
+        await runInContainerAsync(id, ['sh', '-c', 'xdotool getdisplaygeometry >/dev/null && command -v scrot >/dev/null && command -v libreoffice >/dev/null && command -v code-server >/dev/null && python3 -c "import socket, urllib.request; urllib.request.urlopen(\'http://127.0.0.1:6901/vnc.html\', timeout=2).read(1); socket.create_connection((\'127.0.0.1\',9222),2).close()"'], run, { desktop: true, signal: options.signal, timeoutMs: 4000 })
         if (options.signal?.aborted) throw new Error('操作已取消')
         return { id, port, reason: '隔离桌面已启动并确认可以采集画面' }
       } catch {

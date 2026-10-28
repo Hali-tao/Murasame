@@ -1,0 +1,67 @@
+// @vitest-environment node
+
+import { createHash } from 'node:crypto'
+import { expect, it } from 'vitest'
+import { AutonomyService } from '../../src/main/core/services/autonomy-service'
+import type { CreationAgents } from '../../src/main/isolation/creation'
+import type { DockerRunner } from '../../src/main/isolation/docker-runtime'
+
+function fixture(override?: DockerRunner): AutonomyService {
+  const bytes = Buffer.from('print(5050)')
+  return new AutonomyService((command, args, options) => {
+    if (args[0] === 'image') return '3'
+    if (args[0] === 'run') return 'independent-ui-review-container'
+    if (args[0] === 'inspect') return 'true'
+    if (args[0] === 'rm' && override) return override(command, args, options)
+    if (args.includes('/opt/murasame/creation-runner.py')) return JSON.stringify({ name: 'main.py', bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'), base64: bytes.toString('base64'), text: 'print(5050)', stdout: '5050\n', stderr: '', exitCode: 0, timedOut: false })
+    return ''
+  }, async () => {})
+}
+
+const startInput = { dockerAvailable: true, approved: true, needsPermission: false, share: null, allowNetwork: false }
+
+it('returns an immediately usable artifact without a stale busy flag after producing', async () => {
+  const service = fixture()
+  let release!: () => void
+  let entered!: () => void
+  const draftPending = new Promise<void>(resolve => { release = resolve })
+  const draftEntered = new Promise<void>(resolve => { entered = resolve })
+  const agents: CreationAgents = {
+    modelName: '独立状态审查模型',
+    draft: async (_input, control) => {
+      control.beforeSend(); entered(); await draftPending
+      return { title: '求和脚本', content: 'print(5050)', expectedOutput: '5050' }
+    },
+    review: async (_input, control) => { control.beforeSend(); return { accepted: true, reason: '实际输出符合求和目标' } }
+  }
+  try {
+    const started = await service.start({ ...startInput, kind: 'code' })
+    expect(started.ok).toBe(true)
+    const pending = service.produce('code', '计算1到100的和', agents)
+    await draftEntered
+    expect(service.status().busy).toBe(true)
+    expect(service.status().canStop).toBe(true)
+    release()
+    const result = await pending
+    expect(result.ok).toBe(true)
+    if (!result.ok) throw new Error(result.error)
+    expect(result.data.busy).toBe(false)
+    expect(result.data.creation?.phase).toBe('ready')
+    expect(result.data.creation?.artifact?.stdout).toBe('5050\n')
+    expect(service.status().busy).toBe(false)
+  } finally { release(); await service.stop({ containerGone: false }) }
+})
+
+it('keeps cleanup retry available after a normal container-removal failure', async () => {
+  let failures = 1
+  const service = fixture(() => { if (failures-- > 0) throw new Error('独立测试：Docker暂时无法删除容器'); return '' })
+  try {
+    expect((await service.start(startInput)).ok).toBe(true)
+    expect(service.status().kind).toBe('manual')
+    expect((await service.stop({ containerGone: false })).ok).toBe(false)
+    expect(service.status()).toMatchObject({ running: false, canStop: true, busy: false })
+    expect(service.status().reason).toContain('请重试停止')
+    expect((await service.stop({ containerGone: false })).ok).toBe(true)
+    expect(service.status()).toMatchObject({ running: false, canStop: false, busy: false })
+  } finally { await service.stop({ containerGone: false }) }
+})

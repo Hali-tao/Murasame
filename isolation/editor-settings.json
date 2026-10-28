@@ -1,0 +1,11 @@
+{
+  "workbench.startupEditor": "none",
+  "workbench.colorTheme": "Default Light Modern",
+  "security.workspace.trust.enabled": false,
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+  "telemetry.telemetryLevel": "off",
+  "chat.disableAIFeatures": true,
+  "remote.autoForwardPorts": false,
+  "workbench.secondarySideBar.defaultVisibility": "hidden"
+}

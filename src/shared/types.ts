@@ -1,5 +1,21 @@
 import type { PetPresetId } from './pet-presets'
 import type { ToolCallRecord, Verdict } from './evidence'
+import type { CreationKind, CreationProgress } from './isolated-creation'
+
+export interface ActivityStatus {
+  running: boolean
+  reason: string
+  viewUrl: string
+  notes: string[]
+  taskStatus: string
+  kind?: 'manual' | 'browse' | 'video' | CreationKind
+  goal?: string
+  allowNetwork?: boolean
+  phase?: 'idle' | 'preparing' | 'running' | 'stopping' | 'stopped' | 'failed'
+  canStop?: boolean
+  busy?: boolean
+  creation?: CreationProgress
+}
 
 export type Tone = 'coral' | 'green' | 'amber' | 'blue' | 'violet' | 'gray' | 'red'
 
@@ -411,16 +427,19 @@ export interface MurasameApi {
     speak(text: string): Promise<{ samples: number[]; sampleRate: number; played: boolean; message: string }>
   }
   autonomy: {
-    status(): Promise<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>
-    start(options?: { confirmed?: boolean; allowNetwork?: boolean }): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    preview(): Promise<Result<{ image: string }>>
+    create(kind: CreationKind, goal: string): Promise<Result<ActivityStatus>>
+    exportArtifact(id: string): Promise<Result<{ path: string; bytes: number; sha256: string }>>
+    status(): Promise<ActivityStatus>
+    start(options?: { confirmed?: boolean; allowNetwork?: boolean; kind?: 'browse' | 'video' | CreationKind }): Promise<Result<ActivityStatus>>
     environment(): Promise<{ docker: boolean; image: boolean; detail: string }>
-    openPage(url: string): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
-    look(): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
-    browse(goal: string): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
-    watch(url: string): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    openPage(url: string): Promise<Result<ActivityStatus>>
+    look(): Promise<Result<ActivityStatus>>
+    browse(goal: string): Promise<Result<ActivityStatus>>
+    watch(url: string): Promise<Result<ActivityStatus>>
     buildImage(): Promise<{ ok: boolean; detail: string }>
     onBuildProgress(listener: (line: string) => void): () => void
-    stop(): Promise<Result<{ running: boolean; reason: string; viewUrl: string; notes: string[]; taskStatus: string }>>
+    stop(): Promise<Result<ActivityStatus>>
   }
   events: {
     onMessageDelta(listener: (payload: ChatDelta) => void): () => void

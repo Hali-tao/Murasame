@@ -1,0 +1,524 @@
+{
+  "generatedAt": "2026-10-28T21:09:48.335Z",
+  "measurement": "Original raw Cubism Core; each unmodified expression applied to the original default pose with SDK-equivalent Add/Multiply/Overwrite and parameter bounds. Compare drawable opacity and geometry that is visible before or after the expression; excludes physics/motion drift.",
+  "results": [
+    {
+      "file": "love.exp3.json",
+      "context": {},
+      "fadeWeight": 0.25,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "love.exp3.json",
+      "context": {},
+      "fadeWeight": 0.5,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "love.exp3.json",
+      "context": {},
+      "fadeWeight": 0.75,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "love.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "兔兔贴纸.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "单边马尾.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.004603229463100433,
+      "maxAnyVertexChange": 0.004603229463100433,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "双手比耶.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "吐舌.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.0324929803609848,
+      "maxAnyVertexChange": 0.0324929803609848,
+      "maxColorChange": 5.960464477539063e-8,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "吐魂.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.11693304777145386,
+      "maxAnyVertexChange": 0.11693304777145386,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "呆呆眼.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "哭.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.015682265162467957,
+      "maxAnyVertexChange": 0.015682265162467957,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "喵喵手~喵~动画.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.018235012888908386,
+      "maxAnyVertexChange": 0.018235012888908386,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": [
+        {
+          "Id": "ParamCheek51",
+          "Value": 0,
+          "Blend": "Add"
+        },
+        {
+          "Id": "ParamCheek61",
+          "Value": 0,
+          "Blend": "Add"
+        }
+      ]
+    },
+    {
+      "file": "圆眼镜.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "墨镜.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.09804851096123457,
+      "maxAnyVertexChange": 0.09804851096123457,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "头箍.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "巴菲.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "开心兴奋.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.029166825115680695,
+      "maxAnyVertexChange": 0.029166825115680695,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "心跳.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "悲伤.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.020492919255048037,
+      "maxAnyVertexChange": 0.020492919255048037,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "情绪花花.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.22437293827533722,
+      "maxAnyVertexChange": 0.22437293827533722,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "感叹号.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.18810221552848816,
+      "maxAnyVertexChange": 0.18810221552848816,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "手机换色.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "手机换色.exp3.json",
+      "context": {
+        "phone": 1
+      },
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "挤.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0.007164269685745239,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "挤.exp3.json",
+      "context": {
+        "danbaofan": 1,
+        "point": -1
+      },
+      "fadeWeight": 1,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0.007164269685745239,
+      "maxAnyVertexChange": 0.007164269685745239,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "撤回.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "方眼镜.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "星星眼.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "晕晕.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.04902426898479462,
+      "maxAnyVertexChange": 0.04902426898479462,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "椭圆眼镜.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "橡皮.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "流汗.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.06403832137584686,
+      "maxAnyVertexChange": 0.06403832137584686,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "深色桌布.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "点菜按下.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0.05746952444314957,
+      "maxAnyVertexChange": 0.05746952444314957,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "爱心眼.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.015560656785964966,
+      "maxAnyVertexChange": 0.015560656785964966,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "猫猫贴纸.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.006438791751861572,
+      "maxAnyVertexChange": 0.006438791751861572,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "生气.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.06798553466796875,
+      "maxAnyVertexChange": 0.06798553466796875,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "画笔.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "脸红.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 0.5999999642372131,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "蛋包饭.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "蝴蝶结贴纸.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "调皮.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.04805220663547516,
+      "maxAnyVertexChange": 0.06816018186509609,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "闭眼口水.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.012006226927042007,
+      "maxAnyVertexChange": 0.012006226927042007,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "问号.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0.14496123790740967,
+      "maxAnyVertexChange": 0.17691847681999207,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "阴暗.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "魔爪.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "魔爪换色.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 0,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "魔爪换色.exp3.json",
+      "context": {
+        "mozhua": 1
+      },
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "鲸鱼.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    },
+    {
+      "file": "鲸鱼放桌上.exp3.json",
+      "context": {},
+      "fadeWeight": 1,
+      "maxOpacityChange": 1,
+      "maxVisibleVertexChange": 0,
+      "maxAnyVertexChange": 0,
+      "maxColorChange": 0,
+      "ignoredLegacyNoOpParameters": []
+    }
+  ]
+}

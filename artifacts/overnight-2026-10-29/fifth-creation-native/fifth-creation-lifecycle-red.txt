@@ -1,0 +1,41 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/isolated-creation.test.ts (6 tests | 2 failed) 26ms
+   × [FR-28] 创作真实核验后保留桌面及产物，明确结束才清理 7ms
+   × [FR-30] 取消时迟到Worker结果不得创建产物或追加成功 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/isolated-creation.test.ts > [FR-28] 创作真实核验后保留桌面及产物，明确结束才清理
+TypeError: service.produce is not a function
+ ❯ tests/unit/isolated-creation.test.ts:43:32
+     41|   const { service, agents, calls } = serviceFixture()
+     42|   await service.start(startInput)
+     43|   const result = await service.produce('code', '打印42', agents)
+       |                                ^
+     44|   expect(result.ok).toBe(true)
+     45|   expect(service.status().creation?.phase).toBe('ready')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/isolated-creation.test.ts > [FR-30] 取消时迟到Worker结果不得创建产物或追加成功
+TypeError: service.produce is not a function
+ ❯ tests/unit/isolated-creation.test.ts:59:27
+     57|   agents.draft = async () => { entered(); return new Promise(resolve =…
+     58|   await service.start(startInput)
+     59|   const pending = service.produce('code', '打印42', agents)
+       |                           ^
+     60|   await ready; await service.stop({ containerGone: false }); release(d…
+     61|   expect((await pending).ok).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  04:56:39
+   Duration  918ms (import 56%, transform 30%, tests 9%, worker 4%)

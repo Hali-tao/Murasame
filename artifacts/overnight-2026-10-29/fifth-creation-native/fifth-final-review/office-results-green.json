@@ -1,0 +1,7 @@
+{
+  "exit": 0,
+  "expected": "空白字符复核\n甲  乙\n\t缩进项目\n结束",
+  "actual": "空白字符复核\n甲  乙\n\t缩进项目\n结束",
+  "equal": true,
+  "stderr": ""
+}

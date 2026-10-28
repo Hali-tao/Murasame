@@ -49,7 +49,7 @@ export const navigation: NavGroup[] = [
       { to: '/models', label: '模型服务', subtitle: '选择运营商，验证成功后才会开始使用', icon: Cpu, testId: 'nav-models' },
       { to: '/tools', label: '工具与插件', subtitle: '管理可用能力、授权范围与调用状态', icon: Wrench, testId: 'nav-tools' },
       { to: '/screen', label: '屏幕辅助', subtitle: '在授权范围内理解界面、文档与报错', icon: Monitor, testId: 'nav-screen' },
-      { to: '/autonomy', label: '自主活动', subtitle: '只在隔离桌面里浏览，并可随时停止', icon: Orbit, testId: 'nav-autonomy' },
+      { to: '/autonomy', label: '自主活动', subtitle: '在隔离桌面中观察和创作，可随时停止', icon: Orbit, testId: 'nav-autonomy' },
       { to: '/', label: '概览', subtitle: '今天的对话、任务和运行状态', icon: LayoutDashboard, testId: 'nav-overview' }
     ]
   }

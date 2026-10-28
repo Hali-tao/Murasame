@@ -1,0 +1,100 @@
+
+Running 2 tests using 1 worker
+
+(node:53400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker (50.4s)
+(node:672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker (1.6m)
+
+
+  1) tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.autonomy-status')
+    Expected substring: "没有覆盖"
+    Received string:    "真实文件与独立审阅均通过"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.autonomy-status') with timeout 5000ms
+      - waiting for locator('.autonomy-status')
+        14 × locator resolved to <div class="autonomy-status">…</div>
+           - unexpected value "真实文件与独立审阅均通过"
+
+
+      58 |       expect(createHash('sha256').update(readFileSync(destination)).digest('hex')).toBe(artifact.sha256)
+      59 |       await page.getByTestId('autonomy-export').click()
+    > 60 |       await expect(page.locator('.autonomy-status')).toContainText('没有覆盖')
+         |                                                      ^
+      61 |       await page.screenshot({ path: test.info().outputPath(`${kind}-verified-export.png`), fullPage: true })
+      62 |       await page.getByTestId('autonomy-stop').click()
+      63 |       await expect(page.locator('iframe[title="隔离桌面"]')).toHaveCount(0)
+        at E:\Desktop\软件工程\murasame\tests\e2e\isolated-creation.spec.ts:60:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\isolated-creation-real-iso-7a832--model-transport-and-Docker\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\isolated-creation-real-iso-7a832--model-transport-and-Docker\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\isolated-creation-real-iso-7a832--model-transport-and-Docker\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\isolated-creation-real-iso-7a832--model-transport-and-Docker\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\isolated-creation-real-iso-7a832--model-transport-and-Docker\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.autonomy-status')
+    Expected substring: "没有覆盖"
+    Received string:    "真实文件与独立审阅均通过"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.autonomy-status') with timeout 5000ms
+      - waiting for locator('.autonomy-status')
+        14 × locator resolved to <div class="autonomy-status">…</div>
+           - unexpected value "真实文件与独立审阅均通过"
+
+
+      58 |       expect(createHash('sha256').update(readFileSync(destination)).digest('hex')).toBe(artifact.sha256)
+      59 |       await page.getByTestId('autonomy-export').click()
+    > 60 |       await expect(page.locator('.autonomy-status')).toContainText('没有覆盖')
+         |                                                      ^
+      61 |       await page.screenshot({ path: test.info().outputPath(`${kind}-verified-export.png`), fullPage: true })
+      62 |       await page.getByTestId('autonomy-stop').click()
+      63 |       await expect(page.locator('iframe[title="隔离桌面"]')).toHaveCount(0)
+        at E:\Desktop\软件工程\murasame\tests\e2e\isolated-creation.spec.ts:60:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\isolated-creation-real-iso-07b63--model-transport-and-Docker\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\isolated-creation-real-iso-07b63--model-transport-and-Docker\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\isolated-creation-real-iso-07b63--model-transport-and-Docker\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\isolated-creation-real-iso-07b63--model-transport-and-Docker\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\isolated-creation-real-iso-07b63--model-transport-and-Docker\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker
+    tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker

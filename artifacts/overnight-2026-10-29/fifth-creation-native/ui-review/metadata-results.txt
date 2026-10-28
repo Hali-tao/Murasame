@@ -1,0 +1,55 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (previews/fifth-review-ui/vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts (6 tests | 2 failed) 255ms
+   × keeps cancellation available when returning during environment preparation 16ms
+   × surfaces a cleanup failure immediately and keeps the documented retry action available 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  previews/fifth-review-ui/autonomy-ui-review.test.ts > keeps cancellation available when returning during environment preparation
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts:55:79
+     53|   state = { running: false, phase: 'preparing', reason: '正在准备隔离桌面', vi…
+     54|   await mount()
+     55|   expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).di…
+       |                                                                               ^
+     56| })
+     57|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  previews/fifth-review-ui/autonomy-ui-review.test.ts > surfaces a cleanup failure immediately and keeps the documented retry action available
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts:67:79
+     65|   expect(document.querySelector('.autonomy-status')?.textContent).toCo…
+     66|   await act(async () => { vi.advanceTimersByTime(5000) })
+     67|   expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).di…
+       |                                                                               ^
+     68| })
+     69|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  05:15:38
+   Duration  1.66s (environment 58%, import 21%, tests 17%, transform 4%)

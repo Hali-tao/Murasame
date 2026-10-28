@@ -1,0 +1,112 @@
+
+Running 18 tests using 1 worker
+
+(node:70588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (13.3s)
+  ok  2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (18.2s)
+  ok  3 tests\e2e\app.spec.ts:98:5 › pet window is created and can be hidden or restored through IPC (10.8s)
+  ok  4 tests\e2e\app.spec.ts:159:5 › character page switches between the three bundled pet presets (10.0s)
+  ok  5 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (13.5s)
+  ok  6 tests\e2e\flows.spec.ts:74:5 › a second launch exits and the existing instance remains available (11.7s)
+  ok  7 tests\e2e\flows.spec.ts:101:5 › the console hides to the tray and can be restored (7.5s)
+  ok  8 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (11.8s)
+  ok  9 tests\e2e\grounded-summary.spec.ts:100:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (13.4s)
+  ok 10 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker (52.5s)
+  ok 11 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker (47.0s)
+  ok 12 tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 (12.2s)
+  ok 13 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (16.3s)
+  ok 14 tests\e2e\notifications.spec.ts:41:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire (14.7s)
+  x  15 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (7.9s)
+(node:72236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  16 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (7.1s)
+(node:4376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 17 tests\e2e\task-directory.spec.ts:18:5 › [FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围 (12.1s)
+  ok 18 tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 (9.8s)
+
+
+  1) tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: '结束并识别' })
+    Expected: visible
+    Error: strict mode violation: getByRole('button', { name: '结束并识别' }) resolved to 2 elements:
+        1) <button type="button" aria-label="关闭提示：正在录音，再点一次结束并识别">…</button> aka getByRole('button', { name: '关闭提示：正在录音，再点一次结束并识别' })
+        2) <button type="button" class="composer-tool active">…</button> aka getByRole('button', { name: '结束并识别', exact: true })
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: '结束并识别' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: '结束并识别' })
+
+
+      74 |     await installSyntheticMicrophone(main)
+      75 |     await main.getByRole('button', { name: '语音', exact: true }).click()
+    > 76 |     await expect(main.getByRole('button', { name: '结束并识别' })).toBeVisible()
+         |                                                               ^
+      77 |     await main.getByTestId('hide-to-tray').click()
+      78 |     await expect.poll(() => main!.evaluate(() => ({
+      79 |       events: (window as MediaWindow).__recordingFixture.hiddenEvents,
+        at E:\Desktop\软件工程\murasame\tests\e2e\recording-hidden.spec.ts:76:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\recording-hidden--FR-27-na-b770f-ks-without-submitting-voice\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\recording-hidden--FR-27-na-b770f-ks-without-submitting-voice\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\recording-hidden--FR-27-na-b770f-ks-without-submitting-voice\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\recording-hidden--FR-27-na-b770f-ks-without-submitting-voice\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\recording-hidden--FR-27-na-b770f-ks-without-submitting-voice\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft
+
+    Error: locator.click: Error: strict mode violation: getByRole('button', { name: '结束并识别' }) resolved to 2 elements:
+        1) <button type="button" aria-label="关闭提示：正在录音，再点一次结束并识别">…</button> aka getByRole('button', { name: '关闭提示：正在录音，再点一次结束并识别' })
+        2) <button type="button" class="composer-tool active">…</button> aka getByRole('button', { name: '结束并识别', exact: true })
+
+    Call log:
+      - waiting for getByRole('button', { name: '结束并识别' })
+
+
+      122 |     await installSyntheticMicrophone(page)
+      123 |     await page.getByRole('button', { name: '语音', exact: true }).click()
+    > 124 |     await page.getByRole('button', { name: '结束并识别' }).click()
+          |                                                       ^
+      125 |     await expect.poll(() => app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.transcriptions)).toBe(1)
+      126 |     await page.getByTestId('hide-to-tray').click()
+      127 |     await expect.poll(() => page!.evaluate(() => (window as MediaWindow).__recordingFixture.hiddenEvents)).toBeGreaterThan(0)
+        at E:\Desktop\软件工程\murasame\tests\e2e\recording-hidden.spec.ts:124:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\recording-hidden--FR-27-a--fe9e1-ide-cannot-change-the-draft\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\recording-hidden--FR-27-a--fe9e1-ide-cannot-change-the-draft\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\recording-hidden--FR-27-a--fe9e1-ide-cannot-change-the-draft\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\recording-hidden--FR-27-a--fe9e1-ide-cannot-change-the-draft\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\recording-hidden--FR-27-a--fe9e1-ide-cannot-change-the-draft\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice
+    tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft
+  16 passed (4.9m)

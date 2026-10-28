@@ -1,0 +1,27 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/isolated-creation.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/isolated-creation.test.ts [ tests/unit/isolated-creation.test.ts ]
+Error: Cannot find module '../../src/main/isolation/creation' imported from E:/Desktop/软件工程/murasame/tests/unit/isolated-creation.test.ts
+ ❯ tests/unit/isolated-creation.test.ts:3:1
+      1| import { createHash } from 'node:crypto'
+      2| import { expect, it } from 'vitest'
+      3| import { creationDraftSchema, verifyCreationEvidence } from '../../src…
+       | ^
+      4|
+      5| const bytes = Buffer.from('print(42)\n')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  04:53:07
+   Duration  1.18s (worker 97%, environment 3%)

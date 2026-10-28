@@ -1,0 +1,90 @@
+[
+  {
+    "original": "fifth-final-review\\model-form-review.config.ts",
+    "snapshot": "fifth-final-review\\model-form-review.config.ts.txt"
+  },
+  {
+    "original": "fifth-final-review\\model-form-review.test.ts",
+    "snapshot": "fifth-final-review\\model-form-review.test.ts.txt"
+  },
+  {
+    "original": "model-form\\baseline-race.test.ts",
+    "snapshot": "model-form\\baseline-race.test.ts.txt"
+  },
+  {
+    "original": "model-form\\vitest.config.ts",
+    "snapshot": "model-form\\vitest.config.ts.txt"
+  },
+  {
+    "original": "native\\baseline-final\\component.js",
+    "snapshot": "native\\baseline-final\\component.js.txt"
+  },
+  {
+    "original": "native\\baseline-final\\index.html",
+    "snapshot": "native\\baseline-final\\index.html.txt"
+  },
+  {
+    "original": "native\\baseline-final\\main.cjs",
+    "snapshot": "native\\baseline-final\\main.cjs.txt"
+  },
+  {
+    "original": "native\\final\\component.js",
+    "snapshot": "native\\final\\component.js.txt"
+  },
+  {
+    "original": "native\\final\\index.html",
+    "snapshot": "native\\final\\index.html.txt"
+  },
+  {
+    "original": "native\\final\\main.cjs",
+    "snapshot": "native\\final\\main.cjs.txt"
+  },
+  {
+    "original": "native\\post-whale\\component.js",
+    "snapshot": "native\\post-whale\\component.js.txt"
+  },
+  {
+    "original": "native\\post-whale\\index.html",
+    "snapshot": "native\\post-whale\\index.html.txt"
+  },
+  {
+    "original": "native\\post-whale\\main.cjs",
+    "snapshot": "native\\post-whale\\main.cjs.txt"
+  },
+  {
+    "original": "native\\whale-expressions\\baseline\\component.js",
+    "snapshot": "native\\whale-expressions\\baseline\\component.js.txt"
+  },
+  {
+    "original": "native\\whale-expressions\\baseline\\index.html",
+    "snapshot": "native\\whale-expressions\\baseline\\index.html.txt"
+  },
+  {
+    "original": "native\\whale-expressions\\baseline\\main.cjs",
+    "snapshot": "native\\whale-expressions\\baseline\\main.cjs.txt"
+  },
+  {
+    "original": "native\\whale-expressions\\current\\component.js",
+    "snapshot": "native\\whale-expressions\\current\\component.js.txt"
+  },
+  {
+    "original": "native\\whale-expressions\\current\\index.html",
+    "snapshot": "native\\whale-expressions\\current\\index.html.txt"
+  },
+  {
+    "original": "native\\whale-expressions\\current\\main.cjs",
+    "snapshot": "native\\whale-expressions\\current\\main.cjs.txt"
+  },
+  {
+    "original": "ui-review\\autonomy-status-review.test.ts",
+    "snapshot": "ui-review\\autonomy-status-review.test.ts.txt"
+  },
+  {
+    "original": "ui-review\\autonomy-ui-review.test.ts",
+    "snapshot": "ui-review\\autonomy-ui-review.test.ts.txt"
+  },
+  {
+    "original": "ui-review\\vitest.config.ts",
+    "snapshot": "ui-review\\vitest.config.ts.txt"
+  }
+]

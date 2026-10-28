@@ -1,0 +1,72 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (previews/fifth-review-ui/vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts (5 tests | 3 failed) 460ms
+   × restores the code activity form when returning to an already completed creation 301ms
+   × keeps cancellation available when returning during environment preparation 25ms
+   × surfaces a cleanup failure immediately and keeps the documented retry action available 57ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  previews/fifth-review-ui/autonomy-ui-review.test.ts > restores the code activity form when returning to an already completed creation
+AssertionError: expected '浏览网页' to be '写代码' // Object.is equality
+
+Expected: "写代码"
+Received: "浏览网页"
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts:38:26
+     36|   await mount()
+     37|   const activity = screen.getByRole('combobox') as HTMLSelectElement
+     38|   expect(activity.value).toBe('写代码')
+       |                          ^
+     39|   expect((screen.getByRole('textbox', { name: '创作目标' }) as HTMLTextAre…
+     40| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  previews/fifth-review-ui/autonomy-ui-review.test.ts > keeps cancellation available when returning during environment preparation
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts:45:79
+     43|   state = { running: false, phase: 'preparing', reason: '正在准备隔离桌面', vi…
+     44|   await mount()
+     45|   expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).di…
+       |                                                                               ^
+     46| })
+     47|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  previews/fifth-review-ui/autonomy-ui-review.test.ts > surfaces a cleanup failure immediately and keeps the documented retry action available
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ previews/fifth-review-ui/autonomy-ui-review.test.ts:57:79
+     55|   expect(document.querySelector('.autonomy-status')?.textContent).toCo…
+     56|   await act(async () => { vi.advanceTimersByTime(5000) })
+     57|   expect((screen.getByTestId('autonomy-stop') as HTMLButtonElement).di…
+       |                                                                               ^
+     58| })
+     59|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  05:14:00
+   Duration  47.22s (environment 75%, import 23%, tests 1%, transform 1%)

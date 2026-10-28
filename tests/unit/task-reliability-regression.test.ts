@@ -139,7 +139,7 @@ describe('task isolated runtime adapter', () => {
     const root = temp(); const commands: string[][] = []
     const run = async (_command: string, args: string[]): Promise<string> => {
       commands.push(args)
-      if (args[0] === 'image' && args[1] === 'inspect') return '2'
+      if (args[0] === 'image' && args[1] === 'inspect') return '3'
       if (args[0] === 'inspect') return 'true'
       if (args[0] === 'ps') return ''
       if (args[0] === 'run') return 'owned-container'
@@ -155,7 +155,7 @@ describe('task isolated runtime adapter', () => {
     const { createTaskRunner } = await import('../../src/main/isolation/task-runner')
     const root = temp(); const controller = new AbortController(); let removed = false; let commands = 0
     const run = async (_command: string, args: string[]): Promise<string> => {
-      if (args[0] === 'image' && args[1] === 'inspect') return '2'
+      if (args[0] === 'image' && args[1] === 'inspect') return '3'
       if (args[0] === 'inspect') return 'true'
       if (args[0] === 'ps') return ''
       if (args[0] === 'run') { controller.abort(); return 'cancelled-container' }
@@ -182,7 +182,7 @@ describe('isolated image export', () => {
     const root = temp(); const path = join(root, 'sample.png'); let image = Buffer.alloc(0); const operations: string[][] = []; let gates = 0
     const run = async (_command: string, args: string[]): Promise<string> => {
       operations.push(args)
-      if (args[0] === 'image' && args[1] === 'inspect') return '2'
+      if (args[0] === 'image' && args[1] === 'inspect') return '3'
       if (args[0] === 'inspect') return 'true'
       if (args[0] === 'ps') return ''
       if (args[0] === 'run') return 'image-owned-container'

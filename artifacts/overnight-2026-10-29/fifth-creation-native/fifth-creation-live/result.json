@@ -1,0 +1,43 @@
+{
+  "image": "murasame-isolation:fifth-20261029",
+  "cases": [
+    {
+      "name": "office-real-libreoffice-readback-export",
+      "ok": true,
+      "data": {
+        "output": "E:\\Desktop\\软件工程\\murasame\\previews\\overnight-2026-10-29\\fifth-creation-live\\office-10d46615-81ff-42d2-b046-95fd142e5f66.odt",
+        "sha256": "88675361625ae9d0ca3c0e14cd9f5020601ca9a3ec62e95ad2a3c666854ccbbe",
+        "status": "completed"
+      }
+    },
+    {
+      "name": "python-actual-run-one-review-revision-editor-export",
+      "ok": true,
+      "data": {
+        "output": "E:\\Desktop\\软件工程\\murasame\\previews\\overnight-2026-10-29\\fifth-creation-live\\script-9eba7d38-6883-4ef0-996a-6fbc6dcede60.py",
+        "actualOutput": "31395\n",
+        "sha256": "d5483ff9b49517894f5632e5e083c0cbadd830fd282e31cff20eb06fdae3aed2",
+        "drafts": 2,
+        "reviews": 2,
+        "versions": "LibreOffice 7.4.7.2 40(Build:2)\n\n[2026-10-28T21:34:21.291Z] info  Wrote default config file to /root/.config/code-server/config.yaml\n4.143.1 22ddf60dbc52f164cff13620ab515086dd08c90a with Code 1.143.1\nuid=1001(murasame-code) gid=1001(murasame-code) groups=1001(murasame-code)\n",
+        "network": "none"
+      }
+    },
+    {
+      "name": "failed-runtime-cannot-be-accepted-by-critic",
+      "ok": true,
+      "data": {
+        "error": "确定性核验失败：实际运行失败（退出码1）",
+        "reviews": 0,
+        "cleanup": true
+      }
+    }
+  ],
+  "containers": [
+    "3f0b40e0400d150fb889dc4e6480f3578d5285164f34591584a3c654f00b33fc",
+    "9e92e21bd1f794d2ee7330ed62056b15707c41ec1ba2aff7cdb5a0ca4cd7927b",
+    "b79d6dd16dd55f33ce52cddab9df05cff86485bc76e4c8a4ccf255bfea7c3f9a"
+  ],
+  "remaining": [],
+  "boundary": "Real Docker, LibreOffice, code-server and Python. Worker/Critic callbacks are controlled fixtures, not an external model quality evaluation."
+}

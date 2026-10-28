@@ -67,14 +67,28 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       if (!group) return
       // Cubism returns to Idle at the actual motion end. A wall-clock timeout cuts
       // authored motion short and also runs while the renderer is paused.
-      void model.motion(group, 0, MotionPriority.FORCE).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
+      // Pointer feedback must not replace a semantic response, including one
+      // whose motion file is still loading. The SDK checks both priorities.
+      void model.motion(group, 0, MotionPriority.NORMAL).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
     },
     playNamedMotion(group: string, expression: string | null): void {
       const model = modelRef.current
       if (!model) return
       const manager = model.internalModel.motionManager
       const actualGroup = resolveMotionGroup(group, Object.keys(manager.definitions), [manager.groups.idle])
-      if (actualGroup) void model.motion(actualGroup, 0, MotionPriority.FORCE).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
+      if (actualGroup) {
+        const priority = actualGroup === manager.groups.idle && !expression ? MotionPriority.IDLE : MotionPriority.FORCE
+        // Some avatars express thought with idle + an expression. The SDK does
+        // not restart an already-active group, so update its priority in place.
+        if (manager.state.currentGroup === actualGroup) manager.state.currentPriority = priority
+        void model.motion(actualGroup, 0, MotionPriority.FORCE).then(started => {
+          // Pure idle may interrupt a response, then releases priority so the
+          // next tap responds immediately. Expressive idle remains semantic.
+          if (started && manager.state.currentGroup === actualGroup) {
+            manager.state.currentPriority = priority
+          }
+        }).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
+      }
       if (expression) {
         try {
           void model.expression(expression).catch(cause => console.warn('[Live2D] Expression unavailable', cause))
@@ -192,7 +206,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
         const ticker = app.ticker
         ticker.add(() => loaded.update(ticker.deltaMS), undefined, UPDATE_PRIORITY.HIGH)
         fitModel()
-        if (idleGroup) await loaded.motion(idleGroup, 0)
+        if (idleGroup) await loaded.motion(idleGroup, 0, MotionPriority.IDLE)
         if (!disposed) {
           // Reduced-motion mode may stop the ticker before the asset loads.
           // Draw its initial pose once so a static character is still visible.

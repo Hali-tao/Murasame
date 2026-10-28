@@ -524,7 +524,28 @@ export function registerIpcHandlers(core: DesktopCore): void {
     }
   })
   ipcMain.handle(IPC.autonomy.environment, () => isolationEnvironmentAsync())
-  ipcMain.handle(IPC.autonomy.status, () => core.autonomy.health())
+  ipcMain.handle(IPC.autonomy.preview, () => core.autonomy.preview())
+  ipcMain.handle(IPC.autonomy.status, async () => {
+    const state = await core.autonomy.health()
+    return isolationPrepare ? { ...state, phase: 'preparing', canStop: true, busy: true, reason: '正在准备隔离环境，离开页面不会中断；可停止准备。' } : state
+  })
+  ipcMain.handle(IPC.autonomy.create, (_event, raw: unknown) => {
+    const input = z.object({ kind: z.enum(['office', 'code']), goal: z.string().trim().min(1).max(2000) }).strict().safeParse(raw)
+    if (!input.success) return { ok: false, error: '请选择办公或Python创作，并填写2000字以内的目标' }
+    return core.createIsolationArtifact(input.data.kind, input.data.goal)
+  })
+  ipcMain.handle(IPC.autonomy.exportArtifact, async (_event, raw: unknown) => {
+    const input = z.object({ id: z.string().uuid() }).strict().safeParse(raw)
+    const state = core.autonomy.status()
+    const artifact = state.creation?.artifact
+    if (!input.success || !state.running || !artifact || artifact.id !== input.data.id) return { ok: false, error: '当前没有可导出的核验产物' }
+    const selection = await dialog.showSaveDialog({
+      title: '保存已核验产物（请使用新文件名）', defaultPath: artifact.name,
+      filters: [{ name: artifact.kind === 'office' ? 'OpenDocument文字文档' : 'Python脚本', extensions: [artifact.kind === 'office' ? 'odt' : 'py'] }]
+    })
+    if (selection.canceled || !selection.filePath) return { ok: false, error: '已取消保存，产物仍留在本次隔离活动中' }
+    return core.autonomy.exportCreation(artifact.id, selection.filePath)
+  })
   const prepareIsolation = (send: (line: string) => void): Promise<{ ok: boolean; detail: string }> => {
     if (isolationPrepare) return isolationPrepare
     const controller = new AbortController()
@@ -553,7 +574,9 @@ export function registerIpcHandlers(core: DesktopCore): void {
     if (!event.sender.isDestroyed()) event.sender.send(IPC.autonomy.buildProgress, line)
   }))
   ipcMain.handle(IPC.autonomy.start, async (event, raw: unknown) => {
-    const value = (raw ?? {}) as { confirmed?: boolean; allowNetwork?: boolean }
+    const input = z.object({ confirmed: z.boolean().optional(), allowNetwork: z.boolean().optional(), kind: z.enum(['browse', 'video', 'office', 'code']).optional() }).strict().safeParse(raw ?? {})
+    if (!input.success) return { ok: false, error: '活动范围无效，请重新确认' }
+    const value = input.data
     if (!value.confirmed) return { ok: false, error: '还没有确认活动范围，容器没有启动。' }
     const generation = prepareGeneration
     const prepared = await prepareIsolation((line) => {
@@ -566,14 +589,18 @@ export function registerIpcHandlers(core: DesktopCore): void {
       approved: true,
       needsPermission: false,
       share: null,
-      allowNetwork: value.allowNetwork !== false
+      allowNetwork: value.allowNetwork !== false,
+      kind: value.kind
     })
   })
   ipcMain.handle(IPC.autonomy.open, (_event, raw: unknown) => {
     const url = String((raw as { url?: string })?.url ?? '')
     return core.autonomy.openPage(url)
   })
-  ipcMain.handle(IPC.autonomy.look, () => core.autonomy.look((image, signal) => core.describeIsolationImage(image, signal)))
+  ipcMain.handle(IPC.autonomy.look, () => {
+    if (!getSettings().outboundImages) return { ok: false, error: '让模型看桌面需要先允许发送截图。当前产物仍在，下方真实画面可直接查看。' }
+    return core.autonomy.look((image, signal) => core.describeIsolationImage(image, signal))
+  })
   ipcMain.handle(IPC.autonomy.browse, (_event, raw: unknown) => {
     const goal = String((raw as { goal?: string })?.goal ?? '').trim()
     if (!goal) return { ok: false, error: '先说想让它在隔离桌面里看什么。' }

@@ -67,7 +67,7 @@ export interface TestModelServer {
   close(): Promise<void>
 }
 
-export async function startModelServer(options: { taskRoot?: string; onMessages?: (messages: Array<{ role: string; content: unknown }>) => void } = {}): Promise<TestModelServer> {
+export async function startModelServer(options: { taskRoot?: string; onMessages?: (messages: Array<{ role: string; content: unknown }>) => void; toolResponse?: (tool: string, messages: Array<{ role: string; content: unknown }>) => unknown } = {}): Promise<TestModelServer> {
   const server = createServer((request, response) => {
     if (request.method !== 'POST' || !request.url?.endsWith('/chat/completions')) {
       response.writeHead(404, { 'Content-Type': 'application/json' })
@@ -92,6 +92,12 @@ export async function startModelServer(options: { taskRoot?: string; onMessages?
         return
       }
       const tool = payload.tools?.[0]?.function?.name
+      const custom = tool ? options.toolResponse?.(tool, payload.messages ?? []) : undefined
+      if (custom !== undefined) {
+        response.writeHead(200, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify({ choices: [{ message: { role: 'assistant', tool_calls: [{ type: 'function', function: { name: tool, arguments: JSON.stringify(custom) } }] } }] }))
+        return
+      }
       if (tool === 'plan_task' || tool === 'performance' || tool === 'remember') {
         const goal = String(payload.messages?.filter(item => item.role === 'user').at(-1)?.content ?? '').split('任务：').at(-1) ?? ''
         const folder = options.taskRoot ?? goal.replace(/^整理文件夹\s*/, '').trim()

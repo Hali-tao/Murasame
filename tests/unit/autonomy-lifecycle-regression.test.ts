@@ -15,7 +15,7 @@ const image = png(10)
 const start = { dockerAvailable: true, approved: true, needsPermission: false, share: null }
 const fake = (calls: string[][], failRemove = () => false) => (_command: string, args: string[]): string => {
   calls.push(args)
-  if (args[0] === 'image' && args[1] === 'inspect') return '2'
+  if (args[0] === 'image' && args[1] === 'inspect') return '3'
   if (args[0] === 'ps') return ''
   if (args[0] === 'run') return `container-${calls.filter(a => a[0] === 'run').length}`
   if (args[0] === 'inspect') return 'true'
@@ -23,6 +23,31 @@ const fake = (calls: string[][], failRemove = () => false) => (_command: string,
   if (args.includes('base64')) return image
   return ''
 }
+
+it('[FR-28] 离线桌面显示真实PNG，不提供无法连接的VNC且预览不消耗动作预算', async () => {
+  const calls: string[][] = []; const service = new AutonomyService(fake(calls), async () => {})
+  const started = await service.start({ ...start, allowNetwork: false })
+  expect(started.ok).toBe(true); expect(service.status().viewUrl).toBe('')
+  for (let i = 0; i < 16; i++) expect((await service.preview()).ok).toBe(true)
+  expect(service.status().running).toBe(true)
+  await service.stop({ containerGone: false })
+  expect((await service.preview()).ok).toBe(false)
+})
+
+it('[FR-30] 预览采集前与返回前都检查许可，撤回后不返回画面', async () => {
+  const calls: string[][] = []; let allowed = true
+  const service = new AutonomyService((_command, args) => {
+    const response = fake(calls)(_command, args)
+    if (args.includes('base64')) allowed = false
+    return response
+  }, async () => {}, { guard: () => allowed })
+  await service.start({ ...start, allowNetwork: false })
+  expect((await service.preview()).ok).toBe(false)
+  const captures = calls.filter(args => args.includes('scrot')).length
+  expect((await service.preview()).ok).toBe(false)
+  expect(calls.filter(args => args.includes('scrot'))).toHaveLength(captures)
+  await service.stop({ containerGone: false })
+})
 
 describe('autonomy lifecycle regressions', () => {
   it('late decisions cannot act on a replacement activity', async () => {
@@ -294,7 +319,7 @@ it('a fully played short captioned video can complete while preserving its verif
 
 it('preflight failure does not invent an uncreated container needing cleanup', async () => {
   const calls:string[][]=[]
-  const result=await startContainerAsync(containerPlan(),0,(_c,a)=>{calls.push(a);if(a[0]==='image')return '2';throw new Error('preflight query failed')})
+  const result=await startContainerAsync(containerPlan(),0,(_c,a)=>{calls.push(a);if(a[0]==='image')return '3';throw new Error('preflight query failed')})
   expect('failed' in result).toBe(true)
   expect('id' in result).toBe(false)
   expect(calls.some(a=>a[0]==='run'||a[0]==='rm')).toBe(false)
@@ -303,7 +328,7 @@ import { isolationEnvironmentAsync } from '../../src/main/isolation/docker-runti
 
 it('an old isolation image is reported as needing upgrade and cannot start a container', async () => {
   const calls:string[][]=[]
-  const runner=(_c:string,a:string[]):string=>{calls.push(a);if(a[0]==='images')return 'old-image';return ''}
+  const runner=(_c:string,a:string[]):string=>{calls.push(a);if(a[0]==='images')return 'old-image';if(a[0]==='image')return '2';return ''}
   expect((await isolationEnvironmentAsync(runner)).image).toBe(false)
   const result=await startContainerAsync(containerPlan(),0,runner,{readiness:'process'})
   expect('failed' in result && result.failed).toContain('升级')

@@ -1,0 +1,6 @@
+{
+  "url": "http://127.0.0.1:8080/?folder=%2Fhome%2Fmurasame%2Factivities%2F8d32d794-3600-4d81-9c6d-240a6e7f7615%2F1&payload=%5B%5B%22openFile%22%2C%22vscode-remote%3A%2F%2F127.0.0.1%3A8080%2Fhome%2Fmurasame%2Factivities%2F8d32d794-3600-4d81-9c6d-240a6e7f7615%2F1%2Fmain.py%22%5D%5D",
+  "text": "1\nExplorer\n1\nmain.py\nstderr.txt\nstdout.txt\nOutline\nTimeline\nmain.py\nmain.py\n1\nprint(sum(i*i for i in range(1, 46)))\n 0 \n 0\n 0\nLayout: us\nPython\nLF\nUTF-8\nSpaces: 4\nLn 1, Col 1",
+  "media": null,
+  "contextId": "9a57bc34-8688-4a2b-af90-55524e3960ca"
+}

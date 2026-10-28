@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+(node:71824) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (7.4s)
+
+
+  1) tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 665
+    Received:    765
+
+      21 |     await page.getByLabel('新建会话', { exact: true }).click()
+      22 |     const pageLayout = await page.locator('.content-scroll').evaluate(element => ({ height: element.clientHeight, contentHeight: element.scrollHeight, scrollTop: element.scrollTop }))
+    > 23 |     expect(pageLayout.contentHeight).toBeLessThanOrEqual(pageLayout.height + 1)
+         |                                      ^
+      24 |     expect(pageLayout.scrollTop).toBe(0)
+      25 |     await page.getByTestId('chat-input').fill('确认通知不会挡住发送按钮')
+      26 |     await expect(page.getByTestId('chat-input')).toBeFocused()
+        at E:\Desktop\软件工程\murasame\tests\e2e\notifications.spec.ts:23:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fifth-notifications\e2e-height-before\notifications-model-setup--4a65f-ve-the-chat-composer-usable\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fifth-notifications\e2e-height-before\notifications-model-setup--4a65f-ve-the-chat-composer-usable\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\fifth-notifications\e2e-height-before\notifications-model-setup--4a65f-ve-the-chat-composer-usable\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fifth-notifications\e2e-height-before\notifications-model-setup--4a65f-ve-the-chat-composer-usable\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\fifth-notifications\e2e-height-before\notifications-model-setup--4a65f-ve-the-chat-composer-usable\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable

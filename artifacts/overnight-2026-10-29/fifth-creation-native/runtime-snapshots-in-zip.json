@@ -1,0 +1,17 @@
+[
+  "native\\baseline-final\\component.js.txt",
+  "native\\baseline-final\\index.html.txt",
+  "native\\baseline-final\\main.cjs.txt",
+  "native\\final\\component.js.txt",
+  "native\\final\\index.html.txt",
+  "native\\final\\main.cjs.txt",
+  "native\\post-whale\\component.js.txt",
+  "native\\post-whale\\index.html.txt",
+  "native\\post-whale\\main.cjs.txt",
+  "native\\whale-expressions\\baseline\\component.js.txt",
+  "native\\whale-expressions\\baseline\\index.html.txt",
+  "native\\whale-expressions\\baseline\\main.cjs.txt",
+  "native\\whale-expressions\\current\\component.js.txt",
+  "native\\whale-expressions\\current\\index.html.txt",
+  "native\\whale-expressions\\current\\main.cjs.txt"
+]
