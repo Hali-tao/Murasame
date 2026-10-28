@@ -3,7 +3,7 @@
   "baseline": "91d1fd92be12d51c5169cb79eaf333b5aec06cc5",
   "unit": {
     "files": 42,
-    "log": "verify-final.log",
+    "log": "verify-final.txt",
     "passed": 475,
     "failed": 0
   },
@@ -15,14 +15,14 @@
     "note": "Mapping coverage, not full acceptance"
   },
   "e2e": {
-    "log": "e2e-final.log",
+    "log": "e2e-final.txt",
     "fullSuitePassed": 9,
     "afterFinalTaskStoreFixPassed": 1,
-    "finalTaskLog": "task-e2e-final.log"
+    "finalTaskLog": "task-e2e-final.txt"
   },
   "build": {
     "status": "passed",
-    "log": "build-final.log"
+    "log": "build-final.txt"
   },
   "nativeMotion": {
     "measurement": "quality-report.json",
@@ -36,5 +36,6 @@
   "isolationLiveAcceptanceRerun": false,
   "newInstallerBuilt": false,
   "userReportAt": "2026-10-29T08:00:00+08:00",
-  "next": "Grounded source reading and reviewed summary writing; see docs/superpowers/plans/2026-10-29-grounded-summary.md"
+  "next": "Grounded source reading and reviewed summary writing; see docs/superpowers/plans/2026-10-29-grounded-summary.md",
+  "sourceCommit": "be8edfa91342c6ce13aa712b2f67f60fd5b1f9d7"
 }

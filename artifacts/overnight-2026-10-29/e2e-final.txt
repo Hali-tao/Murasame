@@ -1,0 +1,54 @@
+
+> murasame-desktop@0.9.0 test:e2e
+> npm run build && playwright test
+
+
+> murasame-desktop@0.9.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 108 modules transformed.
+rendering chunks...
+out/main/prober-nqM_y6yB.js    5.06 kB
+out/main/index.js            393.65 kB
+
+[INEFFECTIVE_DYNAMIC_IMPORT] src/main/logger.ts is dynamically imported by src/main/core/murasame-core.ts but also statically imported by src/main/core/murasame-core.ts, src/main/index.ts, src/main/ipc.ts, src/main/model/registry.ts, src/main/tray.ts, ..., dynamic import will not move module into another chunk.
+
+✓ built in 519ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 3 modules transformed.
+rendering chunks...
+out/preload/index.js  11.45 kB
+
+✓ built in 18ms
+vite v8.3.4 building client environment for production...
+transforming...
+<script src="./live2d/core/live2dcubismcore.min.js"> in "/pet.html" can't be bundled without type="module" attribute
+✓ 2133 modules transformed.
+rendering chunks...
+out/renderer/pet.html                        0.93 kB
+out/renderer/index.html                      0.94 kB
+out/renderer/assets/styles-DElOmo4-.css     84.50 kB
+out/renderer/assets/index-BXCXKPTF.js      551.18 kB
+out/renderer/assets/styles-BJ_ClqYD.js     589.76 kB
+out/renderer/assets/pet-D7OqrbYC.js      1,506.90 kB
+
+✓ built in 1.04s
+
+Running 9 tests using 1 worker
+
+(node:88144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (12.0s)
+  ok 2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (54.9s)
+  ok 3 tests\e2e\app.spec.ts:97:5 › pet window is created and can be hidden or restored through IPC (10.1s)
+  ok 4 tests\e2e\app.spec.ts:158:5 › character page switches between the three bundled pet presets (29.1s)
+  ok 5 tests\e2e\flows.spec.ts:16:5 › history clearing, memory editing and model switching are end-to-end usable (43.8s)
+  ok 6 tests\e2e\flows.spec.ts:60:5 › a second launch exits and the existing instance remains available (11.8s)
+  ok 7 tests\e2e\flows.spec.ts:87:5 › the console hides to the tray and can be restored (8.9s)
+  ok 8 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (14.6s)
+  ok 9 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (15.9s)
+
+  9 passed (3.4m)
