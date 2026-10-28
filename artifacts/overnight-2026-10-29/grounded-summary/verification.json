@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-10-29T03:28:26.5307027+08:00",
+  "baseCommit": "4e9244951315dfefcebe6a3f2c5cce04a7e7aed6",
+  "unitTests": 518,
+  "unitFiles": 45,
+  "typecheck": "passed",
+  "lint": "passed",
+  "trace": "74/74 mappings, not complete requirements acceptance",
+  "fullElectronBeforeLastRecoveryGuard": 11,
+  "finalSummaryElectron": 2,
+  "finalArtifactRevealElectron": 1,
+  "build": "passed",
+  "independentReviewFindings": 1,
+  "importantFindingsFixed": 1,
+  "fixtureSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+  "provider": "loopback HTTP test server",
+  "sourceData": "isolated fixtures only",
+  "nativeModelChanged": false,
+  "installerProduced": false
+}

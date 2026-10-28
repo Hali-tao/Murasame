@@ -1,5 +1,5 @@
 import type { TaskStatus } from './types'
-import { approvalSummary } from './task-approval'
+import { approvalPresentation, approvalSummary } from './task-approval'
 
 /** 桌宠上要让人看见的一件事。优先级对齐 Codex 桌宠：等你确认 > 没做成 > 正在做 > 做完了。 */
 export type PetActivityKind = 'needs-input' | 'blocked' | 'running' | 'ready'
@@ -20,6 +20,7 @@ export interface PetActivity {
   detail: string
   /** 只有「等待批准」能在桌宠上直接允许或拒绝，其余打开控制台看。 */
   canApprove: boolean
+  reviewLabel?: string
   /** 同样在等确认的件数，含当前这一件。 */
   waiting: number
 }
@@ -90,14 +91,17 @@ export function listPetActivities(
     .sort((left, right) => KIND_RANK[left.kind] - KIND_RANK[right.kind])
 
   const waiting = ranked.filter((item) => item.kind === 'needs-input').length
-  return ranked.slice(0, 4).map((item) => ({
+  return ranked.slice(0, 4).map((item) => {
+    const summary = item.task.status === '等待批准' && item.task.approval ? approvalPresentation(item.task.approval, 'once').summary : undefined
+    return {
     id: item.task.id,
     kind: item.kind,
     label: labelOf(item.task.status),
     detail: detailOf(item.task),
-    canApprove: item.task.status === '等待批准',
+    canApprove: item.task.status === '等待批准' && !summary,
+    reviewLabel: summary ? summary.stage === 'draft' ? '审阅草稿' : '审阅来源' : undefined,
     waiting: item.kind === 'needs-input' ? waiting : 0
-  }))
+  } })
 }
 
 export function pickPetActivity(

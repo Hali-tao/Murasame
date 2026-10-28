@@ -161,8 +161,8 @@
 | FR-14 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-15 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
 | FR-16 | tests/unit/p1-p3.test.ts |
-| FR-17 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
-| FR-18 | tests/unit/p1-p3.test.ts |
+| FR-17 | tests/unit/grounded-summary.test.ts<br>tests/unit/grounded-task-service.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-18 | tests/unit/grounded-approval.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-19 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-20 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-21 | tests/unit/errors.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-status.test.ts<br>tests/unit/traceability.test.ts |

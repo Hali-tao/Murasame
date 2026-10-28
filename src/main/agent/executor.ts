@@ -1,4 +1,6 @@
 import type { DeclaredOutput } from '../task/staging'
+import type { GroundedSummaryWorkflow } from '../../shared/grounded-summary'
+import { executeGroundedSummary, type GroundedExecutionOptions } from './grounded-executor'
 import { randomUUID, createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import type { Evidence, Verdict } from '../../shared/evidence'
@@ -11,11 +13,15 @@ import { runTerminal, type IsolatedRunner, type ToolRun } from '../tools/termina
 export type TaskTool = 'filesystem' | 'terminal' | 'git' | 'browser'
 export interface CheckCondition { kind: 'file-exists' | 'file-absent' | 'file-content' | 'file-hash' | 'output-includes' | 'exit-code'; path?: string; value?: string }
 export interface PlanStep { id?: string; dependsOn?: string[]; workspace?: string; network?: 'none' | 'bridge'; allowedTools?: TaskTool[]; limits?: { timeoutMs?: number }; outputs?: DeclaredOutput[]; title: string; detail: string; expected: string; tool?: TaskTool; args?: { action?: 'organize' | 'list' | 'read' | 'write' | 'move'; path?: string; from?: string; to?: string; content?: string; executable?: string; argv?: string[]; url?: string; files?: FileIntent[] }; checks?: CheckCondition[] }
-export interface TaskPlan { origin?: 'rules' | 'model'; tool: TaskTool; root?: string; url?: string; command?: string; steps: PlanStep[]; question: string }
+export interface TaskPlan { origin?: 'rules' | 'model'; tool: TaskTool; root?: string; url?: string; command?: string; steps: PlanStep[]; question: string; workflow?: GroundedSummaryWorkflow }
 export interface WorkerTicket { id: string; stepId: string; root: string | null; allowedTools: TaskTool[]; limits: { timeoutMs: number; maxSteps: number } }
 export interface AgentCall { agentRole: 'Planner' | 'Worker' | 'Critic'; toolId: string; declared: string; executionStatus: ToolRun['status'] | 'running'; raw: string; evidence: Evidence[]; verdict: Verdict; stepId?: string; args?: unknown; startedAt?: string; endedAt?: string; traceId?: string; phase?: 'started' | 'result' }
 export interface GoalOutcome { status: TaskPhase; calls: AgentCall[]; artifacts: string[]; approval: { target: string; impact: string; tool: string; requestedAt: number } | null; summary: string; result: string; steps: Array<{ id: string; title: string; detail: string; state: '完成' | '进行中' | '待执行' | '等待批准' | '已取消'; tone: 'blue' | 'green' | 'amber' | 'red' | 'gray' }> }
-export function extractRoot(goal: string): string | null { const match = /[A-Za-z]:[\\/][^\s"'，。]+/.exec(goal); return match ? match[0].replace(/[\\/]+$/, '') : null }
+export function extractRoot(goal: string): string | null {
+  const quoted = /"([A-Za-z]:[\\/][^"\r\n]+)"|'([A-Za-z]:[\\/][^'\r\n]+)'|“([A-Za-z]:[\\/][^”\r\n]+)”/.exec(goal)
+  const path = quoted?.slice(1).find(Boolean) ?? /[A-Za-z]:[\\/][^\s"'，。]+/.exec(goal)?.[0]
+  return path ? path.replace(/[\\/]+$/, '') : null
+}
 export function chooseTool(goal: string): TaskTool { return /https?:\/\//.test(goal) || /打开网页/.test(goal) ? 'browser' : /\bgit\b|差异|提交记录/.test(goal) ? 'git' : /运行命令|终端/.test(goal) ? 'terminal' : 'filesystem' }
 export function nextAfterCritic(verdict: Verdict, replanCount: number): 'continue' | 'stop' | 'partial' { return verdict === 'confirmed' ? 'continue' : replanCount >= 3 ? 'partial' : 'stop' }
 function fact(target: string, expected: string, actual: string, matched: boolean, kind: Evidence['kind'] = 'fs-stat'): Evidence { return { target, expected, actual, matched, kind } }
@@ -59,7 +65,8 @@ function invocationArgs(step: PlanStep, plan: TaskPlan, goal: string): NonNullab
   if (tool === 'browser') return { ...args, url: args.url ?? plan.url ?? /https?:\/\/\S+/.exec(goal)?.[0] ?? '' }
   return args
 }
-export async function executeGoal(input: { goal: string; root: string | null; approved: boolean; cancelled: boolean; now?: number; plan?: TaskPlan | null; control?: WorkControl; runner?: IsolatedRunner; taskId?: string; toolGate?: (tool: string) => string | null; executionGuard?: () => string | null; onCall?: (call: AgentCall) => void; approvalScope?: 'once' | 'task'; checkpoints?: StepCheckpoint[]; onCheckpoint?: (checkpoint: StepCheckpoint) => void }): Promise<GoalOutcome> {
+export async function executeGoal(input: GroundedExecutionOptions & { goal: string; root: string | null; approved: boolean; cancelled: boolean; now?: number; plan?: TaskPlan | null; control?: WorkControl; runner?: IsolatedRunner; taskId?: string; toolGate?: (tool: string) => string | null; executionGuard?: () => string | null; onCall?: (call: AgentCall) => void; approvalScope?: 'once' | 'task'; checkpoints?: StepCheckpoint[]; onCheckpoint?: (checkpoint: StepCheckpoint) => void }): Promise<GoalOutcome> {
+  if (input.plan?.workflow) return executeGroundedSummary({ ...input, plan: input.plan })
   const tool = input.plan?.tool ?? chooseTool(input.goal)
   const plan = input.plan ?? localRulePlan(input.goal)
   const planHash = createHash('sha256').update(JSON.stringify({ root: input.root, plan })).digest('hex')

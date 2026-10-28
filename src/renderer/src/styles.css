@@ -343,6 +343,7 @@ a:focus-visible {
 .approval-details caption { text-align: left; padding: 8px; color: var(--muted); }
 .approval-details th, .approval-details td { padding: 7px 8px; border-top: 1px solid var(--line-soft); vertical-align: top; }
 .approval-details th:first-child { width: 50px; }
+.approval-details .summary-source-table th:first-child { width: 45%; }
 .approval-details code { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
 .approval-arrow, .approval-warning { display: block; font-size: 11px; color: var(--muted); }
 .approval-warning { color: var(--amber); }

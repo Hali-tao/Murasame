@@ -10,6 +10,7 @@ export interface ApprovalStep {
 }
 export interface ApprovalPresentation {
   structured: boolean; target: string; steps: ApprovalStep[]; otherSteps: number; warning: string; raw: string
+  summary?: { stage: 'sources' | 'draft'; sources: Array<{ path: string; bytes: number; modified: string; hash: string }>; recipient: string; endpoint: string; purpose: string; outputPath: string; markdown?: string; draftHash: string }
 }
 const record = (value: unknown): RecordValue | null => value !== null && typeof value === 'object' && !Array.isArray(value) ? value as RecordValue : null
 const text = (value: unknown): string => typeof value === 'string' ? value : ''
@@ -52,7 +53,17 @@ export function approvalPresentation(approval: ApprovalSource, scope: 'once' | '
   const remaining = Array.isArray(payload.remaining) ? records(payload.remaining) : next
   const key = text(first.scopeKey)
   const selected = scope === 'task' && key ? remaining.filter(step => step.scopeKey === key) : [first]
-  return { structured: true, target: approval.target, steps: selected.map(step => presentStep(step, plan)), otherSteps: Math.max(0, remaining.length - selected.length), raw: approval.impact,
+  const steps = selected.map(step => presentStep(step, plan))
+  let summary: ApprovalPresentation['summary']
+  if (payload.workflowKind === 'summarize-files') {
+    const sources = records(payload.sourceManifest); const to = record(payload.recipient); const draft = record(payload.draft)
+    if (!sources.length || !to || !['awaiting-source-approval', 'awaiting-write-approval'].includes(text(payload.stage)) || sources.some(source => !text(source.relativePath) || typeof source.bytes !== 'number')) return fallback
+    const writing = payload.stage === 'awaiting-write-approval'
+    if (writing && typeof draft?.markdown !== 'string') return fallback
+    summary = { stage: writing ? 'draft' : 'sources', sources: sources.map(source => ({ path: text(source.relativePath), bytes: source.bytes as number, modified: typeof source.mtimeMs === 'number' && Number.isFinite(source.mtimeMs) ? new Date(source.mtimeMs).toLocaleString('zh-CN') : '未知', hash: text(source.sha256) })), recipient: [text(to.name), text(to.provider), text(to.model)].filter(Boolean).join(' · '), endpoint: text(to.endpoint), purpose: text(payload.instruction), outputPath: text(payload.outputPath), markdown: writing ? text(draft?.markdown) : undefined, draftHash: text(payload.draftHash) }
+    if (!writing) for (const step of steps) step.changes = summary.sources.map(source => ({ kind: '读取并发送正文', to: source.path }))
+  }
+  return { structured: true, target: approval.target, steps, summary, otherSteps: Math.max(0, remaining.length - selected.length), raw: approval.impact,
     warning: scope === 'task' && !key ? '当前声明未提供可核对的任务内范围；此处仅列出下一步，请核对完整声明。' : '' }
 }
 

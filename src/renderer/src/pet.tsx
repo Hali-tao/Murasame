@@ -675,7 +675,7 @@ function PetApp(): React.JSX.Element {
                   <span>{activity.detail}</span>
                   {activity.waiting > 1 ? <em>还有 {activity.waiting - 1} 件也在等你</em> : null}
                 </button>
-                {activity.canApprove ? (
+                {activity.reviewLabel ? <div className="pet-activity-actions"><button type="button" onClick={() => openActivity(activity.id)}>{activity.reviewLabel}</button><button type="button" disabled={activityBusy} onClick={() => void decideActivity(activity, false)}>先不做</button></div> : activity.canApprove ? (
                   <div className="pet-activity-actions">
                     <button type="button" disabled={activityBusy} onClick={() => void decideActivity(activity, true)}>允许</button>
                     <button type="button" disabled={activityBusy} onClick={() => void decideActivity(activity, false)}>先不做</button>

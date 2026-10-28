@@ -13,6 +13,9 @@ import { interruptOnRestart, transition, type TaskPhase } from '../../agent/stat
 import type { Evidence, ToolCallRecord, Verdict } from '../../../shared/evidence'
 import type { ApprovalRequest, Result, Task, TaskStep, Tone } from '../../../shared/types'
 import { getSettings } from '../../settings'
+import type { SummaryGenerator } from '../../agent/grounded-summary'
+import type { GroundedCheckpoint } from '../../../shared/grounded-summary'
+import type { GroundedExecutionOptions } from '../../agent/grounded-executor'
 
 
 function notifyTask(task: Task): void {
@@ -65,6 +68,7 @@ export class TaskService {
   private modelResolver?: (id: string) => TaskModelBinding | null
   private readonly modelBindings = new Map<string, TaskModelBinding | null>()
   private planner: TaskPlanner | null = null
+  private summaryGenerator?: SummaryGenerator
   private toolGate: ((tool: string) => string | null) | null = null
   private changed: ((task: Task) => void) | null = null
   private readonly plans = new Map<string, TaskPlan>()
@@ -78,6 +82,7 @@ export class TaskService {
     this.db?.exec('CREATE TABLE IF NOT EXISTS task_execution_checkpoints(task_id TEXT NOT NULL, step_id TEXT NOT NULL, checkpoint_json TEXT NOT NULL, PRIMARY KEY(task_id,step_id))')
     this.db?.exec('CREATE TABLE IF NOT EXISTS task_model_snapshots(task_id TEXT PRIMARY KEY, snapshot_json TEXT NOT NULL)')
     this.db?.exec('CREATE TABLE IF NOT EXISTS task_teammate_requests(task_id TEXT PRIMARY KEY REFERENCES tasks(id) ON DELETE CASCADE, request_json TEXT NOT NULL)')
+    this.db?.exec('CREATE TABLE IF NOT EXISTS task_grounded_checkpoints(task_id TEXT PRIMARY KEY REFERENCES tasks(id) ON DELETE CASCADE, checkpoint_json TEXT NOT NULL)')
     this.recover()
   }
 
@@ -136,6 +141,28 @@ export class TaskService {
   /** 有已验证的模型时由模型出计划；没有时 planner 返回 null，执行器按规则处理并如实标注。 */
   setPlanner(planner: TaskPlanner): void {
     this.planner = planner
+  }
+
+  setSummaryGenerator(generator: SummaryGenerator): void { this.summaryGenerator = generator }
+
+  private groundedOptions(id: string): GroundedExecutionOptions {
+    if (!this.getPlan(id)?.workflow) return {}
+    return { summaryGenerator: this.summaryGenerator, summaryModel: this.boundModel(id), groundedCheckpoint: this.groundedCheckpoint(id),
+      onGroundedCheckpoint: checkpoint => { this.db?.prepare('INSERT INTO task_grounded_checkpoints(task_id, checkpoint_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET checkpoint_json = excluded.checkpoint_json').run(id, JSON.stringify(checkpoint)) } }
+  }
+
+  private groundedCheckpoint(id: string): GroundedCheckpoint | undefined {
+    const row = this.db?.prepare('SELECT checkpoint_json FROM task_grounded_checkpoints WHERE task_id = ?').get(id) as { checkpoint_json: string } | undefined
+    return row ? JSON.parse(row.checkpoint_json) as GroundedCheckpoint : undefined
+  }
+
+  private groundedModelGuard(id: string): string | null {
+    if (!this.getPlan(id)?.workflow || !this.modelResolver) return null
+    const row = this.db?.prepare('SELECT snapshot_json FROM task_model_snapshots WHERE task_id = ?').get(id) as { snapshot_json: string } | undefined
+    if (!row) return '摘要任务缺少原模型绑定证据，需重新确认'
+    const snapshot = JSON.parse(row.snapshot_json) as StoredTaskModelSnapshot
+    const model = this.modelResolver(snapshot.id)
+    return !model || !snapshot.bindingSalt || bindingFingerprint(model, snapshot.bindingSalt) !== snapshot.bindingFingerprint ? '任务原模型配置已变更或被删除，未向其他服务发送来源；请恢复原配置或新建任务' : null
   }
 
   private async plan(title: string, model: TaskModelBinding | null): Promise<TaskPlan | null> {
@@ -208,7 +235,7 @@ export class TaskService {
     }
     this.move(id, '已确认')
     this.move(id, '规划中')
-    const preview = await executeGoal({ goal: title, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan })
+    const preview = await executeGoal({ goal: title, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan, ...this.groundedOptions(id) })
     if (preview.status === '等待批准') {
       this.move(id, '执行中')
       this.move(id, '等待批准')
@@ -272,7 +299,7 @@ export class TaskService {
   approve(id: string, scope: ApprovalScope = 'once'): Promise<Result<Task>> {
     const current = this.read(id)
     if (current.status !== '等待批准') return Promise.resolve(fail('当前没有待批准的操作'))
-    const approval = current.approval_json ? JSON.parse(current.approval_json) as { requestedAt?: number; tool?: string; containerPath?: string; hostPath?: string } : {}
+    const approval = current.approval_json ? JSON.parse(current.approval_json) as { requestedAt?: number; tool?: string; containerPath?: string; hostPath?: string; impact?: string } : {}
     this.rememberImageRequest(id, approval)
     const gateTool = approval.tool === 'copy-image' ? 'filesystem' : approval.tool ?? this.getPlan(id)?.tool ?? 'filesystem'
     const gateReason = this.toolGate?.(gateTool)
@@ -295,7 +322,7 @@ export class TaskService {
     const control = { stop: false, controller: new AbortController() }
     const approvedPlan = JSON.stringify(this.getPlan(id) ?? null)
     const approvedAt = approval.requestedAt!
-    this.executionGuards.set(id, () => approvalExpired(approvedAt, Date.now()) ? '批准已过期，未开始后续操作' : approvedPlan !== JSON.stringify(this.getPlan(id) ?? null) ? '计划变更，需重新批准' : null)
+    this.executionGuards.set(id, () => approvalExpired(approvedAt, Date.now()) ? '批准已过期，未开始后续操作' : approvedPlan !== JSON.stringify(this.getPlan(id) ?? null) ? '计划变更，需重新批准' : this.groundedModelGuard(id))
     this.running.set(id, control)
     this.db?.prepare(`UPDATE tasks SET approval_json = NULL, summary = ?, result = ?, updated_at = ? WHERE id = ?`).run(
       '执行中',
@@ -303,7 +330,7 @@ export class TaskService {
       new Date().toISOString(),
       id
     )
-    this.pending.set(id, this.run(id, current, control, scope))
+    this.pending.set(id, this.run(id, current, control, scope, approval.impact))
     return Promise.resolve(ok(this.emit(id)))
   }
 
@@ -353,7 +380,7 @@ export class TaskService {
     return ok(this.emit(id))
   }
 
-  private async run(id: string, current: TaskRow, control: { stop: boolean; controller: AbortController }, scope: ApprovalScope): Promise<void> {
+  private async run(id: string, current: TaskRow, control: { stop: boolean; controller: AbortController }, scope: ApprovalScope, approvedImpact?: string): Promise<void> {
     try {
       const done = await executeGoal({
         goal: current.title,
@@ -361,6 +388,8 @@ export class TaskService {
         approved: true,
         cancelled: false,
         plan: this.getPlan(id) ?? null,
+        ...this.groundedOptions(id),
+        approvedGroundedImpact: approvedImpact,
         runner: this.isolatedRunner,
         taskId: id,
         approvalScope: scope,
@@ -537,8 +566,15 @@ export class TaskService {
     const current = this.read(id)
     if (!['待确认', '已中断', '失败', '部分完成', '已取消'].includes(current.status)) return fail('当前任务不在可补充或恢复的状态')
     const checkpoints = this.checkpoints(id)
+    const grounded = Boolean(this.getPlan(id)?.workflow)
+    const resumeRequested = /^\s*(继续|恢复|resume|continue)\s*$/i.test(answer)
+    const priorSummary = this.groundedCheckpoint(id)
+    // Check the durable receipt before replanning: an ordinary replacement must not hide an unresolved summary write.
+    if (priorSummary && !priorSummary.outcomeKnown && (!grounded || !resumeRequested)) return fail('上次摘要写入的实际结果尚未核对，不能替换原计划；请先使用“核对并继续”核对原目标，之后再新建其他任务。')
     const unknown = this.require(id).toolCalls.some((call) => {
       if (call.agentRole !== 'Worker' || call.toolId === 'filesystem.effect') return false
+      // The dedicated workflow reconciles its persisted write receipt against disk before any replay.
+      if (grounded && (call.toolId === 'model.summary' || call.stepId === `${id}-summary-save`)) return false
       const args = call.declared.args as { phase?: string; traceId?: string }
       return args.phase === 'started' ? !checkpoints.some((checkpoint) => checkpoint.traceId === args.traceId && checkpoint.outcomeKnown) && !this.require(id).toolCalls.some((result) => { const final = result.declared.args as { traceId?: string; phase?: string; outcomeKnown?: boolean }; return final.traceId === args.traceId && final.phase === 'result' && final.outcomeKnown === true }) : !args.traceId && checkpoints.length === 0
     })
@@ -554,15 +590,18 @@ export class TaskService {
       this.db?.prepare('UPDATE tasks SET status = ?, approval_json = ?, summary = ?, result = ?, updated_at = ? WHERE id = ?').run('等待批准', JSON.stringify(request), '图片请求已重新核对，等待批准', '仍将写入原来确认的目标。批准前不会生成或复制图片。', new Date().toISOString(), id)
       return ok(this.emit(id))
     }
-    const resumeRequested = /^\s*(继续|恢复|resume|continue)\s*$/i.test(answer)
-    const resume = checkpoints.length > 0 && resumeRequested
+    const resume = (checkpoints.length > 0 || grounded) && resumeRequested
     const goal = resumeRequested ? current.title : `${current.title}\n用户补充：${answer}`
     let plan: TaskPlan | null
     try { plan = resume ? this.getPlan(id) ?? null : await this.plan(goal, this.boundModel(id)) ?? localRulePlan(goal) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
     const root = extractRoot(answer) ?? (current.scope || null)
     if (!root && (plan?.tool ?? chooseTool(goal)) !== 'browser') return fail('仍缺少明确授权目录')
     if (plan && !resume) this.savePlan(id, plan, root ?? '')
-    const preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan, taskId: id, checkpoints })
+    let preview: GoalOutcome
+    try {
+      const blocked = this.groundedModelGuard(id); if (blocked) return fail(blocked)
+      preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan, taskId: id, checkpoints, ...this.groundedOptions(id) })
+    } catch (error) { return fail(error instanceof Error ? error.message : '摘要恢复失败，未自动重放') }
     this.db?.prepare('UPDATE tasks SET title = ?, scope = ?, status = ?, updated_at = ? WHERE id = ?').run(goal, root ?? '', preview.status, new Date().toISOString(), id)
     this.saveOutcome(id, preview); return ok(this.emit(id))
   }

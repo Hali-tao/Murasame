@@ -1,0 +1,48 @@
+
+> murasame-desktop@0.9.0 verify
+> npm run typecheck && npm run lint && npm test && npm run trace
+
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+
+> murasame-desktop@0.9.0 lint
+> eslint .
+
+
+> murasame-desktop@0.9.0 test
+> vitest run
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:39696) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:72408) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79008) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89152) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  45 passed (45)
+      Tests  518 passed (518)
+   Start at  03:22:14
+   Duration  11.53s (tests 37%, environment 32%, import 20%, transform 9%, worker 2%)
+
+    Isolate  45 workers spawned · ~1.76s startup each (spawn + environment, per file)
+             at least ~795ms faster with isolate: false — reuses workers across files instead of one per file
+
+
+> murasame-desktop@0.9.0 trace
+> node scripts/traceability.mjs
+
+trace: 74/74 covered, missing 0

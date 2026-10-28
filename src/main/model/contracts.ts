@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { ToolDeclaration } from './types'
+import { groundedWorkflowSchema } from '../agent/grounded-summary'
 
 export const planSchema = z.object({
   steps: z.array(z.object({
@@ -71,6 +72,7 @@ export function firstJsonObject(text: string): string | null {
 
 /** 任务计划。信息不够时 question 写追问，步骤只描述打算做什么，执行结果另外核验。 */
 export const taskPlanSchema = z.object({
+  workflow: groundedWorkflowSchema.optional(),
   tool: z.enum(['filesystem', 'terminal', 'git', 'browser']),
   root: z.string().max(260).optional(),
   url: z.string().max(500).optional(),
@@ -89,8 +91,10 @@ export const taskPlanSchema = z.object({
     outputs: z.array(z.object({ path: z.string().min(1).max(500), kind: z.enum(['write', 'delete']).optional(), overwrite: z.boolean().optional(), expectedHash: z.string().regex(/^[a-f0-9]{64}$/).optional(), expectedContent: z.string().max(100000).optional() })).max(100).optional(),
     args: z.object({ action: z.enum(['organize', 'list', 'read', 'write', 'move']).optional(), path: z.string().max(500).optional(), from: z.string().max(500).optional(), to: z.string().max(500).optional(), content: z.string().max(100000).optional(), executable: z.string().max(260).optional(), argv: z.array(z.string().max(2000)).max(40).optional(), url: z.string().max(500).optional() }).optional(),
     checks: z.array(z.object({ kind: z.enum(['file-exists', 'file-absent', 'file-content', 'file-hash', 'output-includes', 'exit-code']), path: z.string().max(500).optional(), value: z.string().max(100000).optional() })).max(40).optional()
-  })).min(1).max(6),
+  })).max(6),
   question: z.string().max(200)
+}).superRefine((plan, context) => {
+  if (plan.workflow ? plan.tool !== 'filesystem' || plan.steps.length !== 0 || Boolean(plan.command || plan.url) : plan.steps.length === 0) context.addIssue({ code: 'custom', message: '摘要流程必须使用 filesystem、空 steps 和专用 workflow；普通计划必须提供步骤' })
 })
 
 /** 一轮对话里提取出的记忆。UPDATE 和 DELETE 用 replaces 指出要替换的旧记忆原文。 */

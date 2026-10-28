@@ -1,0 +1,38 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:48900) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/grounded-task-service.test.ts (23 tests | 1 failed | 22 skipped) 37ms
+   ❯ [FR-17] 两次批准的真实文件摘要 (23)
+     × 未知摘要写入不能通过补充要求改成普通计划而绕过原目标核对 36ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/grounded-task-service.test.ts > [FR-17] 两次批准的真实文件摘要 > 未知摘要写入不能通过补充要求改成普通计划而绕过原目标核对
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/grounded-task-service.test.ts:242:24
+    240|     const tasks = f.restart()
+    241|     const changed = await tasks.continueTask(id, '改成新建 different.md')
+    242|     expect(changed.ok).toBe(false)
+       |                        ^
+    243|     if (!changed.ok) expect(changed.error).toMatch(/核对/)
+    244|     expect(tasks.list()[0].approval).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 22 skipped (23)
+   Start at  03:21:35
+   Duration  595ms (import 43%, transform 40%, tests 15%, worker 2%)

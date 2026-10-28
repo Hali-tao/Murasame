@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:87080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (23.0s)
+  ok 2 tests\e2e\grounded-summary.spec.ts:96:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (30.5s)
+
+  2 passed (53.9s)

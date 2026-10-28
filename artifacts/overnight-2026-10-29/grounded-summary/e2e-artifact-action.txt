@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:67040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (24.9s)
+
+  1 passed (25.5s)

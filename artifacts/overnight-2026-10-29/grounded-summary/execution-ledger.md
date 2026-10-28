@@ -1,0 +1,30 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-10-29-grounded-summary.md
+
+Base: 4e9244951315dfefcebe6a3f2c5cce04a7e7aed6. Heartbeat started 02:47, deadline 07:45 for new changes. Branch feat/overnight-2026-10-29; no other worker editing files. Existing untracked artifacts preserved.
+
+Pre-flight Task 1 → 2: source reader accepts optional approved manifest; synchronous bounded recheck required by gateway.beforeSend. Manifest carries inode/dev/ctime, not body; async reader produces snapshots only after A. No conflict.
+Pre-flight Task 2 → 3: approval impact carries workflow kind, stage, source manifest, recipient, exact draft and hash. Existing next/remaining projection retained. No conflict.
+Ruling: Execute this dependent plan inline under executing-plans, with one fresh final reviewer — source, executor, integration and UI share interfaces; avoid concurrent edits. User authorized autonomous decisions and normal GitHub push, so no new approval gate.
+Ruling: Summary model plans use empty steps; host constructs the two fixed stages — rejects arbitrary executable steps instead of ignoring them. Ordinary plans still require 1–6 steps. Cost: providers must follow the explicit workflow instruction or get a schema retry.
+Ruling: Use existing Windows checkout and feature branch, independent test directories; no new worktree — existing overnight state and native assets are here. Cost: final staging must remain explicit.
+Task 1: RED observed source reader/validation stubs (10 failing, 6 rejection cases passing); contract test RED observed rejected new workflow. Source helper GREEN 16/16 before contract integration. Raw logs in previews/overnight-2026-10-29/grounded-*.txt.
+
+Task 1: 17 tests green. Fixed test.each fixture packaging so every path case receives the actual array; full verify green at 511 before additional controls.
+Task 2: RED 16/16 initial service failures. GREEN 16/16 after executor/persistence/model wiring. Added actual ModelGateway queue cancellation using a loopback HTTP service, response echo privacy, A→B approval replay, altered draft, post-write cancellation, exact recovery cases. Generator errors are quarantined before persistent diagnostics.
+Task 3: RED 2 UI assertions; GREEN after source recipient/full draft presentation. Real Electron 2/2 final path and slow model/chat/hide/cancel passed at 03:14. Initial E2E strict selector error corrected to exact match; no product workaround.
+Ruling: Pet short activity card cannot carry full summary consent; replace quick allow with full review navigation for summary tasks — required for exact source/model/draft consent. RED canApprove regression observed, then GREEN. Cost: one additional navigation for review.
+Ruling: Support quoted Windows directories containing spaces in shared root extraction — real fixture demonstrated existing truncation rejected an explicitly authorized folder. Cost: preserves full quoted root instead of interpreting the first word as a directory.
+Ruling: Review current final worktree plus listed new files before commit, instead of generating an empty BASE..HEAD package — user requires only checked code committed. Cost: reviewer must explicitly include untracked source files; package lists them.
+Task 3: Test uses .test.ts and React.createElement rather than .test.tsx, because repository Vitest include only discovers .test.ts. Same rendered UI assertions.
+
+Final review: fresh gpt-6-astra reviewer independently ran 42 focused tests and reproduced one P2 recovery bypass. An unknown summary write could be hidden by a supplemental instruction that changed to an ordinary plan. Accepted as Important; added failing real SQLite/temp-files regression (observed continued.ok true when false required), then gated any replacement against the persisted receipt before invoking the planner. Old workflow remains available for explicit reconciliation. Final full suite pending.
+Final: Ruling: reviewer set aside semantic model accuracy and provider latency/pricing — keep explicit UI/documentation limitations and local fixture evidence, not unsupported accuracy claims. Cost: live-provider quality still requires separate evaluation.
+Final: Ruling: reviewer left Electron/package checks to integration owner — full 11-case Electron run passed before the final narrow recovery guard; rerun summary E2E after rebuilding that guard. Installer not part of this increment. Cost: no claim of installed-app replacement.
+Final: Ruling: general multi-agent/office/programming, old artifacts and adversarial kernel/database corruption remain outside this increment — preserve original pending requirements and old files; do not claim security against privileged local attackers. Cost: these remain future work, not silently completed.
+
+Final: fixed unknown-summary-write workflow replacement — regression RED→GREEN; npm run verify 45 files / 518 tests, Node/Web types, lint, trace 74/74. Final rebuild + two summary Electron E2E passed. Before this final guard, the whole 11-case Electron suite passed.
+Task 1: complete (base 4e92449; source/contract 17 tests included in final green suite).
+Task 2: complete (base 4e92449; real service/SQLite/files and actual gateway queue 23 tests included in final green suite).
+Task 3: complete (base 4e92449; UI/pet 3 tests and two real Electron summary tests green; all 11 app E2E passed before final narrow recovery guard).
+Ruling: Reuse the verified full-suite evidence for task completion instead of rerunning unchanged tests via task-done three times — developer instruction limits redundant testing after required checks pass. Cost: manual ledger references the actual saved runs instead of generated per-task completion logs.
+Ruling: User previously authorized upload to the existing private GitHub repository and this heartbeat explicitly permits checked-code commits and non-force push — keep the existing feature branch and fast-forward github/main, without a new approval menu or PR. Cost: direct main delivery is intentional and already authorized.

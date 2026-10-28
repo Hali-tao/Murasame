@@ -1,6 +1,6 @@
 # 有来源文件摘要与审批保存 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. 本文最初为只读设计；主工作线已依据用户自主迭代授权接收为下一轮实施范围。首轮提交后继续，先阅读 docs/14-OVERNIGHT-ITERATION.md 和当前 Git 状态；不需要重复询问方案批准。
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking. 本文最初为只读设计；主工作线已依据用户自主迭代授权接收为下一轮实施范围。首轮提交后继续，先阅读 docs/14-OVERNIGHT-ITERATION.md 和当前 Git 状态；不需要重复询问方案批准。
 
 **Goal:** 用户指定授权目录内的文本文件，确认读取与模型外发范围后生成能追溯到真实来源的摘要草稿，再确认准确内容和目标路径，最后新建并独立核验文件。
 
@@ -170,10 +170,10 @@ interface GroundedCheckpoint {
 
 **Interfaces:** 导出 `GroundedSummaryWorkflow`、`SourceSnapshot`、`GroundedDraft`；`readSummarySources(root, paths, signal): Promise<SourceSnapshot[]>`；`validateAndRenderSummary(draft, sources): {markdown:string;sha256:string}`。
 
-- [ ] 写真实临时目录测试：两份已知文本生成快照；越界/junction、33 KiB 单文件、总量、非 UTF-8、空来源和重复真实路径拒绝；行引用不存在或 quote 不匹配拒绝；来源含恶意指令只作为 text。
-- [ ] 跑 `npx vitest run tests/unit/grounded-summary.test.ts`，确认行为断言失败而非 fixture 错误。
-- [ ] 实现异步有界读取、每次读取前后校验和严格 schema；不得沿用无上限 readInside。Markdown 引用由主机生成。
-- [ ] 复跑该专属文件；阅读生成的真实 Markdown，核对引用确实指向原句。
+- [x] 写真实临时目录测试：两份已知文本生成快照；越界/junction、33 KiB 单文件、总量、非 UTF-8、空来源和重复真实路径拒绝；行引用不存在或 quote 不匹配拒绝；来源含恶意指令只作为 text。
+- [x] 跑 `npx vitest run tests/unit/grounded-summary.test.ts`，确认行为断言失败而非 fixture 错误。
+- [x] 实现异步有界读取、每次读取前后校验和严格 schema；不得沿用无上限 readInside。Markdown 引用由主机生成。
+- [x] 复跑该专属文件；阅读生成的真实 Markdown，核对引用确实指向原句。
 
 ### Task 2：两阶段执行、模型接线与持久恢复（约 90–150 分钟）
 
@@ -181,10 +181,10 @@ interface GroundedCheckpoint {
 
 **Interfaces:** `SummaryGenerator` 按上文；`executeGroundedSummary` 消费现有执行控制并产出 GoalOutcome；检查点回调只持久化允许字段。
 
-- [ ] 写实际 TaskService + SQLite + 临时磁盘测试，仅控制模型边界：A 前请求数 0/输出不存在；A 后模型收到真实文件特有句；伪引用失败；好草稿进入 B 且输出仍不存在；B 后精确文件哈希通过。
-- [ ] 加取消在排队/请求/响应后、来源变化、最多 3 次实际 dispatch、总体超时、模型绑定变更、B 过期/拒绝、目标并发出现、restart during writing 的断言。
-- [ ] 跑该专属文件见红；实现 stage 分派、授权指纹、gateway controls、恢复分流和引用/写入独立核验。
-- [ ] 复跑两个专属文件；数据库检查 tool_calls/checkpoint 不含整份 source sentinel，草稿和必要引用保留在专用字段。
+- [x] 写实际 TaskService + SQLite + 临时磁盘测试，仅控制模型边界：A 前请求数 0/输出不存在；A 后模型收到真实文件特有句；伪引用失败；好草稿进入 B 且输出仍不存在；B 后精确文件哈希通过。
+- [x] 加取消在排队/请求/响应后、来源变化、最多 3 次实际 dispatch、总体超时、模型绑定变更、B 过期/拒绝、目标并发出现、restart during writing 的断言。
+- [x] 跑该专属文件见红；实现 stage 分派、授权指纹、gateway controls、恢复分流和引用/写入独立核验。
+- [x] 复跑两个专属文件；数据库检查 tool_calls/checkpoint 不含整份 source sentinel，草稿和必要引用保留在专用字段。
 
 ### Task 3：可读两次批准和真实 Electron 闭环（约 60–90 分钟）
 
@@ -192,9 +192,9 @@ interface GroundedCheckpoint {
 
 **Interfaces:** 使用现有 Task.approval 和 task approve/deny/continue IPC；impact 新字段解析在共享展示模块中；不让 UI 自己计算权威授权。
 
-- [ ] UI 测试：A 可见全部来源、外发对象/用途；B 可见最终完整正文、引用、准确路径和不会覆盖；选择 task 范围不能隐藏第二次批准；错误/超限有下一步处理入口。
-- [ ] Electron E2E：临时真实 source 文件和本地受控模型 HTTP 服务；捕获请求确认来源正文真正发送且只有 A 后发送；模型返回来自文件的确定草稿，真实 UI 批准 B 后磁盘字节准确，查看成果链接有效。
-- [ ] 独立慢响应测试同时正常聊天、取消或隐藏窗口：聊天可响应，隐藏继续该任务，取消不再保存。测试运行使用临时 userData 和专属 output。
-- [ ] 主工作线统一 build 后跑专项 E2E；最终统一 typecheck/test/lint/build 由集成线一次执行。未通过之前不声称能力完成，不提交与本任务无关文件。
+- [x] UI 测试：A 可见全部来源、外发对象/用途；B 可见最终完整正文、引用、准确路径和不会覆盖；选择 task 范围不能隐藏第二次批准；错误/超限有下一步处理入口。
+- [x] Electron E2E：临时真实 source 文件和本地受控模型 HTTP 服务；捕获请求确认来源正文真正发送且只有 A 后发送；模型返回来自文件的确定草稿，真实 UI 批准 B 后磁盘字节准确，查看成果链接有效。
+- [x] 独立慢响应测试同时正常聊天、取消或隐藏窗口：聊天可响应，隐藏继续该任务，取消不再保存。测试运行使用临时 userData 和专属 output。
+- [x] 主工作线统一 build 后跑专项 E2E；最终统一 typecheck/test/lint/build 由集成线一次执行。未通过之前不声称能力完成，不提交与本任务无关文件。
 
 预计总计约 3.5～5.5 小时，取决于现有恢复 API 适配。若可用窗口不足，应在 Task 2/3 之前停止并保留设计，不交付半条会绕过审批的路径。此增量完成后仍保留原审计中的一般任务规划、模型 Critic、多智能体动态分工、隔离办公/编程与自然图像能力缺口。
