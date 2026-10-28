@@ -2,6 +2,8 @@
 
 实现及使用说明：`docs/15-GROUNDED-SUMMARY.md`。本目录只含独立测试资料，没有用户真实来源文件、模型凭据或原始 SRS 附件。
 
+功能提交：`65279016b454937765fbb5702ff000403f76ef85`，已普通推送并核对GitHub main远端SHA；没有强推。
+
 - `verify-final.txt`：最终恢复修复后，45个测试文件、518项单元测试、Node/Web类型检查、ESLint、trace74/74全部通过。trace是需求到测试的映射，不代表所有需求已经完整人工验收。
 - `e2e-full-before-review-fix.txt`：完整11项Electron回归通过；发生在最后一项窄范围恢复修复之前。
 - `e2e-after-review.txt`：重新构建最终业务代码后，两个摘要Electron用例通过，涵盖两次批准、实际来源外发、精确文件保存、慢任务时聊天、隐藏继续和取消丢弃迟到结果。
