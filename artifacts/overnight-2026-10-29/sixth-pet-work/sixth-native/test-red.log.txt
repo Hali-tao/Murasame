@@ -1,0 +1,75 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+stdout | tests/unit/sixth-native-working-loop.test.ts
+Live2D Cubism SDK Core Version 5.1.0
+
+ ❯ tests/unit/sixth-native-working-loop.test.ts (4 tests | 4 failed) 144ms
+   ❯ sustained native working posture (4)
+     × keeps attention and hands settled through the repeated boundary instead of fully releasing them 5ms
+     × joins every curve and the repeated boundary with matching position and velocity 1ms
+     × animates actual native mesh without competing with original physics or exceeding rig limits 1ms
+     × keeps breathing active while retaining a complete blink in each cycle 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sixth-native-working-loop.test.ts > sustained native working posture > keeps attention and hands settled through the repeated boundary instead of fully releasing them
+AssertionError: sustained work must resolve to its native periodic motion: expected undefined to be defined
+ ❯ load tests/unit/sixth-native-working-loop.test.ts:29:82
+     27|   const settings = JSON.parse(readFileSync(resolve(assets, '奶蛙.model3.…
+     28|   const reference = settings.FileReferences.Motions.WorkingLoop?.[0]
+     29|   expect(reference, 'sustained work must resolve to its native periodi…
+       |                                                                                  ^
+     30|   return JSON.parse(readFileSync(resolve(assets, reference.File), 'utf…
+     31| }
+ ❯ tests/unit/sixth-native-working-loop.test.ts:53:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/sixth-native-working-loop.test.ts > sustained native working posture > joins every curve and the repeated boundary with matching position and velocity
+AssertionError: sustained work must resolve to its native periodic motion: expected undefined to be defined
+ ❯ load tests/unit/sixth-native-working-loop.test.ts:29:82
+     27|   const settings = JSON.parse(readFileSync(resolve(assets, '奶蛙.model3.…
+     28|   const reference = settings.FileReferences.Motions.WorkingLoop?.[0]
+     29|   expect(reference, 'sustained work must resolve to its native periodi…
+       |                                                                                  ^
+     30|   return JSON.parse(readFileSync(resolve(assets, reference.File), 'utf…
+     31| }
+ ❯ tests/unit/sixth-native-working-loop.test.ts:65:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/sixth-native-working-loop.test.ts > sustained native working posture > animates actual native mesh without competing with original physics or exceeding rig limits
+AssertionError: sustained work must resolve to its native periodic motion: expected undefined to be defined
+ ❯ load tests/unit/sixth-native-working-loop.test.ts:29:82
+     27|   const settings = JSON.parse(readFileSync(resolve(assets, '奶蛙.model3.…
+     28|   const reference = settings.FileReferences.Motions.WorkingLoop?.[0]
+     29|   expect(reference, 'sustained work must resolve to its native periodi…
+       |                                                                                  ^
+     30|   return JSON.parse(readFileSync(resolve(assets, reference.File), 'utf…
+     31| }
+ ❯ tests/unit/sixth-native-working-loop.test.ts:92:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/sixth-native-working-loop.test.ts > sustained native working posture > keeps breathing active while retaining a complete blink in each cycle
+AssertionError: sustained work must resolve to its native periodic motion: expected undefined to be defined
+ ❯ load tests/unit/sixth-native-working-loop.test.ts:29:82
+     27|   const settings = JSON.parse(readFileSync(resolve(assets, '奶蛙.model3.…
+     28|   const reference = settings.FileReferences.Motions.WorkingLoop?.[0]
+     29|   expect(reference, 'sustained work must resolve to its native periodi…
+       |                                                                                  ^
+     30|   return JSON.parse(readFileSync(resolve(assets, reference.File), 'utf…
+     31| }
+ ❯ tests/unit/sixth-native-working-loop.test.ts:117:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  06:33:28
+   Duration  476ms (tests 87%, import 7%, worker 3%, transform 3%)

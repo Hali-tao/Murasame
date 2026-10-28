@@ -1,0 +1,54 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/autonomy-status-bridge.test.ts (3 tests | 3 failed) 622ms
+   × [FR-28] delivers real service stages and verified artifact through IPC and preload, then detaches 597ms
+   × [FR-30] exposes preparation and cancellation without claiming an unstarted activity completed 7ms
+   × [FR-28] preparing an image never overlays an active verified creation in events or status 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/autonomy-status-bridge.test.ts > [FR-28] delivers real service stages and verified artifact through IPC and preload, then detaches
+TypeError: api.autonomy.onStatusChanged is not a function
+ ❯ tests/unit/autonomy-status-bridge.test.ts:64:28
+     62| it('[FR-28] delivers real service stages and verified artifact through…
+     63|   const events: ActivityStatus[] = []
+     64|   const off = api.autonomy.onStatusChanged(state => events.push(state))
+       |                            ^
+     65|   await service.start(start); await service.produce('code', '打印42', ag…
+     66|   expect(events.some(state => state.creation?.phase === 'drafting')).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/autonomy-status-bridge.test.ts > [FR-30] exposes preparation and cancellation without claiming an unstarted activity completed
+TypeError: api.autonomy.onStatusChanged is not a function
+ ❯ tests/unit/autonomy-status-bridge.test.ts:80:16
+     78|   vi.mocked(ensureDocker).mockReturnValue(preparation.promise)
+     79|   const events: ActivityStatus[] = []
+     80|   api.autonomy.onStatusChanged(state => events.push(state))
+       |                ^
+     81|   const pending = api.autonomy.start({ confirmed: true, allowNetwork: …
+     82|   expect(events.at(-1)).toMatchObject({ phase: 'preparing', running: f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/autonomy-status-bridge.test.ts > [FR-28] preparing an image never overlays an active verified creation in events or status
+TypeError: api.autonomy.onStatusChanged is not a function
+ ❯ tests/unit/autonomy-status-bridge.test.ts:99:16
+     97|   const artifact = service.status().creation!.artifact!
+     98|   const events: ActivityStatus[] = []
+     99|   api.autonomy.onStatusChanged(state => events.push(state))
+       |                ^
+    100|   const pending = api.autonomy.buildImage()
+    101|   expect(await api.autonomy.status()).toMatchObject({ phase: 'running'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  06:36:01
+   Duration  1.14s (tests 79%, import 13%, transform 7%, worker 1%)

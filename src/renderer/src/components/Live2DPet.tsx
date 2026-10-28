@@ -6,6 +6,8 @@ import { Live2DModel, MotionPriority, type Cubism4InternalModel } from 'pixi-liv
 import type { PetMotionAction, PetPreset } from '@shared/pet-presets'
 import { alphaHit } from '@shared/pet-geometry'
 import { resolveMotionGroup } from '@shared/avatar/motion-groups'
+import type { PetActivityMotion } from '@shared/pet-work'
+import { ActivityMotionDirector } from '../avatar/activity-motion-director'
 
 installCspSafeShaders({ ShaderSystem })
 
@@ -29,17 +31,20 @@ interface Live2DPetProps {
   fps?: number
   blinkMs?: number
   breath?: number
+  activityMotion?: PetActivityMotion | null
   onReady?: () => void
 }
 
 export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Live2DPet(
-  { preset, className = '', paused = false, fps = 24, blinkMs = 4200, breath = 0.5, onReady },
+  { preset, className = '', paused = false, fps = 24, blinkMs = 4200, breath = 0.5, activityMotion = null, onReady },
   ref
 ) {
   const hostRef = useRef<HTMLDivElement>(null)
   const modelRef = useRef<Live2DModel | null>(null)
   const appRef = useRef<Application | null>(null)
   const mouthRef = useRef<number | null>(null)
+  const directorRef = useRef<ActivityMotionDirector | null>(null)
+  const activityRef = useRef(activityMotion)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const authoredNailong = preset.id === 'naiwa' && preset.modelUrl === 'live2d/naiwa/奶蛙.model3.json'
@@ -61,7 +66,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
     },
     playMotion(action: PetMotionAction): void {
       const model = modelRef.current
-      if (!model) return
+      if (!model || directorRef.current?.waitingForStart) return
       const manager = model.internalModel.motionManager
       const group = resolveMotionGroup(preset.motions[action] ?? '', Object.keys(manager.definitions), action === 'tap' ? ['Tap', 'tap_body', manager.groups.idle] : ['Flick', manager.groups.idle])
       if (!group) return
@@ -72,35 +77,17 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       void model.motion(group, 0, MotionPriority.NORMAL).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
     },
     playNamedMotion(group: string, expression: string | null): void {
-      const model = modelRef.current
-      if (!model) return
-      const manager = model.internalModel.motionManager
-      const actualGroup = resolveMotionGroup(group, Object.keys(manager.definitions), [manager.groups.idle])
-      if (actualGroup) {
-        const priority = actualGroup === manager.groups.idle && !expression ? MotionPriority.IDLE : MotionPriority.FORCE
-        // Some avatars express thought with idle + an expression. The SDK does
-        // not restart an already-active group, so update its priority in place.
-        if (manager.state.currentGroup === actualGroup) manager.state.currentPriority = priority
-        void model.motion(actualGroup, 0, MotionPriority.FORCE).then(started => {
-          // Pure idle may interrupt a response, then releases priority so the
-          // next tap responds immediately. Expressive idle remains semantic.
-          if (started && manager.state.currentGroup === actualGroup) {
-            manager.state.currentPriority = priority
-          }
-        }).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
-      }
-      if (expression) {
-        try {
-          void model.expression(expression).catch(cause => console.warn('[Live2D] Expression unavailable', cause))
-        } catch {
-          // 形象没有这个表情时只播动作，不中断。
-        }
-      }
+      directorRef.current?.transient(group, expression)
     },
     setMouth(open: number | null): void {
       mouthRef.current = open
     }
   }), [preset])
+
+  useEffect(() => {
+    activityRef.current = activityMotion
+    directorRef.current?.setActivity(activityMotion)
+  }, [activityMotion])
 
   useEffect(() => {
     const host = hostRef.current
@@ -202,11 +189,54 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
           core.setParameterValueById('PARAM_MOUTH_OPEN_Y', open)
         })
         modelRef.current = loaded
+        type LoopMotion = { setIsLoop(loop: boolean): void; setIsLoopFadeIn(loop: boolean): void }
+        let activeLoop: LoopMotion | undefined
+        const director = new ActivityMotionDirector(async (request, current, startedResponse) => {
+          const requestedGroup = request?.motion ?? preset.idleMotion
+          const group = resolveMotionGroup(requestedGroup, Object.keys(manager.definitions), [manager.groups.idle])
+          if (!group) { startedResponse(); return }
+          const motion = await manager.loadMotion(group, 0) as LoopMotion | undefined
+          if (!current() || disposed || modelRef.current !== loaded) return
+          if (!motion) throw new Error(`Motion unavailable: ${group}`)
+          activeLoop?.setIsLoop(false)
+          // Cubism's JSON Loop flag is parsed but this SDK does not enable it.
+          // Only a current continuous activity owns an actual native loop.
+          motion.setIsLoop(request?.loop === true)
+          motion.setIsLoopFadeIn(false)
+          activeLoop = request?.loop ? motion : undefined
+          const expression = request?.expression ?? null
+          const priority = request?.loop || group !== manager.groups.idle || expression ? MotionPriority.FORCE : MotionPriority.IDLE
+          if (manager.state.currentGroup === group) manager.state.currentPriority = priority
+          const started = await loaded.motion(group, 0, MotionPriority.FORCE)
+          if (!current() || disposed) return
+          startedResponse()
+          if (started && manager.state.currentGroup === group) manager.state.currentPriority = priority
+          const expressions = manager.expressionManager
+          if (expression) {
+            const index = expressions?.getExpressionIndex(expression)
+            if (expressions && index !== undefined && index >= 0) {
+              // Load before committing, so an old asynchronous expression cannot
+              // reappear after a newer activity or cancellation has replaced it.
+              const value = await (expressions as unknown as { loadExpression(index: number): Promise<unknown> }).loadExpression(index)
+              if (value && current() && !disposed) await expressions.setExpression(index)
+            }
+          } else if (expressions) {
+            expressions.currentExpression = expressions.defaultExpression
+            expressions.resetExpression()
+          }
+          if (current() && !disposed && !app?.ticker.started) { loaded.update(0); app?.render() }
+        }, cause => console.warn('[Live2D] Activity motion unavailable', cause))
+        directorRef.current = director
+        manager.on('motionFinish', () => director.finished())
+        manager.on('motionStart', (group: string) => {
+          if (hostRef.current) hostRef.current.dataset.motionGroup = group
+        })
         app.stage.addChild(loaded)
         const ticker = app.ticker
         ticker.add(() => loaded.update(ticker.deltaMS), undefined, UPDATE_PRIORITY.HIGH)
         fitModel()
         if (idleGroup) await loaded.motion(idleGroup, 0, MotionPriority.IDLE)
+        director.setActivity(activityRef.current)
         if (!disposed) {
           // Reduced-motion mode may stop the ticker before the asset loads.
           // Draw its initial pose once so a static character is still visible.
@@ -255,6 +285,8 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       window.clearTimeout(loadTimer)
       observer.disconnect()
       window.removeEventListener('mousemove', handlePointerMove)
+      directorRef.current?.dispose()
+      directorRef.current = null
       modelRef.current = null
       appRef.current = null
       model?.destroy({ children: true })

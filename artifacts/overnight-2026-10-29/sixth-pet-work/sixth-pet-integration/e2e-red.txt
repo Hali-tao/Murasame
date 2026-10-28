@@ -1,0 +1,51 @@
+
+Running 1 test using 1 worker
+
+(node:83144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output (10.8s)
+
+
+  1) tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('pet-isolation-progress')
+    Expected substring: "等待创作内容"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('pet-isolation-progress') with timeout 5000ms
+      - waiting for getByTestId('pet-isolation-progress')
+
+
+      29 |     // window remain in use. Real Docker execution is covered by isolated-creation.
+      30 |     await publish(app, { ...active, creation: { phase: 'drafting', message: '等待独立测试模型生成候选' } })
+    > 31 |     await expect(pet.getByTestId('pet-isolation-progress')).toContainText('等待创作内容')
+         |                                                             ^
+      32 |     await expect(pet.locator('.pet-stage')).toHaveAttribute('data-work-phase', 'waiting')
+      33 |     await expect(pet.locator('.live2d-pet-host')).toHaveAttribute('data-motion-group', 'Think')
+      34 |     await publish(app, { ...active, creation: { phase: 'executing', message: '独立测试：代码正在隔离区运行' } })
+        at E:\Desktop\软件工程\murasame\tests\e2e\pet-work.spec.ts:31:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\sixth-pet-integration\e2e-red\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\sixth-pet-integration\e2e-red\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\sixth-pet-integration\e2e-red\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\sixth-pet-integration\e2e-red\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\sixth-pet-integration\e2e-red\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output

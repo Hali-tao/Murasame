@@ -157,6 +157,7 @@ const api: MurasameApi = {
       ipcRenderer.invoke(IPC.voice.speak, { text })
   },
   autonomy: {
+    onStatusChanged: (listener) => subscribe(IPC.autonomy.updated, listener),
     preview: () => ipcRenderer.invoke(IPC.autonomy.preview),
     create: (kind, goal) => ipcRenderer.invoke(IPC.autonomy.create, { kind, goal }),
     exportArtifact: (id) => ipcRenderer.invoke(IPC.autonomy.exportArtifact, { id }),

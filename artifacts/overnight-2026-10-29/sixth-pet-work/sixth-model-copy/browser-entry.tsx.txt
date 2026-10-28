@@ -1,0 +1,14 @@
+import { createRoot } from 'react-dom/client'
+import { MemoryRouter } from 'react-router-dom'
+import { ModelsPage } from '../../../src/renderer/src/pages/ModelsPage'
+import { initialBootstrap } from '../../../src/shared/mock-data'
+import { useAppStore } from '../../../src/renderer/src/store'
+
+const scenario = new URLSearchParams(location.search).get('scenario')
+const current = { id: 'fixture-current', name: '当前服务 · 独立示例', provider: 'OpenAI Compatible', endpoint: 'http://127.0.0.1:9999/v1', key: '', hasKey: true, model: 'test-model', caps: [], capabilities: [], probeNote: '', status: '在线', tone: 'green', default: true, latency: '24 ms' }
+const other = { ...current, id: 'fixture-other', name: '备用服务 · 独立示例', default: false }
+window.murasame = { core: {
+  verifyModel: async () => ({ ok: false, error: '本次请求超时，请检查服务地址和网络后重试。' })
+} } as never
+useAppStore.setState({ data: { ...initialBootstrap(), models: scenario === 'new' ? [other] : [current, other] } as never, loading: false, selectedModelId: scenario === 'current' ? current.id : other.id })
+createRoot(document.getElementById('root')!).render(<MemoryRouter><ModelsPage /></MemoryRouter>)

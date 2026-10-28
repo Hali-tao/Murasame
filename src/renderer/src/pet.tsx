@@ -5,7 +5,8 @@ import { DEFAULT_PET_PRESET, getPetPreset } from '@shared/pet-presets'
 import { listPetActivities, type PetActivity } from '@shared/pet-activity'
 import { petDimensions } from '@shared/pet-geometry'
 import { petSpeech } from '@shared/pet-speech'
-import type { Conversation, PerformanceCue, PetChatLayout, PetState, Task } from '@shared/types'
+import { derivePetWork, petWorkMotion } from '@shared/pet-work'
+import type { ActivityStatus, Conversation, PerformanceCue, PetChatLayout, PetState, Task } from '@shared/types'
 import { Live2DPet, type Live2DPetHandle } from './components/Live2DPet'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { allowHitSample, targetFps } from '@shared/render-budget'
@@ -13,6 +14,7 @@ import { chooseLayer, idlePresentation, mouthEnvelope, type PerformanceLayer } f
 import { idleFromPad, baselinePad } from '@shared/avatar/pad'
 import { playSamples, startRecording, type Recording } from './lib/audio'
 import { onWindowHidden } from './lib/window-visibility'
+import { followAutonomyStatus } from './lib/autonomy-status'
 import './styles.css'
 
 function clipBubble(text: string, expanded: boolean): string {
@@ -72,8 +74,11 @@ function PetApp(): React.JSX.Element {
   const [tasks, setTasks] = useState<Task[]>([])
   const [dismissedActivity, setDismissedActivity] = useState<ReadonlySet<string>>(() => readDismissed())
   const [activityBusy, setActivityBusy] = useState(false)
+  const [isolationStopping, setIsolationStopping] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
-  const [isoUrl, setIsoUrl] = useState('')
+  const [isolation, setIsolation] = useState<ActivityStatus | null>(null)
+  const [doNotDisturb, setDoNotDisturb] = useState(false)
+  const isoUrl = isolation?.viewUrl || ''
   const [isoOpen, setIsoOpen] = useState(true)
   const lastTapAt = useRef(0)
   const lastInteraction = useRef(0)
@@ -180,6 +185,7 @@ function PetApp(): React.JSX.Element {
       setMicrophone(result.data.settings.permissions.microphone)
       setFileApproval(result.data.settings.fileApproval ?? 'ask')
       setSpeakReplies(result.data.settings.speakReplies)
+      setDoNotDisturb(result.data.settings.doNotDisturb)
       applyConversation(result.data.conversations.find((item) => item.id === id) ?? null)
     })
     const stopUpdated = window.murasame.events.onConversationUpdated((next) => {
@@ -252,10 +258,18 @@ function PetApp(): React.JSX.Element {
 
   useEffect(() => {
     if (!window.murasame) return
+    let disposed = false
+    const updated = new Map<string, Task>()
     void window.murasame.core.getBootstrap().then((result) => {
-      if (result.ok) setTasks(result.data.tasks)
-    })
-    return window.murasame.events.onTaskUpdated((task) => {
+      if (!disposed && result.ok) setTasks([
+        ...[...updated.values()].reverse(),
+        ...result.data.tasks.filter(task => !updated.has(task.id))
+      ])
+    }).catch(() => undefined)
+    const stop = window.murasame.events.onTaskUpdated((task) => {
+      if (disposed) return
+      updated.delete(task.id)
+      updated.set(task.id, task)
       setTasks((current) => [task, ...current.filter((item) => item.id !== task.id)])
       if (task.status === '执行中' || task.status === '规划中' || task.status === '等待批准' || task.status === '待确认' || task.status === '正在停止') {
         setDismissedActivity((current) => {
@@ -266,6 +280,7 @@ function PetApp(): React.JSX.Element {
         })
       }
     })
+    return () => { disposed = true; stop() }
   }, [])
 
   useEffect(() => {
@@ -273,6 +288,7 @@ function PetApp(): React.JSX.Element {
     return window.murasame.settings.onChanged((settings) => {
       speakRef.current = settings.speakReplies
       setSpeakReplies(settings.speakReplies)
+      setDoNotDisturb(settings.doNotDisturb)
       if (!settings.speakReplies) speechController.current?.abort()
       if (!settings.permissions.microphone) recordingController.current?.abort()
       setMicrophone(settings.permissions.microphone)
@@ -534,18 +550,7 @@ function PetApp(): React.JSX.Element {
 
   useEffect(() => {
     if (!window.murasame) return
-    let stopped = false
-    const tick = (): void => {
-      void window.murasame.autonomy.status().then((status) => {
-        if (!stopped) setIsoUrl(status.viewUrl || '')
-      }).catch(() => undefined)
-    }
-    tick()
-    const timer = window.setInterval(tick, 3000)
-    return () => {
-      stopped = true
-      window.clearInterval(timer)
-    }
+    return followAutonomyStatus(window.murasame.autonomy, setIsolation)
   }, [])
 
   useEffect(() => {
@@ -587,9 +592,22 @@ function PetApp(): React.JSX.Element {
     setDismissedActivity((current) => new Set(current).add(id))
   }
 
+  const stopIsolation = async (): Promise<void> => {
+    if (isolationStopping) return
+    setIsolationStopping(true)
+    try {
+      const result = await window.murasame.autonomy.stop()
+      if (!result.ok) setNotice(result.error)
+    } catch (error) { setNotice(error instanceof Error ? error.message : '结束活动失败，请在自主活动页重试。') }
+    finally { setIsolationStopping(false) }
+  }
+
   const hidden = !pet.visible
   const idle = idlePresentation({ hidden, blinkMs: idleFromPad(pad, hidden)?.blinkMs ?? 4200 })
-  const working = tasks.some((task) => task.status === '执行中' || task.status === '规划中')
+  const work = derivePetWork({ tasks, dismissed: dismissedActivity, sending, autonomy: isolation })
+  const isolationWork = derivePetWork({ tasks: [], dismissed: dismissedActivity, sending: false, autonomy: isolation })
+  const activityMotion = doNotDisturb || speaking || recording ? null : petWorkMotion(work, pet.preset, Boolean(pet.importedModelUrl))
+  const working = Boolean(work?.busy)
   const fps = reducedMotion ? 0 : targetFps({ hidden, interacting: dragging || chat.open || sending || working || speaking, idleMs })
   const dimensions = petDimensions(pet.scale, chat.open)
   if (hidden) return <div className="pet-hidden-root" />
@@ -597,7 +615,7 @@ function PetApp(): React.JSX.Element {
   const recent = conversation?.messages.slice(-8) ?? []
 
   return (
-    <div className={`pet-stage${dragging ? ' dragging' : ''}${chat.open ? ` chat-open side-${chat.side}` : ''}`} style={{ '--pet-column-width': `${dimensions.columnWidth}px`, '--pet-height': `${dimensions.height}px`, '--character-width': `${dimensions.characterWidth}px`, '--character-height': `${dimensions.characterHeight}px` } as React.CSSProperties}>
+    <div className={`pet-stage${dragging ? ' dragging' : ''}${chat.open ? ` chat-open side-${chat.side}` : ''}`} data-work-phase={work?.phase ?? 'idle'} data-work-source={work?.source ?? 'none'} style={{ '--pet-column-width': `${dimensions.columnWidth}px`, '--pet-height': `${dimensions.height}px`, '--character-width': `${dimensions.characterWidth}px`, '--character-height': `${dimensions.characterHeight}px` } as React.CSSProperties}>
       <div className="pet-column">
         {bubbleText ? (
           <button
@@ -635,6 +653,7 @@ function PetApp(): React.JSX.Element {
               fps={fps}
               blinkMs={idle?.blinkMs ?? 4200}
               breath={idleFromPad(pad, hidden)?.breath ?? 0.5}
+              activityMotion={activityMotion}
             />
           </ErrorBoundary>
         </div>
@@ -658,13 +677,25 @@ function PetApp(): React.JSX.Element {
           <button type="button" className="pet-iso-tab" data-pet-hit onClick={() => setIsoOpen(true)}>看隔离桌面</button>
         ) : null}
         {notice && !chat.open ? <p className="pet-toast" data-pet-hit>{notice}</p> : null}
-        {activities.length > 0 || sending ? (
+        {activities.length > 0 || sending || isolationWork ? (
           <div className="pet-activity-stack" data-pet-hit>
             {sending ? (
               <div className="pet-activity is-running">
                 <div className="pet-activity-main">
                   <strong>正在想</strong>
                   <span>这句话还在等模型写完，没有替它念出来。</span>
+                </div>
+              </div>
+            ) : null}
+            {isolationWork ? (
+              <div className={`pet-activity is-${isolationWork.phase === 'failed' ? 'blocked' : isolationWork.phase === 'ready' ? 'ready' : 'running'}`} data-testid="pet-isolation-progress">
+                <button type="button" className="pet-activity-main" onClick={() => void window.murasame.window.openPath('/autonomy')}>
+                  <strong>{isolationWork.label}</strong>
+                  <span>{isolationWork.detail}</span>
+                </button>
+                <div className="pet-activity-actions">
+                  <button type="button" onClick={() => void window.murasame.window.openPath('/autonomy')}>{isolationWork.phase === 'ready' ? '查看或保存' : '查看活动'}</button>
+                  {isolation?.canStop ? <button type="button" disabled={isolationStopping || isolation.phase === 'stopping'} onClick={() => void stopIsolation()}>结束活动</button> : null}
                 </div>
               </div>
             ) : null}

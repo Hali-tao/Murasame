@@ -1,0 +1,53 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/model-form-lifecycle.test.ts (16 tests | 4 failed) 2296ms
+   × says a failed current-service recheck retains its configuration even when another model is selected: false 192ms
+   × says a failed current-service recheck retains its configuration even when another model is selected: true 122ms
+   × describes an unactivated configuration without claiming another current service was disabled: false 41ms
+   × describes an unactivated configuration without claiming another current service was disabled: true 51ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > says a failed current-service recheck retains its configuration even when another model is selected: false
+ FAIL  tests/unit/model-form-lifecycle.test.ts > says a failed current-service recheck retains its configuration even when another model is selected: true
+AssertionError: expected '原服务验证成功test-model · 127.0.0.1:9999密钥已…' to contain '本次未通过'
+
+Expected: "本次未通过"
+Received: "原服务验证成功test-model · 127.0.0.1:9999密钥已保存正在使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:179:36
+    177|   expect(document.querySelector('.current-service-banner')?.textConten…
+    178|   const currentItem = screen.getAllByTestId('model-item').find(item =>…
+    179|   expect(currentItem?.textContent).toContain('本次未通过')
+       |                                    ^
+    180|   expect(currentItem?.textContent).not.toContain('验证成功')
+    181|   expect(useAppStore.getState().data?.models.find(model => model.defau…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > describes an unactivated configuration without claiming another current service was disabled: false
+ FAIL  tests/unit/model-form-lifecycle.test.ts > describes an unactivated configuration without claiming another current service was disabled: true
+AssertionError: expected '备用配置验证成功test-model · 127.0.0.1:9999密钥…' to contain '本次未通过'
+
+Expected: "本次未通过"
+Received: "备用配置验证成功test-model · 127.0.0.1:9999密钥已保存"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:207:109
+    205|     : '验证通过后才能设为当前使用')
+    206|   expect(document.querySelector('.use-result')?.textContent).toContain…
+    207|   expect(screen.getAllByTestId('model-item').find(item => item.textCon…
+       |                                                                                                             ^
+    208|   expect(useAppStore.getState().data?.models.find(model => model.defau…
+    209| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 12 passed (16)
+   Start at  06:30:57
+   Duration  4.78s (tests 50%, environment 34%, import 13%, transform 2%)

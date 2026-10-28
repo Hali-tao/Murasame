@@ -1,0 +1,1 @@
+Incomplete diagnostic run: fixed per-frame 8-fps displacement threshold mixed 125ms and 16.7ms sampling. See final-run.log and subsequent verified reports; production motion was not changed.

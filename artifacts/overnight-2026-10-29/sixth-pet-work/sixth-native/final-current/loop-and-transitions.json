@@ -1,0 +1,42 @@
+{
+  "loopBoundaryStep": 0.00027424097061157227,
+  "transitions": [
+    {
+      "name": "transient-greet-resumes-work",
+      "expected": "WorkingLoop",
+      "group": "WorkingLoop",
+      "maxStep": 0.005580097436904907
+    },
+    {
+      "name": "low-fps-work",
+      "expected": "WorkingLoop",
+      "group": "WorkingLoop",
+      "maxStep": 0.04653516411781311,
+      "maxVelocity": 0.37991600377224594,
+      "frames": 103
+    },
+    {
+      "name": "model-reload",
+      "expected": "WorkingLoop",
+      "group": "WorkingLoop"
+    },
+    {
+      "name": "think",
+      "expected": "Think",
+      "group": "Think",
+      "maxStep": 0.004471123218536377
+    },
+    {
+      "name": "work-resume",
+      "expected": "WorkingLoop",
+      "group": "WorkingLoop",
+      "maxStep": 0.008174020797014236
+    },
+    {
+      "name": "cancel",
+      "expected": "Idle",
+      "group": "Idle",
+      "maxStep": 0.005175113677978516
+    }
+  ]
+}

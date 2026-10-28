@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-10-28T22:32:34.692Z",
+  "label": "before",
+  "baseline": "f94e56b",
+  "componentSha256": "017d0ad3cce71ab14e0b8f74c3602e1a7bbff8376ab7363beed99a8cc77a2a13",
+  "workingSha256": "c3f208ee037a2fe390a0b81ffaaab2eae045b4b680d60a66ca5adebdb39dbbc2",
+  "runtime": "Actual production Live2DPet, original Cubism moc3/textures/physics, 60 Hz model updates and 30 fps captured video",
+  "sequences": [
+    {
+      "preset": "tororo",
+      "group": "Idle",
+      "seconds": 14,
+      "maxStep": 0.016938060522079468,
+      "finalGroup": "Idle",
+      "motionLoop": false,
+      "events": [
+        {
+          "group": "Idle",
+          "frame": 586
+        }
+      ]
+    },
+    {
+      "preset": "whale-girl",
+      "group": "idle",
+      "seconds": 14,
+      "maxStep": 0.11279579810798168,
+      "finalGroup": "idle",
+      "motionLoop": false,
+      "events": [
+        {
+          "group": "idle",
+          "frame": 242
+        },
+        {
+          "group": "idle",
+          "frame": 484
+        },
+        {
+          "group": "idle",
+          "frame": 727
+        }
+      ]
+    },
+    {
+      "preset": "naiwa",
+      "group": "Working",
+      "seconds": 26,
+      "maxStep": 0.010571867227554321,
+      "finalGroup": "Idle",
+      "motionLoop": false,
+      "events": [
+        {
+          "group": "Working",
+          "frame": 120
+        },
+        {
+          "group": "Idle",
+          "frame": 482
+        },
+        {
+          "group": "Idle",
+          "frame": 965
+        },
+        {
+          "group": "Idle",
+          "frame": 1447
+        }
+      ]
+    },
+    {
+      "preset": "naiwa",
+      "group": "Think",
+      "seconds": 6,
+      "maxStep": 0.004872575402259827,
+      "finalGroup": "Idle",
+      "motionLoop": false,
+      "events": [
+        {
+          "group": "Think",
+          "frame": 120
+        },
+        {
+          "group": "Idle",
+          "frame": 410
+        }
+      ]
+    },
+    {
+      "preset": "naiwa",
+      "group": "Greet",
+      "seconds": 4,
+      "maxStep": 0.006853669881820679,
+      "finalGroup": "Idle",
+      "motionLoop": false,
+      "events": [
+        {
+          "group": "Greet",
+          "frame": 120
+        },
+        {
+          "group": "Idle",
+          "frame": 291
+        }
+      ]
+    },
+    {
+      "preset": "naiwa",
+      "group": "Agree",
+      "seconds": 4,
+      "maxStep": 0.00406423956155777,
+      "finalGroup": "Idle",
+      "motionLoop": false,
+      "events": [
+        {
+          "group": "Agree",
+          "frame": 119
+        },
+        {
+          "group": "Idle",
+          "frame": 266
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

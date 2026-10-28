@@ -1,0 +1,1 @@
+{"preset":"naiwa","group":"WorkingLoop","seconds":26,"persistent":true,"maxStep":0.01065284013748169,"finalGroup":"WorkingLoop","motionLoop":true,"events":[{"group":"WorkingLoop","frame":121}]}

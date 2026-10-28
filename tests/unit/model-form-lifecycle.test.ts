@@ -163,3 +163,56 @@ it.each(['verify', 'delete', 'activate', 'recheck'] as const)('releases the %s t
   expect(window.murasame.core.createModel).toHaveBeenCalledOnce()
   expect(name.value).toBe('新的模型配置')
 })
+
+it.each([false, true])('says a failed current-service recheck retains its configuration even when another model is selected: %s', async (selectOther) => {
+  const other = { ...existing, id: 'other', name: '备用配置', default: false }
+  useAppStore.setState({ data: { ...initialBootstrap(), models: [existing, other] }, selectedModelId: selectOther ? other.id : existing.id })
+  vi.mocked(window.murasame.core.verifyModel).mockResolvedValue({ ok: false, error: '本次请求超时' })
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '再测一次' })) })
+  expect(document.querySelector('.use-result strong')?.textContent).toContain('本次验证未通过，当前配置已保留')
+  expect(document.querySelector('.use-result')?.textContent).toContain('「原服务」仍是当前服务配置')
+  expect(document.querySelector('.use-result')?.textContent).toContain('本次请求超时')
+  expect(document.querySelector('.current-service-banner')?.textContent).toContain('连接状态待确认')
+  expect(document.querySelector('.current-service-banner')?.textContent).not.toContain('验证成功')
+  const currentItem = screen.getAllByTestId('model-item').find(item => item.textContent?.includes('原服务'))
+  expect(currentItem?.textContent).toContain('本次未通过')
+  expect(currentItem?.textContent).not.toContain('验证成功')
+  expect(useAppStore.getState().data?.models.find(model => model.default)).toEqual(existing)
+})
+
+it('retains current-service wording after a completed recheck reports the saved profile offline', async () => {
+  useAppStore.setState({ data: { ...initialBootstrap(), models: [existing] }, selectedModelId: existing.id })
+  vi.mocked(window.murasame.core.verifyModel).mockResolvedValue({ ok: true, data: { ...existing, status: '离线', tone: 'red' } })
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '再测一次' })) })
+  expect(document.querySelector('.use-result strong')?.textContent).toContain('本次验证未通过，当前配置已保留')
+  expect(document.querySelector('.current-service-banner')?.textContent).toContain('连接状态待确认')
+  expect(useAppStore.getState().data?.models.find(model => model.default)?.id).toBe(existing.id)
+})
+
+it.each([false, true])('describes an unactivated configuration without claiming another current service was disabled: %s', async (hasCurrent) => {
+  const other = { ...existing, id: 'other', name: '备用配置', default: false }
+  useAppStore.setState({ data: { ...initialBootstrap(), models: hasCurrent ? [existing, other] : [other] }, selectedModelId: other.id })
+  vi.mocked(window.murasame.core.verifyModel).mockResolvedValue({ ok: false, error: '本次请求超时' })
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByTestId('verify-model')) })
+  expect(document.querySelector('.use-result strong')?.textContent).toContain(hasCurrent
+    ? '这条配置未启用，当前服务配置未变'
+    : '验证未通过，这条配置还未启用')
+  expect(document.querySelector('.use-result')?.textContent).toContain(hasCurrent
+    ? '仍保留「原服务」的配置'
+    : '验证通过后才能设为当前使用')
+  expect(document.querySelector('.use-result')?.textContent).toContain('本次请求超时')
+  expect(screen.getAllByTestId('model-item').find(item => item.textContent?.includes('备用配置'))?.textContent).toContain('本次未通过')
+  expect(useAppStore.getState().data?.models.find(model => model.default)?.id).toBe(hasCurrent ? existing.id : undefined)
+})
+
+it('does not describe a creation failure as a failed connection check', async () => {
+  useAppStore.setState({ data: { ...initialBootstrap(), models: [existing] }, selectedModelId: existing.id })
+  vi.mocked(window.murasame.core.createModel).mockRejectedValue(new Error('新增配置失败'))
+  await mount()
+  await act(async () => { fireEvent.click(screen.getByTestId('add-model')) })
+  expect(document.querySelector('.use-result strong')?.textContent).toContain('本次操作未完成')
+  expect(document.querySelector('.use-result')?.textContent).not.toContain('验证未通过')
+})

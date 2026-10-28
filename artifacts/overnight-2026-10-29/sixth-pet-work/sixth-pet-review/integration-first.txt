@@ -1,0 +1,32 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (previews/overnight-2026-10-29/sixth-pet-review/vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ previews/overnight-2026-10-29/sixth-pet-review/pet-integration.test.ts (4 tests | 1 failed) 1227ms
+   × does not let an older bootstrap remove a newer approval event 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  previews/overnight-2026-10-29/sixth-pet-review/pet-integration.test.ts > does not let an older bootstrap remove a newer approval event
+AssertionError: expected 'autonomy' to be 'task' // Object.is equality
+
+Expected: "task"
+Received: "autonomy"
+
+ ❯ previews/overnight-2026-10-29/sixth-pet-review/pet-integration.test.ts:87:82
+     85|   expect(document.querySelector('.pet-stage')?.getAttribute('data-work…
+     86|   await act(async () => bootstrap.resolve({ ok: true, data }))
+     87|   expect(document.querySelector('.pet-stage')?.getAttribute('data-work…
+       |                                                                                  ^
+     88|   expect(document.body.textContent).toContain('新的确认范围')
+     89| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 4 passed (5)
+   Start at  06:45:16
+   Duration  3.40s (environment 46%, tests 37%, import 12%, transform 4%)

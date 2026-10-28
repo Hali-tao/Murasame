@@ -1,0 +1,350 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/pet-work.test.ts (19 tests | 18 failed) 28ms
+   ❯ 宠物真实工作状态 (13)
+     × keeps confirmation above sending, active tasks and active isolation even if dismissed 12ms
+     × places sending above execution, but execution above isolation and old failures 1ms
+     × maps active task 正在停止 without claiming completion 1ms
+     × maps active task 执行中 without claiming completion 1ms
+     × maps active task 规划中 without claiming completion 1ms
+     × maps active task 已确认 without claiming completion 1ms
+     × retains partial and interrupted wording and hides dismissed or cancelled terminal tasks 1ms
+     × uses actual creation phases and gives each activity its own key 1ms
+     × claims verified artifacts only with actual artifact evidence and never claims export 1ms
+     × ignores ready residue after stopping and shows preparing, stopping and failure honestly 1ms
+     × preserves observed manual activity reason without claiming coding 1ms
+     × preserves observed browse activity reason without claiming coding 0ms
+     × preserves observed video activity reason without claiming coding 0ms
+   ❯ 宠物真实动作组 (6)
+     × uses the new native working loop and neutral thinking loops for naiwa 1ms
+     × does not invent a typing motion for tororo and uses existing whale expressions 1ms
+     × references only real motion groups and expressions for tororo 1ms
+     × references only real motion groups and expressions for whale-girl 1ms
+     × references only real motion groups and expressions for naiwa 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > keeps confirmation above sending, active tasks and active isolation even if dismissed
+AssertionError: expected null to match object { source: 'task', …(5) }
+
+- Expected:
+{
+  "busy": false,
+  "detail": "会写入文档",
+  "label": "等你确认",
+  "phase": "waiting",
+  "source": "task",
+  "targetPath": "/tasks?focus=approval%20%2F%3F%23",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:17:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > places sending above execution, but execution above isolation and old failures
+AssertionError: expected null to match object { source: 'chat', …(3) }
+
+- Expected:
+{
+  "busy": true,
+  "phase": "waiting",
+  "source": "chat",
+  "targetPath": "/chat",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:23:51
+     21|   it('places sending above execution, but execution above isolation an…
+     22|     const options = { tasks: [task('old', '失败'), task('run', '执行中')], …
+     23|     expect(derive({ ...options, sending: true })).toMatchObject({ sour…
+       |                                                   ^
+     24|     expect(derive(options)).toMatchObject({ source: 'task', phase: 'wo…
+     25|     expect(derive({ ...options, tasks: [task('old', '失败')] })).toMatch…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > maps active task 正在停止 without claiming completion
+AssertionError: expected null to match object { source: 'task', …(3) }
+
+- Expected:
+{
+  "busy": true,
+  "label": "正在停止",
+  "phase": "stopping",
+  "source": "task",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:32:89
+     30|     ['规划中', 'waiting', '正在规划'], ['已确认', 'waiting', '等待执行']
+     31|   ] as const)('maps active task %s without claiming completion', (stat…
+     32|     expect(derive({ tasks: [task('active', status)], dismissed: new Se…
+       |                                                                                         ^
+     33|   })
+     34|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > maps active task 执行中 without claiming completion
+AssertionError: expected null to match object { source: 'task', …(3) }
+
+- Expected:
+{
+  "busy": true,
+  "label": "正在执行",
+  "phase": "working",
+  "source": "task",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:32:89
+     30|     ['规划中', 'waiting', '正在规划'], ['已确认', 'waiting', '等待执行']
+     31|   ] as const)('maps active task %s without claiming completion', (stat…
+     32|     expect(derive({ tasks: [task('active', status)], dismissed: new Se…
+       |                                                                                         ^
+     33|   })
+     34|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > maps active task 规划中 without claiming completion
+AssertionError: expected null to match object { source: 'task', …(3) }
+
+- Expected:
+{
+  "busy": true,
+  "label": "正在规划",
+  "phase": "waiting",
+  "source": "task",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:32:89
+     30|     ['规划中', 'waiting', '正在规划'], ['已确认', 'waiting', '等待执行']
+     31|   ] as const)('maps active task %s without claiming completion', (stat…
+     32|     expect(derive({ tasks: [task('active', status)], dismissed: new Se…
+       |                                                                                         ^
+     33|   })
+     34|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > maps active task 已确认 without claiming completion
+AssertionError: expected null to match object { source: 'task', …(3) }
+
+- Expected:
+{
+  "busy": true,
+  "label": "等待执行",
+  "phase": "waiting",
+  "source": "task",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:32:89
+     30|     ['规划中', 'waiting', '正在规划'], ['已确认', 'waiting', '等待执行']
+     31|   ] as const)('maps active task %s without claiming completion', (stat…
+     32|     expect(derive({ tasks: [task('active', status)], dismissed: new Se…
+       |                                                                                         ^
+     33|   })
+     34|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > retains partial and interrupted wording and hides dismissed or cancelled terminal tasks
+AssertionError: expected null to match object { Object (phase, label, ...) }
+
+- Expected:
+{
+  "busy": false,
+  "detail": "3 个文件中完成 2 个",
+  "label": "做了一部分",
+  "phase": "ready",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:36:86
+     34|
+     35|   it('retains partial and interrupted wording and hides dismissed or c…
+     36|     expect(derive({ tasks: [task('partial', '部分完成', { result: '3 个文件中完…
+       |                                                                                      ^
+     37|     expect(derive({ tasks: [task('cut', '已中断')] })).toMatchObject({ ph…
+     38|     expect(derive({ tasks: [task('done', '已完成'), task('failed', '失败')]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > uses actual creation phases and gives each activity its own key
+AssertionError: expected null to match object { phase: 'waiting', …(3) }
+
+- Expected:
+{
+  "busy": true,
+  "detail": "模型正在生成草稿",
+  "label": "等待创作内容",
+  "phase": "waiting",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:45:22
+     43|     const drafting = derive({ autonomy: activity({ activityId: 'run-a'…
+     44|     const executing = derive({ autonomy: activity({ activityId: 'run-a…
+     45|     expect(drafting).toMatchObject({ phase: 'waiting', label: '等待创作内容'…
+       |                      ^
+     46|     expect(executing).toMatchObject({ phase: 'working', label: '正在运行代码…
+     47|     expect(executing?.key).not.toBe(drafting?.key)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > claims verified artifacts only with actual artifact evidence and never claims export
+AssertionError: expected null to match object { phase: 'ready', …(2) }
+
+- Expected:
+{
+  "busy": false,
+  "label": "产物已核验，待保存",
+  "phase": "ready",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:54:19
+     52|   it('claims verified artifacts only with actual artifact evidence and…
+     53|     const ready = derive({ autonomy: activity({ creation: { phase: 're…
+     54|     expect(ready).toMatchObject({ phase: 'ready', label: '产物已核验，待保存', …
+       |                   ^
+     55|     expect(ready?.key).toContain('artifact-1')
+     56|     expect(`${ready?.label} ${ready?.detail}`).not.toContain('已导出')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > ignores ready residue after stopping and shows preparing, stopping and failure honestly
+AssertionError: expected null to match object { phase: 'waiting', label: '正在准备隔离环境' }
+
+- Expected:
+{
+  "label": "正在准备隔离环境",
+  "phase": "waiting",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:66:96
+     64|     expect(derive({ autonomy: activity({ running: false, phase: 'stopp…
+     65|     expect(derive({ autonomy: activity({ running: false, phase: 'idle'…
+     66|     expect(derive({ autonomy: activity({ running: false, phase: 'prepa…
+       |                                                                                                ^
+     67|     expect(derive({ autonomy: activity({ phase: 'stopping', creation }…
+     68|     expect(derive({ autonomy: activity({ running: false, phase: 'faile…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > preserves observed manual activity reason without claiming coding
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > preserves observed browse activity reason without claiming coding
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > preserves observed video activity reason without claiming coding
+AssertionError: expected undefined to be '已观察到页面标题：测试资料' // Object.is equality
+
+- Expected:
+"已观察到页面标题：测试资料"
+
++ Received:
+undefined
+
+ ❯ tests/unit/pet-work.test.ts:73:26
+     71|   it.each(['manual', 'browse', 'video'] as const)('preserves observed …
+     72|     const work = derive({ autonomy: activity({ kind, busy: false, reas…
+     73|     expect(work?.detail).toBe('已观察到页面标题：测试资料')
+       |                          ^
+     74|     expect(work?.label).not.toMatch(/代码|编程|文档|产物已核验/)
+     75|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实动作组 > uses the new native working loop and neutral thinking loops for naiwa
+AssertionError: expected null to match object { motion: 'WorkingLoop', …(2) }
+
+- Expected:
+{
+  "expression": null,
+  "loop": true,
+  "motion": "WorkingLoop",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:81:60
+     79| describe('宠物真实动作组', () => {
+     80|   it('uses the new native working loop and neutral thinking loops for …
+     81|     expect(petWorkMotion(work('working'), 'naiwa', false)).toMatchObje…
+       |                                                            ^
+     82|     for (const phase of ['waiting', 'reviewing'] as const) expect(petW…
+     83|     expect(petWorkMotion(work('ready'), 'naiwa', false)).toMatchObject…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实动作组 > does not invent a typing motion for tororo and uses existing whale expressions
+AssertionError: expected null to match object { motion: 'Idle', …(2) }
+
+- Expected:
+{
+  "expression": null,
+  "loop": true,
+  "motion": "Idle",
+}
+
++ Received:
+null
+
+ ❯ tests/unit/pet-work.test.ts:88:123
+     86|
+     87|   it('does not invent a typing motion for tororo and uses existing wha…
+     88|     for (const phase of ['waiting', 'working', 'reviewing'] as const) …
+       |                                                                                                                           ^
+     89|     expect(petWorkMotion(work('ready'), 'tororo', false)).toMatchObjec…
+     90|     expect(petWorkMotion(work('failed'), 'tororo', false)).toMatchObje…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实动作组 > references only real motion groups and expressions for tororo
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实动作组 > references only real motion groups and expressions for whale-girl
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实动作组 > references only real motion groups and expressions for naiwa
+TypeError: Cannot read properties of null (reading 'motion')
+ ❯ tests/unit/pet-work.test.ts:107:74
+    105|     for (const phase of ['waiting', 'working', 'reviewing', 'ready', '…
+    106|       const motion = petWorkMotion(work(phase), preset, false)!
+    107|       expect(Object.keys(model.FileReferences.Motions)).toContain(moti…
+       |                                                                          ^
+    108|       if (motion.expression) expect(model.FileReferences.Expressions.m…
+    109|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  18 failed | 1 passed (19)
+   Start at  06:35:20
+   Duration  841ms (import 38%, transform 30%, tests 24%, worker 7%)

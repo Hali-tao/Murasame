@@ -16,4 +16,5 @@ export interface CreationProgress {
   phase: 'drafting' | 'executing' | 'reviewing' | 'ready' | 'failed'
   message: string
   artifact?: CreationArtifact
+  saved?: { artifactId: string; path: string; bytes: number; sha256: string }
 }

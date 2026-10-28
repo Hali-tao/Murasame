@@ -1,0 +1,2864 @@
+[
+  {
+    "source": "sixth-native/after-run.log",
+    "archived": "sixth-native/after-run.log.txt",
+    "sourceSHA256": "23798f4edfb132f302657848d24bdf2483d6b621cc21a201ad3b6959a07a70e2",
+    "archivedSHA256": "c60f79035d60a3b6c9af67788729f28c8f4d5c093f5caaf72736a7a3b2c0289c"
+  },
+  {
+    "source": "sixth-native/diagnostic-run.log",
+    "archived": "sixth-native/diagnostic-run.log.txt",
+    "sourceSHA256": "8cac78678fde904da0017370b40acf6d84d676d42aab1a96dcacabe249619356",
+    "archivedSHA256": "5d1220052a23932d941ef8a8ad167fad2d8fb5adb5dd664758d730a04bf9c815"
+  },
+  {
+    "source": "sixth-native/fifth-component-regression.json",
+    "archived": "sixth-native/fifth-component-regression.json",
+    "sourceSHA256": "f9dea2f3d7218cf344bcdb98e00ed48196536013202c2a76611e6903bbb46407",
+    "archivedSHA256": "f9dea2f3d7218cf344bcdb98e00ed48196536013202c2a76611e6903bbb46407"
+  },
+  {
+    "source": "sixth-native/fifth-regression.log",
+    "archived": "sixth-native/fifth-regression.log.txt",
+    "sourceSHA256": "0c55b7e5edd12b788ae6d1295ce13945fa456ecd607daef7503d857387fb7d1a",
+    "archivedSHA256": "95b205f853fec841d46a548f07e55a6560bc2b9324f6e520cf2e28d2c35acfb7"
+  },
+  {
+    "source": "sixth-native/final-current-run.log",
+    "archived": "sixth-native/final-current-run.log.txt",
+    "sourceSHA256": "d8537e06051ebea04090a5f6459161087730c8a92927bb00da643978fe49c17a",
+    "archivedSHA256": "a4f5b5e55157605bcd048fce0ac7cbb7a7e21f0fab9ed7ba282de343c9256b5a"
+  },
+  {
+    "source": "sixth-native/final-run.log",
+    "archived": "sixth-native/final-run.log.txt",
+    "sourceSHA256": "4a2103e5c9b3cdd39892143d7f349b53f4a3381f898ea794c91a78e2e32d5234",
+    "archivedSHA256": "27b5025fb7d51835b1d8736f328ad02e7c88c41b248f53291e66a83ff6b5ee5b"
+  },
+  {
+    "source": "sixth-native/full-unit.log",
+    "archived": "sixth-native/full-unit.log.txt",
+    "sourceSHA256": "f14c8ac932861f13c6f515d66ab4d684250082dfc7ac0f90fd7e62e82af21c1e",
+    "archivedSHA256": "a0fef86e34b29f01ccd02d8b1c433742e372edd64231534cb0aca889f49c2ca3"
+  },
+  {
+    "source": "sixth-native/original-assets-preserved.json",
+    "archived": "sixth-native/original-assets-preserved.json",
+    "sourceSHA256": "50215303435778683d1be19fdfdbbb5f0757a0a260f01e8513a93fe13574abea",
+    "archivedSHA256": "50215303435778683d1be19fdfdbbb5f0757a0a260f01e8513a93fe13574abea"
+  },
+  {
+    "source": "sixth-native/README.md",
+    "archived": "sixth-native/README.md",
+    "sourceSHA256": "2b11c7c31dc035feda7399d40950a6dd9c5e2206ed891229dac491e8431618cf",
+    "archivedSHA256": "2b11c7c31dc035feda7399d40950a6dd9c5e2206ed891229dac491e8431618cf"
+  },
+  {
+    "source": "sixth-native/test-green.log",
+    "archived": "sixth-native/test-green.log.txt",
+    "sourceSHA256": "809f92ae2928d64e5adc3d7741b137dc71be8261cb53262132513a1cd3ff1a30",
+    "archivedSHA256": "2071dce9a3780618f8b6594acbe3f493f78a74461e9e12688404e834a011ff55"
+  },
+  {
+    "source": "sixth-native/test-red.log",
+    "archived": "sixth-native/test-red.log.txt",
+    "sourceSHA256": "f6383c56936878762e7267b02443589a8cf9b1d0a7906f4363df7c2ee636d712",
+    "archivedSHA256": "b930f0f80754a65e7557f0e8adeb946972647a8f0c3b2b3fe21517b7450f5c95"
+  },
+  {
+    "source": "sixth-native/working-before-after-12s.png",
+    "archived": "sixth-native/working-before-after-12s.png",
+    "sourceSHA256": "639a03ddb1255bd9e46773d6039f4b317d32a768c1ae73366d206d7cb60ebe73",
+    "archivedSHA256": "639a03ddb1255bd9e46773d6039f4b317d32a768c1ae73366d206d7cb60ebe73"
+  },
+  {
+    "source": "sixth-native/working-before-after.mp4",
+    "archived": "sixth-native/working-before-after.mp4",
+    "sourceSHA256": "5e0ea1753fb52d5d746c1e7da0285a3933e55da05210b92d8c8978c79838234e",
+    "archivedSHA256": "5e0ea1753fb52d5d746c1e7da0285a3933e55da05210b92d8c8978c79838234e"
+  },
+  {
+    "source": "sixth-native/after/capabilities.json",
+    "archived": "sixth-native/after/capabilities.json",
+    "sourceSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc",
+    "archivedSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc"
+  },
+  {
+    "source": "sixth-native/after/loop-and-transitions.json",
+    "archived": "sixth-native/after/loop-and-transitions.json",
+    "sourceSHA256": "5f8e29d87e42dde55b2d59ede5de8385c406ae40020d44206a4728e40a5f76cb",
+    "archivedSHA256": "5f8e29d87e42dde55b2d59ede5de8385c406ae40020d44206a4728e40a5f76cb"
+  },
+  {
+    "source": "sixth-native/after/naiwa-activity-cancel.png",
+    "archived": "sixth-native/after/naiwa-activity-cancel.png",
+    "sourceSHA256": "9f2447f82c966c1c91fe2fdda4f9b0dcf2ae9cb3a8a379cf306c69eeef90d631",
+    "archivedSHA256": "9f2447f82c966c1c91fe2fdda4f9b0dcf2ae9cb3a8a379cf306c69eeef90d631"
+  },
+  {
+    "source": "sixth-native/after/naiwa-activity-think.png",
+    "archived": "sixth-native/after/naiwa-activity-think.png",
+    "sourceSHA256": "c9a9614def5ab180c328261ce9ad8dadf49f40452bd17c8db377831f8cf9615a",
+    "archivedSHA256": "c9a9614def5ab180c328261ce9ad8dadf49f40452bd17c8db377831f8cf9615a"
+  },
+  {
+    "source": "sixth-native/after/naiwa-activity-work-resume.png",
+    "archived": "sixth-native/after/naiwa-activity-work-resume.png",
+    "sourceSHA256": "dbf8b1aa5dea011c01a02dba21586694eda669ca5d5d4fa8b8cd00b1b829b943",
+    "archivedSHA256": "dbf8b1aa5dea011c01a02dba21586694eda669ca5d5d4fa8b8cd00b1b829b943"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Agree-0030.png",
+    "archived": "sixth-native/after/naiwa-Agree-0030.png",
+    "sourceSHA256": "53748c85003adcc5a04085ef05f3bd14a54eab2f5854d1074c66d73a8978b2dc",
+    "archivedSHA256": "53748c85003adcc5a04085ef05f3bd14a54eab2f5854d1074c66d73a8978b2dc"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Agree-0090.png",
+    "archived": "sixth-native/after/naiwa-Agree-0090.png",
+    "sourceSHA256": "ba428d474fb5dd5453aaaaaee1d6f0ab37f6444e3eb2e2495f0a1a98079f503e",
+    "archivedSHA256": "ba428d474fb5dd5453aaaaaee1d6f0ab37f6444e3eb2e2495f0a1a98079f503e"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Agree-0150.png",
+    "archived": "sixth-native/after/naiwa-Agree-0150.png",
+    "sourceSHA256": "169d791b07561b8d717af9f1358f6a23c0eea3b9ad10f52e72cd0a1b13d312c4",
+    "archivedSHA256": "169d791b07561b8d717af9f1358f6a23c0eea3b9ad10f52e72cd0a1b13d312c4"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Agree-0180.png",
+    "archived": "sixth-native/after/naiwa-Agree-0180.png",
+    "sourceSHA256": "a125361ef1b05e4450d77dd5f0e3c4209a2c39c61e2099a4159cb493e0450cab",
+    "archivedSHA256": "a125361ef1b05e4450d77dd5f0e3c4209a2c39c61e2099a4159cb493e0450cab"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Agree-0240.png",
+    "archived": "sixth-native/after/naiwa-Agree-0240.png",
+    "sourceSHA256": "f71d245f905b4392a5766fcbbfe0f020349d499e390bb06c45788ebf19d965f0",
+    "archivedSHA256": "f71d245f905b4392a5766fcbbfe0f020349d499e390bb06c45788ebf19d965f0"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Agree-samples.json",
+    "archived": "sixth-native/after/naiwa-Agree-samples.json",
+    "sourceSHA256": "73a26280c603e7f3e7f093209745a10cdda9e1f99952f354859b8e39404b6327",
+    "archivedSHA256": "73a26280c603e7f3e7f093209745a10cdda9e1f99952f354859b8e39404b6327"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Greet-0030.png",
+    "archived": "sixth-native/after/naiwa-Greet-0030.png",
+    "sourceSHA256": "3f6a20032b5d1c10afaac4b35cf85a819b2ff5fa76cc0358d15aa9d99c5c612f",
+    "archivedSHA256": "3f6a20032b5d1c10afaac4b35cf85a819b2ff5fa76cc0358d15aa9d99c5c612f"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Greet-0090.png",
+    "archived": "sixth-native/after/naiwa-Greet-0090.png",
+    "sourceSHA256": "ff0f88ab9a965ab7fb600971f6d1a5354d95b3ef58575ba64920d41bdee87de6",
+    "archivedSHA256": "ff0f88ab9a965ab7fb600971f6d1a5354d95b3ef58575ba64920d41bdee87de6"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Greet-0150.png",
+    "archived": "sixth-native/after/naiwa-Greet-0150.png",
+    "sourceSHA256": "fc14b40d98666f12e1165ff493f74d0397787c681329c7b05a533edd4de0989b",
+    "archivedSHA256": "fc14b40d98666f12e1165ff493f74d0397787c681329c7b05a533edd4de0989b"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Greet-0180.png",
+    "archived": "sixth-native/after/naiwa-Greet-0180.png",
+    "sourceSHA256": "e5b4c6873d80d9dd6fecdffea0aec39a4ce3e7de0ef1f9af195a3108ac0226aa",
+    "archivedSHA256": "e5b4c6873d80d9dd6fecdffea0aec39a4ce3e7de0ef1f9af195a3108ac0226aa"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Greet-0240.png",
+    "archived": "sixth-native/after/naiwa-Greet-0240.png",
+    "sourceSHA256": "cad96a74fd5aec233b1802bf78c06e5b8f6d36dad194e163d27ed9c503139b5f",
+    "archivedSHA256": "cad96a74fd5aec233b1802bf78c06e5b8f6d36dad194e163d27ed9c503139b5f"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Greet-samples.json",
+    "archived": "sixth-native/after/naiwa-Greet-samples.json",
+    "sourceSHA256": "1d91df32beaf7a3940ddf4652f154a53ffd42759d18b1e75ba808340603c08fe",
+    "archivedSHA256": "1d91df32beaf7a3940ddf4652f154a53ffd42759d18b1e75ba808340603c08fe"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0030.png",
+    "archived": "sixth-native/after/naiwa-Think-0030.png",
+    "sourceSHA256": "9b8b0f12246614350703d91a7e11f870c46f5dd664d85e46e6b7abcc53433b0b",
+    "archivedSHA256": "9b8b0f12246614350703d91a7e11f870c46f5dd664d85e46e6b7abcc53433b0b"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0090.png",
+    "archived": "sixth-native/after/naiwa-Think-0090.png",
+    "sourceSHA256": "a4f02020071e1942cc42bf12151011c70dc0d1ff9b047f36f9ec92dfce08de86",
+    "archivedSHA256": "a4f02020071e1942cc42bf12151011c70dc0d1ff9b047f36f9ec92dfce08de86"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0150.png",
+    "archived": "sixth-native/after/naiwa-Think-0150.png",
+    "sourceSHA256": "b30d44890019100f8a93378d5406d032a3e340877dba70473873543ce132114f",
+    "archivedSHA256": "b30d44890019100f8a93378d5406d032a3e340877dba70473873543ce132114f"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0180.png",
+    "archived": "sixth-native/after/naiwa-Think-0180.png",
+    "sourceSHA256": "ba1beece28b1ef6550729851fc161f11c9eaf53b70dfc6eebcb2439d115d1476",
+    "archivedSHA256": "ba1beece28b1ef6550729851fc161f11c9eaf53b70dfc6eebcb2439d115d1476"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0240.png",
+    "archived": "sixth-native/after/naiwa-Think-0240.png",
+    "sourceSHA256": "8e3e672c2600d5d06f6aff14cdaeba8e559dee59a3934f1c60105373e1eb24ec",
+    "archivedSHA256": "8e3e672c2600d5d06f6aff14cdaeba8e559dee59a3934f1c60105373e1eb24ec"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0300.png",
+    "archived": "sixth-native/after/naiwa-Think-0300.png",
+    "sourceSHA256": "565605b1eb860b9313d3fb82c99f9f10125f7ef35a41fcbf24173e18bbc1b6b1",
+    "archivedSHA256": "565605b1eb860b9313d3fb82c99f9f10125f7ef35a41fcbf24173e18bbc1b6b1"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0344.png",
+    "archived": "sixth-native/after/naiwa-Think-0344.png",
+    "sourceSHA256": "d8d15f44487b628dd4f62538cca4c7869397fe516728f534662b3d272f215203",
+    "archivedSHA256": "d8d15f44487b628dd4f62538cca4c7869397fe516728f534662b3d272f215203"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-0360.png",
+    "archived": "sixth-native/after/naiwa-Think-0360.png",
+    "sourceSHA256": "c066c4f22cc1ff57577286e67627ef0ff6c0d2977230c22e38c9e2d3124342e0",
+    "archivedSHA256": "c066c4f22cc1ff57577286e67627ef0ff6c0d2977230c22e38c9e2d3124342e0"
+  },
+  {
+    "source": "sixth-native/after/naiwa-Think-samples.json",
+    "archived": "sixth-native/after/naiwa-Think-samples.json",
+    "sourceSHA256": "41c83a43c3b9865da7823c0aea72d20067bb5e069967ae26d60eefc700f029ce",
+    "archivedSHA256": "41c83a43c3b9865da7823c0aea72d20067bb5e069967ae26d60eefc700f029ce"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0030.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0030.png",
+    "sourceSHA256": "3342ecf72a35d7c3deacbc58115dacfba755bd26375948bbc4ce90488f62861e",
+    "archivedSHA256": "3342ecf72a35d7c3deacbc58115dacfba755bd26375948bbc4ce90488f62861e"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0090.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0090.png",
+    "sourceSHA256": "b5e4a858a7475037826d52b4caf75e9239c2abd914a958faf01876eab054fe86",
+    "archivedSHA256": "b5e4a858a7475037826d52b4caf75e9239c2abd914a958faf01876eab054fe86"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0150.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0150.png",
+    "sourceSHA256": "e9d1ffeb0023cb259bc91ba426dc0c7e6d0913329dc24bb1bb5d3c7a3db7b907",
+    "archivedSHA256": "e9d1ffeb0023cb259bc91ba426dc0c7e6d0913329dc24bb1bb5d3c7a3db7b907"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0180.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0180.png",
+    "sourceSHA256": "ab96d3c8973a76952bc440c64628ac85f7eb4988cd562204abc7052c570ad3cb",
+    "archivedSHA256": "ab96d3c8973a76952bc440c64628ac85f7eb4988cd562204abc7052c570ad3cb"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0240.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0240.png",
+    "sourceSHA256": "0ccda5f4e2c94d5996d0fc074e4c269a2a84a9afe3a1a4f4b722abff79374fb9",
+    "archivedSHA256": "0ccda5f4e2c94d5996d0fc074e4c269a2a84a9afe3a1a4f4b722abff79374fb9"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0300.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0300.png",
+    "sourceSHA256": "a84c0598c5d8cede5deede13dcbe880be3d33b8d9e2264aa12ab58054578de30",
+    "archivedSHA256": "a84c0598c5d8cede5deede13dcbe880be3d33b8d9e2264aa12ab58054578de30"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0344.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0344.png",
+    "sourceSHA256": "2bd38531001ba052f0bdd26f768ae06675f6837bee622ddf1df6912cd32c14d3",
+    "archivedSHA256": "2bd38531001ba052f0bdd26f768ae06675f6837bee622ddf1df6912cd32c14d3"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0360.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0360.png",
+    "sourceSHA256": "dc5d18b2d6819d1cfe48d1f4b94c252156e2d2eec03fcb93cd155ce0d2ec8d07",
+    "archivedSHA256": "dc5d18b2d6819d1cfe48d1f4b94c252156e2d2eec03fcb93cd155ce0d2ec8d07"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0390.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0390.png",
+    "sourceSHA256": "41ff14d369163adcbb1fd3ca10392fcaf612df87b929c7254f54aec48207843a",
+    "archivedSHA256": "41ff14d369163adcbb1fd3ca10392fcaf612df87b929c7254f54aec48207843a"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0450.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0450.png",
+    "sourceSHA256": "51e91c707f6c51b413e9b655314b6965a464981e3baf3578c04a5ebc68a137d6",
+    "archivedSHA256": "51e91c707f6c51b413e9b655314b6965a464981e3baf3578c04a5ebc68a137d6"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0540.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0540.png",
+    "sourceSHA256": "7261a86ee1873002a3001505c09f2b9d2f21f5216312a9632d2c34d4db5ea7ec",
+    "archivedSHA256": "7261a86ee1873002a3001505c09f2b9d2f21f5216312a9632d2c34d4db5ea7ec"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0660.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0660.png",
+    "sourceSHA256": "c7e42434d5c12a915b8b9d2df563338cb6f5c5f5565d7cd08b435c664f3017e8",
+    "archivedSHA256": "c7e42434d5c12a915b8b9d2df563338cb6f5c5f5565d7cd08b435c664f3017e8"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0704.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0704.png",
+    "sourceSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e",
+    "archivedSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0720.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0720.png",
+    "sourceSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418",
+    "archivedSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0750.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0750.png",
+    "sourceSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8",
+    "archivedSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-0900.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-0900.png",
+    "sourceSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d",
+    "archivedSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-1080.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-1080.png",
+    "sourceSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed",
+    "archivedSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-1440.png",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-1440.png",
+    "sourceSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56",
+    "archivedSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56"
+  },
+  {
+    "source": "sixth-native/after/naiwa-WorkingLoop-samples.json",
+    "archived": "sixth-native/after/naiwa-WorkingLoop-samples.json",
+    "sourceSHA256": "26435075ac0f26b48eb0bb0b8b4e7cf5ad3b968fcb3284b2ebbe8ac05d54a968",
+    "archivedSHA256": "26435075ac0f26b48eb0bb0b8b4e7cf5ad3b968fcb3284b2ebbe8ac05d54a968"
+  },
+  {
+    "source": "sixth-native/after/report.json",
+    "archived": "sixth-native/after/report.json",
+    "sourceSHA256": "b26d3dc43ba5bc791de6c4701042c70288dd73f02c0c18ad8bc6074ba4482cbf",
+    "archivedSHA256": "b26d3dc43ba5bc791de6c4701042c70288dd73f02c0c18ad8bc6074ba4482cbf"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0030.png",
+    "archived": "sixth-native/after/tororo-Idle-0030.png",
+    "sourceSHA256": "06727a600294973abb24e3ec488b66d44ab6bedd12900f4b6b228b6daed032f3",
+    "archivedSHA256": "06727a600294973abb24e3ec488b66d44ab6bedd12900f4b6b228b6daed032f3"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0090.png",
+    "archived": "sixth-native/after/tororo-Idle-0090.png",
+    "sourceSHA256": "20637de3f705be44d5cb39b7322cd6dbc3e2b8b024e0da7c02c7f9a7bc761be5",
+    "archivedSHA256": "20637de3f705be44d5cb39b7322cd6dbc3e2b8b024e0da7c02c7f9a7bc761be5"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0150.png",
+    "archived": "sixth-native/after/tororo-Idle-0150.png",
+    "sourceSHA256": "70778a56f2dd03df4a69cb59b70fadfd320e6e6fc06aedacd1588a21bc9f4a45",
+    "archivedSHA256": "70778a56f2dd03df4a69cb59b70fadfd320e6e6fc06aedacd1588a21bc9f4a45"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0180.png",
+    "archived": "sixth-native/after/tororo-Idle-0180.png",
+    "sourceSHA256": "591906b96baaddd5d9d4c95fc1cffff0274c01a535d7b2911b85898ab000ac64",
+    "archivedSHA256": "591906b96baaddd5d9d4c95fc1cffff0274c01a535d7b2911b85898ab000ac64"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0240.png",
+    "archived": "sixth-native/after/tororo-Idle-0240.png",
+    "sourceSHA256": "0abf1dc25c0adc57b4948c2a8f487632b4d8fd811b9d243b062960622e20f670",
+    "archivedSHA256": "0abf1dc25c0adc57b4948c2a8f487632b4d8fd811b9d243b062960622e20f670"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0300.png",
+    "archived": "sixth-native/after/tororo-Idle-0300.png",
+    "sourceSHA256": "67dd639e4b9c69790a2052645a1f0c851edc76b6e427ddbaeeb76dac99708f74",
+    "archivedSHA256": "67dd639e4b9c69790a2052645a1f0c851edc76b6e427ddbaeeb76dac99708f74"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0344.png",
+    "archived": "sixth-native/after/tororo-Idle-0344.png",
+    "sourceSHA256": "2570e3a9b88458f365e075ae972194fc3f6f3ddc850d0019e1a62e34e4e51c34",
+    "archivedSHA256": "2570e3a9b88458f365e075ae972194fc3f6f3ddc850d0019e1a62e34e4e51c34"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0360.png",
+    "archived": "sixth-native/after/tororo-Idle-0360.png",
+    "sourceSHA256": "691abaa2a9dee676205bfcea03f11f045b4db502f198cb5eecb2c9b8030fdd1f",
+    "archivedSHA256": "691abaa2a9dee676205bfcea03f11f045b4db502f198cb5eecb2c9b8030fdd1f"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0390.png",
+    "archived": "sixth-native/after/tororo-Idle-0390.png",
+    "sourceSHA256": "e139326d61b79accd9230dc37d529a6f04c78d6a78baa7919bb59b45f6a16c8b",
+    "archivedSHA256": "e139326d61b79accd9230dc37d529a6f04c78d6a78baa7919bb59b45f6a16c8b"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0450.png",
+    "archived": "sixth-native/after/tororo-Idle-0450.png",
+    "sourceSHA256": "043a0473bcba3bfe7df1da801464e2812444c7c0ece7744e615d26e13de3dfd4",
+    "archivedSHA256": "043a0473bcba3bfe7df1da801464e2812444c7c0ece7744e615d26e13de3dfd4"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0540.png",
+    "archived": "sixth-native/after/tororo-Idle-0540.png",
+    "sourceSHA256": "ccf17c25de329a2578a75c53b21befddb9f1c78ff262bfef338b59d4a0f41c73",
+    "archivedSHA256": "ccf17c25de329a2578a75c53b21befddb9f1c78ff262bfef338b59d4a0f41c73"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0660.png",
+    "archived": "sixth-native/after/tororo-Idle-0660.png",
+    "sourceSHA256": "2916f20809a3c0f6ed198d222518f4a4e0b4f60417ad5b182e72fc6cf0582b04",
+    "archivedSHA256": "2916f20809a3c0f6ed198d222518f4a4e0b4f60417ad5b182e72fc6cf0582b04"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0704.png",
+    "archived": "sixth-native/after/tororo-Idle-0704.png",
+    "sourceSHA256": "1117f0bfff183526a57d07c07d4ac60dfa03a101255515108425f3ad20aafe27",
+    "archivedSHA256": "1117f0bfff183526a57d07c07d4ac60dfa03a101255515108425f3ad20aafe27"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0720.png",
+    "archived": "sixth-native/after/tororo-Idle-0720.png",
+    "sourceSHA256": "d8be2da6844b87a011caa61ad0b1a85940c7fd47c656c6da1519c673582ff5df",
+    "archivedSHA256": "d8be2da6844b87a011caa61ad0b1a85940c7fd47c656c6da1519c673582ff5df"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-0750.png",
+    "archived": "sixth-native/after/tororo-Idle-0750.png",
+    "sourceSHA256": "6bee5a9da9bf80af9c7366b5240eed5cc9f28a01e32eb5766ab2d65360460721",
+    "archivedSHA256": "6bee5a9da9bf80af9c7366b5240eed5cc9f28a01e32eb5766ab2d65360460721"
+  },
+  {
+    "source": "sixth-native/after/tororo-Idle-samples.json",
+    "archived": "sixth-native/after/tororo-Idle-samples.json",
+    "sourceSHA256": "af83566150ecf4aa82d29953d249cac3dcf07c0ba675693a8038febc25536be0",
+    "archivedSHA256": "af83566150ecf4aa82d29953d249cac3dcf07c0ba675693a8038febc25536be0"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0030.png",
+    "archived": "sixth-native/after/whale-girl-idle-0030.png",
+    "sourceSHA256": "e803dcaf50a8a6d9c404314c2aa3a07eacf069cc078c996d878210f3b1f9d46c",
+    "archivedSHA256": "e803dcaf50a8a6d9c404314c2aa3a07eacf069cc078c996d878210f3b1f9d46c"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0090.png",
+    "archived": "sixth-native/after/whale-girl-idle-0090.png",
+    "sourceSHA256": "99784d45f3414ee78c275f70b3ed90f68e06e5ace6d7e86d5126eca563b189cc",
+    "archivedSHA256": "99784d45f3414ee78c275f70b3ed90f68e06e5ace6d7e86d5126eca563b189cc"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0150.png",
+    "archived": "sixth-native/after/whale-girl-idle-0150.png",
+    "sourceSHA256": "f4124d4c312ce9916cbe2bdbc6533f500364139158462e9e895cf523990d7952",
+    "archivedSHA256": "f4124d4c312ce9916cbe2bdbc6533f500364139158462e9e895cf523990d7952"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0180.png",
+    "archived": "sixth-native/after/whale-girl-idle-0180.png",
+    "sourceSHA256": "57d1dcd03beeb0da7490fcdb5db9706714754964216d1d6d3824545a3411fb85",
+    "archivedSHA256": "57d1dcd03beeb0da7490fcdb5db9706714754964216d1d6d3824545a3411fb85"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0240.png",
+    "archived": "sixth-native/after/whale-girl-idle-0240.png",
+    "sourceSHA256": "384ccfa73d6c6ba596e20b0db598e2cc12b4a7da684923bb365f9328539ca8e8",
+    "archivedSHA256": "384ccfa73d6c6ba596e20b0db598e2cc12b4a7da684923bb365f9328539ca8e8"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0300.png",
+    "archived": "sixth-native/after/whale-girl-idle-0300.png",
+    "sourceSHA256": "645c5850159132392f2aa18c5eeae1b91257c75cdc4916384e1750c6bcbe6f2c",
+    "archivedSHA256": "645c5850159132392f2aa18c5eeae1b91257c75cdc4916384e1750c6bcbe6f2c"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0344.png",
+    "archived": "sixth-native/after/whale-girl-idle-0344.png",
+    "sourceSHA256": "65e85d43c4d26b705f0e640346de229cf1546d13dbf3ca5af4156dfc11554183",
+    "archivedSHA256": "65e85d43c4d26b705f0e640346de229cf1546d13dbf3ca5af4156dfc11554183"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0360.png",
+    "archived": "sixth-native/after/whale-girl-idle-0360.png",
+    "sourceSHA256": "9502e92eca87d80479ae3031fbebcdf035076602727675f6516b88032dbdae46",
+    "archivedSHA256": "9502e92eca87d80479ae3031fbebcdf035076602727675f6516b88032dbdae46"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0390.png",
+    "archived": "sixth-native/after/whale-girl-idle-0390.png",
+    "sourceSHA256": "30336b6c2df99b7fc5418de1b6b70416fa8a0067a8a8ce20f027cb22adf75467",
+    "archivedSHA256": "30336b6c2df99b7fc5418de1b6b70416fa8a0067a8a8ce20f027cb22adf75467"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0450.png",
+    "archived": "sixth-native/after/whale-girl-idle-0450.png",
+    "sourceSHA256": "38e3fbd64f2b2d80f7b6c7a9c9c03bcde2def33a35037b80655b452c67471b4b",
+    "archivedSHA256": "38e3fbd64f2b2d80f7b6c7a9c9c03bcde2def33a35037b80655b452c67471b4b"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0540.png",
+    "archived": "sixth-native/after/whale-girl-idle-0540.png",
+    "sourceSHA256": "4c09d7b9559c55b3cc388cf2afa6dd8c7da3c5a9036a208cabcb645efc5306a0",
+    "archivedSHA256": "4c09d7b9559c55b3cc388cf2afa6dd8c7da3c5a9036a208cabcb645efc5306a0"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0660.png",
+    "archived": "sixth-native/after/whale-girl-idle-0660.png",
+    "sourceSHA256": "0103f02bb28c264cb14c73b4f11eeac90805ce7751c03367b71b4ee820c52b58",
+    "archivedSHA256": "0103f02bb28c264cb14c73b4f11eeac90805ce7751c03367b71b4ee820c52b58"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0704.png",
+    "archived": "sixth-native/after/whale-girl-idle-0704.png",
+    "sourceSHA256": "cd6962d52d776182a938bfc90cda6f2060edaf112a8ddd5c80c614fa50fcc377",
+    "archivedSHA256": "cd6962d52d776182a938bfc90cda6f2060edaf112a8ddd5c80c614fa50fcc377"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0720.png",
+    "archived": "sixth-native/after/whale-girl-idle-0720.png",
+    "sourceSHA256": "5a8e2b6af91b03260715150d7530ff1715a5ff041b1f5796035bfe32234eeb63",
+    "archivedSHA256": "5a8e2b6af91b03260715150d7530ff1715a5ff041b1f5796035bfe32234eeb63"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-0750.png",
+    "archived": "sixth-native/after/whale-girl-idle-0750.png",
+    "sourceSHA256": "7610f67223b519e043830e78960bc9ca4662535a3bb1f1cb0514391cf543c965",
+    "archivedSHA256": "7610f67223b519e043830e78960bc9ca4662535a3bb1f1cb0514391cf543c965"
+  },
+  {
+    "source": "sixth-native/after/whale-girl-idle-samples.json",
+    "archived": "sixth-native/after/whale-girl-idle-samples.json",
+    "sourceSHA256": "1fc65f19c19259202bb45d8c2d73790d3944d719922dc76e9deb50c390a71a3c",
+    "archivedSHA256": "1fc65f19c19259202bb45d8c2d73790d3944d719922dc76e9deb50c390a71a3c"
+  },
+  {
+    "source": "sixth-native/after/working.mp4",
+    "archived": "sixth-native/after/working.mp4",
+    "sourceSHA256": "847667acb238891fa08f2b494cede12338c078d578f03434aba14ccc2e383b23",
+    "archivedSHA256": "847667acb238891fa08f2b494cede12338c078d578f03434aba14ccc2e383b23"
+  },
+  {
+    "source": "sixth-native/before/capabilities.json",
+    "archived": "sixth-native/before/capabilities.json",
+    "sourceSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc",
+    "archivedSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Agree-0030.png",
+    "archived": "sixth-native/before/naiwa-Agree-0030.png",
+    "sourceSHA256": "4b0d7bb8d56cc4f296b8e1e02852e740fcf413f563941cef46c8660f37060699",
+    "archivedSHA256": "4b0d7bb8d56cc4f296b8e1e02852e740fcf413f563941cef46c8660f37060699"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Agree-0090.png",
+    "archived": "sixth-native/before/naiwa-Agree-0090.png",
+    "sourceSHA256": "da33fe716c57f9513d1dd2e20e020ffe9fc0f43693b2d79b6797cb64655faede",
+    "archivedSHA256": "da33fe716c57f9513d1dd2e20e020ffe9fc0f43693b2d79b6797cb64655faede"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Agree-0150.png",
+    "archived": "sixth-native/before/naiwa-Agree-0150.png",
+    "sourceSHA256": "46a0a3ac8663283377ed0dc22a04de61dc3b7d721c1bb7f9333bb455e7987681",
+    "archivedSHA256": "46a0a3ac8663283377ed0dc22a04de61dc3b7d721c1bb7f9333bb455e7987681"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Agree-0180.png",
+    "archived": "sixth-native/before/naiwa-Agree-0180.png",
+    "sourceSHA256": "f6aab09d648545cae8815ed73bb9b9b5a2c0a901b088cfa8b3e77519d27bd465",
+    "archivedSHA256": "f6aab09d648545cae8815ed73bb9b9b5a2c0a901b088cfa8b3e77519d27bd465"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Agree-0240.png",
+    "archived": "sixth-native/before/naiwa-Agree-0240.png",
+    "sourceSHA256": "f71d245f905b4392a5766fcbbfe0f020349d499e390bb06c45788ebf19d965f0",
+    "archivedSHA256": "f71d245f905b4392a5766fcbbfe0f020349d499e390bb06c45788ebf19d965f0"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Agree-samples.json",
+    "archived": "sixth-native/before/naiwa-Agree-samples.json",
+    "sourceSHA256": "bb7ccdcad1936d8af69eed7b3f950d0a726df08a26aedd9259d8b1e7ca221950",
+    "archivedSHA256": "bb7ccdcad1936d8af69eed7b3f950d0a726df08a26aedd9259d8b1e7ca221950"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Greet-0030.png",
+    "archived": "sixth-native/before/naiwa-Greet-0030.png",
+    "sourceSHA256": "8418be56242eb7072d0ba933f8aec63de6052b04f295eebe2eac0ef697877958",
+    "archivedSHA256": "8418be56242eb7072d0ba933f8aec63de6052b04f295eebe2eac0ef697877958"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Greet-0090.png",
+    "archived": "sixth-native/before/naiwa-Greet-0090.png",
+    "sourceSHA256": "68d0d0ae51c055240354468c42554c8bba928112bdff2e458bfe359775bdc4fa",
+    "archivedSHA256": "68d0d0ae51c055240354468c42554c8bba928112bdff2e458bfe359775bdc4fa"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Greet-0150.png",
+    "archived": "sixth-native/before/naiwa-Greet-0150.png",
+    "sourceSHA256": "cce22543df28dae1e2da836799577998ab9bcc3fb16fe223a7f535c19ab8e4bc",
+    "archivedSHA256": "cce22543df28dae1e2da836799577998ab9bcc3fb16fe223a7f535c19ab8e4bc"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Greet-0180.png",
+    "archived": "sixth-native/before/naiwa-Greet-0180.png",
+    "sourceSHA256": "60e7929eee7534252981096346db5a287838adbbfe3f280f4792161aec8c1891",
+    "archivedSHA256": "60e7929eee7534252981096346db5a287838adbbfe3f280f4792161aec8c1891"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Greet-0240.png",
+    "archived": "sixth-native/before/naiwa-Greet-0240.png",
+    "sourceSHA256": "477989a636c46a3057eac97cd75d3ea3b356776296a3e74559df36acf93cc2e7",
+    "archivedSHA256": "477989a636c46a3057eac97cd75d3ea3b356776296a3e74559df36acf93cc2e7"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Greet-samples.json",
+    "archived": "sixth-native/before/naiwa-Greet-samples.json",
+    "sourceSHA256": "52c67050ece987ab1e2e374e48cc8cd420e8fd799954161a402c8ad9572def1f",
+    "archivedSHA256": "52c67050ece987ab1e2e374e48cc8cd420e8fd799954161a402c8ad9572def1f"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0030.png",
+    "archived": "sixth-native/before/naiwa-Think-0030.png",
+    "sourceSHA256": "9b8b0f12246614350703d91a7e11f870c46f5dd664d85e46e6b7abcc53433b0b",
+    "archivedSHA256": "9b8b0f12246614350703d91a7e11f870c46f5dd664d85e46e6b7abcc53433b0b"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0090.png",
+    "archived": "sixth-native/before/naiwa-Think-0090.png",
+    "sourceSHA256": "a4f02020071e1942cc42bf12151011c70dc0d1ff9b047f36f9ec92dfce08de86",
+    "archivedSHA256": "a4f02020071e1942cc42bf12151011c70dc0d1ff9b047f36f9ec92dfce08de86"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0150.png",
+    "archived": "sixth-native/before/naiwa-Think-0150.png",
+    "sourceSHA256": "b30d44890019100f8a93378d5406d032a3e340877dba70473873543ce132114f",
+    "archivedSHA256": "b30d44890019100f8a93378d5406d032a3e340877dba70473873543ce132114f"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0180.png",
+    "archived": "sixth-native/before/naiwa-Think-0180.png",
+    "sourceSHA256": "ba1beece28b1ef6550729851fc161f11c9eaf53b70dfc6eebcb2439d115d1476",
+    "archivedSHA256": "ba1beece28b1ef6550729851fc161f11c9eaf53b70dfc6eebcb2439d115d1476"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0240.png",
+    "archived": "sixth-native/before/naiwa-Think-0240.png",
+    "sourceSHA256": "8e3e672c2600d5d06f6aff14cdaeba8e559dee59a3934f1c60105373e1eb24ec",
+    "archivedSHA256": "8e3e672c2600d5d06f6aff14cdaeba8e559dee59a3934f1c60105373e1eb24ec"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0300.png",
+    "archived": "sixth-native/before/naiwa-Think-0300.png",
+    "sourceSHA256": "565605b1eb860b9313d3fb82c99f9f10125f7ef35a41fcbf24173e18bbc1b6b1",
+    "archivedSHA256": "565605b1eb860b9313d3fb82c99f9f10125f7ef35a41fcbf24173e18bbc1b6b1"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-0360.png",
+    "archived": "sixth-native/before/naiwa-Think-0360.png",
+    "sourceSHA256": "c066c4f22cc1ff57577286e67627ef0ff6c0d2977230c22e38c9e2d3124342e0",
+    "archivedSHA256": "c066c4f22cc1ff57577286e67627ef0ff6c0d2977230c22e38c9e2d3124342e0"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Think-samples.json",
+    "archived": "sixth-native/before/naiwa-Think-samples.json",
+    "sourceSHA256": "4165237f098210606e72b0752e1d123b0e8520ccc59b295eb3e92c82cd5afb8c",
+    "archivedSHA256": "4165237f098210606e72b0752e1d123b0e8520ccc59b295eb3e92c82cd5afb8c"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0030.png",
+    "archived": "sixth-native/before/naiwa-Working-0030.png",
+    "sourceSHA256": "25e7d30e777126fcfbd9f62dd06fc9c2103f01b8a87fe2b5e867c12ebe3dfeaf",
+    "archivedSHA256": "25e7d30e777126fcfbd9f62dd06fc9c2103f01b8a87fe2b5e867c12ebe3dfeaf"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0090.png",
+    "archived": "sixth-native/before/naiwa-Working-0090.png",
+    "sourceSHA256": "b91d756c7cd40de191251e20bf46f64c83440f64a886fb0ea626e1440b0d5964",
+    "archivedSHA256": "b91d756c7cd40de191251e20bf46f64c83440f64a886fb0ea626e1440b0d5964"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0150.png",
+    "archived": "sixth-native/before/naiwa-Working-0150.png",
+    "sourceSHA256": "eb352594348906b0d14ed70d6ea54c30fdc30b77a573ceef88c36022aa076009",
+    "archivedSHA256": "eb352594348906b0d14ed70d6ea54c30fdc30b77a573ceef88c36022aa076009"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0180.png",
+    "archived": "sixth-native/before/naiwa-Working-0180.png",
+    "sourceSHA256": "6b223a11ffbef7b7e4376e3e022a6e50452a5270436942134ea27d8c2ef12c84",
+    "archivedSHA256": "6b223a11ffbef7b7e4376e3e022a6e50452a5270436942134ea27d8c2ef12c84"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0240.png",
+    "archived": "sixth-native/before/naiwa-Working-0240.png",
+    "sourceSHA256": "c30fdfe5e894cd7f31167e29989483bf6df34b3f5441c5d3e0009864acbe9713",
+    "archivedSHA256": "c30fdfe5e894cd7f31167e29989483bf6df34b3f5441c5d3e0009864acbe9713"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0300.png",
+    "archived": "sixth-native/before/naiwa-Working-0300.png",
+    "sourceSHA256": "6777d321e33976ec8321d8cfc9f7657f3883f3c08a2519701f4fc2c301386932",
+    "archivedSHA256": "6777d321e33976ec8321d8cfc9f7657f3883f3c08a2519701f4fc2c301386932"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0360.png",
+    "archived": "sixth-native/before/naiwa-Working-0360.png",
+    "sourceSHA256": "de4e8f66beed7cc2174a9d02db4ffa08bd05bbfdcaf444d42afc52c38ddf0b95",
+    "archivedSHA256": "de4e8f66beed7cc2174a9d02db4ffa08bd05bbfdcaf444d42afc52c38ddf0b95"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0390.png",
+    "archived": "sixth-native/before/naiwa-Working-0390.png",
+    "sourceSHA256": "bb77bf7262a70fbfdc7fc465d69c2173c8352b5d3c5898a3e616abb63fb1b048",
+    "archivedSHA256": "bb77bf7262a70fbfdc7fc465d69c2173c8352b5d3c5898a3e616abb63fb1b048"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0450.png",
+    "archived": "sixth-native/before/naiwa-Working-0450.png",
+    "sourceSHA256": "25e82910e3d66dbafd94c326d2a0e98c4bad2c51b30ef1648e19e88908f3d6e1",
+    "archivedSHA256": "25e82910e3d66dbafd94c326d2a0e98c4bad2c51b30ef1648e19e88908f3d6e1"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0540.png",
+    "archived": "sixth-native/before/naiwa-Working-0540.png",
+    "sourceSHA256": "392b0b15f5be3e774e864b4828e4f23553813798b818aad12197769c33c412bd",
+    "archivedSHA256": "392b0b15f5be3e774e864b4828e4f23553813798b818aad12197769c33c412bd"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0660.png",
+    "archived": "sixth-native/before/naiwa-Working-0660.png",
+    "sourceSHA256": "af77c9552e2ac78dad0707cd1fed66f75dee549044ba83415abc58185978b5d2",
+    "archivedSHA256": "af77c9552e2ac78dad0707cd1fed66f75dee549044ba83415abc58185978b5d2"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0720.png",
+    "archived": "sixth-native/before/naiwa-Working-0720.png",
+    "sourceSHA256": "7ba90e6de59eb552ac02d207e9bdd6ee69770ad85a7c6e579f1f22ded0c058a9",
+    "archivedSHA256": "7ba90e6de59eb552ac02d207e9bdd6ee69770ad85a7c6e579f1f22ded0c058a9"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0750.png",
+    "archived": "sixth-native/before/naiwa-Working-0750.png",
+    "sourceSHA256": "ce61b23ed88d7f92c3a569fbe137c9398d4193c39a093629c03626e455ba6074",
+    "archivedSHA256": "ce61b23ed88d7f92c3a569fbe137c9398d4193c39a093629c03626e455ba6074"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-0900.png",
+    "archived": "sixth-native/before/naiwa-Working-0900.png",
+    "sourceSHA256": "aeea14cef86c14640a5ab7e6f882b0f1237b15329b94ecd91a6b7e28ed128330",
+    "archivedSHA256": "aeea14cef86c14640a5ab7e6f882b0f1237b15329b94ecd91a6b7e28ed128330"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-1080.png",
+    "archived": "sixth-native/before/naiwa-Working-1080.png",
+    "sourceSHA256": "01d601ec5a050cc4b14dcd0a5cc6e5feaa5d2df416b71c835f921eff914d8be0",
+    "archivedSHA256": "01d601ec5a050cc4b14dcd0a5cc6e5feaa5d2df416b71c835f921eff914d8be0"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-1440.png",
+    "archived": "sixth-native/before/naiwa-Working-1440.png",
+    "sourceSHA256": "98fdef57e9f70e89c4ccbd9d5b3bfcee06a725c325f39d7c9e250dbd420cd220",
+    "archivedSHA256": "98fdef57e9f70e89c4ccbd9d5b3bfcee06a725c325f39d7c9e250dbd420cd220"
+  },
+  {
+    "source": "sixth-native/before/naiwa-Working-samples.json",
+    "archived": "sixth-native/before/naiwa-Working-samples.json",
+    "sourceSHA256": "e1cca2f726ff97ad13bdce65af07c588786dc9ca0cad2a67df9cdf9c47e76c5f",
+    "archivedSHA256": "e1cca2f726ff97ad13bdce65af07c588786dc9ca0cad2a67df9cdf9c47e76c5f"
+  },
+  {
+    "source": "sixth-native/before/report.json",
+    "archived": "sixth-native/before/report.json",
+    "sourceSHA256": "efc95bb263a25903b468c42a53dbab7b7451a189c347484cc5db0c3e4656b59d",
+    "archivedSHA256": "efc95bb263a25903b468c42a53dbab7b7451a189c347484cc5db0c3e4656b59d"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0030.png",
+    "archived": "sixth-native/before/tororo-Idle-0030.png",
+    "sourceSHA256": "6e9febc420140a123d02b9f2c7a43c3bd6ebc1bc954909401a38239245e82dda",
+    "archivedSHA256": "6e9febc420140a123d02b9f2c7a43c3bd6ebc1bc954909401a38239245e82dda"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0090.png",
+    "archived": "sixth-native/before/tororo-Idle-0090.png",
+    "sourceSHA256": "b5279f7754a39c4f23639eac5eedf5032826460be69b4e39261ccf812ad52a61",
+    "archivedSHA256": "b5279f7754a39c4f23639eac5eedf5032826460be69b4e39261ccf812ad52a61"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0150.png",
+    "archived": "sixth-native/before/tororo-Idle-0150.png",
+    "sourceSHA256": "3deb799967639c446ba01783996395196897da4e9da02c5b8451723ac7ed6d33",
+    "archivedSHA256": "3deb799967639c446ba01783996395196897da4e9da02c5b8451723ac7ed6d33"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0180.png",
+    "archived": "sixth-native/before/tororo-Idle-0180.png",
+    "sourceSHA256": "431425b638789da4add386cb04211d9bb1ac786af90f63bf359c9f18fd5feac4",
+    "archivedSHA256": "431425b638789da4add386cb04211d9bb1ac786af90f63bf359c9f18fd5feac4"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0240.png",
+    "archived": "sixth-native/before/tororo-Idle-0240.png",
+    "sourceSHA256": "de0866f12abcf1f85cbf47a71deef2bd7808c6d7dfe1c4d063c23224fd1f1b12",
+    "archivedSHA256": "de0866f12abcf1f85cbf47a71deef2bd7808c6d7dfe1c4d063c23224fd1f1b12"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0300.png",
+    "archived": "sixth-native/before/tororo-Idle-0300.png",
+    "sourceSHA256": "0aeb1a9caba09b2f5e2bb50d120ec7970330af7351e9f1247c74b0649560fbf2",
+    "archivedSHA256": "0aeb1a9caba09b2f5e2bb50d120ec7970330af7351e9f1247c74b0649560fbf2"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0360.png",
+    "archived": "sixth-native/before/tororo-Idle-0360.png",
+    "sourceSHA256": "de752e237a719ca55d957edcb22094c734acf956dfaf61d890c1e5017195697e",
+    "archivedSHA256": "de752e237a719ca55d957edcb22094c734acf956dfaf61d890c1e5017195697e"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0390.png",
+    "archived": "sixth-native/before/tororo-Idle-0390.png",
+    "sourceSHA256": "7b2fb5ab5ad55b0936bafe8ed53391011fc779ac4ac97dfe8e44e8ff65da0af3",
+    "archivedSHA256": "7b2fb5ab5ad55b0936bafe8ed53391011fc779ac4ac97dfe8e44e8ff65da0af3"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0450.png",
+    "archived": "sixth-native/before/tororo-Idle-0450.png",
+    "sourceSHA256": "0d550d7558a44888567ab12b7bc59525240c8d68cfb9830b29f605adb80bd815",
+    "archivedSHA256": "0d550d7558a44888567ab12b7bc59525240c8d68cfb9830b29f605adb80bd815"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0540.png",
+    "archived": "sixth-native/before/tororo-Idle-0540.png",
+    "sourceSHA256": "5d192967738d611ac99d8b1229dbbc811b0ea09cc21db202e01e76932367fd74",
+    "archivedSHA256": "5d192967738d611ac99d8b1229dbbc811b0ea09cc21db202e01e76932367fd74"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0660.png",
+    "archived": "sixth-native/before/tororo-Idle-0660.png",
+    "sourceSHA256": "70398ab46eeff2026848fb7a0adf67c530f06b9ce0fb0e5ed46fca3d253d450f",
+    "archivedSHA256": "70398ab46eeff2026848fb7a0adf67c530f06b9ce0fb0e5ed46fca3d253d450f"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0720.png",
+    "archived": "sixth-native/before/tororo-Idle-0720.png",
+    "sourceSHA256": "4ead0a3b7d0c3a5e77ef368654b2559e6ae52fc9aa519ba4ef8e4b7506891189",
+    "archivedSHA256": "4ead0a3b7d0c3a5e77ef368654b2559e6ae52fc9aa519ba4ef8e4b7506891189"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-0750.png",
+    "archived": "sixth-native/before/tororo-Idle-0750.png",
+    "sourceSHA256": "4cd029095168debc9941f094164e727da2b28d14cc0e1b0cdcc90ddff52f08be",
+    "archivedSHA256": "4cd029095168debc9941f094164e727da2b28d14cc0e1b0cdcc90ddff52f08be"
+  },
+  {
+    "source": "sixth-native/before/tororo-Idle-samples.json",
+    "archived": "sixth-native/before/tororo-Idle-samples.json",
+    "sourceSHA256": "9c771b202b2df3b54366b0634af60e03f583894d432fc4ca04f6c5fca700fd32",
+    "archivedSHA256": "9c771b202b2df3b54366b0634af60e03f583894d432fc4ca04f6c5fca700fd32"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0030.png",
+    "archived": "sixth-native/before/whale-girl-idle-0030.png",
+    "sourceSHA256": "e8eca62e3f7492dd6ea41defc3b71f3c7ca979eda57a0c9321bf76aee6c74c99",
+    "archivedSHA256": "e8eca62e3f7492dd6ea41defc3b71f3c7ca979eda57a0c9321bf76aee6c74c99"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0090.png",
+    "archived": "sixth-native/before/whale-girl-idle-0090.png",
+    "sourceSHA256": "9fc2c452923fbb459edd1e4a19e0192087276327150287b216723cfc747ffcf0",
+    "archivedSHA256": "9fc2c452923fbb459edd1e4a19e0192087276327150287b216723cfc747ffcf0"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0150.png",
+    "archived": "sixth-native/before/whale-girl-idle-0150.png",
+    "sourceSHA256": "41479d8f48a28ea65ee8c902c29dd81db0e741d7705c214cdb226b3b8c73e291",
+    "archivedSHA256": "41479d8f48a28ea65ee8c902c29dd81db0e741d7705c214cdb226b3b8c73e291"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0180.png",
+    "archived": "sixth-native/before/whale-girl-idle-0180.png",
+    "sourceSHA256": "2fc0c55aff1dbb592ae864769af58c9a9241236a32ae8e84c208b03309aa702f",
+    "archivedSHA256": "2fc0c55aff1dbb592ae864769af58c9a9241236a32ae8e84c208b03309aa702f"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0240.png",
+    "archived": "sixth-native/before/whale-girl-idle-0240.png",
+    "sourceSHA256": "f1dc6ba04b06d8bb839d9869a9e6b56cacde955bf8a786bfe719e4eaa11d9946",
+    "archivedSHA256": "f1dc6ba04b06d8bb839d9869a9e6b56cacde955bf8a786bfe719e4eaa11d9946"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0300.png",
+    "archived": "sixth-native/before/whale-girl-idle-0300.png",
+    "sourceSHA256": "0d28a435dd55ccd5a7e91679f2851b0e57095f22bf01a42bff40435d51cc47ba",
+    "archivedSHA256": "0d28a435dd55ccd5a7e91679f2851b0e57095f22bf01a42bff40435d51cc47ba"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0360.png",
+    "archived": "sixth-native/before/whale-girl-idle-0360.png",
+    "sourceSHA256": "28b6a835d844be8400e3456fb7bfe36865c76268904676b028747e55eb423403",
+    "archivedSHA256": "28b6a835d844be8400e3456fb7bfe36865c76268904676b028747e55eb423403"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0390.png",
+    "archived": "sixth-native/before/whale-girl-idle-0390.png",
+    "sourceSHA256": "60e37ddcc9969df6d53d7dccfaf85ee8ca6052eb9ad0f41163c5dcdf3c60422e",
+    "archivedSHA256": "60e37ddcc9969df6d53d7dccfaf85ee8ca6052eb9ad0f41163c5dcdf3c60422e"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0450.png",
+    "archived": "sixth-native/before/whale-girl-idle-0450.png",
+    "sourceSHA256": "0357c8e5de6c182b725e167fb85c33efa6d48bb4a9a1a4c726e40cdd256e3596",
+    "archivedSHA256": "0357c8e5de6c182b725e167fb85c33efa6d48bb4a9a1a4c726e40cdd256e3596"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0540.png",
+    "archived": "sixth-native/before/whale-girl-idle-0540.png",
+    "sourceSHA256": "3c51d63707a59d407f2a27e90764ef67a17d21dcb1a0bff144c226aa490bf187",
+    "archivedSHA256": "3c51d63707a59d407f2a27e90764ef67a17d21dcb1a0bff144c226aa490bf187"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0660.png",
+    "archived": "sixth-native/before/whale-girl-idle-0660.png",
+    "sourceSHA256": "ef501c2c3dc3be2a8b68b097118ecf0a2db70736c29664f6dfcc23b91420da5b",
+    "archivedSHA256": "ef501c2c3dc3be2a8b68b097118ecf0a2db70736c29664f6dfcc23b91420da5b"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0720.png",
+    "archived": "sixth-native/before/whale-girl-idle-0720.png",
+    "sourceSHA256": "04553b2da818e826701fcf384ebd8781b9d8642527f458d2ef9076f1ee7736c1",
+    "archivedSHA256": "04553b2da818e826701fcf384ebd8781b9d8642527f458d2ef9076f1ee7736c1"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-0750.png",
+    "archived": "sixth-native/before/whale-girl-idle-0750.png",
+    "sourceSHA256": "f5b003db91dafb9cfd0ba013319ec6bd20ee282432d26e836deea98d3aad8ed4",
+    "archivedSHA256": "f5b003db91dafb9cfd0ba013319ec6bd20ee282432d26e836deea98d3aad8ed4"
+  },
+  {
+    "source": "sixth-native/before/whale-girl-idle-samples.json",
+    "archived": "sixth-native/before/whale-girl-idle-samples.json",
+    "sourceSHA256": "84fd5b823a91af5b1284982d33a637733fa7b90c27d0ec252ae960e02612fc97",
+    "archivedSHA256": "84fd5b823a91af5b1284982d33a637733fa7b90c27d0ec252ae960e02612fc97"
+  },
+  {
+    "source": "sixth-native/before/working.mp4",
+    "archived": "sixth-native/before/working.mp4",
+    "sourceSHA256": "50281633eb93d29d9f315bb4540122b3b88977af15eba5be6e03625d79c156f4",
+    "archivedSHA256": "50281633eb93d29d9f315bb4540122b3b88977af15eba5be6e03625d79c156f4"
+  },
+  {
+    "source": "sixth-native/diagnostic/capabilities.json",
+    "archived": "sixth-native/diagnostic/capabilities.json",
+    "sourceSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc",
+    "archivedSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc"
+  },
+  {
+    "source": "sixth-native/diagnostic/loop-and-transitions.json",
+    "archived": "sixth-native/diagnostic/loop-and-transitions.json",
+    "sourceSHA256": "adba62549586ecf9a65abfa1145b0d8a860d121cb0653109a0f900518119473e",
+    "archivedSHA256": "adba62549586ecf9a65abfa1145b0d8a860d121cb0653109a0f900518119473e"
+  },
+  {
+    "source": "sixth-native/diagnostic/low-fps-peak.json",
+    "archived": "sixth-native/diagnostic/low-fps-peak.json",
+    "sourceSHA256": "bf195ebc09be1a124f2867067b44508974443c0ef8183f04c8d4530807369025",
+    "archivedSHA256": "bf195ebc09be1a124f2867067b44508974443c0ef8183f04c8d4530807369025"
+  },
+  {
+    "source": "sixth-native/diagnostic/low-fps-samples.json",
+    "archived": "sixth-native/diagnostic/low-fps-samples.json",
+    "sourceSHA256": "c46a6e7f509062a4db0b5fc9500419047f78fe5d729c8dc02bd27241b6ea0907",
+    "archivedSHA256": "c46a6e7f509062a4db0b5fc9500419047f78fe5d729c8dc02bd27241b6ea0907"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-activity-cancel.png",
+    "archived": "sixth-native/diagnostic/naiwa-activity-cancel.png",
+    "sourceSHA256": "241e80bd8e33c3d24b83e0cafbbac79be422d07e83c8605e6136423f0d268a82",
+    "archivedSHA256": "241e80bd8e33c3d24b83e0cafbbac79be422d07e83c8605e6136423f0d268a82"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-activity-low-fps.png",
+    "archived": "sixth-native/diagnostic/naiwa-activity-low-fps.png",
+    "sourceSHA256": "af23e0d3313f57de679f1b1611c127436d9bc10450fb837df33cdb3ec1d7ce49",
+    "archivedSHA256": "af23e0d3313f57de679f1b1611c127436d9bc10450fb837df33cdb3ec1d7ce49"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-activity-reloaded.png",
+    "archived": "sixth-native/diagnostic/naiwa-activity-reloaded.png",
+    "sourceSHA256": "2110fd515ba4d8d4664b9055c240136d5b879655961ed8e77c85984c5ebfaf51",
+    "archivedSHA256": "2110fd515ba4d8d4664b9055c240136d5b879655961ed8e77c85984c5ebfaf51"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-activity-think.png",
+    "archived": "sixth-native/diagnostic/naiwa-activity-think.png",
+    "sourceSHA256": "7c44212e6dd56d8a9f2a6764f79e0968aae4a3f81b45a819e607f23c2be7cf12",
+    "archivedSHA256": "7c44212e6dd56d8a9f2a6764f79e0968aae4a3f81b45a819e607f23c2be7cf12"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-activity-transient-resumed.png",
+    "archived": "sixth-native/diagnostic/naiwa-activity-transient-resumed.png",
+    "sourceSHA256": "cabcf6c36907b195c150a39e39be20625d3cb41b17bf32d11dd7fb7d6aab1252",
+    "archivedSHA256": "cabcf6c36907b195c150a39e39be20625d3cb41b17bf32d11dd7fb7d6aab1252"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-activity-work-resume.png",
+    "archived": "sixth-native/diagnostic/naiwa-activity-work-resume.png",
+    "sourceSHA256": "9f39ea7f8d0c46329688f87532d8d772d36f28baa6b7c84a56f77498b0721f47",
+    "archivedSHA256": "9f39ea7f8d0c46329688f87532d8d772d36f28baa6b7c84a56f77498b0721f47"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0030.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0030.png",
+    "sourceSHA256": "c3b32b1ca4d32fe5f03c66156b8b1e75a544097190dc944a74fb28a698fb6f5a",
+    "archivedSHA256": "c3b32b1ca4d32fe5f03c66156b8b1e75a544097190dc944a74fb28a698fb6f5a"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0090.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0090.png",
+    "sourceSHA256": "d646e3655ed69428304a955a0944d98ef0c10bc1322c3953418eaff911ec2e9a",
+    "archivedSHA256": "d646e3655ed69428304a955a0944d98ef0c10bc1322c3953418eaff911ec2e9a"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0150.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0150.png",
+    "sourceSHA256": "b174f1818115d70e55b6f794eb056b0d7851977e95f33daa68565fa27d26b87f",
+    "archivedSHA256": "b174f1818115d70e55b6f794eb056b0d7851977e95f33daa68565fa27d26b87f"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0180.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0180.png",
+    "sourceSHA256": "3d532227dbda75b7b951080a24cd7b31645162cf6841c407ace472d8bd556717",
+    "archivedSHA256": "3d532227dbda75b7b951080a24cd7b31645162cf6841c407ace472d8bd556717"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0240.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0240.png",
+    "sourceSHA256": "5b76ba8209835c0e469792b733056894bbd65819647b4d2c92cb5a8ade603453",
+    "archivedSHA256": "5b76ba8209835c0e469792b733056894bbd65819647b4d2c92cb5a8ade603453"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0300.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0300.png",
+    "sourceSHA256": "7a552e17784fe7b2475c1e2afad3b06a2bf34fea271c73087104a60c33e67c0b",
+    "archivedSHA256": "7a552e17784fe7b2475c1e2afad3b06a2bf34fea271c73087104a60c33e67c0b"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0344.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0344.png",
+    "sourceSHA256": "2bd38531001ba052f0bdd26f768ae06675f6837bee622ddf1df6912cd32c14d3",
+    "archivedSHA256": "2bd38531001ba052f0bdd26f768ae06675f6837bee622ddf1df6912cd32c14d3"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0360.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0360.png",
+    "sourceSHA256": "22b304fe8b5140238c006a0191cd14faad6674eaba0183aca658fd9e8f61b059",
+    "archivedSHA256": "22b304fe8b5140238c006a0191cd14faad6674eaba0183aca658fd9e8f61b059"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0390.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0390.png",
+    "sourceSHA256": "d783a8c391407cf64b3d41739af77ba12eb58bc9ac0407b9025cb474bfa62144",
+    "archivedSHA256": "d783a8c391407cf64b3d41739af77ba12eb58bc9ac0407b9025cb474bfa62144"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0450.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0450.png",
+    "sourceSHA256": "646089db29e457d2c4f74331451c14523e469eabdba7d5fac06ac2694c9df459",
+    "archivedSHA256": "646089db29e457d2c4f74331451c14523e469eabdba7d5fac06ac2694c9df459"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0540.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0540.png",
+    "sourceSHA256": "7261a86ee1873002a3001505c09f2b9d2f21f5216312a9632d2c34d4db5ea7ec",
+    "archivedSHA256": "7261a86ee1873002a3001505c09f2b9d2f21f5216312a9632d2c34d4db5ea7ec"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0660.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0660.png",
+    "sourceSHA256": "d28dda9fc4266a2973011902eb0bb51d8b2c55adfc1c25bc9c23fc31197759bf",
+    "archivedSHA256": "d28dda9fc4266a2973011902eb0bb51d8b2c55adfc1c25bc9c23fc31197759bf"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0704.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0704.png",
+    "sourceSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e",
+    "archivedSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0720.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0720.png",
+    "sourceSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418",
+    "archivedSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0750.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0750.png",
+    "sourceSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8",
+    "archivedSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-0900.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-0900.png",
+    "sourceSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d",
+    "archivedSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-1080.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-1080.png",
+    "sourceSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed",
+    "archivedSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-1440.png",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-1440.png",
+    "sourceSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56",
+    "archivedSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56"
+  },
+  {
+    "source": "sixth-native/diagnostic/naiwa-WorkingLoop-samples.json",
+    "archived": "sixth-native/diagnostic/naiwa-WorkingLoop-samples.json",
+    "sourceSHA256": "0d96b244327da55ca510f4a04103504fc988176af3277c12332bcd86cdae0595",
+    "archivedSHA256": "0d96b244327da55ca510f4a04103504fc988176af3277c12332bcd86cdae0595"
+  },
+  {
+    "source": "sixth-native/diagnostic/report.json",
+    "archived": "sixth-native/diagnostic/report.json",
+    "sourceSHA256": "2880adf15deb6db2f280a9dc3169282f8799c8051c74e7bf703f45856c09f8b5",
+    "archivedSHA256": "2880adf15deb6db2f280a9dc3169282f8799c8051c74e7bf703f45856c09f8b5"
+  },
+  {
+    "source": "sixth-native/diagnostic/working.mp4",
+    "archived": "sixth-native/diagnostic/working.mp4",
+    "sourceSHA256": "454061b52ea051131974a4c53db4b51adad0b96424bf05c1c9065020ace6547a",
+    "archivedSHA256": "454061b52ea051131974a4c53db4b51adad0b96424bf05c1c9065020ace6547a"
+  },
+  {
+    "source": "sixth-native/final/capabilities.json",
+    "archived": "sixth-native/final/capabilities.json",
+    "sourceSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc",
+    "archivedSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc"
+  },
+  {
+    "source": "sixth-native/final/naiwa-activity-transient-resumed.png",
+    "archived": "sixth-native/final/naiwa-activity-transient-resumed.png",
+    "sourceSHA256": "cabcf6c36907b195c150a39e39be20625d3cb41b17bf32d11dd7fb7d6aab1252",
+    "archivedSHA256": "cabcf6c36907b195c150a39e39be20625d3cb41b17bf32d11dd7fb7d6aab1252"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0030.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0030.png",
+    "sourceSHA256": "3342ecf72a35d7c3deacbc58115dacfba755bd26375948bbc4ce90488f62861e",
+    "archivedSHA256": "3342ecf72a35d7c3deacbc58115dacfba755bd26375948bbc4ce90488f62861e"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0090.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0090.png",
+    "sourceSHA256": "b5e4a858a7475037826d52b4caf75e9239c2abd914a958faf01876eab054fe86",
+    "archivedSHA256": "b5e4a858a7475037826d52b4caf75e9239c2abd914a958faf01876eab054fe86"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0150.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0150.png",
+    "sourceSHA256": "e9d1ffeb0023cb259bc91ba426dc0c7e6d0913329dc24bb1bb5d3c7a3db7b907",
+    "archivedSHA256": "e9d1ffeb0023cb259bc91ba426dc0c7e6d0913329dc24bb1bb5d3c7a3db7b907"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0180.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0180.png",
+    "sourceSHA256": "ab96d3c8973a76952bc440c64628ac85f7eb4988cd562204abc7052c570ad3cb",
+    "archivedSHA256": "ab96d3c8973a76952bc440c64628ac85f7eb4988cd562204abc7052c570ad3cb"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0240.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0240.png",
+    "sourceSHA256": "0ccda5f4e2c94d5996d0fc074e4c269a2a84a9afe3a1a4f4b722abff79374fb9",
+    "archivedSHA256": "0ccda5f4e2c94d5996d0fc074e4c269a2a84a9afe3a1a4f4b722abff79374fb9"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0300.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0300.png",
+    "sourceSHA256": "a84c0598c5d8cede5deede13dcbe880be3d33b8d9e2264aa12ab58054578de30",
+    "archivedSHA256": "a84c0598c5d8cede5deede13dcbe880be3d33b8d9e2264aa12ab58054578de30"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0344.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0344.png",
+    "sourceSHA256": "2bd38531001ba052f0bdd26f768ae06675f6837bee622ddf1df6912cd32c14d3",
+    "archivedSHA256": "2bd38531001ba052f0bdd26f768ae06675f6837bee622ddf1df6912cd32c14d3"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0360.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0360.png",
+    "sourceSHA256": "dc5d18b2d6819d1cfe48d1f4b94c252156e2d2eec03fcb93cd155ce0d2ec8d07",
+    "archivedSHA256": "dc5d18b2d6819d1cfe48d1f4b94c252156e2d2eec03fcb93cd155ce0d2ec8d07"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0390.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0390.png",
+    "sourceSHA256": "41ff14d369163adcbb1fd3ca10392fcaf612df87b929c7254f54aec48207843a",
+    "archivedSHA256": "41ff14d369163adcbb1fd3ca10392fcaf612df87b929c7254f54aec48207843a"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0450.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0450.png",
+    "sourceSHA256": "51e91c707f6c51b413e9b655314b6965a464981e3baf3578c04a5ebc68a137d6",
+    "archivedSHA256": "51e91c707f6c51b413e9b655314b6965a464981e3baf3578c04a5ebc68a137d6"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0540.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0540.png",
+    "sourceSHA256": "7261a86ee1873002a3001505c09f2b9d2f21f5216312a9632d2c34d4db5ea7ec",
+    "archivedSHA256": "7261a86ee1873002a3001505c09f2b9d2f21f5216312a9632d2c34d4db5ea7ec"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0660.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0660.png",
+    "sourceSHA256": "d28dda9fc4266a2973011902eb0bb51d8b2c55adfc1c25bc9c23fc31197759bf",
+    "archivedSHA256": "d28dda9fc4266a2973011902eb0bb51d8b2c55adfc1c25bc9c23fc31197759bf"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0704.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0704.png",
+    "sourceSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e",
+    "archivedSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0720.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0720.png",
+    "sourceSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418",
+    "archivedSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0750.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0750.png",
+    "sourceSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8",
+    "archivedSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-0900.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-0900.png",
+    "sourceSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d",
+    "archivedSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-1080.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-1080.png",
+    "sourceSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed",
+    "archivedSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-1440.png",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-1440.png",
+    "sourceSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56",
+    "archivedSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56"
+  },
+  {
+    "source": "sixth-native/final/naiwa-WorkingLoop-samples.json",
+    "archived": "sixth-native/final/naiwa-WorkingLoop-samples.json",
+    "sourceSHA256": "d14a3f0557fed2cb67838f0bbbaa7228bd9311d73c99d78baa2c8204fbebcdd9",
+    "archivedSHA256": "d14a3f0557fed2cb67838f0bbbaa7228bd9311d73c99d78baa2c8204fbebcdd9"
+  },
+  {
+    "source": "sixth-native/final/NOT-FINAL.txt",
+    "archived": "sixth-native/final/NOT-FINAL.txt",
+    "sourceSHA256": "9e0eed0ebd0b806cc93860a85fcc42455cd8d5085c7813338bd49c686561571f",
+    "archivedSHA256": "d7b770af602916900bd76c6b4f57908ae475feb51181bbc38e47d1f950871c1a"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0030.png",
+    "archived": "sixth-native/final/tororo-Idle-0030.png",
+    "sourceSHA256": "06f6ac4bbd7daa8ac146da529f532635a639ddb48c009f67ecc3596be4f93587",
+    "archivedSHA256": "06f6ac4bbd7daa8ac146da529f532635a639ddb48c009f67ecc3596be4f93587"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0090.png",
+    "archived": "sixth-native/final/tororo-Idle-0090.png",
+    "sourceSHA256": "6874d84d5f6ecd2b7e7aa7559eaec271064a8d907e5168d9f36e6d8789d03837",
+    "archivedSHA256": "6874d84d5f6ecd2b7e7aa7559eaec271064a8d907e5168d9f36e6d8789d03837"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0150.png",
+    "archived": "sixth-native/final/tororo-Idle-0150.png",
+    "sourceSHA256": "947edc845ce8e0ea0af1ca6b96b6fea9bc2e29f288b704c2dcaac514ae5a8d09",
+    "archivedSHA256": "947edc845ce8e0ea0af1ca6b96b6fea9bc2e29f288b704c2dcaac514ae5a8d09"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0180.png",
+    "archived": "sixth-native/final/tororo-Idle-0180.png",
+    "sourceSHA256": "8702aae104190ba563de6664ce2d2c4d5063e20c6f83ca81846f58a10aa5a61c",
+    "archivedSHA256": "8702aae104190ba563de6664ce2d2c4d5063e20c6f83ca81846f58a10aa5a61c"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0240.png",
+    "archived": "sixth-native/final/tororo-Idle-0240.png",
+    "sourceSHA256": "6bcf0fc5b88c10290a21744cab351cefa4eb463281bbd2ff2a9dfefc72dd53a8",
+    "archivedSHA256": "6bcf0fc5b88c10290a21744cab351cefa4eb463281bbd2ff2a9dfefc72dd53a8"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0300.png",
+    "archived": "sixth-native/final/tororo-Idle-0300.png",
+    "sourceSHA256": "536f6a796fa6e271f2adfdbb1b18509e96a52fba25acbee1b1d161c073d12798",
+    "archivedSHA256": "536f6a796fa6e271f2adfdbb1b18509e96a52fba25acbee1b1d161c073d12798"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0344.png",
+    "archived": "sixth-native/final/tororo-Idle-0344.png",
+    "sourceSHA256": "f59ab253e1ed1ab2d20901b00cc578c6d0d95344d677cf80b7a981ab89f8624b",
+    "archivedSHA256": "f59ab253e1ed1ab2d20901b00cc578c6d0d95344d677cf80b7a981ab89f8624b"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0360.png",
+    "archived": "sixth-native/final/tororo-Idle-0360.png",
+    "sourceSHA256": "7f98b5ed7ea23167c987e66c0a059122983117a305626bcc8e69a6c18771afb8",
+    "archivedSHA256": "7f98b5ed7ea23167c987e66c0a059122983117a305626bcc8e69a6c18771afb8"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0390.png",
+    "archived": "sixth-native/final/tororo-Idle-0390.png",
+    "sourceSHA256": "0ef50069a62c82f4c85da41dd9b56bf8119eeeba27e77857ee755cee5029298c",
+    "archivedSHA256": "0ef50069a62c82f4c85da41dd9b56bf8119eeeba27e77857ee755cee5029298c"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0450.png",
+    "archived": "sixth-native/final/tororo-Idle-0450.png",
+    "sourceSHA256": "8a0584dcdcc0621e29990f98f950f1634f3c6c6eecca1df6a8d78e29a8cf08e9",
+    "archivedSHA256": "8a0584dcdcc0621e29990f98f950f1634f3c6c6eecca1df6a8d78e29a8cf08e9"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0540.png",
+    "archived": "sixth-native/final/tororo-Idle-0540.png",
+    "sourceSHA256": "8256de7d67257fcb2c72e125eaa5550496e5da81a71dfca12e2d0adef8acb838",
+    "archivedSHA256": "8256de7d67257fcb2c72e125eaa5550496e5da81a71dfca12e2d0adef8acb838"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0660.png",
+    "archived": "sixth-native/final/tororo-Idle-0660.png",
+    "sourceSHA256": "fd949020514227dd0523890c29c9b3d7e3079b96969e248ba02236620d19f894",
+    "archivedSHA256": "fd949020514227dd0523890c29c9b3d7e3079b96969e248ba02236620d19f894"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0704.png",
+    "archived": "sixth-native/final/tororo-Idle-0704.png",
+    "sourceSHA256": "56a701c6d4e6236d2294c07ef7173741f985504125614e12c2d6560768c8b3c8",
+    "archivedSHA256": "56a701c6d4e6236d2294c07ef7173741f985504125614e12c2d6560768c8b3c8"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0720.png",
+    "archived": "sixth-native/final/tororo-Idle-0720.png",
+    "sourceSHA256": "0086c5e2e7cd7d2c7a6a58f33f1af641b4fe2566fec51084c39a6ab23f2fae0d",
+    "archivedSHA256": "0086c5e2e7cd7d2c7a6a58f33f1af641b4fe2566fec51084c39a6ab23f2fae0d"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-0750.png",
+    "archived": "sixth-native/final/tororo-Idle-0750.png",
+    "sourceSHA256": "9bab40bd6fda61dc66272ff5152fbacde5ce7394ff383fbd2207ba773807df32",
+    "archivedSHA256": "9bab40bd6fda61dc66272ff5152fbacde5ce7394ff383fbd2207ba773807df32"
+  },
+  {
+    "source": "sixth-native/final/tororo-Idle-samples.json",
+    "archived": "sixth-native/final/tororo-Idle-samples.json",
+    "sourceSHA256": "a837b5f772a4305e8ae091543d4cdfdbf002b66f131e29eff764d2f4dab538b7",
+    "archivedSHA256": "a837b5f772a4305e8ae091543d4cdfdbf002b66f131e29eff764d2f4dab538b7"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0030.png",
+    "archived": "sixth-native/final/whale-girl-idle-0030.png",
+    "sourceSHA256": "aa21b3859f34c0b72fc20e1b01ec7ab2a4ce734a57303e3f6a9d78aa7f38cfaa",
+    "archivedSHA256": "aa21b3859f34c0b72fc20e1b01ec7ab2a4ce734a57303e3f6a9d78aa7f38cfaa"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0090.png",
+    "archived": "sixth-native/final/whale-girl-idle-0090.png",
+    "sourceSHA256": "e6bb8f32fba6f068328d6d0ee31402b372ba01d954ca179832ee40ae4c85935e",
+    "archivedSHA256": "e6bb8f32fba6f068328d6d0ee31402b372ba01d954ca179832ee40ae4c85935e"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0150.png",
+    "archived": "sixth-native/final/whale-girl-idle-0150.png",
+    "sourceSHA256": "745357529694f9de89e84fc7d2931a90ecdadd51f98bc63a219d32a68e5ca912",
+    "archivedSHA256": "745357529694f9de89e84fc7d2931a90ecdadd51f98bc63a219d32a68e5ca912"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0180.png",
+    "archived": "sixth-native/final/whale-girl-idle-0180.png",
+    "sourceSHA256": "c93eecdb4fc02d43fe9b332fc51c5b569a0c9012431db1f18556ba064bf65171",
+    "archivedSHA256": "c93eecdb4fc02d43fe9b332fc51c5b569a0c9012431db1f18556ba064bf65171"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0240.png",
+    "archived": "sixth-native/final/whale-girl-idle-0240.png",
+    "sourceSHA256": "17e16065a560d4c1dbfc9aa17b61895ae95a2d46769599e907f726e73ab5192e",
+    "archivedSHA256": "17e16065a560d4c1dbfc9aa17b61895ae95a2d46769599e907f726e73ab5192e"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0300.png",
+    "archived": "sixth-native/final/whale-girl-idle-0300.png",
+    "sourceSHA256": "f46899f013834b4179ba3fc94d5274875f9f333f43e74e0236465937873d50e0",
+    "archivedSHA256": "f46899f013834b4179ba3fc94d5274875f9f333f43e74e0236465937873d50e0"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0344.png",
+    "archived": "sixth-native/final/whale-girl-idle-0344.png",
+    "sourceSHA256": "549bd0aa55260dfcf59da5245e4644866f1e68b8a4b865bb8de94751449ef7e0",
+    "archivedSHA256": "549bd0aa55260dfcf59da5245e4644866f1e68b8a4b865bb8de94751449ef7e0"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0360.png",
+    "archived": "sixth-native/final/whale-girl-idle-0360.png",
+    "sourceSHA256": "e383677172399fa94e5763b8860784379922fe59574a2d5bf07fc8f8141484b6",
+    "archivedSHA256": "e383677172399fa94e5763b8860784379922fe59574a2d5bf07fc8f8141484b6"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0390.png",
+    "archived": "sixth-native/final/whale-girl-idle-0390.png",
+    "sourceSHA256": "55709c4ef0378564d5f3457cdafa000d048c3daf0d3a67b2501b57e1e832d712",
+    "archivedSHA256": "55709c4ef0378564d5f3457cdafa000d048c3daf0d3a67b2501b57e1e832d712"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0450.png",
+    "archived": "sixth-native/final/whale-girl-idle-0450.png",
+    "sourceSHA256": "a193cc3749b03171c2381c2346213130b3e8cbe931f3254cd82f24590e4774f0",
+    "archivedSHA256": "a193cc3749b03171c2381c2346213130b3e8cbe931f3254cd82f24590e4774f0"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0540.png",
+    "archived": "sixth-native/final/whale-girl-idle-0540.png",
+    "sourceSHA256": "8ec53d00562668a17d13ceae1327cb3da67c2f00fa2f4dd3674edc8398ac6993",
+    "archivedSHA256": "8ec53d00562668a17d13ceae1327cb3da67c2f00fa2f4dd3674edc8398ac6993"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0660.png",
+    "archived": "sixth-native/final/whale-girl-idle-0660.png",
+    "sourceSHA256": "8a31f20ae4e8f62dd046eb87b72ede7c63b722bf994655f461f9cb4865895466",
+    "archivedSHA256": "8a31f20ae4e8f62dd046eb87b72ede7c63b722bf994655f461f9cb4865895466"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0704.png",
+    "archived": "sixth-native/final/whale-girl-idle-0704.png",
+    "sourceSHA256": "887621b58cc3f40d94cbb00f3f37205ba5bb6216af6620c1150da1974dce8872",
+    "archivedSHA256": "887621b58cc3f40d94cbb00f3f37205ba5bb6216af6620c1150da1974dce8872"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0720.png",
+    "archived": "sixth-native/final/whale-girl-idle-0720.png",
+    "sourceSHA256": "271b6995b65ecddf086a6a44aadc8d461ddf686d3573f45c2579b5961b70a2e6",
+    "archivedSHA256": "271b6995b65ecddf086a6a44aadc8d461ddf686d3573f45c2579b5961b70a2e6"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-0750.png",
+    "archived": "sixth-native/final/whale-girl-idle-0750.png",
+    "sourceSHA256": "e7c2500964b80179726b5c45b62083d094525694daf72d2c1b0fae3cfca180d1",
+    "archivedSHA256": "e7c2500964b80179726b5c45b62083d094525694daf72d2c1b0fae3cfca180d1"
+  },
+  {
+    "source": "sixth-native/final/whale-girl-idle-samples.json",
+    "archived": "sixth-native/final/whale-girl-idle-samples.json",
+    "sourceSHA256": "65b9c2e08c340474cb3e31c0a684ae0c3478b4d5933c1ef1608eebb85f18f9be",
+    "archivedSHA256": "65b9c2e08c340474cb3e31c0a684ae0c3478b4d5933c1ef1608eebb85f18f9be"
+  },
+  {
+    "source": "sixth-native/final/working.mp4",
+    "archived": "sixth-native/final/working.mp4",
+    "sourceSHA256": "847667acb238891fa08f2b494cede12338c078d578f03434aba14ccc2e383b23",
+    "archivedSHA256": "847667acb238891fa08f2b494cede12338c078d578f03434aba14ccc2e383b23"
+  },
+  {
+    "source": "sixth-native/final-current/capabilities.json",
+    "archived": "sixth-native/final-current/capabilities.json",
+    "sourceSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc",
+    "archivedSHA256": "d43b5d06e52d94defea611ca0b9aa17c349a0930a64d2f0bfcc2b673fa3e88bc"
+  },
+  {
+    "source": "sixth-native/final-current/component-source.txt",
+    "archived": "sixth-native/final-current/component-source.txt",
+    "sourceSHA256": "0ce12d4ce6161330f32801f2f3b18a46ebc39c42f010724c99a8c4c908db40f4",
+    "archivedSHA256": "0ce12d4ce6161330f32801f2f3b18a46ebc39c42f010724c99a8c4c908db40f4"
+  },
+  {
+    "source": "sixth-native/final-current/director-source.txt",
+    "archived": "sixth-native/final-current/director-source.txt",
+    "sourceSHA256": "0ac259becd6320d3661744b93d4311d055227647378c0cdaef04966428fc6b96",
+    "archivedSHA256": "0ac259becd6320d3661744b93d4311d055227647378c0cdaef04966428fc6b96"
+  },
+  {
+    "source": "sixth-native/final-current/loop-and-transitions.json",
+    "archived": "sixth-native/final-current/loop-and-transitions.json",
+    "sourceSHA256": "29bc73dc40b2d11b6f43179d9ca05e2e5fffbd28f459453e0c6879cb9abfa74b",
+    "archivedSHA256": "29bc73dc40b2d11b6f43179d9ca05e2e5fffbd28f459453e0c6879cb9abfa74b"
+  },
+  {
+    "source": "sixth-native/final-current/low-fps-samples.json",
+    "archived": "sixth-native/final-current/low-fps-samples.json",
+    "sourceSHA256": "74a79ac4cb0957abbc45ca915c929328896bd9d9f0e1493eac8d803213ebc0b3",
+    "archivedSHA256": "74a79ac4cb0957abbc45ca915c929328896bd9d9f0e1493eac8d803213ebc0b3"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-activity-cancel.png",
+    "archived": "sixth-native/final-current/naiwa-activity-cancel.png",
+    "sourceSHA256": "14c174477a667c893f868fb9ccf9818802f34e8173dabee4a35751877b7f5694",
+    "archivedSHA256": "14c174477a667c893f868fb9ccf9818802f34e8173dabee4a35751877b7f5694"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-activity-low-fps.png",
+    "archived": "sixth-native/final-current/naiwa-activity-low-fps.png",
+    "sourceSHA256": "af23e0d3313f57de679f1b1611c127436d9bc10450fb837df33cdb3ec1d7ce49",
+    "archivedSHA256": "af23e0d3313f57de679f1b1611c127436d9bc10450fb837df33cdb3ec1d7ce49"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-activity-reloaded.png",
+    "archived": "sixth-native/final-current/naiwa-activity-reloaded.png",
+    "sourceSHA256": "a713f24141499688c2c056cd1a6afe6021f7eb493e8730ecf005057468dc9fa0",
+    "archivedSHA256": "a713f24141499688c2c056cd1a6afe6021f7eb493e8730ecf005057468dc9fa0"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-activity-think.png",
+    "archived": "sixth-native/final-current/naiwa-activity-think.png",
+    "sourceSHA256": "9410a423725c1410f15c0b7c992afa175696c2a6cd8be2fab7a6249c826eb8ea",
+    "archivedSHA256": "9410a423725c1410f15c0b7c992afa175696c2a6cd8be2fab7a6249c826eb8ea"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-activity-transient-resumed.png",
+    "archived": "sixth-native/final-current/naiwa-activity-transient-resumed.png",
+    "sourceSHA256": "cabcf6c36907b195c150a39e39be20625d3cb41b17bf32d11dd7fb7d6aab1252",
+    "archivedSHA256": "cabcf6c36907b195c150a39e39be20625d3cb41b17bf32d11dd7fb7d6aab1252"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-activity-work-resume.png",
+    "archived": "sixth-native/final-current/naiwa-activity-work-resume.png",
+    "sourceSHA256": "8066850d26b68aed2a16977f4e6ce39dc5cbfa91fd2f9825959ab97ad952d1be",
+    "archivedSHA256": "8066850d26b68aed2a16977f4e6ce39dc5cbfa91fd2f9825959ab97ad952d1be"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0030.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0030.png",
+    "sourceSHA256": "fda28309d2fd27534e1bfbd9189918d8afce3a7b2f8ba89a8cd56dd7ea1c39f0",
+    "archivedSHA256": "fda28309d2fd27534e1bfbd9189918d8afce3a7b2f8ba89a8cd56dd7ea1c39f0"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0090.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0090.png",
+    "sourceSHA256": "cf52759c803e863645acacbb678513fb8741adb44641580c7d61d78e435214b1",
+    "archivedSHA256": "cf52759c803e863645acacbb678513fb8741adb44641580c7d61d78e435214b1"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0150.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0150.png",
+    "sourceSHA256": "2b8cfa4848a50e1e8b6783237598ef25f26a2a8c222aed396b435bd75ad7bf02",
+    "archivedSHA256": "2b8cfa4848a50e1e8b6783237598ef25f26a2a8c222aed396b435bd75ad7bf02"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0180.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0180.png",
+    "sourceSHA256": "1101e391c9c87add99d8b840cace27554e093c9bfdabf1df1786f87465b04304",
+    "archivedSHA256": "1101e391c9c87add99d8b840cace27554e093c9bfdabf1df1786f87465b04304"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0240.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0240.png",
+    "sourceSHA256": "813b5f701c8d4a89b95549b09f600350c2f48ae5eb5aaba54a9d5bd1f6c44f5b",
+    "archivedSHA256": "813b5f701c8d4a89b95549b09f600350c2f48ae5eb5aaba54a9d5bd1f6c44f5b"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0300.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0300.png",
+    "sourceSHA256": "efaf2632bcce04b2c87eece84a7a7173505c4caf6bfc551feff34ff5e4bb6cdd",
+    "archivedSHA256": "efaf2632bcce04b2c87eece84a7a7173505c4caf6bfc551feff34ff5e4bb6cdd"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0344.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0344.png",
+    "sourceSHA256": "4f58117136e6d2e4c5a5e6f239e809975682758184df7be7f9a13300693c0197",
+    "archivedSHA256": "4f58117136e6d2e4c5a5e6f239e809975682758184df7be7f9a13300693c0197"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0360.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0360.png",
+    "sourceSHA256": "e1de4e15e94e82b6a6d1fa10dddfe0e43f33bc994af7f11211183df642fa778c",
+    "archivedSHA256": "e1de4e15e94e82b6a6d1fa10dddfe0e43f33bc994af7f11211183df642fa778c"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0390.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0390.png",
+    "sourceSHA256": "b5f8d8bba916f5775d21939fed2cf4cfdf9553526f647aee55605b85342bc8d9",
+    "archivedSHA256": "b5f8d8bba916f5775d21939fed2cf4cfdf9553526f647aee55605b85342bc8d9"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0450.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0450.png",
+    "sourceSHA256": "4b2bfb8966de7dfce141432e6ab8e09e78f4c1a7d4d1703aa96d6c35077e07c2",
+    "archivedSHA256": "4b2bfb8966de7dfce141432e6ab8e09e78f4c1a7d4d1703aa96d6c35077e07c2"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0540.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0540.png",
+    "sourceSHA256": "21b0de0baebf8c0abf4b49286bc1f24ca4fa8b4671dac54480b86823d72435f7",
+    "archivedSHA256": "21b0de0baebf8c0abf4b49286bc1f24ca4fa8b4671dac54480b86823d72435f7"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0660.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0660.png",
+    "sourceSHA256": "5bdf8ca1fa86be6539661baef7a873ff853e3e4c4f9829b35bc417ea5769d35a",
+    "archivedSHA256": "5bdf8ca1fa86be6539661baef7a873ff853e3e4c4f9829b35bc417ea5769d35a"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0704.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0704.png",
+    "sourceSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e",
+    "archivedSHA256": "20d93206cc566c8e5a258551caf60e0343c51c174598a09947864825afb07a7e"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0720.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0720.png",
+    "sourceSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418",
+    "archivedSHA256": "b5e4b092e938f192284e4e6bff2357d2042588aec4755327f307289e53cc4418"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0750.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0750.png",
+    "sourceSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8",
+    "archivedSHA256": "a18e09b0f19024716fd85d8083691e72bef438ac5c83ad482747f73b76c915e8"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-0900.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-0900.png",
+    "sourceSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d",
+    "archivedSHA256": "579f48091ad4d4b05b7633f88cab5a727661f173e1f772fbbf860d6f99a1c75d"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-1080.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-1080.png",
+    "sourceSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed",
+    "archivedSHA256": "3563ac2b1c4d0b6fa97ea7963676dde2161de30816f18aa9e8a5938e10e1e8ed"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-1440.png",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-1440.png",
+    "sourceSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56",
+    "archivedSHA256": "f3b6a926f65bcf0c0ec4c98dfd571235857d1417c5e01b7cb103b9ce2a4d2e56"
+  },
+  {
+    "source": "sixth-native/final-current/naiwa-WorkingLoop-samples.json",
+    "archived": "sixth-native/final-current/naiwa-WorkingLoop-samples.json",
+    "sourceSHA256": "aa51da16cfcf60f9048c5d0665fab136e0cbe194e988ee0dd27bbb521173cdb1",
+    "archivedSHA256": "aa51da16cfcf60f9048c5d0665fab136e0cbe194e988ee0dd27bbb521173cdb1"
+  },
+  {
+    "source": "sixth-native/final-current/report.json",
+    "archived": "sixth-native/final-current/report.json",
+    "sourceSHA256": "7bfb7a88a3ccb034766a205f01702efe6e8681369cab27289a2b5b4086d2d7ea",
+    "archivedSHA256": "7bfb7a88a3ccb034766a205f01702efe6e8681369cab27289a2b5b4086d2d7ea"
+  },
+  {
+    "source": "sixth-native/final-current/working.mp4",
+    "archived": "sixth-native/final-current/working.mp4",
+    "sourceSHA256": "677d8a0bbcef42b2d586dad3408d205a35cf315af9bd1d02707d833cc942cc29",
+    "archivedSHA256": "677d8a0bbcef42b2d586dad3408d205a35cf315af9bd1d02707d833cc942cc29"
+  },
+  {
+    "source": "sixth-status-events/affected-tests.txt",
+    "archived": "sixth-status-events/affected-tests.txt",
+    "sourceSHA256": "21c084bfde28757b8861ca5c4f77a1a7f488c8e29f0e56e85ee2ff2bbd0a4d37",
+    "archivedSHA256": "8da4dfde2a94fdba3360e643ee6316c4363fbf155e732671fddb5eee959c06b2"
+  },
+  {
+    "source": "sixth-status-events/bridge-green.txt",
+    "archived": "sixth-status-events/bridge-green.txt",
+    "sourceSHA256": "80dc4fa9497e74196855daacfe17cb2d921ab13b841e5eeef029be865a325d99",
+    "archivedSHA256": "789c4088084c286585a1e3e53183de6847c5a2e403897a77d2b540cd5ecfd88f"
+  },
+  {
+    "source": "sixth-status-events/bridge-red.txt",
+    "archived": "sixth-status-events/bridge-red.txt",
+    "sourceSHA256": "45d3b17906a6c8ed5b788312312a059c06c2589dbc7df93dce2dfd2313b61b20",
+    "archivedSHA256": "44745d38a45d51f8f221473453309815c650a06e7dc5fbb2a950c640a54839e2"
+  },
+  {
+    "source": "sixth-status-events/implementation.md",
+    "archived": "sixth-status-events/implementation.md",
+    "sourceSHA256": "8d810f8618f6a92a3a30b4d703e9e85ca9f2e8e01a7c922db8488bb4749a6a16",
+    "archivedSHA256": "8d810f8618f6a92a3a30b4d703e9e85ca9f2e8e01a7c922db8488bb4749a6a16"
+  },
+  {
+    "source": "sixth-status-events/lint.txt",
+    "archived": "sixth-status-events/lint.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-status-events/service-green.txt",
+    "archived": "sixth-status-events/service-green.txt",
+    "sourceSHA256": "5d34c12854dd74542f6b85d9189b272e436f9685f580a49cc941c849c9496e59",
+    "archivedSHA256": "7e4056be7856af0c24d0b686049de5bf53db279b31180975f777f74414a4626b"
+  },
+  {
+    "source": "sixth-status-events/service-red.txt",
+    "archived": "sixth-status-events/service-red.txt",
+    "sourceSHA256": "6104eb93f02a3c9ebc29774979e492be836dbb4bedac63b0536ddc20b5deef0d",
+    "archivedSHA256": "e1b4f8946278dc8e7419565caa74f929ebfe78512878050594f144a830d71b40"
+  },
+  {
+    "source": "sixth-status-events/typecheck-node.txt",
+    "archived": "sixth-status-events/typecheck-node.txt",
+    "sourceSHA256": "497b9bd587d6e490eda4b127fcfd57f0d0df18d6cadee5d02922668fc40a4c0e",
+    "archivedSHA256": "df44a09337763317ea9fdfe88df021600f783da60551b2d33f17e46cafcbb8a4"
+  },
+  {
+    "source": "sixth-model-copy/browser-entry.tsx",
+    "archived": "sixth-model-copy/browser-entry.tsx.txt",
+    "sourceSHA256": "c68fcd9b6c92f96c14cfa2f1afd6a714c3ef888035736a3308929452478cda55",
+    "archivedSHA256": "c68fcd9b6c92f96c14cfa2f1afd6a714c3ef888035736a3308929452478cda55"
+  },
+  {
+    "source": "sixth-model-copy/browser-results.json",
+    "archived": "sixth-model-copy/browser-results.json",
+    "sourceSHA256": "85c0efb62606f279bd46d1c319f46034fc4c9f4025951353a8bebb784a5e5ce7",
+    "archivedSHA256": "85c0efb62606f279bd46d1c319f46034fc4c9f4025951353a8bebb784a5e5ce7"
+  },
+  {
+    "source": "sixth-model-copy/capture-final.txt",
+    "archived": "sixth-model-copy/capture-final.txt",
+    "sourceSHA256": "4f5147ddd0008ea002bd5e7e1dae21be27166898dcc81aed25cdc10deaf4c7df",
+    "archivedSHA256": "9898bde0050bd1a58c7db81bbb502f4ca7ef805faac2f5a080daeaa393b68534"
+  },
+  {
+    "source": "sixth-model-copy/capture.cjs",
+    "archived": "sixth-model-copy/capture.cjs.txt",
+    "sourceSHA256": "31ab99b7b4282abcaedeed703ad1ab1e06f9ea0f0a6fc97466cbba4b91befaca",
+    "archivedSHA256": "31ab99b7b4282abcaedeed703ad1ab1e06f9ea0f0a6fc97466cbba4b91befaca"
+  },
+  {
+    "source": "sixth-model-copy/capture.txt",
+    "archived": "sixth-model-copy/capture.txt",
+    "sourceSHA256": "4f5147ddd0008ea002bd5e7e1dae21be27166898dcc81aed25cdc10deaf4c7df",
+    "archivedSHA256": "9898bde0050bd1a58c7db81bbb502f4ca7ef805faac2f5a080daeaa393b68534"
+  },
+  {
+    "source": "sixth-model-copy/current-from-other.png",
+    "archived": "sixth-model-copy/current-from-other.png",
+    "sourceSHA256": "e8d04fb78182b517a6621b50e7149c2e6633ee4da6a8d90845584b2003376e60",
+    "archivedSHA256": "e8d04fb78182b517a6621b50e7149c2e6633ee4da6a8d90845584b2003376e60"
+  },
+  {
+    "source": "sixth-model-copy/current.png",
+    "archived": "sixth-model-copy/current.png",
+    "sourceSHA256": "773fc40ac041e8c4192beea2bf898b9f55099e99de241c45c8d9185fca13daf5",
+    "archivedSHA256": "773fc40ac041e8c4192beea2bf898b9f55099e99de241c45c8d9185fca13daf5"
+  },
+  {
+    "source": "sixth-model-copy/lint-final.txt",
+    "archived": "sixth-model-copy/lint-final.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-model-copy/lint.txt",
+    "archived": "sixth-model-copy/lint.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-model-copy/list-red.txt",
+    "archived": "sixth-model-copy/list-red.txt",
+    "sourceSHA256": "565b9a4a8d29053bcff98732798d087cac2dae72ea043bc75fd94ab7ada5f366",
+    "archivedSHA256": "45f39acf6176a7bca99db8a8f18032e972c490d28a4a55c1a4ee3809bdcb02ae"
+  },
+  {
+    "source": "sixth-model-copy/new.png",
+    "archived": "sixth-model-copy/new.png",
+    "sourceSHA256": "32a3bf760a5f4a035ede0bb189778b55c2f37d1c714d28f4924ac00c866bea44",
+    "archivedSHA256": "32a3bf760a5f4a035ede0bb189778b55c2f37d1c714d28f4924ac00c866bea44"
+  },
+  {
+    "source": "sixth-model-copy/other.png",
+    "archived": "sixth-model-copy/other.png",
+    "sourceSHA256": "3ed9cab2d456cecb486cc37220744805e476950dd73662c72d1d65e29e602625",
+    "archivedSHA256": "3ed9cab2d456cecb486cc37220744805e476950dd73662c72d1d65e29e602625"
+  },
+  {
+    "source": "sixth-model-copy/report.md",
+    "archived": "sixth-model-copy/report.md",
+    "sourceSHA256": "1bc0c405cb8ef7245ee36abcaa597e7bf371ea2f2f3d886f4d3d8a898591f4da",
+    "archivedSHA256": "1bc0c405cb8ef7245ee36abcaa597e7bf371ea2f2f3d886f4d3d8a898591f4da"
+  },
+  {
+    "source": "sixth-model-copy/typecheck-final.txt",
+    "archived": "sixth-model-copy/typecheck-final.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-model-copy/typecheck.txt",
+    "archived": "sixth-model-copy/typecheck.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-model-copy/unit-final.txt",
+    "archived": "sixth-model-copy/unit-final.txt",
+    "sourceSHA256": "4b3e8f6befc855e00267a977b22379704a14b6fa25de7093b7e7877cdb1d7fd5",
+    "archivedSHA256": "f85b82c5846a7d8c7f1a9f8df429262aae4af685b25c841283f578a74c04bc88"
+  },
+  {
+    "source": "sixth-model-copy/unit-green.txt",
+    "archived": "sixth-model-copy/unit-green.txt",
+    "sourceSHA256": "33e9d363276096015ec265b4128d559bda11c3d3e02967ae431a9864adec765f",
+    "archivedSHA256": "da6d8f136a7236fc7ce38fd1c7923ffac54d25c162767c39f04c1758907672bf"
+  },
+  {
+    "source": "sixth-model-copy/unit-red.txt",
+    "archived": "sixth-model-copy/unit-red.txt",
+    "sourceSHA256": "192fb1ee93bd7ae2090ed5dfa53412cc73fc7b72ac20feb6681cf79fc5f84d34",
+    "archivedSHA256": "ac9564b3ac3176c966128c277e1706b85eff7ff4dd6f90da9cbbb8ef1f426930"
+  },
+  {
+    "source": "sixth-pet-work/business-red.txt",
+    "archived": "sixth-pet-work/business-red.txt",
+    "sourceSHA256": "04b72d406ea9e8ee29db9fb7e59217c8074319a0627c50953a7223673f817297",
+    "archivedSHA256": "070db93cab85541207bea5c56641bb00acc3215d27c285798a2360b54e120e29"
+  },
+  {
+    "source": "sixth-pet-work/green-final.txt",
+    "archived": "sixth-pet-work/green-final.txt",
+    "sourceSHA256": "534e8b0bebe6a06c6bea0b496ef44fc68f0e606833425ff04c1e6f753568dc69",
+    "archivedSHA256": "7c37b997fa4ad9861e84a14ad33451f9e013aa2b92794345f274c92ddb507a7e"
+  },
+  {
+    "source": "sixth-pet-work/green-first.txt",
+    "archived": "sixth-pet-work/green-first.txt",
+    "sourceSHA256": "86aa5afaf5ad037903e5bfb9503ffcb10587b5d959eb1ff34dec6a0ae1b70d42",
+    "archivedSHA256": "e5829c2d73dd2e1dc225130d4e42fd2ad6cfc882bade8583d5a1daea55071e3a"
+  },
+  {
+    "source": "sixth-pet-work/lint.txt",
+    "archived": "sixth-pet-work/lint.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-work/partial-green.txt",
+    "archived": "sixth-pet-work/partial-green.txt",
+    "sourceSHA256": "04f8c375faabca9817783e41387d4540bbb4819882ee4e4f98a60b2940665158",
+    "archivedSHA256": "a1b525b695371fcfa17c4db53a176c39834d3c00bded86845bd36818a36838e9"
+  },
+  {
+    "source": "sixth-pet-work/partial-lint.txt",
+    "archived": "sixth-pet-work/partial-lint.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-work/partial-red.txt",
+    "archived": "sixth-pet-work/partial-red.txt",
+    "sourceSHA256": "cde1ed67bdb2ac4bd7ecb23fe4c02f9daa8a290056aacaafd7d6e55a32f1d539",
+    "archivedSHA256": "ace0b7bfdd362e9ae370dc66f01074c4cea1883d6a6b672b3105791f9c50fb2c"
+  },
+  {
+    "source": "sixth-pet-work/red.txt",
+    "archived": "sixth-pet-work/red.txt",
+    "sourceSHA256": "d4d2945bf046321c74bd579acbbb2a8d0c453cf61d8fc3552d667a1cc7e42a88",
+    "archivedSHA256": "ebf46bb96486da115a7e87447f8a6b794c9dfa14696e179c58746b85c0bcbeab"
+  },
+  {
+    "source": "sixth-pet-work/report.md",
+    "archived": "sixth-pet-work/report.md",
+    "sourceSHA256": "5fb9ecfed99a32e59820ea777c84b923b0ede03008499ecd0bb515dc5f6f5bd2",
+    "archivedSHA256": "5fb9ecfed99a32e59820ea777c84b923b0ede03008499ecd0bb515dc5f6f5bd2"
+  },
+  {
+    "source": "sixth-pet-work/typecheck-node.txt",
+    "archived": "sixth-pet-work/typecheck-node.txt",
+    "sourceSHA256": "497b9bd587d6e490eda4b127fcfd57f0d0df18d6cadee5d02922668fc40a4c0e",
+    "archivedSHA256": "df44a09337763317ea9fdfe88df021600f783da60551b2d33f17e46cafcbb8a4"
+  },
+  {
+    "source": "sixth-pet-work/typecheck-web.txt",
+    "archived": "sixth-pet-work/typecheck-web.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-review/director-race-red.txt",
+    "archived": "sixth-pet-review/director-race-red.txt",
+    "sourceSHA256": "dbb52fcb42d916b9b76cd1afe0712c41409fbc0506aeeb538f207eec172b1096",
+    "archivedSHA256": "b3c60231e5721479fa38b79103e3a332b942bffad8bfc9beb466e3249c488392"
+  },
+  {
+    "source": "sixth-pet-review/director-race.test.ts",
+    "archived": "sixth-pet-review/director-race.test.ts.txt",
+    "sourceSHA256": "b4e1a3e458453e8e95365771c68070e1f4eb1b7aa6880d9da5ea0e63ad24ade0",
+    "archivedSHA256": "b4e1a3e458453e8e95365771c68070e1f4eb1b7aa6880d9da5ea0e63ad24ade0"
+  },
+  {
+    "source": "sixth-pet-review/integration-final.txt",
+    "archived": "sixth-pet-review/integration-final.txt",
+    "sourceSHA256": "b349e4c8d4c196636d5b837a4dd2c58942ac89043e745918eac6a97e8b3d2bbc",
+    "archivedSHA256": "456154e28e01ef3979fc23a1ca5bea90f811d54d65c63b23b3d8ca071cac5f51"
+  },
+  {
+    "source": "sixth-pet-review/integration-first.txt",
+    "archived": "sixth-pet-review/integration-first.txt",
+    "sourceSHA256": "30c792d36e1e54629d2cd5928d0da7aff7a8937d4fc9c409ab568b905c7aaaef",
+    "archivedSHA256": "331eb5978b5bf6e7a8b5775a5a5f4a24cbcb9c03a32d8a9282ab8de7f89d5b46"
+  },
+  {
+    "source": "sixth-pet-review/permanent-lint.txt",
+    "archived": "sixth-pet-review/permanent-lint.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-review/permanent-typecheck.txt",
+    "archived": "sixth-pet-review/permanent-typecheck.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-review/pet-integration.test.ts",
+    "archived": "sixth-pet-review/pet-integration.test.ts.txt",
+    "sourceSHA256": "7fff06038aded760839e11933e3a9b285ebc23ac82ac67652677955bc0e12817",
+    "archivedSHA256": "7fff06038aded760839e11933e3a9b285ebc23ac82ac67652677955bc0e12817"
+  },
+  {
+    "source": "sixth-pet-review/report.md",
+    "archived": "sixth-pet-review/report.md",
+    "sourceSHA256": "be3cffddb2c66521c5c6e78276b4ce9266c79b2ddd9c3f2066362b8250ea2c96",
+    "archivedSHA256": "be3cffddb2c66521c5c6e78276b4ce9266c79b2ddd9c3f2066362b8250ea2c96"
+  },
+  {
+    "source": "sixth-pet-review/saved-receipt-independent.txt",
+    "archived": "sixth-pet-review/saved-receipt-independent.txt",
+    "sourceSHA256": "e6d355dcc7d75989628c42c6db4c5fe6dad8714fa508f437c7514fc102d9db4c",
+    "archivedSHA256": "3ce02a484a57cc14e5dbad2011a8802a41527b124a9dbdadefc1fc9a65667a49"
+  },
+  {
+    "source": "sixth-pet-review/status-events.txt",
+    "archived": "sixth-pet-review/status-events.txt",
+    "sourceSHA256": "ba337c035b123973cf5c9ca695a73a1c439a78c31bebf178c62eccc163f434d5",
+    "archivedSHA256": "950577a0f6caee1013c23408785f18473e33aecd558011e47931513f108df341"
+  },
+  {
+    "source": "sixth-pet-review/vitest.config.ts",
+    "archived": "sixth-pet-review/vitest.config.ts.txt",
+    "sourceSHA256": "d35e72c3dc408295bc30fdf7a0b8c8b9d2af40278d0ed21a6d88e7d576b644f2",
+    "archivedSHA256": "d35e72c3dc408295bc30fdf7a0b8c8b9d2af40278d0ed21a6d88e7d576b644f2"
+  },
+  {
+    "source": "sixth-pet-integration/build-final.txt",
+    "archived": "sixth-pet-integration/build-final.txt",
+    "sourceSHA256": "7806de96f590df4a31b35c3f30e89260efd8ccdf68c991e1f1f3046252602e0a",
+    "archivedSHA256": "68a8be24f08c2104b340dabdf3cd927813b4f9763e586d3b2a5cd07dca2a8ba4"
+  },
+  {
+    "source": "sixth-pet-integration/build-route.txt",
+    "archived": "sixth-pet-integration/build-route.txt",
+    "sourceSHA256": "c24020c0752c7197af1fb3f08bb08fa86b335e0c1d42dfafd8ea33a8c41d324f",
+    "archivedSHA256": "3e220a558466c710ebfa4c721ceb09cfa2bcc8cde0b950912d0a82ce3d845257"
+  },
+  {
+    "source": "sixth-pet-integration/build.txt",
+    "archived": "sixth-pet-integration/build.txt",
+    "sourceSHA256": "96bcbfc64ab7aeec2874fd09c2a2d51151cd1b559cd991ac2f0005b8f5370ec0",
+    "archivedSHA256": "99d8e0ce89c2c6590ccf517d1f65fb114109c312d18bbf6da76fe66202cec155"
+  },
+  {
+    "source": "sixth-pet-integration/director-first.txt",
+    "archived": "sixth-pet-integration/director-first.txt",
+    "sourceSHA256": "f9d8da85dc259b145ae69f605d736d9c4040070a7a3fa51124973802e494533e",
+    "archivedSHA256": "bfc58a470f436b23233bf23680aa107d560738cc9c1cb9a762809939e96da951"
+  },
+  {
+    "source": "sixth-pet-integration/director-red.txt",
+    "archived": "sixth-pet-integration/director-red.txt",
+    "sourceSHA256": "2598f30f760b63bc13877d8c04de2ef1d96fa4afe2f924a9e25bf77ccc89713f",
+    "archivedSHA256": "e9d663eba7d3a4702f4f9c19c19de731616823115668e15a1d72ff61a19f74d1"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final.txt",
+    "archived": "sixth-pet-integration/e2e-final.txt",
+    "sourceSHA256": "8cd3bbc4561147e4f02b4ad591b775d9633f97f45c2b8cb2749b56617fd3846d",
+    "archivedSHA256": "03d83061aab5de5509f519f5a02e411cf349c99b308653dcdf37769338c74a2c"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green.txt",
+    "archived": "sixth-pet-integration/e2e-green.txt",
+    "sourceSHA256": "4d6dd861ec85c9c0e703e177685c961c6f69bccebf61b36a2bde816291a71fa6",
+    "archivedSHA256": "43b0fdf6addf8623e826746eeb68e582d513b7c97d281a4dd380934978ea04a3"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-red.txt",
+    "archived": "sixth-pet-integration/e2e-red.txt",
+    "sourceSHA256": "ad7ae31806a3c9d32bb0e702871fc4d01a561761ac64637187f0b3660564401d",
+    "archivedSHA256": "42d717a2d16ac94c13099008d11f21420da2567fe8a20dc4e9461bb4e1908ffe"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-route.txt",
+    "archived": "sixth-pet-integration/e2e-route.txt",
+    "sourceSHA256": "e7ca994e51154017df9c1595b52c7281796f810b6b27139ebf0fd97a2fadd376",
+    "archivedSHA256": "b0add4f886dafa95fa24af92111ed89f875b2f7e3bb3df05d597a3af2c4dbe16"
+  },
+  {
+    "source": "sixth-pet-integration/independent-stop-green.txt",
+    "archived": "sixth-pet-integration/independent-stop-green.txt",
+    "sourceSHA256": "a651c15b0fa13a9653863672531866460cef2a0119fe6ccc3d95aa7b95243550",
+    "archivedSHA256": "4e19811692d55e384487ec7626abb3477202c211a96719d996bcf0b1df51d2fb"
+  },
+  {
+    "source": "sixth-pet-integration/independent-stop-red.txt",
+    "archived": "sixth-pet-integration/independent-stop-red.txt",
+    "sourceSHA256": "dc14ee894f62dfb0eae1fb8d38a90ee627cf49f675754b0649826305dd07c80f",
+    "archivedSHA256": "c626ccad2cf67c97b0e214a5606cab8743098dde4538ecc134760631b04de66b"
+  },
+  {
+    "source": "sixth-pet-integration/lint-all.txt",
+    "archived": "sixth-pet-integration/lint-all.txt",
+    "sourceSHA256": "3f37fbf9e8df8cd863ed5e33a8cad69eba6de7e39d3319696798effc27d9b057",
+    "archivedSHA256": "977956dba0a5eee047cb11be5b1db852b3e7ed0f1126099898bd98576966a6be"
+  },
+  {
+    "source": "sixth-pet-integration/status-red.txt",
+    "archived": "sixth-pet-integration/status-red.txt",
+    "sourceSHA256": "bd17c578b2cd5c4c278dd75c32b4a09af651821ceb1e0060aba6cd0e6612c012",
+    "archivedSHA256": "79aeff1b66700ff0472949510a36d6c1df180b0d2483da67efd8e2e1d6da026c"
+  },
+  {
+    "source": "sixth-pet-integration/typecheck-all.txt",
+    "archived": "sixth-pet-integration/typecheck-all.txt",
+    "sourceSHA256": "22be1d5c5b96bd20ebe1f0ba92184f589ecb5932d71da8d239758a0e9b273e08",
+    "archivedSHA256": "460a1772f00f03633202182deb306b2003fb736a289061f1377173004fc1c6a0"
+  },
+  {
+    "source": "sixth-pet-integration/typecheck-first.txt",
+    "archived": "sixth-pet-integration/typecheck-first.txt",
+    "sourceSHA256": "497b9bd587d6e490eda4b127fcfd57f0d0df18d6cadee5d02922668fc40a4c0e",
+    "archivedSHA256": "df44a09337763317ea9fdfe88df021600f783da60551b2d33f17e46cafcbb8a4"
+  },
+  {
+    "source": "sixth-pet-integration/types-second.txt",
+    "archived": "sixth-pet-integration/types-second.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-integration/types.txt",
+    "archived": "sixth-pet-integration/types.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-pet-integration/unit-second.txt",
+    "archived": "sixth-pet-integration/unit-second.txt",
+    "sourceSHA256": "7a051e6c3b95856d0843e611058ab00c668e91cc938f1200183d1f08de390253",
+    "archivedSHA256": "34fa5bf9c6620eb40237266ed1d9d9df0b0611bae6ae94c194e7cb1e48c4834e"
+  },
+  {
+    "source": "sixth-pet-integration/unit.txt",
+    "archived": "sixth-pet-integration/unit.txt",
+    "sourceSHA256": "3003d9ef17bda26cf29b6a98c98ee68365be6cc02d007e02659b1918a31ce2e9",
+    "archivedSHA256": "0ba4f4ea0aa89ac8002de45fb508bad648a316bed6cbc2ac245ef960b386a5c6"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final/.last-run.json",
+    "archived": "sixth-pet-integration/e2e-final/.last-run.json",
+    "sourceSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7",
+    "archivedSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "archived": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "sourceSHA256": "cc7ed846e0450a88de03ade1145115d14410547e6d4c70a0d7e8e2d52dcb8fcf",
+    "archivedSHA256": "eaf0b48adf092e909a88089016c00d7140f90e9447e733bd93ad9318377edd25"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "82566123a1f08e7052f744c7a2ead2930cbf1761e306dabbb49490206ba0559d",
+    "archivedSHA256": "82566123a1f08e7052f744c7a2ead2930cbf1761e306dabbb49490206ba0559d"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "archived": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "sourceSHA256": "92da1afd6cf72881b4e639549d39c8b611d05001162ad5d290f4a3b46feb4b72",
+    "archivedSHA256": "92da1afd6cf72881b4e639549d39c8b611d05001162ad5d290f4a3b46feb4b72"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "archived": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "sourceSHA256": "c12f8d2533c3277ef664c405e6f0c3e2973251409db0c6481c30a4bc4e796c4d",
+    "archivedSHA256": "c12f8d2533c3277ef664c405e6f0c3e2973251409db0c6481c30a4bc4e796c4d"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "archived": "sixth-pet-integration/e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "sourceSHA256": "36d07f70816a3ce237725eb422c102b539447a3170771d5410359e9a9b973c94",
+    "archivedSHA256": "36d07f70816a3ce237725eb422c102b539447a3170771d5410359e9a9b973c94"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green/.last-run.json",
+    "archived": "sixth-pet-integration/e2e-green/.last-run.json",
+    "sourceSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7",
+    "archivedSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "archived": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "sourceSHA256": "89a0d665383d5299f43a97fc03c4f665f629a4cdfcf0a7d3c6581c9731c308bb",
+    "archivedSHA256": "2d4a200e7cdedf36acb202ca6076cdf5b3f93c9190bd3249882e24fc61fd723b"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "f50db4ed5c9b76d422a01b7951ddc78465c87e6ebbe07d2de195129de955f206",
+    "archivedSHA256": "f50db4ed5c9b76d422a01b7951ddc78465c87e6ebbe07d2de195129de955f206"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "archived": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "sourceSHA256": "1a179e2027f87f88d7f6ed4238db7e8c84a13e6e3920325bdbec98af52049895",
+    "archivedSHA256": "1a179e2027f87f88d7f6ed4238db7e8c84a13e6e3920325bdbec98af52049895"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "archived": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "sourceSHA256": "29cdac9f44df1f9c8a41bc87d1df59bb86697d34600af2e89a010ef894488f04",
+    "archivedSHA256": "29cdac9f44df1f9c8a41bc87d1df59bb86697d34600af2e89a010ef894488f04"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "archived": "sixth-pet-integration/e2e-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "sourceSHA256": "73c1d22dc3e963741c96069916c8400bef66654a734f86a3505157fc45526d61",
+    "archivedSHA256": "73c1d22dc3e963741c96069916c8400bef66654a734f86a3505157fc45526d61"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-red/.last-run.json",
+    "archived": "sixth-pet-integration/e2e-red/.last-run.json",
+    "sourceSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7",
+    "archivedSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "archived": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "sourceSHA256": "4029965672d6c4c30ef71c807b457a050386ad3d49aaed53547a47ae50756e55",
+    "archivedSHA256": "81ca38085fff4b4aeb1497998653f5072d1d2418e975e231e44716d4169751bf"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "archived": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "sourceSHA256": "409b90450fb8cc56b7fc62eb9d556955148783eee8fede245216fa04973e6e79",
+    "archivedSHA256": "409b90450fb8cc56b7fc62eb9d556955148783eee8fede245216fa04973e6e79"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "archived": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "sourceSHA256": "8771501a2597f353742901958aad775e4ef75f9d63c1ad26fab26c3da6368335",
+    "archivedSHA256": "8771501a2597f353742901958aad775e4ef75f9d63c1ad26fab26c3da6368335"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "archived": "sixth-pet-integration/e2e-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "sourceSHA256": "23fdb2307031c6763990ec27735fc389b9b15b6b333f362f5e51d254025cec81",
+    "archivedSHA256": "23fdb2307031c6763990ec27735fc389b9b15b6b333f362f5e51d254025cec81"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-route/.last-run.json",
+    "archived": "sixth-pet-integration/e2e-route/.last-run.json",
+    "sourceSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "archivedSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-route/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-pet-integration/e2e-route/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "2c6a540bd40451ba7b27fcc067e923419c69970d287e74b83163011ef4ce7e75",
+    "archivedSHA256": "2c6a540bd40451ba7b27fcc067e923419c69970d287e74b83163011ef4ce7e75"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-route/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "archived": "sixth-pet-integration/e2e-route/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "sourceSHA256": "84b61f3bc4aa37614cdfbbe338e37f7cb3a24c57050ead1df929bc432550a722",
+    "archivedSHA256": "84b61f3bc4aa37614cdfbbe338e37f7cb3a24c57050ead1df929bc432550a722"
+  },
+  {
+    "source": "sixth-pet-integration/e2e-route/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "archived": "sixth-pet-integration/e2e-route/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "sourceSHA256": "bd110605dfeb117b7654eeb7ce968d621eca31f4c9669e0a8ec4ad02a49740d4",
+    "archivedSHA256": "bd110605dfeb117b7654eeb7ce968d621eca31f4c9669e0a8ec4ad02a49740d4"
+  },
+  {
+    "source": "sixth-final/e2e-lint.txt",
+    "archived": "sixth-final/e2e-lint.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-final/e2e-typecheck.txt",
+    "archived": "sixth-final/e2e-typecheck.txt",
+    "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archivedSHA256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  {
+    "source": "sixth-final/package-delivery.txt",
+    "archived": "sixth-final/package-delivery.txt",
+    "sourceSHA256": "5684c3f1b98e9aea44f5da094714972408e871f3ead2847d03724aad52b470bd",
+    "archivedSHA256": "205ffbfa622a31d417444c6f8c4075fe3354b2827fa008bf35d3ad151fa2b455"
+  },
+  {
+    "source": "sixth-final/package-receipt-delivery.txt",
+    "archived": "sixth-final/package-receipt-delivery.txt",
+    "sourceSHA256": "cfa48712e0223f6969f4fed2cd887f6277949a77e7f3fdd595c00f2ed2c59c6f",
+    "archivedSHA256": "f2551f9d04459857eb984f85a2aa3928ab3b2c7824047a8d9d63e15624442f27"
+  },
+  {
+    "source": "sixth-final/package-receipt.txt",
+    "archived": "sixth-final/package-receipt.txt",
+    "sourceSHA256": "2fe9c7334b2d67b5fcfdb43d100cc6118dca7568ed211c7d18bc2f3120f11648",
+    "archivedSHA256": "822532ea9db7f6a0ae61c5e3403cf0ed315ba1041e50d68f88542cfc38da516f"
+  },
+  {
+    "source": "sixth-final/package-release.txt",
+    "archived": "sixth-final/package-release.txt",
+    "sourceSHA256": "773a77b58e10eb5c6adc50a2f1612c1f9877c8640eff026984dfcb8db5f2f72d",
+    "archivedSHA256": "3d6b7ff564bb4bb42ea68f485df826cea649f63d65f36979afc438a854426016"
+  },
+  {
+    "source": "sixth-final/package.txt",
+    "archived": "sixth-final/package.txt",
+    "sourceSHA256": "b1943313e4a8e52c810bd209886060fb32f9dc4207f78fb3407c5bb059f48720",
+    "archivedSHA256": "b5804b6f2bb0f412a4e11f8208140e03ad179a1abcbc2fa491409ed4fd4edece"
+  },
+  {
+    "source": "sixth-final/packaged-delivery.txt",
+    "archived": "sixth-final/packaged-delivery.txt",
+    "sourceSHA256": "f376e99c2457fc794c8f9a6d493d388d9e4f480c12bbb2a280374eb4c484b8d8",
+    "archivedSHA256": "82b5b1ae3cb3d66c226f5d08349090d30b65b78575c8f83618f74fd6280bb972"
+  },
+  {
+    "source": "sixth-final/packaged-e2e.txt",
+    "archived": "sixth-final/packaged-e2e.txt",
+    "sourceSHA256": "db9f73ca510df6737f71a11d40bd77b3364260d69098f0651d6acde533a49e2d",
+    "archivedSHA256": "0032f333de6c1ae5b01d58843fc7d014f0c90a8d7044195fa0781fdd8040541f"
+  },
+  {
+    "source": "sixth-final/path-layout-build.txt",
+    "archived": "sixth-final/path-layout-build.txt",
+    "sourceSHA256": "daec5548e9e3597c1e24848e966e0955bea293d42cda571858eb130a6c397052",
+    "archivedSHA256": "860312d54d8322fe45fa6afd34fa2e6aa6c2c0b35aba83f32e081ae9c8685e96"
+  },
+  {
+    "source": "sixth-final/path-layout-green.txt",
+    "archived": "sixth-final/path-layout-green.txt",
+    "sourceSHA256": "88092985d98c8114bb05fa0d78fc7ef0c1c571651aa03446b80ebf08d2df997a",
+    "archivedSHA256": "cb0d67648d57a349659b002007d2e641116889b5f321229e4b34790ea8404740"
+  },
+  {
+    "source": "sixth-final/path-layout-red.txt",
+    "archived": "sixth-final/path-layout-red.txt",
+    "sourceSHA256": "91aa6b94b9173f9f99e2f8c136087d73fa4d88b3185c229c082ab69ba48993c1",
+    "archivedSHA256": "e1f7669073df4163be423a5f59d7bd0d343d27aff709fa766f2439791bd29ce8"
+  },
+  {
+    "source": "sixth-final/path-overflow-red.txt",
+    "archived": "sixth-final/path-overflow-red.txt",
+    "sourceSHA256": "917c347f113ad3c7affada9098ac5d3f8209587bfcffb4a31dd1f10939e84dba",
+    "archivedSHA256": "4ff14a656a17c20b43ff907d2469bd2fd68a76e282e7337712f5b4856dea647c"
+  },
+  {
+    "source": "sixth-final/saved-receipt-green.txt",
+    "archived": "sixth-final/saved-receipt-green.txt",
+    "sourceSHA256": "6fc027249934348ce54b35c97424a1cf84f46ca5af0694a8b8e4c5f2c887de6b",
+    "archivedSHA256": "4e1609b6df9902bf7e02aa8e27b5d8ff8dddc774b621bdbb83db5406c55e6fbf"
+  },
+  {
+    "source": "sixth-final/saved-receipt-red.txt",
+    "archived": "sixth-final/saved-receipt-red.txt",
+    "sourceSHA256": "af4318e51d39f03eaaad55497f23d3f763bc0dd098bd51918d9548719b1cda21",
+    "archivedSHA256": "a17b3eb166a771ce2df86a468d64ed1a85c81b8e1dba028350a5fc1cafe26dac"
+  },
+  {
+    "source": "sixth-final/verify-delivery.txt",
+    "archived": "sixth-final/verify-delivery.txt",
+    "sourceSHA256": "4c96e5213b5266672a715646fc0722ace8d9530ae8288587f999ab76881b8960",
+    "archivedSHA256": "40465466c5915c8d97c8bf8ffbe302c77d5adf68592092311985ee9758a6d236"
+  },
+  {
+    "source": "sixth-final/verify-final.txt",
+    "archived": "sixth-final/verify-final.txt",
+    "sourceSHA256": "4b951b7eae136087be8d340e4511c9ef0ac9f115a74397fd6f2128f4ed766f7e",
+    "archivedSHA256": "a5c0f7bf670e40443e990eed0a6e6538b7b4772c5642b097fb7fdf8724475be5"
+  },
+  {
+    "source": "sixth-final/verify-release.txt",
+    "archived": "sixth-final/verify-release.txt",
+    "sourceSHA256": "20e78983ca30c13b362bd48873b736e55b913a2fad2bc9dfff5eba3eb9797b90",
+    "archivedSHA256": "d01a3c950b874927e5b4b17dee3c3457a7f7c4bd32dbc09fea1a8262e7b55568"
+  },
+  {
+    "source": "sixth-final/verify.txt",
+    "archived": "sixth-final/verify.txt",
+    "sourceSHA256": "4dc214070406a650546e827dd1917474ccffcde9228d5982645df1dd4e817ce7",
+    "archivedSHA256": "1725bc6d7e5b136940653ac6182f68bbc541b694f5874d7011459b817dfbb5a9"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/.last-run.json",
+    "archived": "sixth-final/packaged-delivery/.last-run.json",
+    "sourceSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "archivedSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+    "archived": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+    "sourceSHA256": "9e0856a6eadb0681ca6e9b45f18712c26c272e542dc43c88108ffeca300cc0c1",
+    "archivedSHA256": "9e0856a6eadb0681ca6e9b45f18712c26c272e542dc43c88108ffeca300cc0c1"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+    "archived": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+    "sourceSHA256": "2a89d28ed99be4ad3ee849588a97e59ead989179fa8dc80282d98b25e67d86d8",
+    "archivedSHA256": "2a89d28ed99be4ad3ee849588a97e59ead989179fa8dc80282d98b25e67d86d8"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+    "archived": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+    "sourceSHA256": "33196cd7718947b5ade60f0e79514fb950568ce6ce9ac0175ec6b1066130631f",
+    "archivedSHA256": "33196cd7718947b5ade60f0e79514fb950568ce6ce9ac0175ec6b1066130631f"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+    "archived": "sixth-final/packaged-delivery/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+    "sourceSHA256": "949700766d12a4409d5024741be17945071d93f33f975fa63dbad1bae66a0887",
+    "archivedSHA256": "949700766d12a4409d5024741be17945071d93f33f975fa63dbad1bae66a0887"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+    "archived": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+    "sourceSHA256": "b48e089c3d6ab24239cae9e228b74f87809e05f744a80aa5ce24c3f0c29115b8",
+    "archivedSHA256": "b48e089c3d6ab24239cae9e228b74f87809e05f744a80aa5ce24c3f0c29115b8"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+    "archived": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+    "sourceSHA256": "98c086e091369800839047f2274ce4ababc4167964449f13ec2027b96afaee41",
+    "archivedSHA256": "98c086e091369800839047f2274ce4ababc4167964449f13ec2027b96afaee41"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+    "archived": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+    "sourceSHA256": "d48c96548751d74694a40cc71343875ef05ef0bac86c939f4b810be1a529d0c5",
+    "archivedSHA256": "d48c96548751d74694a40cc71343875ef05ef0bac86c939f4b810be1a529d0c5"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+    "archived": "sixth-final/packaged-delivery/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+    "sourceSHA256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5",
+    "archivedSHA256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+    "archived": "sixth-final/packaged-delivery/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+    "sourceSHA256": "f44db34be5543c70fb3386a1a113b7827fc785aaccbff67fd9a9223d90aefad5",
+    "archivedSHA256": "f44db34be5543c70fb3386a1a113b7827fc785aaccbff67fd9a9223d90aefad5"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+    "archived": "sixth-final/packaged-delivery/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+    "sourceSHA256": "21f97b39ff575cc7e12a4e99d139c4d839b744fef17e224b300dd5aa9b439e39",
+    "archivedSHA256": "21f97b39ff575cc7e12a4e99d139c4d839b744fef17e224b300dd5aa9b439e39"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+    "archived": "sixth-final/packaged-delivery/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+    "sourceSHA256": "e34c78fb788150bfe3f62e10dd290e4010d12f21386f4f18fc7e9f01ae5a4383",
+    "archivedSHA256": "e34c78fb788150bfe3f62e10dd290e4010d12f21386f4f18fc7e9f01ae5a4383"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+    "sourceSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+    "archivedSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+    "sourceSHA256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e",
+    "archivedSHA256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+    "sourceSHA256": "74301464e52079274f1c105ecbd3b132e3f440356eaad21683903eb74a206e5a",
+    "archivedSHA256": "74301464e52079274f1c105ecbd3b132e3f440356eaad21683903eb74a206e5a"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+    "sourceSHA256": "ff6f59fc6a8d1a974e778f75e38cbf95c35552b34c20e74d9fa38fb5f2b2c0ae",
+    "archivedSHA256": "ff6f59fc6a8d1a974e778f75e38cbf95c35552b34c20e74d9fa38fb5f2b2c0ae"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+    "sourceSHA256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce",
+    "archivedSHA256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+    "sourceSHA256": "920ab207963f3c01851dc5c3bc58c0dc62ee40d21e08852fa950b63594e5661c",
+    "archivedSHA256": "920ab207963f3c01851dc5c3bc58c0dc62ee40d21e08852fa950b63594e5661c"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+    "sourceSHA256": "35c593cef24f6d3928d5a0682307e6ee43a52ea302d6d3b8879182039aaa285a",
+    "archivedSHA256": "c1e7b62efdd4466284733c96b4cfa94f530e5b0e89887f40aa731d38cd6ac516"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+    "archived": "sixth-final/packaged-delivery/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+    "sourceSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+    "archivedSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+    "sourceSHA256": "845853f0a2deeedbfbb4473ee906ba7082aad88f6ecd4dced56432465952039a",
+    "archivedSHA256": "845853f0a2deeedbfbb4473ee906ba7082aad88f6ecd4dced56432465952039a"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+    "sourceSHA256": "bbf0f948302726ca31e9460f46a0a629f67a4e5e13aef90d74777b65b0b770df",
+    "archivedSHA256": "bbf0f948302726ca31e9460f46a0a629f67a4e5e13aef90d74777b65b0b770df"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+    "sourceSHA256": "2f8fdd8d0ed1f16ff23102a056f7ff9f3d8a16da857bbcd3d06bcc151112d4f9",
+    "archivedSHA256": "2f8fdd8d0ed1f16ff23102a056f7ff9f3d8a16da857bbcd3d06bcc151112d4f9"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+    "sourceSHA256": "26a7d3ffde57b2ae3a439b2c2b10e4c21daaab345057b1df7e50e97084bcb43c",
+    "archivedSHA256": "26a7d3ffde57b2ae3a439b2c2b10e4c21daaab345057b1df7e50e97084bcb43c"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+    "sourceSHA256": "51499f915ae9ecbf41abee9075803ad71569ec27e61086b8154012beac52d5f4",
+    "archivedSHA256": "51499f915ae9ecbf41abee9075803ad71569ec27e61086b8154012beac52d5f4"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+    "sourceSHA256": "031a7ecf594f7d50625049b509f14688188f84d6736cc4d7145b59a74c73fcdc",
+    "archivedSHA256": "031a7ecf594f7d50625049b509f14688188f84d6736cc4d7145b59a74c73fcdc"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+    "sourceSHA256": "17001d1c4405f9997a3836852e60cb073df0df7bb0f77d83cc53afa9315d94bf",
+    "archivedSHA256": "17001d1c4405f9997a3836852e60cb073df0df7bb0f77d83cc53afa9315d94bf"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+    "archived": "sixth-final/packaged-delivery/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+    "sourceSHA256": "b6c75b11081db5886cfdc45d2c27fb23b039e9c51716f95baed04d2d8a40ee91",
+    "archivedSHA256": "b6c75b11081db5886cfdc45d2c27fb23b039e9c51716f95baed04d2d8a40ee91"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+    "archived": "sixth-final/packaged-delivery/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+    "sourceSHA256": "37a3008f3f3824df35d93a30d4a878e5feb594e6d574b523c8434b2f62dbf145",
+    "archivedSHA256": "37a3008f3f3824df35d93a30d4a878e5feb594e6d574b523c8434b2f62dbf145"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+    "archived": "sixth-final/packaged-delivery/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+    "sourceSHA256": "cb4e8ea181cbb70dc4451b428b4222e7b90d486cfe76ba35775655e46911b097",
+    "archivedSHA256": "cb4e8ea181cbb70dc4451b428b4222e7b90d486cfe76ba35775655e46911b097"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+    "archived": "sixth-final/packaged-delivery/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+    "sourceSHA256": "fa695e55dda2fa17a29158832841d9c8538b857f71c53a3ad9aca6deabea87e7",
+    "archivedSHA256": "fa695e55dda2fa17a29158832841d9c8538b857f71c53a3ad9aca6deabea87e7"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+    "archived": "sixth-final/packaged-delivery/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+    "sourceSHA256": "b581fcf41bc300907c86f3f38cd6556c6c97e71f0384e63eed0afa2de057f629",
+    "archivedSHA256": "b581fcf41bc300907c86f3f38cd6556c6c97e71f0384e63eed0afa2de057f629"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "e3817ec6e6034c5bd21fed49e5a610f9133c92275e5ed20a47e3f6a4786d70ef",
+    "archivedSHA256": "e3817ec6e6034c5bd21fed49e5a610f9133c92275e5ed20a47e3f6a4786d70ef"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+    "archived": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+    "sourceSHA256": "a8a7df499b1d3c0dd34462e3e92e0f0c9bbad1d4b1bc46e1a847c56b33e5f7bc",
+    "archivedSHA256": "a8a7df499b1d3c0dd34462e3e92e0f0c9bbad1d4b1bc46e1a847c56b33e5f7bc"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "archived": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "sourceSHA256": "c4c5db48a522e2ed71320c3be214a4d9a9ab0c0eeecb5d34479d43f9818ae983",
+    "archivedSHA256": "c4c5db48a522e2ed71320c3be214a4d9a9ab0c0eeecb5d34479d43f9818ae983"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "archived": "sixth-final/packaged-delivery/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "sourceSHA256": "591ed5131c4604d65dd70dd4cf091af0a508c3e57e73a84e6d16728f33504cea",
+    "archivedSHA256": "591ed5131c4604d65dd70dd4cf091af0a508c3e57e73a84e6d16728f33504cea"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+    "archived": "sixth-final/packaged-delivery/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+    "sourceSHA256": "357aff1a2fc0bd9e2e0203029efd3a2b60ba78e77102e1c0e5e01a8fe908ff01",
+    "archivedSHA256": "357aff1a2fc0bd9e2e0203029efd3a2b60ba78e77102e1c0e5e01a8fe908ff01"
+  },
+  {
+    "source": "sixth-final/packaged-delivery/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+    "archived": "sixth-final/packaged-delivery/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+    "sourceSHA256": "ab9da5121d8ef84855b59726cf6910d3b885f2ee61151abc7feba6ad5391740e",
+    "archivedSHA256": "ab9da5121d8ef84855b59726cf6910d3b885f2ee61151abc7feba6ad5391740e"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/.last-run.json",
+    "archived": "sixth-final/packaged-e2e/.last-run.json",
+    "sourceSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "archivedSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+    "archived": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+    "sourceSHA256": "e7c8737e91dc7999e15a8442089fccbbbaada5f3db45c198522d4fe4ce75e2d9",
+    "archivedSHA256": "e7c8737e91dc7999e15a8442089fccbbbaada5f3db45c198522d4fe4ce75e2d9"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+    "archived": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+    "sourceSHA256": "c2c6dea1c38ee1226f9b3f4f4f4d55bb051efae3d04c2a750c6b7b7b401674b7",
+    "archivedSHA256": "c2c6dea1c38ee1226f9b3f4f4f4d55bb051efae3d04c2a750c6b7b7b401674b7"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+    "archived": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+    "sourceSHA256": "e660369e1d3c59d4147bd8e9487006cdc13a360dced4c602c70abd0aa5c80ed2",
+    "archivedSHA256": "e660369e1d3c59d4147bd8e9487006cdc13a360dced4c602c70abd0aa5c80ed2"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+    "archived": "sixth-final/packaged-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+    "sourceSHA256": "b1bb7a27757e5ab86030008fe763c97890abeddfda0d16840fb3c4345bd87d1b",
+    "archivedSHA256": "b1bb7a27757e5ab86030008fe763c97890abeddfda0d16840fb3c4345bd87d1b"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+    "archived": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+    "sourceSHA256": "1c5b366e891ea9dc015cf7e3b3e983cc7820c85c2761b1ed5ef7cbe1712936ea",
+    "archivedSHA256": "1c5b366e891ea9dc015cf7e3b3e983cc7820c85c2761b1ed5ef7cbe1712936ea"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+    "archived": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+    "sourceSHA256": "74fdf67d10bdeebaea836aaa7a4a542049a28d2b6fcb3cfae395786533720c95",
+    "archivedSHA256": "74fdf67d10bdeebaea836aaa7a4a542049a28d2b6fcb3cfae395786533720c95"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+    "archived": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+    "sourceSHA256": "82728194e06859e283f98564100248cb2a3843f2c67a14d4be9c5217f8fd3db4",
+    "archivedSHA256": "82728194e06859e283f98564100248cb2a3843f2c67a14d4be9c5217f8fd3db4"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+    "archived": "sixth-final/packaged-e2e/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+    "sourceSHA256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5",
+    "archivedSHA256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+    "archived": "sixth-final/packaged-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+    "sourceSHA256": "42a4e4a103b5299fbfc918f2b700c8a6d85ae488e880816a643401eb2ed834fa",
+    "archivedSHA256": "42a4e4a103b5299fbfc918f2b700c8a6d85ae488e880816a643401eb2ed834fa"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+    "archived": "sixth-final/packaged-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+    "sourceSHA256": "72548dd7c59df4fe27442b804c01e4bb080ecc7fc3310ee80cca48a0a53f0fb7",
+    "archivedSHA256": "72548dd7c59df4fe27442b804c01e4bb080ecc7fc3310ee80cca48a0a53f0fb7"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+    "archived": "sixth-final/packaged-e2e/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+    "sourceSHA256": "b127a13f6f1f2cf4a15a28378dca43fb23cf5c9e4a583c6ad8eeb9d557a8b1bb",
+    "archivedSHA256": "b127a13f6f1f2cf4a15a28378dca43fb23cf5c9e4a583c6ad8eeb9d557a8b1bb"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+    "sourceSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+    "archivedSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+    "sourceSHA256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e",
+    "archivedSHA256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+    "sourceSHA256": "81b3aba7cf19c412461540f0a70ff941f20ba5f88f251de69446704e7bb4dbdc",
+    "archivedSHA256": "81b3aba7cf19c412461540f0a70ff941f20ba5f88f251de69446704e7bb4dbdc"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+    "sourceSHA256": "93b56f7c275af35dbface6b78d14a1eff20507b3407110bf5187867a4747ea64",
+    "archivedSHA256": "93b56f7c275af35dbface6b78d14a1eff20507b3407110bf5187867a4747ea64"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+    "sourceSHA256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce",
+    "archivedSHA256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+    "sourceSHA256": "0ff5ed3472adea18b96ee362633bcdcd201bb0b8d1d564f69d4cf910545744cf",
+    "archivedSHA256": "0ff5ed3472adea18b96ee362633bcdcd201bb0b8d1d564f69d4cf910545744cf"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+    "sourceSHA256": "fb30d51d8be6c4d902fe68e0ae15b5b28a1a84f3e058ecaa0911dfc110bf8209",
+    "archivedSHA256": "b0d69607e156e39b4a1a872b0285046c886836af572edd8acfb117e683c236a4"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+    "archived": "sixth-final/packaged-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+    "sourceSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+    "archivedSHA256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+    "sourceSHA256": "387a6b3e717920741e0b74173855ee0d8be0dd971d28a6d88f109af4cc3c53e2",
+    "archivedSHA256": "387a6b3e717920741e0b74173855ee0d8be0dd971d28a6d88f109af4cc3c53e2"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+    "sourceSHA256": "fe93d91d962a1324411ff2ce3c410244a2e9131fdaca98971ec31e4260fad87f",
+    "archivedSHA256": "fe93d91d962a1324411ff2ce3c410244a2e9131fdaca98971ec31e4260fad87f"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+    "sourceSHA256": "fea595a7585bae09d3f69c0f4b78660664745e1c5fd753d1e5f1c76d7b2fa144",
+    "archivedSHA256": "fea595a7585bae09d3f69c0f4b78660664745e1c5fd753d1e5f1c76d7b2fa144"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+    "sourceSHA256": "763bdaf4357e09c51c08a63408c401f0bf5cf92f761d840e8310c1306f6281e3",
+    "archivedSHA256": "763bdaf4357e09c51c08a63408c401f0bf5cf92f761d840e8310c1306f6281e3"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+    "sourceSHA256": "d9aa7b962785b37b6d56f48ed4f2bd9450c39ef82a99054105a97642db6265f6",
+    "archivedSHA256": "d9aa7b962785b37b6d56f48ed4f2bd9450c39ef82a99054105a97642db6265f6"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+    "sourceSHA256": "7b06396f1b08fc30fd81e988e23e94e8bb91bc8f578e0885b121a2f01d4f1ce0",
+    "archivedSHA256": "7b06396f1b08fc30fd81e988e23e94e8bb91bc8f578e0885b121a2f01d4f1ce0"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+    "sourceSHA256": "f90606793f001e707d3f808df21d37cafdab128be6c6d4acecea2b2b8b41f0da",
+    "archivedSHA256": "f90606793f001e707d3f808df21d37cafdab128be6c6d4acecea2b2b8b41f0da"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+    "archived": "sixth-final/packaged-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+    "sourceSHA256": "0ba22322b7144086e1a5687641405a5f756031cff66d653239909df699c86c60",
+    "archivedSHA256": "0ba22322b7144086e1a5687641405a5f756031cff66d653239909df699c86c60"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+    "archived": "sixth-final/packaged-e2e/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+    "sourceSHA256": "466e5701bc20abbec09e95ab1b1e5abad407148a27c4e926c639aa521738ec33",
+    "archivedSHA256": "466e5701bc20abbec09e95ab1b1e5abad407148a27c4e926c639aa521738ec33"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+    "archived": "sixth-final/packaged-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+    "sourceSHA256": "baf07c28fc81585171024068d72264985a7136820d9ea973c1a49c59e06015cd",
+    "archivedSHA256": "baf07c28fc81585171024068d72264985a7136820d9ea973c1a49c59e06015cd"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+    "archived": "sixth-final/packaged-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+    "sourceSHA256": "c71ac73a55ea09d0b5d2849949074cde61998059a7448a6f9c97996a49074659",
+    "archivedSHA256": "c71ac73a55ea09d0b5d2849949074cde61998059a7448a6f9c97996a49074659"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+    "archived": "sixth-final/packaged-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+    "sourceSHA256": "b40541abb22a62431b6dabe1a1030e7715bf9839314801bcb3e13f8c464b54f4",
+    "archivedSHA256": "b40541abb22a62431b6dabe1a1030e7715bf9839314801bcb3e13f8c464b54f4"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-final/packaged-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "d0e4a10b44f85b8ea0f4e8f4215aa5d10e02416ea7b27392fead12a53a5202ef",
+    "archivedSHA256": "d0e4a10b44f85b8ea0f4e8f4215aa5d10e02416ea7b27392fead12a53a5202ef"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "archived": "sixth-final/packaged-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "sourceSHA256": "b75afb8a3f759b639452ac0ed73d9a803edb335a27f4dcd2acc2f720e7de237e",
+    "archivedSHA256": "b75afb8a3f759b639452ac0ed73d9a803edb335a27f4dcd2acc2f720e7de237e"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "archived": "sixth-final/packaged-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "sourceSHA256": "ae33f14280e16d985c836560629d00c2309d85d6ba66c1ad1f0576e91f562562",
+    "archivedSHA256": "ae33f14280e16d985c836560629d00c2309d85d6ba66c1ad1f0576e91f562562"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+    "archived": "sixth-final/packaged-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+    "sourceSHA256": "3a9d7ab36196aebf5dbf55f7f5d87e7ecd714b0d8c711350444651270b1d0d09",
+    "archivedSHA256": "3a9d7ab36196aebf5dbf55f7f5d87e7ecd714b0d8c711350444651270b1d0d09"
+  },
+  {
+    "source": "sixth-final/packaged-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+    "archived": "sixth-final/packaged-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+    "sourceSHA256": "361037581ce6a609ef0138822c3b12b75208d10401b04a09b573efa1af6b9aaf",
+    "archivedSHA256": "361037581ce6a609ef0138822c3b12b75208d10401b04a09b573efa1af6b9aaf"
+  },
+  {
+    "source": "sixth-final/path-layout-green/.last-run.json",
+    "archived": "sixth-final/path-layout-green/.last-run.json",
+    "sourceSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "archivedSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+  },
+  {
+    "source": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "19455094bcae5464c99dac7c7d06743e9214dd32f7dbc056b24a580a4cf3281e",
+    "archivedSHA256": "19455094bcae5464c99dac7c7d06743e9214dd32f7dbc056b24a580a4cf3281e"
+  },
+  {
+    "source": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+    "archived": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+    "sourceSHA256": "770fac19c9aa5f34e9e2660d5fdb30d16b6436a052682d08ca0080ffdaf4788d",
+    "archivedSHA256": "770fac19c9aa5f34e9e2660d5fdb30d16b6436a052682d08ca0080ffdaf4788d"
+  },
+  {
+    "source": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "archived": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "sourceSHA256": "210390e5ed73cc1951b6df313373d37425b75b6e304e213bc6937c36b32982d1",
+    "archivedSHA256": "210390e5ed73cc1951b6df313373d37425b75b6e304e213bc6937c36b32982d1"
+  },
+  {
+    "source": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "archived": "sixth-final/path-layout-green/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "sourceSHA256": "646b5e16fef18567cd1462d152b7c272580e13871c2c63f3f16ae6e748a01f79",
+    "archivedSHA256": "646b5e16fef18567cd1462d152b7c272580e13871c2c63f3f16ae6e748a01f79"
+  },
+  {
+    "source": "sixth-final/path-layout-red/.last-run.json",
+    "archived": "sixth-final/path-layout-red/.last-run.json",
+    "sourceSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7",
+    "archivedSHA256": "2a00fe7dffa13aabc4a6d74f0810380669ebd122f762a45796e0fda72745d2a7"
+  },
+  {
+    "source": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "archived": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/error-context.md",
+    "sourceSHA256": "b4cced3589a2dfbc48b1603a228729b1717eb7f09fcac9b5996c3062e9aee006",
+    "archivedSHA256": "9c90303b571ea77175eed22efb70c18034767c4e600d66bca51cd954c2f89e2a"
+  },
+  {
+    "source": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "3735bc2dda6729a40cbacff6a36b44771ff24f09008ed43b80cb52e887a97c88",
+    "archivedSHA256": "3735bc2dda6729a40cbacff6a36b44771ff24f09008ed43b80cb52e887a97c88"
+  },
+  {
+    "source": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "archived": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-1.png",
+    "sourceSHA256": "ae86f06080c866098c1fb35a90de80a891b05a8087623c82f46d69c24f2f8a15",
+    "archivedSHA256": "ae86f06080c866098c1fb35a90de80a891b05a8087623c82f46d69c24f2f8a15"
+  },
+  {
+    "source": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "archived": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/test-failed-2.png",
+    "sourceSHA256": "9f5a4e01d7030b848d86d8ef8dafc992d54a4cd6d18f0061618c7121568ddb96",
+    "archivedSHA256": "9f5a4e01d7030b848d86d8ef8dafc992d54a4cd6d18f0061618c7121568ddb96"
+  },
+  {
+    "source": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "archived": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/trace.zip",
+    "sourceSHA256": "e6c2fe62cc57650b5dad6fc70505a1bd583d73d858ebe1a79363a63acaf1b54d",
+    "archivedSHA256": "e6c2fe62cc57650b5dad6fc70505a1bd583d73d858ebe1a79363a63acaf1b54d"
+  },
+  {
+    "source": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "archived": "sixth-final/path-layout-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "sourceSHA256": "138041dfaa8df4c0aaee8df043910383af90eb5a2401db24feb420ac967fd29d",
+    "archivedSHA256": "138041dfaa8df4c0aaee8df043910383af90eb5a2401db24feb420ac967fd29d"
+  },
+  {
+    "source": "sixth-final/path-overflow-red/.last-run.json",
+    "archived": "sixth-final/path-overflow-red/.last-run.json",
+    "sourceSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "archivedSHA256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+  },
+  {
+    "source": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "archived": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+    "sourceSHA256": "c91e4a434f94bf8e390e49ba0249726cc8e8d2516de004b4a1563d6d53fd84f6",
+    "archivedSHA256": "c91e4a434f94bf8e390e49ba0249726cc8e8d2516de004b4a1563d6d53fd84f6"
+  },
+  {
+    "source": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+    "archived": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+    "sourceSHA256": "7505f08a74bc1abeb5588f2c6b705613e5383af51aba42a631f0c7f95abbb74f",
+    "archivedSHA256": "7505f08a74bc1abeb5588f2c6b705613e5383af51aba42a631f0c7f95abbb74f"
+  },
+  {
+    "source": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "archived": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+    "sourceSHA256": "be6d7ec1cf1a05dfe52c74125a212ba519d8502f59478ebe57b97974688d0596",
+    "archivedSHA256": "be6d7ec1cf1a05dfe52c74125a212ba519d8502f59478ebe57b97974688d0596"
+  },
+  {
+    "source": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "archived": "sixth-final/path-overflow-red/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+    "sourceSHA256": "cc201d2f737f2c0780044235cc1f84cf87989a91f378df5500f5873f5c71282e",
+    "archivedSHA256": "cc201d2f737f2c0780044235cc1f84cf87989a91f378df5500f5873f5c71282e"
+  }
+]

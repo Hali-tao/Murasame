@@ -1,0 +1,51 @@
+
+Running 1 test using 1 worker
+
+(node:87392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output (24.9s)
+
+
+  1) tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator: getByTestId('autonomy-export')
+    Expected: enabled
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeEnabled" getByTestId('autonomy-export') with timeout 5000ms
+      - waiting for getByTestId('autonomy-export')
+
+
+      50 |     await expect(pet.locator('.live2d-pet-host')).toHaveAttribute('data-motion-group', 'Agree')
+      51 |     await pet.getByRole('button', { name: '查看或保存', exact: true }).click()
+    > 52 |     await expect(main.getByTestId('autonomy-export')).toBeEnabled()
+         |                                                       ^
+      53 |     await pet.screenshot({ path: test.info().outputPath('verified-artifact-before-saving.png') })
+      54 |
+      55 |     const stopped = { ...ready, running: false, phase: 'stopped' as const, canStop: false, reason: '已停止，保留旧产物只作历史状态' }
+        at E:\Desktop\软件工程\murasame\tests\e2e\pet-work.spec.ts:52:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\sixth-pet-integration\e2e-green\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\sixth-pet-integration\e2e-green\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\sixth-pet-integration\e2e-green\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\sixth-pet-integration\e2e-green\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\sixth-pet-integration\e2e-green\pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output

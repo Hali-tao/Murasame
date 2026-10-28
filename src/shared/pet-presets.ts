@@ -63,7 +63,7 @@ export const PET_PRESETS: readonly PetPreset[] = [
     summary: '连续呼吸、思考与工作动作，身体和手臂自然跟随。',
     modelUrl: 'live2d/naiwa/奶蛙.model3.json',
     idleMotion: 'Idle',
-    motionCount: '9 组连续动作 · 保留原动作',
+    motionCount: '10 组连续动作 · 保留原动作',
     expressionCount: '4 个表情',
     format: 'Cubism 5 · model3',
     source: '课程项目本地资源',

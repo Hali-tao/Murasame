@@ -1,0 +1,50 @@
+[
+  {
+    "scenario": "current",
+    "title": "本次验证未通过，当前配置已保留",
+    "result": "本次验证未通过，当前配置已保留\n\n「当前服务 · 独立示例」仍是当前服务配置。本次未能确认连接，请检查后重试。\n\n本次请求超时，请检查服务地址和网络后重试。",
+    "banner": "当前配置已保留\n当前服务 · 独立示例\n\ntest-model · 本次验证未通过，连接状态待确认。检查后可以再测一次。\n\n连接待确认\n再测一次",
+    "layout": {
+      "borderWidth": "0px",
+      "margin": "0px",
+      "padding": "22px 24px 34px",
+      "overflowing": false
+    }
+  },
+  {
+    "scenario": "other",
+    "title": "这条配置未启用，当前服务配置未变",
+    "result": "这条配置未启用，当前服务配置未变\n\n本次没有切换当前服务，仍保留「当前服务 · 独立示例」的配置。\n\n本次请求超时，请检查服务地址和网络后重试。",
+    "banner": "正在使用\n当前服务 · 独立示例\n\ntest-model · 验证成功 · 响应 24 ms。左侧「交流」会走这个服务。\n\n正在使用\n再测一次",
+    "layout": {
+      "borderWidth": "0px",
+      "margin": "0px",
+      "padding": "22px 24px 34px",
+      "overflowing": false
+    }
+  },
+  {
+    "scenario": "new",
+    "title": "验证未通过，这条配置还未启用",
+    "result": "验证未通过，这条配置还未启用\n\n验证通过后才能设为当前使用。\n\n本次请求超时，请检查服务地址和网络后重试。",
+    "banner": "还不能聊天\n未选择默认模型\n\n选运营商，贴上 API Key，点「验证并开始使用」。这里变成绿色，才算开始用。\n\n未开始使用\n再测一次",
+    "layout": {
+      "borderWidth": "0px",
+      "margin": "0px",
+      "padding": "22px 24px 34px",
+      "overflowing": false
+    }
+  },
+  {
+    "scenario": "current-from-other",
+    "title": "本次验证未通过，当前配置已保留",
+    "result": "本次验证未通过，当前配置已保留\n\n「当前服务 · 独立示例」仍是当前服务配置。本次未能确认连接，请检查后重试。\n\n本次请求超时，请检查服务地址和网络后重试。",
+    "banner": "当前配置已保留\n当前服务 · 独立示例\n\ntest-model · 本次验证未通过，连接状态待确认。检查后可以再测一次。\n\n连接待确认\n再测一次",
+    "layout": {
+      "borderWidth": "0px",
+      "margin": "0px",
+      "padding": "22px 24px 34px",
+      "overflowing": false
+    }
+  }
+]

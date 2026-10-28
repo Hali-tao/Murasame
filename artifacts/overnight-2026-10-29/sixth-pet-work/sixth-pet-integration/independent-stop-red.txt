@@ -1,0 +1,35 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts (5 tests | 1 failed) 302ms
+   × can stop an isolated activity while an unrelated task approval is pending 38ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > can stop an isolated activity while an unrelated task approval is pending
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:99:19
+     97|   const blocked = screen.getByRole('button', { name: '结束活动', exact: tr…
+     98|   await act(async () => approval.resolve({ ok: false, error: '独立测试审批结束…
+     99|   expect(blocked).toBe(false)
+       |                   ^
+    100| })
+    101|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  06:50:00
+   Duration  1.47s (environment 61%, tests 23%, import 13%, transform 3%)

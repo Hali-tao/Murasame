@@ -94,6 +94,7 @@ export const IPC = {
     readiness: 'voice:readiness'
   },
   autonomy: {
+    updated: 'autonomy:updated',
     preview: 'autonomy:preview',
     create: 'autonomy:create',
     exportArtifact: 'autonomy:export-artifact',

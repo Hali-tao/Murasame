@@ -1,0 +1,1 @@
+src/renderer/src/components/Live2DPet.tsx(217,47): error TS2445: Property 'loadExpression' is protected and only accessible within class 'ExpressionManager<Expression, ExpressionSpec>' and its subclasses.

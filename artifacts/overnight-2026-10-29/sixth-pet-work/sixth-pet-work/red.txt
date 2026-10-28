@@ -1,0 +1,27 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/pet-work.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/pet-work.test.ts [ tests/unit/pet-work.test.ts ]
+Error: Cannot find module '../../src/shared/pet-work' imported from E:/Desktop/软件工程/murasame/tests/unit/pet-work.test.ts
+ ❯ tests/unit/pet-work.test.ts:7:1
+      5| import type { ActivityStatus } from '../../src/shared/types'
+      6| import type { CreationArtifact } from '../../src/shared/isolated-creat…
+      7| import { derivePetWork, petWorkMotion, type PetWorkState } from '../..…
+       | ^
+      8|
+      9| const artifact: CreationArtifact = { id: 'artifact-1', kind: 'code', t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  06:34:57
+   Duration  663ms (worker 97%, environment 3%)

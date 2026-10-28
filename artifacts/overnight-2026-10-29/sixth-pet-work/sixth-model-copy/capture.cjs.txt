@@ -1,0 +1,50 @@
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const http = require('node:http');
+const { build } = require('esbuild');
+const postcss = require('postcss');
+const tailwind = require('tailwindcss');
+const autoprefixer = require('autoprefixer');
+const { chromium, expect } = require('@playwright/test');
+
+const root = path.resolve(__dirname, '../../..');
+async function main() {
+  await build({ entryPoints: [path.join(__dirname, 'browser-entry.tsx')], outfile: path.join(__dirname, 'fixture.js'), bundle: true, platform: 'browser', jsx: 'automatic', tsconfig: path.join(root, 'tsconfig.web.json'), define: { 'process.env.NODE_ENV': '"production"' } });
+  const styleSource = path.join(root, 'src/renderer/src/styles.css');
+  const css = await postcss([tailwind(path.join(root, 'tailwind.config.ts')), autoprefixer]).process(await fs.readFile(styleSource, 'utf8'), { from: styleSource });
+  await fs.writeFile(path.join(__dirname, 'fixture.css'), css.css);
+  const html = '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>独立模型页面文案回归</title><link rel="stylesheet" href="/fixture.css"><div id="root"></div><script src="/fixture.js"></script></html>';
+  await fs.writeFile(path.join(__dirname, 'fixture.html'), html);
+  const server = http.createServer(async (req, res) => {
+    const name = new URL(req.url, 'http://127.0.0.1').pathname;
+    const file = name === '/' ? 'fixture.html' : name === '/fixture.js' ? 'fixture.js' : name === '/fixture.css' ? 'fixture.css' : null;
+    if (!file) { res.writeHead(404); res.end(); return; }
+    res.setHeader('content-type', file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html; charset=utf-8');
+    res.end(await fs.readFile(path.join(__dirname, file)));
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true, executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe' });
+    const page = await browser.newPage({ viewport: { width: 1080, height: 850 }, deviceScaleFactor: 1 });
+    const results = [];
+    for (const scenario of ['current', 'other', 'new', 'current-from-other']) {
+      await page.goto(`http://127.0.0.1:${server.address().port}/?scenario=${scenario}`);
+      await page.getByTestId('model-config-name').waitFor();
+      if (scenario.startsWith('current')) await page.getByRole('button', { name: '再测一次' }).click();
+      else await page.getByTestId('verify-model').click();
+      const title = scenario.startsWith('current') ? '本次验证未通过，当前配置已保留' : scenario === 'other' ? '这条配置未启用，当前服务配置未变' : '验证未通过，这条配置还未启用';
+      await expect(page.locator('.use-result strong')).toContainText(title);
+      await expect(page.getByTestId('model-config-name')).toBeEnabled();
+      await page.locator('.current-service-banner').scrollIntoViewIfNeeded();
+      await page.screenshot({ path: path.join(__dirname, `${scenario}.png`) });
+      results.push({ scenario, title: await page.locator('.use-result strong').innerText(), result: await page.locator('.use-result').innerText(), banner: await page.locator('.current-service-banner').innerText(), layout: await page.locator('fieldset').evaluate(el => ({ borderWidth: getComputedStyle(el).borderWidth, margin: getComputedStyle(el).margin, padding: getComputedStyle(el).padding, overflowing: document.documentElement.scrollWidth > innerWidth })) });
+    }
+    await fs.writeFile(path.join(__dirname, 'browser-results.json'), JSON.stringify(results, null, 2));
+    console.log(JSON.stringify(results, null, 2));
+  } finally {
+    if (browser) await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+}
+main().catch(error => { console.error(error); process.exitCode = 1; });

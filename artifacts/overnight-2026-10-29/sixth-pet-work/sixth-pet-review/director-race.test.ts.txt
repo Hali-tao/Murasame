@@ -1,0 +1,33 @@
+import { expect, it, vi } from 'vitest'
+import { ActivityMotionDirector } from '../../../src/renderer/src/avatar/activity-motion-director'
+import type { PetActivityMotion } from '../../../src/shared/pet-work'
+
+const work: PetActivityMotion = { key: 'run:working', motion: 'WorkingLoop', expression: null, loop: true }
+const flush = async () => { await Promise.resolve(); await Promise.resolve() }
+
+it('does not treat the previous native motion end as completion of a replacement response still loading', async () => {
+  let release!: () => void
+  let currentReplacement!: () => boolean
+  const loading = new Promise<void>(resolve => { release = resolve })
+  const play = vi.fn(async (motion: PetActivityMotion | null, current: () => boolean, started: () => void) => {
+    if (motion?.motion === 'NewResponse') { currentReplacement = current; await loading }
+    if (current()) started()
+  })
+  const director = new ActivityMotionDirector(play)
+  director.setActivity(work)
+  director.transient('PreviousResponse', null)
+  await flush()
+  director.transient('NewResponse', null)
+  // Live2DPet waits for the new file before stopping/replacing the old motion.
+  // Its motionFinish event therefore can arrive while NewResponse is loading.
+  director.finished()
+  await flush()
+  expect(currentReplacement()).toBe(true)
+  expect(play.mock.calls.at(-1)?.[0]?.motion).toBe('NewResponse')
+  release()
+  await flush()
+  expect(director.waitingForStart).toBe(false)
+  director.finished()
+  await flush()
+  expect(play.mock.calls.at(-1)?.[0]).toEqual(work)
+})

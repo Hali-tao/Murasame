@@ -1,0 +1,102 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/model-form-lifecycle.test.ts (16 tests | 6 failed) 759ms
+   × says a failed current-service recheck retains its configuration even when another model is selected: false 44ms
+   × says a failed current-service recheck retains its configuration even when another model is selected: true 34ms
+   × retains current-service wording after a completed recheck reports the saved profile offline 30ms
+   × describes an unactivated configuration without claiming another current service was disabled: false 11ms
+   × describes an unactivated configuration without claiming another current service was disabled: true 12ms
+   × does not describe a creation failure as a failed connection check 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > says a failed current-service recheck retains its configuration even when another model is selected: false
+ FAIL  tests/unit/model-form-lifecycle.test.ts > says a failed current-service recheck retains its configuration even when another model is selected: true
+AssertionError: expected ' 验证没有通过，所以还没开始使用' to contain '本次验证未通过，当前配置已保留'
+
+Expected: "本次验证未通过，当前配置已保留"
+Received: " 验证没有通过，所以还没开始使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:173:69
+    171|   await mount()
+    172|   await act(async () => { fireEvent.click(screen.getByRole('button', {…
+    173|   expect(document.querySelector('.use-result strong')?.textContent).to…
+       |                                                                     ^
+    174|   expect(document.querySelector('.use-result')?.textContent).toContain…
+    175|   expect(document.querySelector('.use-result')?.textContent).toContain…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > retains current-service wording after a completed recheck reports the saved profile offline
+AssertionError: expected ' 验证没有通过，所以还没开始使用' to contain '本次验证未通过，当前配置已保留'
+
+Expected: "本次验证未通过，当前配置已保留"
+Received: " 验证没有通过，所以还没开始使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:186:69
+    184|   await mount()
+    185|   await act(async () => { fireEvent.click(screen.getByRole('button', {…
+    186|   expect(document.querySelector('.use-result strong')?.textContent).to…
+       |                                                                     ^
+    187|   expect(document.querySelector('.current-service-banner')?.textConten…
+    188|   expect(useAppStore.getState().data?.models.find(model => model.defau…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > describes an unactivated configuration without claiming another current service was disabled: false
+AssertionError: expected ' 验证没有通过，所以还没开始使用' to contain '验证未通过，这条配置还未启用'
+
+Expected: "验证未通过，这条配置还未启用"
+Received: " 验证没有通过，所以还没开始使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:197:69
+    195|   await mount()
+    196|   await act(async () => { fireEvent.click(screen.getByTestId('verify-m…
+    197|   expect(document.querySelector('.use-result strong')?.textContent).to…
+       |                                                                     ^
+    198|     ? '这条配置未启用，当前服务配置未变'
+    199|     : '验证未通过，这条配置还未启用')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > describes an unactivated configuration without claiming another current service was disabled: true
+AssertionError: expected ' 验证没有通过，所以还没开始使用' to contain '这条配置未启用，当前服务配置未变'
+
+Expected: "这条配置未启用，当前服务配置未变"
+Received: " 验证没有通过，所以还没开始使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:197:69
+    195|   await mount()
+    196|   await act(async () => { fireEvent.click(screen.getByTestId('verify-m…
+    197|   expect(document.querySelector('.use-result strong')?.textContent).to…
+       |                                                                     ^
+    198|     ? '这条配置未启用，当前服务配置未变'
+    199|     : '验证未通过，这条配置还未启用')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > does not describe a creation failure as a failed connection check
+AssertionError: expected ' 验证没有通过，所以还没开始使用' to contain '本次操作未完成'
+
+Expected: "本次操作未完成"
+Received: " 验证没有通过，所以还没开始使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:212:69
+    210|   await mount()
+    211|   await act(async () => { fireEvent.click(screen.getByTestId('add-mode…
+    212|   expect(document.querySelector('.use-result strong')?.textContent).to…
+       |                                                                     ^
+    213|   expect(document.querySelector('.use-result')?.textContent).not.toCon…
+    214| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 10 passed (16)
+   Start at  06:29:09
+   Duration  2.47s (environment 47%, tests 33%, import 17%, transform 3%)

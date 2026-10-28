@@ -1,0 +1,101 @@
+
+> murasame-desktop@0.9.0 test
+> vitest run
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:75192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/autonomy-status-bridge.test.ts (3 tests | 3 failed) 467ms
+   × [FR-28] delivers real service stages and verified artifact through IPC and preload, then detaches 415ms
+   × [FR-30] exposes preparation and cancellation without claiming an unstarted activity completed 16ms
+   × [FR-28] preparing an image never overlays an active verified creation in events or status 35ms
+ ❯ tests/unit/p4-p6.test.ts (71 tests | 1 failed) 1823ms
+   ❯ [CON-01] 形象能力 (7)
+     × [CON-01] 形象能力清单与资源实际内容一致 23ms
+(node:89280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46700) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29656) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82100) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86724) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15460) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79624) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/autonomy-status-bridge.test.ts > [FR-28] delivers real service stages and verified artifact through IPC and preload, then detaches
+TypeError: api.autonomy.onStatusChanged is not a function
+ ❯ tests/unit/autonomy-status-bridge.test.ts:64:28
+     62| it('[FR-28] delivers real service stages and verified artifact through…
+     63|   const events: ActivityStatus[] = []
+     64|   const off = api.autonomy.onStatusChanged(state => events.push(state))
+       |                            ^
+     65|   await service.start(start); await service.produce('code', '打印42', ag…
+     66|   expect(events.some(state => state.creation?.phase === 'drafting')).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/autonomy-status-bridge.test.ts > [FR-30] exposes preparation and cancellation without claiming an unstarted activity completed
+TypeError: api.autonomy.onStatusChanged is not a function
+ ❯ tests/unit/autonomy-status-bridge.test.ts:80:16
+     78|   vi.mocked(ensureDocker).mockReturnValue(preparation.promise)
+     79|   const events: ActivityStatus[] = []
+     80|   api.autonomy.onStatusChanged(state => events.push(state))
+       |                ^
+     81|   const pending = api.autonomy.start({ confirmed: true, allowNetwork: …
+     82|   expect(events.at(-1)).toMatchObject({ phase: 'preparing', running: f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/autonomy-status-bridge.test.ts > [FR-28] preparing an image never overlays an active verified creation in events or status
+TypeError: api.autonomy.onStatusChanged is not a function
+ ❯ tests/unit/autonomy-status-bridge.test.ts:99:16
+     97|   const artifact = service.status().creation!.artifact!
+     98|   const events: ActivityStatus[] = []
+     99|   api.autonomy.onStatusChanged(state => events.push(state))
+       |                ^
+    100|   const pending = api.autonomy.buildImage()
+    101|   expect(await api.autonomy.status()).toMatchObject({ phase: 'running'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/p4-p6.test.ts > [CON-01] 形象能力 > [CON-01] 形象能力清单与资源实际内容一致
+AssertionError: expected 11 to be 10 // Object.is equality
+
+- Expected
++ Received
+
+- 10
++ 11
+
+ ❯ tests/unit/p4-p6.test.ts:509:62
+    507|     expect(capabilityOf('whale-girl').motions).toHaveLength(8)
+    508|     expect(countFiles(join(root, 'whale-girl'), '.exp3.json')).toBe(ca…
+    509|     expect(countFiles(join(root, 'naiwa'), '.motion3.json')).toBe(capa…
+       |                                                              ^
+    510|     expect(capabilityOf('naiwa').expressions).toHaveLength(4)
+    511|     expect(resolveIntent('missing', '打招呼').text).toContain('文字')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed | 57 passed (59)
+      Tests  4 failed | 717 passed (721)
+   Start at  06:36:12
+   Duration  31.44s (tests 59%, environment 26%, import 13%, transform 1%, worker 1%)
+
+    Isolate  59 workers spawned · ~868ms startup each (spawn + environment, per file)
+             at least ~11.93s faster with isolate: false — reuses workers across files instead of one per file

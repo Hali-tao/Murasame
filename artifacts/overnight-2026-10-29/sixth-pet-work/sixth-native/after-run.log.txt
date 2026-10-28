@@ -1,0 +1,6 @@
+{"preset":"tororo","group":"Idle","seconds":14,"maxStep":0.016938388347625732,"finalGroup":"Idle","motionLoop":false,"events":[{"group":"Idle","frame":582},{"group":"Idle","frame":582}]}
+{"preset":"whale-girl","group":"idle","seconds":14,"maxStep":0.0977615867741406,"finalGroup":"idle","motionLoop":false,"events":[{"group":"idle","frame":243},{"group":"idle","frame":485},{"group":"idle","frame":728}]}
+{"preset":"naiwa","group":"WorkingLoop","seconds":26,"persistent":true,"maxStep":0.010652869939804077,"finalGroup":"WorkingLoop","motionLoop":true,"events":[{"group":"WorkingLoop","frame":122}]}
+{"preset":"naiwa","group":"Think","seconds":6,"maxStep":0.004872575402259827,"finalGroup":"Idle","motionLoop":false,"events":[{"group":"Think","frame":120},{"group":"Idle","frame":410}]}
+{"preset":"naiwa","group":"Greet","seconds":4,"maxStep":0.00674273818731308,"finalGroup":"Idle","motionLoop":false,"events":[{"group":"Greet","frame":122},{"group":"Idle","frame":292}]}
+{"preset":"naiwa","group":"Agree","seconds":4,"maxStep":0.0040639303624629974,"finalGroup":"Idle","motionLoop":false,"events":[{"group":"Agree","frame":120},{"group":"Idle","frame":267}]}

@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-10-28T22:42:12.616Z",
+  "label": "diagnostic",
+  "componentSha256": "43f4f0d46d86b66e47f04e96123b84fa68d6a6592770f3a1d2f8851f3fb38774",
+  "sourceHashes": {
+    "奶蛙.model3.json": "610272d729a994d07ac3b356f1e80b54dfd5023b59c09dfa1062b4bdbb8b4b9b",
+    "奶蛙.moc3": "7f999ccbc7abddc253f682a501ad72cc86763692b73a46c12dc545880dd7bdf7",
+    "奶蛙.physics3.json": "37cdb8a450999dac9e407f79b105fa1c1ead8fccb32c43b9f8f74ec7450dfb97",
+    "motions/working-attentive.motion3.json": "c3f208ee037a2fe390a0b81ffaaab2eae045b4b680d60a66ca5adebdb39dbbc2",
+    "motions/working-continuous.motion3.json": "bdf2072fa2963704790e2c1846297eb93567220a0d67d78e3ff0fed88aca72b7"
+  },
+  "runtime": "Actual production Live2DPet, original Cubism moc3/textures/physics, 60 Hz model updates and 30 fps captured video",
+  "sequences": [
+    {
+      "preset": "naiwa",
+      "group": "WorkingLoop",
+      "seconds": 26,
+      "persistent": true,
+      "maxStep": 0.010652869939804077,
+      "finalGroup": "WorkingLoop",
+      "motionLoop": true,
+      "events": [
+        {
+          "group": "WorkingLoop",
+          "frame": 123
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

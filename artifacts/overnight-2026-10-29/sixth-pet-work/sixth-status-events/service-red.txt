@@ -1,0 +1,106 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/autonomy-status-events.test.ts (7 tests | 7 failed) 9ms
+   × [FR-28] publishes actual preparation, creation stages and final ready without polling Docker 5ms
+   × [FR-30] publishes cancellation and discards a late worker result 1ms
+   × [FR-21] publishes failed creation and busy release without inventing a verified artifact 1ms
+   × [FR-28] isolates observer mutations and exceptions so another observer receives the verified artifact 1ms
+   × [FR-30] unsubscribe removes only its listener and is safe to repeat 0ms
+   × [FR-30] an older operation finishing after replacement cannot emit a stale activity or busy flag 0ms
+   × [FR-28] failed export releases busy while preserving the exact verified artifact in status events 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-28] publishes actual preparation, creation stages and final ready without polling Docker
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:45:11
+     43|   const { service, agents, calls } = fixture()
+     44|   const events: AutonomyState[] = []
+     45|   service.subscribe(state => events.push(state))
+       |           ^
+     46|   expect(calls).toEqual([])
+     47|   await service.start(start)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-30] publishes cancellation and discards a late worker result
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:64:11
+     62|   const entered = deferred<void>(); const worker = deferred<typeof dra…
+     63|   agents.draft = async () => { entered.resolve(); return worker.promis…
+     64|   service.subscribe(state => events.push(state))
+       |           ^
+     65|   await service.start(start)
+     66|   const pending = service.produce('code', '取消样例', agents)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-21] publishes failed creation and busy release without inventing a verified artifact
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:81:11
+     79|   const events: AutonomyState[] = []
+     80|   agents.draft = async () => { throw new Error('synthetic draft failur…
+     81|   service.subscribe(state => events.push(state))
+       |           ^
+     82|   await service.start(start)
+     83|   expect((await service.produce('code', '失败样例', agents)).ok).toBe(fals…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-28] isolates observer mutations and exceptions so another observer receives the verified artifact
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:91:11
+     89|   const { service, agents } = fixture()
+     90|   const events: AutonomyState[] = []
+     91|   service.subscribe(state => { state.notes.push('observer mutation'); …
+       |           ^
+     92|   service.subscribe(async () => { throw new Error('synthetic async obs…
+     93|   service.subscribe(state => events.push(state))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-30] unsubscribe removes only its listener and is safe to repeat
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:105:31
+    103|   const { service } = fixture()
+    104|   const detached: AutonomyState[] = []; const active: AutonomyState[] …
+    105|   const unsubscribe = service.subscribe(state => detached.push(state))
+       |                               ^
+    106|   service.subscribe(state => active.push(state))
+    107|   await service.start(start)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-30] an older operation finishing after replacement cannot emit a stale activity or busy flag
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:122:11
+    120|   })
+    121|   const events: AutonomyState[] = []
+    122|   service.subscribe(state => events.push(state))
+       |           ^
+    123|   await service.start({ ...start, allowNetwork: true })
+    124|   const oldId = service.status().activityId
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-28] failed export releases busy while preserving the exact verified artifact in status events
+TypeError: service.subscribe is not a function
+ ❯ tests/unit/autonomy-status-events.test.ts:145:11
+    143|   })
+    144|   const events: AutonomyState[] = []
+    145|   service.subscribe(state => events.push(state))
+       |           ^
+    146|   await service.start(start); await service.produce('code', '导出核验产物', …
+    147|   const artifact = service.status().creation!.artifact!
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  06:34:18
+   Duration  579ms (import 61%, transform 31%, tests 5%, worker 3%)

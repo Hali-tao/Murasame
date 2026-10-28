@@ -1,0 +1,18 @@
+{"preset":"tororo","group":"Idle","seconds":14,"maxStep":0.01693817973136902,"finalGroup":"Idle","motionLoop":false,"events":[{"group":"Idle","frame":583}]}
+{"preset":"whale-girl","group":"idle","seconds":14,"maxStep":0.10630647127982229,"finalGroup":"idle","motionLoop":false,"events":[{"group":"idle","frame":243},{"group":"idle","frame":485},{"group":"idle","frame":728}]}
+{"preset":"naiwa","group":"WorkingLoop","seconds":26,"persistent":true,"maxStep":0.010652869939804077,"finalGroup":"WorkingLoop","motionLoop":true,"events":[{"group":"WorkingLoop","frame":122}]}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 8 fps body movement displaced by 0.04653516411781311
+    at file:///E:/Desktop/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/murasame/scripts/sixth-native-motion.mjs:196:14 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.19.0

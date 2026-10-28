@@ -1,0 +1,23 @@
+{
+  "loopBoundaryStep": 0.00027424097061157227,
+  "transitions": [
+    {
+      "name": "think",
+      "expected": "Think",
+      "group": "Think",
+      "maxStep": 0.00461810827255249
+    },
+    {
+      "name": "work-resume",
+      "expected": "WorkingLoop",
+      "group": "WorkingLoop",
+      "maxStep": 0.008174475282430649
+    },
+    {
+      "name": "cancel",
+      "expected": "Idle",
+      "group": "Idle",
+      "maxStep": 0.0051750242710113525
+    }
+  ]
+}

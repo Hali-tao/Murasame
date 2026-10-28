@@ -3,6 +3,7 @@ import type { ToolCallRecord, Verdict } from './evidence'
 import type { CreationKind, CreationProgress } from './isolated-creation'
 
 export interface ActivityStatus {
+  activityId?: string
   running: boolean
   reason: string
   viewUrl: string
@@ -427,6 +428,7 @@ export interface MurasameApi {
     speak(text: string): Promise<{ samples: number[]; sampleRate: number; played: boolean; message: string }>
   }
   autonomy: {
+    onStatusChanged(listener: (state: ActivityStatus) => void): () => void
     preview(): Promise<Result<{ image: string }>>
     create(kind: CreationKind, goal: string): Promise<Result<ActivityStatus>>
     exportArtifact(id: string): Promise<Result<{ path: string; bytes: number; sha256: string }>>

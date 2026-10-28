@@ -1,0 +1,27 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/pet-autonomy-status.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/pet-autonomy-status.test.ts [ tests/unit/pet-autonomy-status.test.ts ]
+Error: Cannot find module '../../src/renderer/src/lib/autonomy-status' imported from E:/Desktop/软件工程/murasame/tests/unit/pet-autonomy-status.test.ts
+ ❯ tests/unit/pet-autonomy-status.test.ts:3:1
+      1| import { afterEach, expect, it, vi } from 'vitest'
+      2| import type { ActivityStatus } from '../../src/shared/types'
+      3| import { followAutonomyStatus } from '../../src/renderer/src/lib/auton…
+       | ^
+      4|
+      5| const running: ActivityStatus = { activityId: 'run', running: true, ph…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  06:39:39
+   Duration  598ms (worker 97%, environment 3%)

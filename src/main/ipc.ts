@@ -25,6 +25,7 @@ import {
   toolToggleSchema
 } from '../shared/schemas'
 import { MurasameCore as DesktopCore } from './core/murasame-core'
+import type { AutonomyState } from './core/services/autonomy-service'
 import type {
   AppInfo,
   AppSettings,
@@ -159,6 +160,19 @@ export function registerIpcHandlers(core: DesktopCore): void {
   let isolationPrepare: Promise<{ ok: boolean; detail: string }> | null = null
   let prepareController: AbortController | null = null
   let prepareGeneration = 0
+  const autonomyViewState = (state: AutonomyState): AutonomyState => {
+    // Preparing an image is separate from an existing live or uncleaned activity.
+    if (!isolationPrepare || state.running || state.canStop) return state
+    const cancelling = prepareController?.signal.aborted === true
+    return { ...state, activityId: '', goal: '', kind: undefined, creation: undefined, result: undefined, viewUrl: '', running: false,
+      phase: cancelling ? 'stopping' : 'preparing', canStop: true, busy: true,
+      reason: cancelling ? '正在取消隔离环境准备。' : '正在准备隔离环境，离开页面不会中断；可停止准备。' }
+  }
+  const publishAutonomy = (state = core.autonomy.status()): void => {
+    try { broadcast(IPC.autonomy.updated, autonomyViewState(state)) }
+    catch { /* A renderer may close while a state update is being delivered. */ }
+  }
+  core.autonomy.subscribe(publishAutonomy)
   const privacyKey = (): string => JSON.stringify([getSettings().permissions.screen, getSettings().outboundImages, getSettings().doNotDisturb, getSettings().screenWatchEnabled])
   let previousPrivacy = privacyKey()
   core.onScreenAnalysis = analysis => broadcast(IPC.core.screenUpdated, analysis)
@@ -527,7 +541,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   ipcMain.handle(IPC.autonomy.preview, () => core.autonomy.preview())
   ipcMain.handle(IPC.autonomy.status, async () => {
     const state = await core.autonomy.health()
-    return isolationPrepare ? { ...state, phase: 'preparing', canStop: true, busy: true, reason: '正在准备隔离环境，离开页面不会中断；可停止准备。' } : state
+    return autonomyViewState(state)
   })
   ipcMain.handle(IPC.autonomy.create, (_event, raw: unknown) => {
     const input = z.object({ kind: z.enum(['office', 'code']), goal: z.string().trim().min(1).max(2000) }).strict().safeParse(raw)
@@ -567,7 +581,9 @@ export function registerIpcHandlers(core: DesktopCore): void {
     })().finally(() => {
       isolationPrepare = null
       if (prepareController === controller) prepareController = null
+      publishAutonomy()
     })
+    publishAutonomy()
     return isolationPrepare
   }
   ipcMain.handle(IPC.autonomy.buildImage, (event) => prepareIsolation((line) => {
@@ -615,6 +631,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   ipcMain.handle(IPC.autonomy.stop, async () => {
     prepareGeneration++
     prepareController?.abort(new Error('用户停止了活动准备'))
+    if (isolationPrepare) publishAutonomy()
     return core.autonomy.stop({ containerGone: false })
   })
   handleCore<Task>(IPC.core.continueTask, z.object({ id: z.string().min(1), answer: z.string().trim().min(1).max(10000) }), input => {

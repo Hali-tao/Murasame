@@ -1,0 +1,77 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/pet-work.test.ts (23 tests | 1 failed) 22ms
+   ❯ 宠物真实工作状态 (14)
+     × shows an exact saved receipt without repeating the completion motion and ignores mismatched receipts 9ms
+ ❯ tests/unit/autonomy-status-events.test.ts (8 tests | 1 failed) 52ms
+   × [FR-28] publishes a saved receipt only after actual host bytes are verified and preserves it on a rejected overwrite 30ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/autonomy-status-events.test.ts > [FR-28] publishes a saved receipt only after actual host bytes are verified and preserves it on a rejected overwrite
+AssertionError: expected { running: true, …(13) } to match object { busy: false, creation: { …(3) } }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -13,13 +13,7 @@
+        "stdout": "42
+  ",
+        "title": "独立状态样例",
+      },
+      "phase": "ready",
+-     "saved": {
+-       "artifactId": "9482c929-ad06-401b-892d-d6ef13ef2b0c",
+-       "bytes": 9,
+-       "path": "E:\\Desktop\\软件工程\\murasame\\previews\\tmp\\murasame-export-status-LIaQ22\\result.py",
+-       "sha256": "c2d6e9060cbe8dee44279258cc8677d7a20ec16eeeccfedd09b840283efd3685",
+-     },
+    },
+  }
+
+ ❯ tests/unit/autonomy-status-events.test.ts:172:27
+    170|     expect(readFileSync(path).equals(data)).toBe(true)
+    171|     const saved = { artifactId: artifact.id, path, bytes: artifact.byt…
+    172|     expect(events.at(-1)).toMatchObject({ busy: false, creation: { pha…
+       |                           ^
+    173|     expect((await service.exportCreation(artifact.id, path)).ok).toBe(…
+    174|     expect(service.status().creation).toMatchObject({ artifact, saved …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/pet-work.test.ts > 宠物真实工作状态 > shows an exact saved receipt without repeating the completion motion and ignores mismatched receipts
+AssertionError: expected { …(7) } to match object { Object (phase, label, ...) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "detail": "E:/synthetic/result.py",
++   "detail": "核验通过",
+    "key": "autonomy:code:ready:artifact-1",
+-   "label": "产物已保存",
++   "label": "产物已核验，待保存",
+    "phase": "ready",
+  }
+
+ ❯ tests/unit/pet-work.test.ts:76:18
+     74|     const saved = { artifactId: artifact.id, path: 'E:/synthetic/resul…
+     75|     const work = derive({ autonomy: activity({ creation: { ...creation…
+     76|     expect(work).toMatchObject({ phase: 'ready', label: '产物已保存', detai…
+       |                  ^
+     77|     for (const wrong of [{ ...saved, artifactId: 'old' }, { ...saved, …
+     78|       expect(derive({ autonomy: activity({ creation: { ...creation, sa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 29 passed (31)
+   Start at  07:03:19
+   Duration  673ms (import 42%, transform 34%, tests 20%, worker 3%)

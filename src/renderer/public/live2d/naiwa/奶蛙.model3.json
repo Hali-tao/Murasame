@@ -93,6 +93,13 @@
         {
           "File": "hahaha.motion3.json"
         }
+      ],
+      "WorkingLoop": [
+        {
+          "File": "motions/working-continuous.motion3.json",
+          "FadeInTime": 0.8,
+          "FadeOutTime": 0.8
+        }
       ]
     }
   },

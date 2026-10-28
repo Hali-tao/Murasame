@@ -334,7 +334,7 @@ export function getPetWindow(): BrowserWindow | null {
   return petWindow && !petWindow.isDestroyed() ? petWindow : null
 }
 
-const MAIN_PATHS = new Set(['/tasks', '/chat', '/settings'])
+const MAIN_PATHS = new Set(['/tasks', '/chat', '/settings', '/autonomy'])
 
 /** 把控制台唤到前面，并让它打开指定页面。可以带 ?focus=任务编号。 */
 export function openMainPath(path: string): void {

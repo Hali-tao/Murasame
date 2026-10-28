@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 import { createHash } from 'node:crypto'
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer, testUserData } from './helpers'
+import { closeApp, configureTestModel, findMainPage, findPetPage, launchApp, startModelServer, testUserData } from './helpers'
 
 // Opt in because these cases use real Docker/LibreOffice/code-server, never a
 // host process substitute. All profiles and exports are independent fixtures.
@@ -28,6 +28,7 @@ test.describe('real isolated creation', () => {
     const app = await launchApp()
     try {
       const page = await findMainPage(app)
+      const pet = await findPetPage(app)
       await configureTestModel(page, server.url, '创作边界验收服务')
       await page.getByTestId('nav-autonomy').click()
       await page.getByRole('combobox').selectOption(kind === 'office' ? '办公' : '写代码')
@@ -40,6 +41,11 @@ test.describe('real isolated creation', () => {
       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')
       await page.getByTestId('autonomy-create').click()
       await expect(page.getByTestId('autonomy-export')).toBeEnabled({ timeout: 70_000 })
+      // This pet state comes from the real service and container result, unlike
+      // the separate stage-transition fixture in pet-work.spec.ts.
+      await expect(pet.getByTestId('pet-isolation-progress')).toContainText('产物已核验，待保存')
+      await expect(pet.locator('.pet-stage')).toHaveAttribute('data-work-source', 'autonomy')
+      await pet.screenshot({ path: test.info().outputPath(`${kind}-real-result-pet.png`) })
       expect(drafts).toBe(1); expect(reviews).toBe(1)
       await page.getByTestId('nav-overview').click(); await page.getByTestId('nav-autonomy').click()
       await expect(page.getByRole('combobox')).toHaveValue(kind === 'office' ? '办公' : '写代码')
@@ -60,6 +66,9 @@ test.describe('real isolated creation', () => {
       }, destination)
       await page.getByTestId('autonomy-export').click()
       await expect(page.locator('.autonomy-status')).toContainText('已保存到', { timeout: 15000 })
+      await expect(pet.getByTestId('pet-isolation-progress')).toContainText('产物已保存')
+      await expect(pet.getByTestId('pet-isolation-progress')).toContainText(destination)
+      await pet.screenshot({ path: test.info().outputPath(`${kind}-saved-result-pet.png`) })
       expect(existsSync(destination)).toBe(true)
       expect(createHash('sha256').update(readFileSync(destination)).digest('hex')).toBe(artifact.sha256)
       await page.getByTestId('autonomy-export').click()
@@ -67,6 +76,7 @@ test.describe('real isolated creation', () => {
       await page.screenshot({ path: test.info().outputPath(`${kind}-verified-export.png`), fullPage: true })
       await page.getByTestId('autonomy-stop').click()
       await expect(page.getByAltText('离线隔离桌面实时画面')).toHaveCount(0)
+      await expect(pet.getByTestId('pet-isolation-progress')).toHaveCount(0)
       await expect(page.getByTestId('autonomy-export')).toBeDisabled()
       expect((await page.evaluate(id => window.murasame.autonomy.exportArtifact(id), artifact.id)).ok).toBe(false)
     } finally { await closeApp(app); await server.close() }

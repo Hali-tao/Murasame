@@ -81,6 +81,7 @@ export function ModelsPage(): React.JSX.Element {
   const selected = data.models.find((model) => model.id === selectedId) ?? data.models.find((model) => model.default) ?? data.models[0]
   const [showKey, setShowKey] = useState(false)
   const [localFailure, setLocalFailure] = useState('')
+  const [failureContext, setFailureContext] = useState<'selected' | 'current' | 'operation'>('selected')
   // An untouched form follows late results, including after leaving and returning.
   // Only user edits need a local override of the saved profile.
   const [draftOverride, setDraft] = useState<ModelInput | null>(null)
@@ -183,6 +184,7 @@ export function ModelsPage(): React.JSX.Element {
       if (!created) return
       id = created.id
     }
+    setFailureContext('selected')
     const tested = await verifyModel(id, normalizedDraft(draft))
     if (!tested) {
       const toast = useAppStore.getState().toasts.filter((item) => item.tone === 'red').at(-1)
@@ -195,6 +197,7 @@ export function ModelsPage(): React.JSX.Element {
       setLocalFailure(explain(tested))
       return
     }
+    setFailureContext('operation')
     const enabled = await setDefaultModel(tested.id)
     if (!enabled) {
       setLocalFailure('连接是通的，但没有切换成当前服务。再点一次「设为当前使用」。')
@@ -212,6 +215,7 @@ export function ModelsPage(): React.JSX.Element {
   const recheckCurrent = async (): Promise<void> => {
     if (!defaultModel) return
     setLocalFailure('')
+    setFailureContext('current')
     const tested = await verifyModel(defaultModel.id)
     if (!tested) {
       const toast = useAppStore.getState().toasts.filter((item) => item.tone === 'red').at(-1)
@@ -226,6 +230,7 @@ export function ModelsPage(): React.JSX.Element {
     if (actionInFlight.current || modelBusy) return
     actionInFlight.current = true
     setFormAction(label)
+    setFailureContext('operation')
     try {
       await action()
     } catch (error) {
@@ -244,23 +249,44 @@ export function ModelsPage(): React.JSX.Element {
     ? friendlyFailure(chatDetail || '上次验证没有通过', draft.model.trim())
     : ''
   const shownFailure = localFailure || staleFailure
+  const verificationFailure = !localFailure || failureContext !== 'operation'
+  const failedVerificationModelId = shownFailure && verificationFailure
+    ? localFailure && failureContext === 'current' ? defaultModel?.id : selected?.id
+    : undefined
+  const failedCurrentVerification = Boolean(defaultModel && failedVerificationModelId === defaultModel.id)
+  const failureTitle = !verificationFailure
+    ? '本次操作未完成'
+    : failedCurrentVerification
+      ? '本次验证未通过，当前配置已保留'
+      : defaultModel
+        ? '这条配置未启用，当前服务配置未变'
+        : '验证未通过，这条配置还未启用'
+  const failureRetention = !verificationFailure
+    ? ''
+    : failedCurrentVerification
+      ? `「${defaultModel?.name}」仍是当前服务配置。本次未能确认连接，请检查后重试。`
+      : defaultModel
+        ? `本次没有切换当前服务，仍保留「${defaultModel.name}」的配置。`
+        : '验证通过后才能设为当前使用。'
   const readyHere = Boolean(selected && selected.status === '在线' && selected.default && !dirty && !shownFailure)
   const verifiedNotCurrent = Boolean(selected && selected.status === '在线' && !selected.default && !dirty && !shownFailure)
 
   return (
     <fieldset className="page models-page" disabled={formBusy} aria-busy={formBusy} aria-label="模型配置" style={{ border: 0, margin: 0, minWidth: 0 }}>
-      <div className={`current-service-banner${using ? ' ready' : ' pending'}`}>
-        <div className="current-service-icon">{using ? <CheckCircle2 size={18} /> : <PlugZap size={18} />}</div>
+      <div className={`current-service-banner${using && !failedCurrentVerification ? ' ready' : ' pending'}`}>
+        <div className="current-service-icon">{using && !failedCurrentVerification ? <CheckCircle2 size={18} /> : <PlugZap size={18} />}</div>
         <div>
-          <span>{using ? '正在使用' : '还不能聊天'}</span>
+          <span>{failedCurrentVerification ? '当前配置已保留' : using ? '正在使用' : '还不能聊天'}</span>
           <strong data-testid="current-service-name">{defaultModel?.name ?? '未选择默认模型'}</strong>
           <p>
-            {using
+            {failedCurrentVerification
+              ? `${defaultModel?.model} · 本次验证未通过，连接状态待确认。检查后可以再测一次。`
+              : using
               ? `${defaultModel?.model} · 验证成功 · 响应 ${defaultModel?.latency}。左侧「交流」会走这个服务。`
               : '选运营商，贴上 API Key，点「验证并开始使用」。这里变成绿色，才算开始用。'}
           </p>
         </div>
-        <StatusPill status={using ? 'in-use' : 'not-started'} />
+        {failedCurrentVerification ? <Pill tone="amber">连接待确认</Pill> : <StatusPill status={using ? 'in-use' : 'not-started'} />}
         <Button size="sm" disabled={!defaultModel || verifying} onClick={() => void runFormAction('正在重新测试当前服务…', recheckCurrent)}>
           再测一次
         </Button>
@@ -284,7 +310,7 @@ export function ModelsPage(): React.JSX.Element {
               >
                 <div className="model-list-top">
                   <strong>{model.name}</strong>
-                  {model.status === '在线' ? <StatusPill status="verified" /> : <Pill tone={model.tone}>{model.status}</Pill>}
+                  {model.id === failedVerificationModelId ? <Pill tone="amber">本次未通过</Pill> : model.status === '在线' ? <StatusPill status="verified" /> : <Pill tone={model.tone}>{model.status}</Pill>}
                 </div>
                 <p>{model.model || '未填模型'} · {hostOf(model.endpoint)}</p>
                 <div className="model-list-foot">
@@ -328,7 +354,8 @@ export function ModelsPage(): React.JSX.Element {
               </>
             ) : shownFailure ? (
               <>
-                <strong><AlertCircle size={16} /> 验证没有通过，所以还没开始使用</strong>
+                <strong><AlertCircle size={16} /> {failureTitle}</strong>
+                {failureRetention ? <p>{failureRetention}</p> : null}
                 <p>{shownFailure}</p>
               </>
             ) : readyHere ? (
