@@ -1,6 +1,6 @@
 import type { SqliteDatabase } from '../../data/sqlite-types'
 import { runExtraction, type ProposedMemory } from '../../agent/memory-extractor'
-import { recallMemories, embedLocally, EMBEDDING_DIM, EMBEDDING_MODEL_ID, vectorsCompatible } from '../../local/embedding'
+import { recallMemories, embedLocally, EMBEDDING_DIM, EMBEDDING_MODEL_ID, EMBEDDING_PROFILE, vectorsCompatible } from '../../local/embedding'
 import { activeMemories, applyMemoryAction, extractCandidates, normalizeKey, safeCandidate, type MemoryCategory, type MemoryFact } from '../../memory/facts'
 import type { MemoryEntry, MemoryIndexStatus, Result } from '../../../shared/types'
 
@@ -394,10 +394,10 @@ export class MemoryService {
 
   private alignEmbeddingStamp(): void {
     if (!this.db) return
-    const stamp = `${EMBEDDING_MODEL_ID}:${EMBEDDING_DIM}`
+    const stamp = `${EMBEDDING_MODEL_ID}:${EMBEDDING_DIM}:${EMBEDDING_PROFILE}`
     const row = this.db.prepare(`SELECT value FROM meta WHERE key = 'embedding'`).get() as { value: string } | undefined
-    const [modelId, dim] = (row?.value ?? '').split(':')
-    if (!row || vectorsCompatible(modelId, Number(dim)) === 'recompute') {
+    const [modelId, dim, profile] = (row?.value ?? '').split(':')
+    if (!row || vectorsCompatible(modelId, Number(dim), profile) === 'recompute') {
       this.facts = this.facts.map((fact) => ({ ...fact, vector: null }))
       const db = this.db
       db.transaction(() => {

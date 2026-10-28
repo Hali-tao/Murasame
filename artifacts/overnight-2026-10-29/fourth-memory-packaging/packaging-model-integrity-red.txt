@@ -1,0 +1,148 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/packaging-model-integrity.test.ts (7 tests | 7 failed) 1665ms
+   ❯ Windows package model integrity (7)
+     × packages the source bytes when a previous staged model has equal-length corruption 244ms
+     × packages exactly the allowlisted model files without stale assets or caches 248ms
+     × omits all models on an incomplete source and never silently uses an old staged model 194ms
+     × passes an explicitly chosen output directory to the builder 201ms
+     × uses a fresh output directory by default and preserves the old release installer 220ms
+     × records the verified SHA-256 of every staged file outside the model directory 238ms
+     × refuses an occupied explicit output before calling the builder 317ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > packages the source bytes when a previous staged model has equal-length corruption
+AssertionError: expected 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…' to be 'source:bge-small-zh-v1.5/onnx/model_q…' // Object.is equality
+
+Expected: "source:bge-small-zh-v1.5/onnx/model_quantized.onnx"
+Received: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+ ❯ tests/unit/packaging-model-integrity.test.ts:92:68
+     90|
+     91|     expect(result.status, result.stderr).toBe(0)
+     92|     expect(readFileSync(join(call(input).staging, model), 'utf8')).toB…
+       |                                                                    ^
+     93|   })
+     94|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > packages exactly the allowlisted model files without stale assets or caches
+AssertionError: expected [ 'README.txt', …(19) ] to deeply equal [ …(18) ]
+
+- Expected
++ Received
+
+@@ -1,12 +1,14 @@
+  [
++   "README.txt",
+    "bge-small-zh-v1.5/config.json",
+    "bge-small-zh-v1.5/onnx/model_quantized.onnx",
+    "bge-small-zh-v1.5/tokenizer.json",
+    "bge-small-zh-v1.5/tokenizer_config.json",
+    "kokoro/config.json",
+    "kokoro/onnx/model_quantized.onnx",
++   "kokoro/onnx/old-model.onnx",
+    "kokoro/tokenizer.json",
+    "kokoro/tokenizer_config.json",
+    "kokoro/voices/af_heart.bin",
+    "kokoro/voices/zf_xiaoxiao.bin",
+    "kokoro/voices/zm_yunxi.bin",
+
+ ❯ tests/unit/packaging-model-integrity.test.ts:104:45
+    102|
+    103|     expect(result.status, result.stderr).toBe(0)
+    104|     expect(filesUnder(call(input).staging)).toEqual([...modelFiles].so…
+       |                                             ^
+    105|   })
+    106|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > omits all models on an incomplete source and never silently uses an old staged model
+AssertionError: expected [ 'README.txt', …(2) ] to deeply equal [ 'README.txt' ]
+
+- Expected
++ Received
+
+  [
+    "README.txt",
++   "bge-small-zh-v1.5/onnx/model_quantized.onnx",
++   "whisper/config.json",
+  ]
+
+ ❯ tests/unit/packaging-model-integrity.test.ts:116:45
+    114|
+    115|     expect(result.status, result.stderr).toBe(0)
+    116|     expect(filesUnder(call(input).staging)).toEqual(['README.txt'])
+       |                                             ^
+    117|     expect(readFileSync(join(call(input).staging, 'README.txt'), 'utf8…
+    118|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > passes an explicitly chosen output directory to the builder
+AssertionError: expected [ '--win', 'nsis' ] to include '--config.directories.output=E:\Deskto…'
+ ❯ tests/unit/packaging-model-integrity.test.ts:127:30
+    125|
+    126|     expect(result.status, result.stderr).toBe(0)
+    127|     expect(call(input).args).toContain(`--config.directories.output=${…
+       |                              ^
+    128|   })
+    129|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > uses a fresh output directory by default and preserves the old release installer
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/packaging-model-integrity.test.ts:137:19
+    135|     expect(run(input).status).toBe(0)
+    136|     const first = call(input).args.find((arg) => arg.startsWith('--con…
+    137|     expect(first).toBeDefined()
+       |                   ^
+    138|     const output = first!.slice('--config.directories.output='.length)
+    139|     expect(output).not.toBe(join(input.cwd, 'release'))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > records the verified SHA-256 of every staged file outside the model directory
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/packaging-model-integrity.test.ts:154:37
+    152|     const staging = call(input).staging
+    153|     const receiptPath = join(dirname(staging), 'model-manifest.json')
+    154|     expect(existsSync(receiptPath)).toBe(true)
+       |                                     ^
+    155|     const receipt = JSON.parse(readFileSync(receiptPath, 'utf8'))
+    156|     expect(receipt.status).toBe('bundled')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > refuses an occupied explicit output before calling the builder
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ tests/unit/packaging-model-integrity.test.ts:172:31
+    170|     const result = run(input, { MURASAME_PACKAGE_OUTPUT: output })
+    171|
+    172|     expect(result.status).not.toBe(0)
+       |                               ^
+    173|     expect(existsSync(join(input.cwd, 'builder-call.json'))).toBe(fals…
+    174|     expect(readFileSync(join(output, 'Murasame-Setup-0.9.0.exe'), 'utf…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  04:12:18
+   Duration  2.25s (tests 95%, import 3%, transform 2%)

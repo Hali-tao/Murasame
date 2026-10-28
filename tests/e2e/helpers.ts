@@ -8,12 +8,15 @@ const root = join(__dirname, '..', '..')
 const userDataByApp = new WeakMap<ElectronApplication, string>()
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
 
-export async function launchApp(onboardingDone = true): Promise<ElectronApplication> {
+export async function launchApp(onboardingDone = true, prepare?: (userData: string) => void): Promise<ElectronApplication> {
   const userData = mkdtempSync(join(tmpdir(), 'murasame-e2e-'))
   // 首次引导默认会挡在前面，端到端用例直接从主控制台开始。
   writeFileSync(join(userData, 'murasame.json'), JSON.stringify({ settings: { onboardingDone } }))
+  prepare?.(userData)
+  const executablePath = process.env.MURASAME_E2E_EXECUTABLE
   const app = await electron.launch({
-    args: ['.'],
+    ...(executablePath ? { executablePath } : {}),
+    args: executablePath ? [] : ['.'],
     cwd: root,
     env: { ...process.env, MURASAME_USER_DATA: userData } as Record<string, string>
   })
@@ -37,7 +40,12 @@ export async function findMainPage(app: ElectronApplication, onboarding = false)
   for (let attempt = 0; attempt < 100; attempt += 1) {
     for (const page of app.windows()) {
       if (page.isClosed() || page.url().includes('/pet.html')) continue
-      if (await page.getByTestId('nav-overview').count()) return page
+      if (await page.getByTestId('nav-overview').count()) {
+        // Normal launches start in the tray. Exercise the public show action
+        // before driving the console; hidden DOM visibility is not an OS window.
+        await page.evaluate(() => window.murasame.window.showMain())
+        return page
+      }
       if (onboarding && await page.getByRole('button', { name: '跳过', exact: true }).count()) return page
     }
     await wait(100)
@@ -59,7 +67,7 @@ export interface TestModelServer {
   close(): Promise<void>
 }
 
-export async function startModelServer(options: { taskRoot?: string } = {}): Promise<TestModelServer> {
+export async function startModelServer(options: { taskRoot?: string; onMessages?: (messages: Array<{ role: string; content: unknown }>) => void } = {}): Promise<TestModelServer> {
   const server = createServer((request, response) => {
     if (request.method !== 'POST' || !request.url?.endsWith('/chat/completions')) {
       response.writeHead(404, { 'Content-Type': 'application/json' })
@@ -77,6 +85,7 @@ export async function startModelServer(options: { taskRoot?: string } = {}): Pro
     request.on('data', (chunk: string) => { raw += chunk })
     request.on('end', () => {
       const payload = JSON.parse(raw) as { stream?: boolean; model?: string; messages?: Array<{role:string;content:unknown}>; tools?: Array<{function?:{name:string}}> }
+      options.onMessages?.(payload.messages ?? [])
       if (payload.model !== 'test-model') {
         response.writeHead(404, { 'Content-Type': 'application/json' })
         response.end('{"error":"unknown model"}')

@@ -1,0 +1,320 @@
+{
+  "facts": [
+    {
+      "id": "food",
+      "category": "user",
+      "text": "我不吃辣，喜欢清淡的菜。"
+    },
+    {
+      "id": "seafood",
+      "category": "user",
+      "text": "我对虾和蟹过敏。"
+    },
+    {
+      "id": "city",
+      "category": "user",
+      "text": "我住在南京。"
+    },
+    {
+      "id": "rust",
+      "category": "project",
+      "text": "我正在学习 Rust 编程语言。"
+    },
+    {
+      "id": "explain",
+      "category": "feedback",
+      "text": "我喜欢带具体例子的详细解释。"
+    },
+    {
+      "id": "confirm",
+      "category": "feedback",
+      "text": "修改我的文件前先让我确认。"
+    },
+    {
+      "id": "vscode",
+      "category": "reference",
+      "text": "我平时使用 Visual Studio Code 写代码。"
+    },
+    {
+      "id": "report",
+      "category": "project",
+      "text": "这份软件工程报告的读者是大一学生。"
+    },
+    {
+      "id": "japanese",
+      "category": "project",
+      "text": "我在准备日语 N2 考试。"
+    },
+    {
+      "id": "running",
+      "category": "user",
+      "text": "我习惯每天慢跑三公里。"
+    },
+    {
+      "id": "cat",
+      "category": "user",
+      "text": "我养了一只叫豆豆的猫。"
+    },
+    {
+      "id": "windows",
+      "category": "reference",
+      "text": "我的电脑使用 Windows 11。"
+    },
+    {
+      "id": "weekend",
+      "category": "feedback",
+      "text": "周末不要主动发工作提醒。"
+    },
+    {
+      "id": "birthday",
+      "category": "user",
+      "text": "我的生日是十二月三日。"
+    }
+  ],
+  "description": "独立合成资料；期望结果用于诊断，失败如实保留，不能代表总体准确率。",
+  "cases": [
+    {
+      "query": "推荐个菜",
+      "expected": [
+        "food"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "晚餐吃什么比较适合我",
+      "expected": [
+        "food"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "晚饭想吃麻辣香锅，需要注意什么",
+      "expected": [
+        "food"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "我能吃清蒸螃蟹吗",
+      "expected": [
+        "seafood"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "周边有什么地方可以散步",
+      "expected": [
+        "city"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "继续教我正在学的编程语言",
+      "expected": [
+        "rust"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "讲讲所有权和借用",
+      "expected": [
+        "rust"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "帮我把报告内容写得容易看懂",
+      "expected": [
+        "report"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "我要练习日语阅读理解",
+      "expected": [
+        "japanese"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "给我安排一点运动",
+      "expected": [
+        "running"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "给我家猫选一款玩具",
+      "expected": [
+        "cat"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "星期六早上提醒我处理工作",
+      "expected": [
+        "weekend"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ]
+    },
+    {
+      "query": "解释一下黑洞的形成原理",
+      "expected": [],
+      "partition": "development",
+      "forbidden": [
+        "seafood",
+        "city",
+        "rust",
+        "cat",
+        "birthday"
+      ]
+    },
+    {
+      "query": "七乘以八等于多少",
+      "expected": [],
+      "partition": "development",
+      "forbidden": [
+        "food",
+        "seafood",
+        "city",
+        "rust",
+        "explain",
+        "confirm",
+        "vscode",
+        "report",
+        "japanese",
+        "running",
+        "cat",
+        "windows",
+        "weekend",
+        "birthday"
+      ]
+    },
+    {
+      "query": "今晚有没有清淡一点的家常做法",
+      "expected": [
+        "food"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "rust",
+        "cat"
+      ]
+    },
+    {
+      "query": "买海鲜之前要考虑我的忌口",
+      "expected": [
+        "seafood"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "rust",
+        "cat"
+      ]
+    },
+    {
+      "query": "我的宠物叫什么",
+      "expected": [
+        "cat"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "rust"
+      ]
+    },
+    {
+      "query": "安装软件应该选什么系统版本",
+      "expected": [
+        "windows"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "birthday"
+      ]
+    },
+    {
+      "query": "我想用学过的语言写一个命令行程序",
+      "expected": [
+        "rust"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "cat"
+      ]
+    },
+    {
+      "query": "能不能帮我把文件直接改了",
+      "expected": [
+        "confirm"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "cat"
+      ]
+    },
+    {
+      "query": "周末也要催我上班吗",
+      "expected": [
+        "weekend"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "cat"
+      ]
+    },
+    {
+      "query": "给小学三年级讲分数",
+      "expected": [],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "seafood",
+        "city",
+        "rust",
+        "cat",
+        "birthday"
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process'
 import { describe, expect, it } from 'vitest'
 import { reportClear, searchHistory } from '../../src/main/history/search'
 import { activeMemories, applyMemoryAction, extractCandidates } from '../../src/main/memory/facts'
-import { EMBEDDING_DIM, EMBEDDING_MODEL_ID, embedLocally, recallMemories, vectorsCompatible } from '../../src/main/local/embedding'
+import { EMBEDDING_DIM, EMBEDDING_MODEL_ID, EMBEDDING_PROFILE, embedLocally, recallMemories, vectorsCompatible } from '../../src/main/local/embedding'
 import { interruptOnRestart, transition } from '../../src/main/agent/state-machine'
 import { judgeCall, summarizeCalls, visibleTrace } from '../../src/main/agent/verifier'
 import { resolveInside, verifyWritten, writeInside } from '../../src/main/tools/filesystem'
@@ -231,7 +231,7 @@ describe('[FR-15] 长期记忆', () => {
   })
 
   it('[NFR-C02] 更换配置不要求重建全部记忆', () => {
-    expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM)).toBe('ok')
+    expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM, EMBEDDING_PROFILE)).toBe('ok')
     expect(vectorsCompatible('other-model', EMBEDDING_DIM)).toBe('recompute')
     // 换了向量模型要重算，否则旧向量和新向量不在一个空间里。
     expect(vectorsCompatible('nomic-embed-text', 768)).toBe('recompute')

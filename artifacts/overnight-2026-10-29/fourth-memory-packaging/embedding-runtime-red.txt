@@ -1,0 +1,663 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/embedding-runtime.test.ts (6 tests | 6 failed) 234ms
+   × [FR-14] BGE使用官方CLS句向量并归一化，不取token均值 26ms
+   × [NFR-C02] 编码方法也是索引身份，旧mean向量不能与CLS混用 3ms
+   × [NFR-C01] 用户只下载语音模型时仍使用安装包内完整记忆模型 11ms
+   × [NFR-C01] 不完整用户覆盖不遮蔽完整内置模型，完整覆盖优先且不拼接两份模型 27ms
+   × [NFR-P01] 并行首次召回共享一次模型加载，失败后允许重新加载 156ms
+   × [NFR-R02] 本地加载失败可重试，非法向量不进入索引 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/embedding-runtime.test.ts > [FR-14] BGE使用官方CLS句向量并归一化，不取token均值
+AssertionError: expected "vi.fn()" to be called with arguments: [ '独立合成资料', { pooling: 'cls', …(1) } ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "独立合成资料",
+    {
+      "normalize": true,
+-     "pooling": "cls",
++     "pooling": "mean",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/embedding-runtime.test.ts:30:22
+     28|   const { embedLocally } = await import('../../src/main/local/embeddin…
+     29|   expect((await embedLocally('独立合成资料', root))?.length).toBe(512)
+     30|   expect(sdk.encode).toHaveBeenCalledWith('独立合成资料', { pooling: 'cls', …
+       |                      ^
+     31| })
+     32|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/embedding-runtime.test.ts > [NFR-C02] 编码方法也是索引身份，旧mean向量不能与CLS混用
+AssertionError: expected 'ok' to be 'recompute' // Object.is equality
+
+Expected: "recompute"
+Received: "ok"
+
+ ❯ tests/unit/embedding-runtime.test.ts:35:64
+     33| it('[NFR-C02] 编码方法也是索引身份，旧mean向量不能与CLS混用', async () => {
+     34|   const { vectorsCompatible, EMBEDDING_MODEL_ID, EMBEDDING_DIM } = awa…
+     35|   expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM)).toBe('r…
+       |                                                                ^
+     36|   expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM, 'cls-q8-…
+     37|   expect(vectorsCompatible(EMBEDDING_MODEL_ID, EMBEDDING_DIM, 'mean-q8…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/embedding-runtime.test.ts > [NFR-C01] 用户只下载语音模型时仍使用安装包内完整记忆模型
+AssertionError: expected [ 'config.json', …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "config.json",
++   "tokenizer.json",
++   "tokenizer_config.json",
++   "onnx\\model_quantized.onnx",
++ ]
+
+ ❯ tests/unit/embedding-runtime.test.ts:45:39
+     43|   const { setBundledModelsRoot } = await import('../../src/main/local/…
+     44|   const { embedLocally, missingEmbeddingFiles } = await import('../../…
+     45|   expect(missingEmbeddingFiles(root)).toEqual([])
+       |                                       ^
+     46|   expect(await embedLocally('独立资料', root)).not.toBeNull()
+     47|   expect(sdk.pipeline).toHaveBeenCalledWith('feature-extraction', expe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/embedding-runtime.test.ts > [NFR-C01] 不完整用户覆盖不遮蔽完整内置模型，完整覆盖优先且不拼接两份模型
+AssertionError: expected [ 'bge-small-zh-v1.5' ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "E:\\Desktop\\软件工程\\murasame\\previews\\tmp\\embedding-contract-Tpaf2M\\bge-small-zh-v1.5",
+-   "E:\\Desktop\\软件工程\\murasame\\previews\\tmp\\embedding-contract-h7R5Px\\models\\bge-small-zh-v1.5",
++   "bge-small-zh-v1.5",
+  ]
+
+ ❯ tests/unit/embedding-runtime.test.ts:60:56
+     58|   const localModel = model(join(root, 'models'))
+     59|   await embedLocally('完整本地', root)
+     60|   expect(sdk.pipeline.mock.calls.map(call => call[1])).toEqual([bundle…
+       |                                                        ^
+     61| })
+     62|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/embedding-runtime.test.ts > [NFR-P01] 并行首次召回共享一次模型加载，失败后允许重新加载
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/unit/embedding-runtime.test.ts:72:17
+     70|   const calls = sdk.pipeline.mock.calls.length
+     71|   release(sdk.encode)
+     72|   expect(calls).toBe(1)
+       |                 ^
+     73|   await Promise.all([first, second])
+     74| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/embedding-runtime.test.ts > [NFR-R02] 本地加载失败可重试，非法向量不进入索引
+AssertionError: expected [ NaN, +0, +0, +0, +0, +0, +0, …(505) ] to be null
+
+- Expected:
+null
+
++ Received:
+[
+  NaN,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+]
+
+ ❯ tests/unit/embedding-runtime.test.ts:83:44
+     81|   expect(await embedLocally('重试', root)).not.toBeNull()
+     82|   sdk.encode.mockResolvedValue({ data: new Float32Array([NaN, ...Array…
+     83|   expect(await embedLocally('损坏数据', root)).toBeNull()
+       |                                            ^
+     84| })
+     85|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  04:14:48
+   Duration  742ms (tests 73%, transform 14%, import 11%, worker 2%)

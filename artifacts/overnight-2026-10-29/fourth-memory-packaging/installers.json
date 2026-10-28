@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-28T20:33:53.7642776Z",
+  "newInstaller": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\overnight-2026-10-29-verified\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292493216,
+    "sha256": "597BC6E41DBE73D4E5E2B6FF61C809C90761EEA7AF111EAB31A21E6E3CC4F6AA",
+    "installerExecuted": false
+  },
+  "previousInstaller": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292431074,
+    "sha256": "324A7B8735AD1E11AA0C4F3E72FCC3D8458EC353E7679A416867F6DF51016C2E",
+    "unchanged": true
+  }
+}

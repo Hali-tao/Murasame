@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-28T20:44:15.269Z",
+  "asarSha256": "7544069bba8430a626642f5f8a5ab832415dcda85cfe9285a522caa946ed1426",
+  "entries": [
+    {
+      "path": "out/main/index.js",
+      "sha256": "312954b35eacfac36a39a8a8a1c1d766b2fcb6b9651457fb7de3cb8a09dd9fbc",
+      "matchesVerifiedBuild": true
+    },
+    {
+      "path": "out/preload/index.js",
+      "sha256": "582e5a9f6b5011c60e16d958decd19db01a00d3406ce387d0830511e6cf34282",
+      "matchesVerifiedBuild": true
+    },
+    {
+      "path": "out/renderer/index.html",
+      "sha256": "9fbb2f60e59c6797c34e9b8174e9bbc1191c3b844296d6ce51cf509b253bd65e",
+      "matchesVerifiedBuild": true
+    },
+    {
+      "path": "out/renderer/pet.html",
+      "sha256": "4c9d2d1ae21180f22696df3166eb47d2863058c6ac33324b7f88de78ebb2e958",
+      "matchesVerifiedBuild": true
+    }
+  ]
+}

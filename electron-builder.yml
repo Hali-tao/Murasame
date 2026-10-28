@@ -28,8 +28,9 @@ extraResources:
     to: isolation
   - from: plugins
     to: plugins
-  # 语音模型太大不进仓库，打包前由 scripts/package-win.mjs 放进这个目录。
-  - from: build/bundled-models
+  # 必须先运行 scripts/package-win.mjs 生成本轮已核验的独立暂存目录。
+  # 直接调用 electron-builder 且没有该环境变量时明确失败，避免误用旧模型。
+  - from: ${env.MURASAME_STAGED_MODELS}
     to: models
 asar: true
 compression: maximum

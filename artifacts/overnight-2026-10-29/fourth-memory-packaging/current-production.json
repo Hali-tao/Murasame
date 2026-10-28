@@ -1,0 +1,1742 @@
+{
+  "at": "2026-10-28T20:24:21.754Z",
+  "mode": "current-production",
+  "actualLocalModel": true,
+  "networkAttempts": 0,
+  "node": "v22.19.0",
+  "cpu": "Intel(R) Core(TM) i9-14900HX",
+  "modelFiles": [
+    {
+      "file": "config.json",
+      "sha256": "d4193ead3a810fd694fa8a31d7fc72fbaebc0668b603e398734bf2f6538ff42f"
+    },
+    {
+      "file": "tokenizer.json",
+      "sha256": "48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "sha256": "e6f3b96db926a37d4039995fbf5ad17de158dfb8f6343d607e4dbaad18d75f5a"
+    },
+    {
+      "file": "onnx\\model_quantized.onnx",
+      "sha256": "15b717c382bcb518ba457b93ea6850ede7f4f1cd8937454aa06972366cd19bcc"
+    }
+  ],
+  "sdkLoadMs": 185.4948,
+  "firstInferenceMs": 228.16770000000002,
+  "coldStartMs": 413.6625,
+  "warmMedianMs": 4.7409000000000106,
+  "diagnostics": {
+    "positiveCases": 19,
+    "expectedHitCases": 17,
+    "qualityTargetsMet": false
+  },
+  "cases": [
+    {
+      "query": "推荐个菜",
+      "expected": [
+        "food"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "food",
+        "explain"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 7.5452000000000226,
+      "ranking": [
+        {
+          "id": "food",
+          "cosine": 0.5352464892431273
+        },
+        {
+          "id": "explain",
+          "cosine": 0.4803098636423298
+        },
+        {
+          "id": "city",
+          "cosine": 0.3692817996468023
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.3680476628011664
+        },
+        {
+          "id": "cat",
+          "cosine": 0.3507570627025857
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3480536724299701
+        },
+        {
+          "id": "rust",
+          "cosine": 0.33946947147495704
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.3328509206639526
+        },
+        {
+          "id": "report",
+          "cosine": 0.323516272920227
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.31164916156629224
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.310376185731199
+        },
+        {
+          "id": "running",
+          "cosine": 0.30322305561466156
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.3015998297909117
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.2692075192669659
+        }
+      ]
+    },
+    {
+      "query": "晚餐吃什么比较适合我",
+      "expected": [
+        "food"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "food",
+        "explain"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 6.108100000000036,
+      "ranking": [
+        {
+          "id": "food",
+          "cosine": 0.5052416751047044
+        },
+        {
+          "id": "explain",
+          "cosine": 0.471870827599481
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.4103524978957272
+        },
+        {
+          "id": "city",
+          "cosine": 0.397451042332009
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.3589412844906741
+        },
+        {
+          "id": "running",
+          "cosine": 0.35427738078260484
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.35363081696750126
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.3511859095812214
+        },
+        {
+          "id": "cat",
+          "cosine": 0.33293146346168
+        },
+        {
+          "id": "rust",
+          "cosine": 0.3227672311842492
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3185860318272816
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.31446382298236125
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.2662526924552806
+        },
+        {
+          "id": "report",
+          "cosine": 0.22608511737127054
+        }
+      ]
+    },
+    {
+      "query": "晚饭想吃麻辣香锅，需要注意什么",
+      "expected": [
+        "food"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "food"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 8.623299999999972,
+      "ranking": [
+        {
+          "id": "food",
+          "cosine": 0.5249445468110289
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.4075662688461599
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.40247229978315535
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.3779333375905572
+        },
+        {
+          "id": "explain",
+          "cosine": 0.35943600355736904
+        },
+        {
+          "id": "running",
+          "cosine": 0.3190961470482058
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3139687083601821
+        },
+        {
+          "id": "city",
+          "cosine": 0.3090063141393354
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.3067700183771001
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.2834354691529873
+        },
+        {
+          "id": "cat",
+          "cosine": 0.27882102000418074
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.2767601098853619
+        },
+        {
+          "id": "rust",
+          "cosine": 0.2727176289622462
+        },
+        {
+          "id": "report",
+          "cosine": 0.2159768154758068
+        }
+      ]
+    },
+    {
+      "query": "我能吃清蒸螃蟹吗",
+      "expected": [
+        "seafood"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "seafood",
+        "food"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 6.165399999999977,
+      "ranking": [
+        {
+          "id": "seafood",
+          "cosine": 0.5767059913421373
+        },
+        {
+          "id": "food",
+          "cosine": 0.5453444149475362
+        },
+        {
+          "id": "city",
+          "cosine": 0.337719388801222
+        },
+        {
+          "id": "cat",
+          "cosine": 0.3366545314640847
+        },
+        {
+          "id": "explain",
+          "cosine": 0.323937594678525
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.3133986145709942
+        },
+        {
+          "id": "running",
+          "cosine": 0.30093607193181876
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.2786408101121859
+        },
+        {
+          "id": "windows",
+          "cosine": 0.26735424764457283
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.26395121301587815
+        },
+        {
+          "id": "rust",
+          "cosine": 0.25030509890333974
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.24089998824852024
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.23979434019134588
+        },
+        {
+          "id": "report",
+          "cosine": 0.1369659670288695
+        }
+      ]
+    },
+    {
+      "query": "周边有什么地方可以散步",
+      "expected": [
+        "city"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [],
+      "expectedHit": false,
+      "forbiddenHit": [],
+      "latencyMs": 5.337599999999952,
+      "ranking": [
+        {
+          "id": "running",
+          "cosine": 0.4173023710377513
+        },
+        {
+          "id": "explain",
+          "cosine": 0.3819331106611737
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.3769876985086964
+        },
+        {
+          "id": "city",
+          "cosine": 0.3456020812257904
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.24310948417793443
+        },
+        {
+          "id": "rust",
+          "cosine": 0.2334641118485471
+        },
+        {
+          "id": "food",
+          "cosine": 0.2318289290524358
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.2246999048513556
+        },
+        {
+          "id": "windows",
+          "cosine": 0.21479491354021246
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.21106943226801297
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.20007169494623556
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.19040163746922867
+        },
+        {
+          "id": "report",
+          "cosine": 0.1858384666433745
+        },
+        {
+          "id": "cat",
+          "cosine": 0.17426732659153332
+        }
+      ]
+    },
+    {
+      "query": "继续教我正在学的编程语言",
+      "expected": [
+        "rust"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "rust",
+        "vscode",
+        "japanese",
+        "report",
+        "confirm",
+        "windows",
+        "explain"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 5.05460000000005,
+      "ranking": [
+        {
+          "id": "rust",
+          "cosine": 0.82475689651263
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.6041056601860775
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.5425388159782286
+        },
+        {
+          "id": "report",
+          "cosine": 0.525506661931313
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.5063154105868531
+        },
+        {
+          "id": "windows",
+          "cosine": 0.5060154084044332
+        },
+        {
+          "id": "explain",
+          "cosine": 0.46737752032984586
+        },
+        {
+          "id": "city",
+          "cosine": 0.3683584936255746
+        },
+        {
+          "id": "running",
+          "cosine": 0.35941831409604125
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.35289323052841887
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.3493841328838531
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.340373657762707
+        },
+        {
+          "id": "cat",
+          "cosine": 0.32043228755181463
+        },
+        {
+          "id": "food",
+          "cosine": 0.30848290279633334
+        }
+      ]
+    },
+    {
+      "query": "讲讲所有权和借用",
+      "expected": [
+        "rust"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "explain",
+        "confirm"
+      ],
+      "expectedHit": false,
+      "forbiddenHit": [],
+      "latencyMs": 4.596499999999992,
+      "ranking": [
+        {
+          "id": "explain",
+          "cosine": 0.49960203368454903
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.4597878115406845
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.4131667598681691
+        },
+        {
+          "id": "report",
+          "cosine": 0.40380352527850466
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.3768449468079719
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.3735632722834391
+        },
+        {
+          "id": "rust",
+          "cosine": 0.3692362219393642
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.36113718197338535
+        },
+        {
+          "id": "city",
+          "cosine": 0.3590032772150791
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3290009558934669
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.28573169060166564
+        },
+        {
+          "id": "running",
+          "cosine": 0.2843934726074881
+        },
+        {
+          "id": "cat",
+          "cosine": 0.22475987454449556
+        },
+        {
+          "id": "food",
+          "cosine": 0.20819628473515583
+        }
+      ]
+    },
+    {
+      "query": "帮我把报告内容写得容易看懂",
+      "expected": [
+        "report"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "report",
+        "explain",
+        "confirm",
+        "vscode"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 5.046799999999962,
+      "ranking": [
+        {
+          "id": "report",
+          "cosine": 0.6017485235161262
+        },
+        {
+          "id": "explain",
+          "cosine": 0.5892864691279873
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.5266756225412111
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.5106702211469433
+        },
+        {
+          "id": "rust",
+          "cosine": 0.4372497463916069
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.4283230777514443
+        },
+        {
+          "id": "windows",
+          "cosine": 0.40042762109550173
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.3872048377460591
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.3648877678006165
+        },
+        {
+          "id": "running",
+          "cosine": 0.3491587394292414
+        },
+        {
+          "id": "city",
+          "cosine": 0.34474600205659933
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.34266394502044983
+        },
+        {
+          "id": "cat",
+          "cosine": 0.32894658557746753
+        },
+        {
+          "id": "food",
+          "cosine": 0.3034174763655113
+        }
+      ]
+    },
+    {
+      "query": "我要练习日语阅读理解",
+      "expected": [
+        "japanese"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "japanese",
+        "rust",
+        "explain"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 4.515700000000038,
+      "ranking": [
+        {
+          "id": "japanese",
+          "cosine": 0.5964394538323406
+        },
+        {
+          "id": "rust",
+          "cosine": 0.5005702899611439
+        },
+        {
+          "id": "explain",
+          "cosine": 0.4675835405298086
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.41626658009540074
+        },
+        {
+          "id": "running",
+          "cosine": 0.387508653638223
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.38689962935010014
+        },
+        {
+          "id": "report",
+          "cosine": 0.36891167284421256
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.36231482398497666
+        },
+        {
+          "id": "cat",
+          "cosine": 0.3603321481544852
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3243920426850383
+        },
+        {
+          "id": "city",
+          "cosine": 0.3226329516578834
+        },
+        {
+          "id": "food",
+          "cosine": 0.2989617615326984
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.29459175315298924
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.2789923776228751
+        }
+      ]
+    },
+    {
+      "query": "给我安排一点运动",
+      "expected": [
+        "running"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "explain",
+        "running",
+        "vscode",
+        "japanese",
+        "confirm",
+        "rust",
+        "weekend",
+        "city"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 5.801600000000008,
+      "ranking": [
+        {
+          "id": "explain",
+          "cosine": 0.5687995379825291
+        },
+        {
+          "id": "running",
+          "cosine": 0.5594882489572147
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.5018651055284126
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.49068588495773474
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.49030658978301234
+        },
+        {
+          "id": "rust",
+          "cosine": 0.4670458894386692
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.4641684566633002
+        },
+        {
+          "id": "city",
+          "cosine": 0.4593726382882325
+        },
+        {
+          "id": "windows",
+          "cosine": 0.43906026537224013
+        },
+        {
+          "id": "cat",
+          "cosine": 0.4296628321521215
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.41884678364867417
+        },
+        {
+          "id": "food",
+          "cosine": 0.4123899989636484
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.41045543434607223
+        },
+        {
+          "id": "report",
+          "cosine": 0.3792969092971672
+        }
+      ]
+    },
+    {
+      "query": "给我家猫选一款玩具",
+      "expected": [
+        "cat"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "cat",
+        "explain",
+        "windows"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 6.09559999999999,
+      "ranking": [
+        {
+          "id": "cat",
+          "cosine": 0.6332091600866581
+        },
+        {
+          "id": "explain",
+          "cosine": 0.49911019996254835
+        },
+        {
+          "id": "windows",
+          "cosine": 0.45936299707790523
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.4346115733455614
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.4197401768210044
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.41685369225039415
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.40634023745645853
+        },
+        {
+          "id": "rust",
+          "cosine": 0.40314322812374576
+        },
+        {
+          "id": "running",
+          "cosine": 0.3961491109229427
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.36346580339367784
+        },
+        {
+          "id": "city",
+          "cosine": 0.36247391833758164
+        },
+        {
+          "id": "food",
+          "cosine": 0.3213478430687629
+        },
+        {
+          "id": "report",
+          "cosine": 0.2923243376272488
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.26076791799695226
+        }
+      ]
+    },
+    {
+      "query": "星期六早上提醒我处理工作",
+      "expected": [
+        "weekend"
+      ],
+      "partition": "development",
+      "forbidden": [
+        null
+      ],
+      "ids": [
+        "weekend",
+        "confirm",
+        "vscode",
+        "japanese"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 4.5499999999999545,
+      "ranking": [
+        {
+          "id": "weekend",
+          "cosine": 0.6285134211497072
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.5011426313621254
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.454484982968468
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.45373950860956114
+        },
+        {
+          "id": "windows",
+          "cosine": 0.4366680246585457
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.4262166201398351
+        },
+        {
+          "id": "explain",
+          "cosine": 0.41708834194275596
+        },
+        {
+          "id": "report",
+          "cosine": 0.40849648426299007
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.40218342998956774
+        },
+        {
+          "id": "running",
+          "cosine": 0.39483515581613954
+        },
+        {
+          "id": "rust",
+          "cosine": 0.3908717062858611
+        },
+        {
+          "id": "city",
+          "cosine": 0.3683499062375142
+        },
+        {
+          "id": "food",
+          "cosine": 0.3147357130657814
+        },
+        {
+          "id": "cat",
+          "cosine": 0.2954474576140303
+        }
+      ]
+    },
+    {
+      "query": "解释一下黑洞的形成原理",
+      "expected": [],
+      "partition": "development",
+      "forbidden": [
+        "seafood",
+        "city",
+        "rust",
+        "cat",
+        "birthday"
+      ],
+      "ids": [
+        "explain"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 4.841800000000035,
+      "ranking": [
+        {
+          "id": "explain",
+          "cosine": 0.4601867061866004
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.31546156049123947
+        },
+        {
+          "id": "report",
+          "cosine": 0.2832480403427377
+        },
+        {
+          "id": "windows",
+          "cosine": 0.26857056579420185
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.26672381651871896
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.2620361902551121
+        },
+        {
+          "id": "running",
+          "cosine": 0.24935925927721744
+        },
+        {
+          "id": "rust",
+          "cosine": 0.24162883966200221
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.23404155673609
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.22952018822999154
+        },
+        {
+          "id": "city",
+          "cosine": 0.22467690543453034
+        },
+        {
+          "id": "food",
+          "cosine": 0.22278114696306203
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.21600672296794934
+        },
+        {
+          "id": "cat",
+          "cosine": 0.21470348816516735
+        }
+      ]
+    },
+    {
+      "query": "七乘以八等于多少",
+      "expected": [],
+      "partition": "development",
+      "forbidden": [
+        "food",
+        "seafood",
+        "city",
+        "rust",
+        "explain",
+        "confirm",
+        "vscode",
+        "report",
+        "japanese",
+        "running",
+        "cat",
+        "windows",
+        "weekend",
+        "birthday"
+      ],
+      "ids": [],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 5.964200000000005,
+      "ranking": [
+        {
+          "id": "explain",
+          "cosine": 0.36399048922679667
+        },
+        {
+          "id": "running",
+          "cosine": 0.32339989029193983
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.31986166180763664
+        },
+        {
+          "id": "city",
+          "cosine": 0.30299102515725396
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.29167828933731227
+        },
+        {
+          "id": "windows",
+          "cosine": 0.2735035004400103
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.26911382900097713
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.25478421220912745
+        },
+        {
+          "id": "rust",
+          "cosine": 0.25295392595866795
+        },
+        {
+          "id": "report",
+          "cosine": 0.25005634812706623
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.211237973455208
+        },
+        {
+          "id": "food",
+          "cosine": 0.19611273185092612
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.18615966321007213
+        },
+        {
+          "id": "cat",
+          "cosine": 0.1478318123683127
+        }
+      ]
+    },
+    {
+      "query": "今晚有没有清淡一点的家常做法",
+      "expected": [
+        "food"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "rust",
+        "cat"
+      ],
+      "ids": [
+        "food",
+        "weekend"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 5.214800000000082,
+      "ranking": [
+        {
+          "id": "food",
+          "cosine": 0.5151954068191448
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.458094197869768
+        },
+        {
+          "id": "running",
+          "cosine": 0.40677899112847554
+        },
+        {
+          "id": "explain",
+          "cosine": 0.3980596336277092
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.37419215874505407
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.36142939399669993
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.34687566676603326
+        },
+        {
+          "id": "city",
+          "cosine": 0.32982374555811383
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.3148885159859529
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.31462566662914154
+        },
+        {
+          "id": "windows",
+          "cosine": 0.29638280373638787
+        },
+        {
+          "id": "cat",
+          "cosine": 0.2946112984576168
+        },
+        {
+          "id": "rust",
+          "cosine": 0.2504219500672047
+        },
+        {
+          "id": "report",
+          "cosine": 0.2125081553624332
+        }
+      ]
+    },
+    {
+      "query": "买海鲜之前要考虑我的忌口",
+      "expected": [
+        "seafood"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "rust",
+        "cat"
+      ],
+      "ids": [
+        "seafood",
+        "food"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 3.7164999999999964,
+      "ranking": [
+        {
+          "id": "seafood",
+          "cosine": 0.5967394559495408
+        },
+        {
+          "id": "food",
+          "cosine": 0.5499072227734375
+        },
+        {
+          "id": "explain",
+          "cosine": 0.42733843669259436
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.41876924628404577
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.39513974621037534
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.3931723643934781
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3725809790202747
+        },
+        {
+          "id": "city",
+          "cosine": 0.36996931277592543
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.36586161477140006
+        },
+        {
+          "id": "running",
+          "cosine": 0.3648273636431735
+        },
+        {
+          "id": "cat",
+          "cosine": 0.34355525964441647
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.33954234780518455
+        },
+        {
+          "id": "rust",
+          "cosine": 0.33864452344522333
+        },
+        {
+          "id": "report",
+          "cosine": 0.2081174945985173
+        }
+      ]
+    },
+    {
+      "query": "我的宠物叫什么",
+      "expected": [
+        "cat"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "rust"
+      ],
+      "ids": [
+        "cat"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 3.403799999999933,
+      "ranking": [
+        {
+          "id": "cat",
+          "cosine": 0.6728219481346328
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.42278621223625434
+        },
+        {
+          "id": "explain",
+          "cosine": 0.39091077535852486
+        },
+        {
+          "id": "city",
+          "cosine": 0.3611954863305909
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.35998825187545563
+        },
+        {
+          "id": "rust",
+          "cosine": 0.34339107568215727
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.33833259978108776
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.3378147490349146
+        },
+        {
+          "id": "running",
+          "cosine": 0.33750760779765077
+        },
+        {
+          "id": "food",
+          "cosine": 0.33463582585987217
+        },
+        {
+          "id": "windows",
+          "cosine": 0.31887431553280027
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.285720608621855
+        },
+        {
+          "id": "report",
+          "cosine": 0.2024093817941426
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.14640497625527507
+        }
+      ]
+    },
+    {
+      "query": "安装软件应该选什么系统版本",
+      "expected": [
+        "windows"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "birthday"
+      ],
+      "ids": [
+        "report",
+        "windows"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 5.8694000000000415,
+      "ranking": [
+        {
+          "id": "report",
+          "cosine": 0.49945724102596695
+        },
+        {
+          "id": "windows",
+          "cosine": 0.4803943722042739
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.4384816496996821
+        },
+        {
+          "id": "rust",
+          "cosine": 0.41839642651585524
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.3927061784085018
+        },
+        {
+          "id": "explain",
+          "cosine": 0.3731169571148999
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.3089214191749489
+        },
+        {
+          "id": "city",
+          "cosine": 0.295153328386352
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.28518300988289413
+        },
+        {
+          "id": "running",
+          "cosine": 0.2712087945490595
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.2663286155626812
+        },
+        {
+          "id": "food",
+          "cosine": 0.2590288232793522
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.2209236633603088
+        },
+        {
+          "id": "cat",
+          "cosine": 0.18109564551686747
+        }
+      ]
+    },
+    {
+      "query": "我想用学过的语言写一个命令行程序",
+      "expected": [
+        "rust"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "cat"
+      ],
+      "ids": [
+        "rust",
+        "vscode",
+        "confirm",
+        "japanese",
+        "windows",
+        "report",
+        "explain"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 4.321700000000078,
+      "ranking": [
+        {
+          "id": "rust",
+          "cosine": 0.6813605122585008
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.6647715267292182
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.5244405151163671
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.5079856118437391
+        },
+        {
+          "id": "windows",
+          "cosine": 0.5044612762163955
+        },
+        {
+          "id": "report",
+          "cosine": 0.5041531173049019
+        },
+        {
+          "id": "explain",
+          "cosine": 0.49226490829380887
+        },
+        {
+          "id": "city",
+          "cosine": 0.3756257149552252
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.3539388981907339
+        },
+        {
+          "id": "running",
+          "cosine": 0.34282675583118366
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.339297567367246
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.3390606944291115
+        },
+        {
+          "id": "cat",
+          "cosine": 0.3217544333649853
+        },
+        {
+          "id": "food",
+          "cosine": 0.2713800504413922
+        }
+      ]
+    },
+    {
+      "query": "能不能帮我把文件直接改了",
+      "expected": [
+        "confirm"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "cat"
+      ],
+      "ids": [
+        "confirm",
+        "vscode",
+        "weekend"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 3.6707999999999856,
+      "ranking": [
+        {
+          "id": "confirm",
+          "cosine": 0.7133971536452557
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.46819159491933404
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.4566787518140672
+        },
+        {
+          "id": "windows",
+          "cosine": 0.43724965042545577
+        },
+        {
+          "id": "report",
+          "cosine": 0.426178950880481
+        },
+        {
+          "id": "explain",
+          "cosine": 0.4253090635350903
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.41104110424589696
+        },
+        {
+          "id": "rust",
+          "cosine": 0.3916595184168584
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.33548952210902305
+        },
+        {
+          "id": "city",
+          "cosine": 0.3350010736528177
+        },
+        {
+          "id": "running",
+          "cosine": 0.3214976237661621
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.3160336494964112
+        },
+        {
+          "id": "food",
+          "cosine": 0.29177030309680785
+        },
+        {
+          "id": "cat",
+          "cosine": 0.27559072074700347
+        }
+      ]
+    },
+    {
+      "query": "周末也要催我上班吗",
+      "expected": [
+        "weekend"
+      ],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "cat"
+      ],
+      "ids": [
+        "weekend"
+      ],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 4.761499999999955,
+      "ranking": [
+        {
+          "id": "weekend",
+          "cosine": 0.6492961754561654
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.4359062100612827
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.4097749229330874
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.40072181473779883
+        },
+        {
+          "id": "explain",
+          "cosine": 0.3909937299763952
+        },
+        {
+          "id": "running",
+          "cosine": 0.38763925525869075
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.38023741882874196
+        },
+        {
+          "id": "rust",
+          "cosine": 0.36307909996704757
+        },
+        {
+          "id": "city",
+          "cosine": 0.35437072435217737
+        },
+        {
+          "id": "windows",
+          "cosine": 0.3525415524175066
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.3471535316264077
+        },
+        {
+          "id": "report",
+          "cosine": 0.31762597699418454
+        },
+        {
+          "id": "food",
+          "cosine": 0.29237232049236556
+        },
+        {
+          "id": "cat",
+          "cosine": 0.2771671683873575
+        }
+      ]
+    },
+    {
+      "query": "给小学三年级讲分数",
+      "expected": [],
+      "partition": "holdout",
+      "forbidden": [
+        "food",
+        "seafood",
+        "city",
+        "rust",
+        "cat",
+        "birthday"
+      ],
+      "ids": [],
+      "expectedHit": true,
+      "forbiddenHit": [],
+      "latencyMs": 3.562400000000025,
+      "ranking": [
+        {
+          "id": "running",
+          "cosine": 0.4337166053887172
+        },
+        {
+          "id": "japanese",
+          "cosine": 0.3931343398995544
+        },
+        {
+          "id": "explain",
+          "cosine": 0.3892710627636643
+        },
+        {
+          "id": "rust",
+          "cosine": 0.36072218499027436
+        },
+        {
+          "id": "birthday",
+          "cosine": 0.33420935694135134
+        },
+        {
+          "id": "report",
+          "cosine": 0.32997880954397374
+        },
+        {
+          "id": "confirm",
+          "cosine": 0.30796291803982956
+        },
+        {
+          "id": "weekend",
+          "cosine": 0.3051165495111423
+        },
+        {
+          "id": "vscode",
+          "cosine": 0.30105082960890617
+        },
+        {
+          "id": "cat",
+          "cosine": 0.2652745006167239
+        },
+        {
+          "id": "food",
+          "cosine": 0.2613265638884282
+        },
+        {
+          "id": "windows",
+          "cosine": 0.26115551685505184
+        },
+        {
+          "id": "city",
+          "cosine": 0.25642203664069524
+        },
+        {
+          "id": "seafood",
+          "cosine": 0.2528142887000866
+        }
+      ]
+    }
+  ],
+  "recovery": {
+    "total": 500,
+    "firstRecallMs": 11.935100000000148,
+    "firstRecallDegraded": true,
+    "afterFirst": {
+      "state": "rebuilding",
+      "completed": 0,
+      "total": 500,
+      "message": "正在后台恢复记忆索引，当前对话可继续"
+    },
+    "elapsedMs": 9216.3813,
+    "state": {
+      "state": "idle",
+      "completed": 500,
+      "total": 500,
+      "message": "现有记忆索引已就绪"
+    },
+    "remaining": 0,
+    "progressEvents": 502,
+    "stamp": "bge-small-zh-v1.5:512:cls-q8-l2-v1",
+    "restartCompleted": 500
+  }
+}

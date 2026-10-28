@@ -1,0 +1,21 @@
+
+Running 14 tests using 1 worker
+
+(node:49292) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (8.6s)
+  ok  2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (13.8s)
+  ok  3 tests\e2e\app.spec.ts:98:5 › pet window is created and can be hidden or restored through IPC (7.2s)
+  ok  4 tests\e2e\app.spec.ts:159:5 › character page switches between the three bundled pet presets (9.7s)
+  ok  5 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (11.6s)
+  ok  6 tests\e2e\flows.spec.ts:74:5 › a second launch exits and the existing instance remains available (10.5s)
+  ok  7 tests\e2e\flows.spec.ts:101:5 › the console hides to the tray and can be restored (7.4s)
+  ok  8 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (12.0s)
+  ok  9 tests\e2e\grounded-summary.spec.ts:100:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (13.6s)
+  ok 10 tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 (10.0s)
+  ok 11 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (7.8s)
+  ok 12 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (9.2s)
+  ok 13 tests\e2e\task-directory.spec.ts:18:5 › [FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围 (10.9s)
+  ok 14 tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 (10.1s)
+
+  14 passed (2.4m)

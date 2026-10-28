@@ -12,7 +12,7 @@ import {
 } from './helpers'
 
 const root = join(__dirname, '..', '..')
-const electronBinary = join(root, 'node_modules', 'electron', 'dist', 'electron.exe')
+const electronBinary = process.env.MURASAME_E2E_EXECUTABLE || join(root, 'node_modules', 'electron', 'dist', 'electron.exe')
 
 test('history clearing, memory editing and model switching are end-to-end usable', async () => {
   test.setTimeout(90_000)
@@ -77,7 +77,7 @@ test('a second launch exits and the existing instance remains available', async 
     const page = await findMainPage(app)
     await expect(page.getByTestId('nav-overview')).toBeVisible()
 
-    const second = spawn(electronBinary, [root], {
+    const second = spawn(electronBinary, process.env.MURASAME_E2E_EXECUTABLE ? [] : [root], {
       cwd: root,
       stdio: 'ignore',
       env: { ...process.env, MURASAME_USER_DATA: testUserData(app) }

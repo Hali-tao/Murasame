@@ -1,6 +1,5 @@
-import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { configureLocalModels, modelsRoot } from './model-env'
+import { configureLocalModels, localModelDirectory, missingModelFiles } from './model-env'
 
 /**
  * 记忆向量在本机算，不依赖 Ollama。国内直连装不上 Ollama，
@@ -8,6 +7,8 @@ import { configureLocalModels, modelsRoot } from './model-env'
  */
 export const EMBEDDING_MODEL_ID = 'bge-small-zh-v1.5'
 export const EMBEDDING_DIM = 512
+// Pooling/normalization changes invalidate vectors even when model and dimension match.
+export const EMBEDDING_PROFILE = 'cls-q8-l2-v1'
 export const EMBEDDING_FILES = [
   'config.json',
   'tokenizer.json',
@@ -16,12 +17,11 @@ export const EMBEDDING_FILES = [
 ]
 
 export function missingEmbeddingFiles(userDataDir: string): string[] {
-  const base = join(modelsRoot(userDataDir), EMBEDDING_MODEL_ID)
-  return EMBEDDING_FILES.filter((file) => !existsSync(join(base, file)))
+  return missingModelFiles(localModelDirectory(userDataDir, EMBEDDING_MODEL_ID, EMBEDDING_FILES), EMBEDDING_FILES)
 }
 
-export function vectorsCompatible(storedModelId: string, storedDim: number): 'ok' | 'recompute' {
-  if (storedModelId !== EMBEDDING_MODEL_ID || storedDim !== EMBEDDING_DIM) return 'recompute'
+export function vectorsCompatible(storedModelId: string, storedDim: number, storedProfile?: string): 'ok' | 'recompute' {
+  if (storedModelId !== EMBEDDING_MODEL_ID || storedDim !== EMBEDDING_DIM || storedProfile !== EMBEDDING_PROFILE) return 'recompute'
   return 'ok'
 }
 
@@ -91,31 +91,38 @@ function limitTokens(entries: RecallEntry[]): RecallEntry[] {
 
 type Extractor = (
   text: string,
-  options: { pooling: 'mean'; normalize: boolean }
+  options: { pooling: 'cls'; normalize: boolean }
 ) => Promise<{ data: Float32Array }>
 
-let extractor: Extractor | null = null
+let extractor: { directory: string; pending: Promise<Extractor> } | null = null
 
 async function load(userDataDir: string): Promise<Extractor> {
-  if (extractor) return extractor
-  await configureLocalModels(userDataDir)
-  const { pipeline } = await import('@huggingface/transformers')
-  const loaded = await pipeline('feature-extraction', EMBEDDING_MODEL_ID, { dtype: 'q8', device: 'cpu' })
-  extractor = loaded as unknown as Extractor
-  return extractor
+  const directory = localModelDirectory(userDataDir, EMBEDDING_MODEL_ID, EMBEDDING_FILES)
+  if (extractor?.directory === directory) return extractor.pending
+  const current = { directory, pending: (async () => {
+    await configureLocalModels(userDataDir)
+    const { pipeline } = await import('@huggingface/transformers')
+    return await pipeline('feature-extraction', directory, { dtype: 'q8', device: 'cpu', local_files_only: true }) as unknown as Extractor
+  })() }
+  extractor = current
+  try { return await current.pending } catch (error) {
+    if (extractor === current) extractor = null
+    throw error
+  }
 }
 
 /**
  * 算不出来时返回 null，调用方会如实降级，不会拿关键词硬凑当成语义召回。
- * BGE 官方建议的查询前缀在这里实测反而更差（长前缀会盖过短记忆），所以不加。
+ * BGE v1.5 的短句可不加查询前缀；按官方规范取首token(CLS)并归一化。
  */
 export async function embedLocally(text: string, userDataDir: string): Promise<number[] | null> {
   if (missingEmbeddingFiles(userDataDir).length > 0) return null
   try {
     const run = await load(userDataDir)
-    const output = await run(text, { pooling: 'mean', normalize: true })
+    const output = await run(text, { pooling: 'cls', normalize: true })
     if (output.data.length !== EMBEDDING_DIM) return null
-    return Array.from(output.data)
+    const vector = Array.from(output.data)
+    return vector.every(Number.isFinite) && vector.some(value => value !== 0) ? vector : null
   } catch {
     return null
   }

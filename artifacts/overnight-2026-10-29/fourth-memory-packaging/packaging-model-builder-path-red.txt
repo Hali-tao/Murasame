@@ -1,0 +1,33 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/packaging-model-integrity.test.ts (8 tests | 1 failed | 7 skipped) 1938ms
+   ❯ Windows package model integrity (8)
+     × resolves the verified model directory through the real electron-builder configuration 1936ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/packaging-model-integrity.test.ts > Windows package model integrity > resolves the verified model directory through the real electron-builder configuration
+AssertionError: expected 'E:\Desktop\软件工程\murasame\previews\tmp…' to be 'E:\Desktop\软件工程\murasame\previews\tmp…' // Object.is equality
+
+Expected: "E:\Desktop\软件工程\murasame\previews\tmp\packaging-model-integrity\case-dQzuRZ\previews\package-staging\run-XTC0Wb\models"
+Received: "E:\Desktop\软件工程\murasame\previews\tmp\packaging-model-integrity\case-dQzuRZ\E:\Desktop\软件工程\murasame\previews\tmp\packaging-model-integrity\case-dQzuRZ\previews\package-staging\run-XTC0Wb\models"
+
+ ❯ tests/unit/packaging-model-integrity.test.ts:197:40
+    195|
+    196|     expect(result.status, result.stderr).toBe(0)
+    197|     expect(call(input).resolvedModels).toBe(call(input).staging)
+       |                                        ^
+    198|     expect(filesUnder(call(input).resolvedModels)).toEqual([...modelFi…
+    199|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  04:14:17
+   Duration  2.50s (tests 96%, import 2%, transform 2%)

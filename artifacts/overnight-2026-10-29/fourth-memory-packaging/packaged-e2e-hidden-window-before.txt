@@ -1,0 +1,184 @@
+
+Running 14 tests using 1 worker
+
+(node:84228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (11.8s)
+  x   2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (36.9s)
+(node:58092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  3 tests\e2e\app.spec.ts:98:5 › pet window is created and can be hidden or restored through IPC (12.2s)
+  ok  4 tests\e2e\app.spec.ts:159:5 › character page switches between the three bundled pet presets (30.0s)
+  x   5 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (59.3s)
+(node:88100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  6 tests\e2e\flows.spec.ts:74:5 › a second launch exits and the existing instance remains available (10.2s)
+  ok  7 tests\e2e\flows.spec.ts:101:5 › the console hides to the tray and can be restored (10.4s)
+  x   8 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (53.9s)
+(node:86812) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 tests\e2e\grounded-summary.spec.ts:100:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (35.7s)
+  x  10 tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 (57.4s)
+(node:89960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 11 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (13.6s)
+  ok 12 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (14.4s)
+  ok 13 tests\e2e\task-directory.spec.ts:18:5 › [FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围 (36.2s)
+  ok 14 tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 (30.3s)
+
+
+  1) tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable ───────────────────
+
+    TimeoutError: page.screenshot: Timeout 30000ms exceeded.
+    Call log:
+      - taking page screenshot
+      - waiting for fonts to load...
+      - fonts loaded
+
+
+      32 |     const page = await findMainPage(app)
+      33 |     await expect(page.getByTestId('nav-overview')).toBeVisible()
+    > 34 |     await page.screenshot({ path: testInfo.outputPath('01-overview.png'), fullPage: true })
+         |                ^
+      35 |
+      36 |   const pages = [
+      37 |     ['nav-overview', '概览'],
+        at E:\Desktop\软件工程\murasame\tests\e2e\app.spec.ts:34:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\app-console-starts-and-all-ten-pages-are-reachable\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\app-console-starts-and-all-ten-pages-are-reachable\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\fourth-packaged-e2e\app-console-starts-and-all-ten-pages-are-reachable\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\app-console-starts-and-all-ten-pages-are-reachable\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\fourth-packaged-e2e\app-console-starts-and-all-ten-pages-are-reachable\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable
+
+    TimeoutError: page.screenshot: Timeout 30000ms exceeded.
+    Call log:
+      - taking page screenshot
+      - waiting for fonts to load...
+      - fonts loaded
+
+
+      59 |     await expect(page.getByRole('progressbar', { name: '记忆整理进度' })).toHaveAttribute('aria-valuenow', '3')
+      60 |     await expect(page.getByText('正在后台整理记忆，对话可以继续。')).toBeVisible()
+    > 61 |     await page.screenshot({ path: test.info().outputPath('memory-index-progress.png') })
+         |                ^
+      62 |     await app.evaluate(({ BrowserWindow }, channel) => {
+      63 |       for (const win of BrowserWindow.getAllWindows()) win.webContents.send(channel, { state: 'failed', completed: 3, total: 10, message: '整理暂时中断，已有内容仍保留。' })
+      64 |     }, IPC.core.memoryIndexStatus)
+        at E:\Desktop\软件工程\murasame\tests\e2e\flows.spec.ts:61:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\flows-history-clearing-mem-6db26-ching-are-end-to-end-usable\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\flows-history-clearing-mem-6db26-ching-are-end-to-end-usable\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\fourth-packaged-e2e\flows-history-clearing-mem-6db26-ching-are-end-to-end-usable\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\flows-history-clearing-mem-6db26-ching-are-end-to-end-usable\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\fourth-packaged-e2e\flows-history-clearing-mem-6db26-ching-are-end-to-end-usable\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B
+
+    TimeoutError: locator.screenshot: Timeout 29990.027000000002ms exceeded.
+    Call log:
+      - taking element screenshot
+      - waiting for fonts to load...
+      - fonts loaded
+      - attempting scroll into view action
+        - waiting for element to be stable
+        - element is not stable
+      - retrying scroll into view action
+        - waiting for element to be stable
+
+
+      67 |     await expect(dialog.getByText(server.url, { exact: true })).toBeVisible()
+      68 |     await dialog.getByRole('combobox').selectOption('task')
+    > 69 |     await dialog.screenshot({ path: info.outputPath('summary-source-approval.png') })
+         |                  ^
+      70 |     await dialog.getByRole('button', { name: '批准并继续' }).click()
+      71 |     await expect(dialog).toHaveCount(0)
+      72 |     await expect(page.locator('.result-card')).toContainText('草稿已生成', { timeout: 15000 })
+        at E:\Desktop\软件工程\murasame\tests\e2e\grounded-summary.spec.ts:69:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\fourth-packaged-e2e\grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\fourth-packaged-e2e\grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 ─────────────────
+
+    TimeoutError: page.screenshot: Timeout 30000ms exceeded.
+    Call log:
+      - taking page screenshot
+      - waiting for fonts to load...
+      - fonts loaded
+
+
+      42 |     await reply.scrollIntoViewIfNeeded()
+      43 |     await expect(page.locator('#chat-context-panel')).toBeVisible()
+    > 44 |     await page.screenshot({ path: test.info().outputPath('actual-local-memory.png') })
+         |                ^
+      45 |   } finally { await closeApp(app); await server.close() }
+      46 | })
+      47 |
+        at E:\Desktop\软件工程\murasame\tests\e2e\local-memory.spec.ts:44:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\overnight-2026-10-29\fourth-packaged-e2e\local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\overnight-2026-10-29\fourth-packaged-e2e\local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\overnight-2026-10-29\fourth-packaged-e2e\local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable ────────────────────
+    tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable
+    tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B
+    tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 ──────────────────
+  10 passed (6.9m)

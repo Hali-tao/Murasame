@@ -1,5 +1,5 @@
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, statSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 
 let configured = false
 let bundledRoot = ''
@@ -21,6 +21,22 @@ export function modelsRoot(userDataDir: string): string {
   if (existsSync(local)) return local
   if (bundledRoot && existsSync(bundledRoot)) return bundledRoot
   return local
+}
+
+export function missingModelFiles(directory: string, files: readonly string[]): string[] {
+  return files.filter(file => {
+    try { const stat = statSync(join(directory, file)); return !stat.isFile() || stat.size === 0 }
+    catch { return true }
+  })
+}
+
+/** Select one complete model, never mix a partial override with bundled weights. */
+export function localModelDirectory(userDataDir: string, modelId: string, files: readonly string[]): string {
+  const local = resolve(userDataDir, 'models', modelId)
+  if (!missingModelFiles(local, files).length) return local
+  const bundled = bundledRoot ? resolve(bundledRoot, modelId) : null
+  if (bundled && !missingModelFiles(bundled, files).length) return bundled
+  return existsSync(local) || !bundled ? local : bundled
 }
 
 /**
