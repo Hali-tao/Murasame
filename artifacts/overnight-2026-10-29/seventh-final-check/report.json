@@ -1,0 +1,1684 @@
+{
+  "startedAt": "2026-10-28T23:34:29.494Z",
+  "executable": "E:\\Desktop\\软件工程\\murasame\\release\\overnight-2026-10-29-sixth-delivery\\win-unpacked\\Murasame.exe",
+  "installerSHA256": "4cf9487c442b62ca24c562610e15387d37b843cf0a93caa1dd0214effb8fd6bd",
+  "scope": "Real packaged Electron/preload/React/Cubism; independent status fixture; no external model or real Docker work in this endurance check.",
+  "errors": [],
+  "checks": [
+    "340 seconds of real-time phase holds",
+    "120 seconds continuous native work without restart",
+    "one canvas while visible; none when hidden",
+    "hide/show and do-not-disturb recovery",
+    "all three real models and return",
+    "review/work/stop transition",
+    "serial delayed health reads",
+    "no uncaught page errors",
+    "stopped progress removed"
+  ],
+  "samples": [
+    {
+      "at": "2026-10-28T23:34:42.146Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0,
+          "workingSetKiB": 220668
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0,
+          "workingSetKiB": 149108
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0,
+          "workingSetKiB": 58384
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0,
+          "workingSetKiB": 98488
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0,
+          "workingSetKiB": 158176
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:34:52.140Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.030859890014225025,
+          "workingSetKiB": 220760
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.44220331078817465,
+          "workingSetKiB": 149136
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000025641508002852235,
+          "workingSetKiB": 58396
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00030582139850211803,
+          "workingSetKiB": 98488
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.28679676990110836,
+          "workingSetKiB": 159148
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:35:02.141Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.04163887866801582,
+          "workingSetKiB": 184300
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.48080045247837244,
+          "workingSetKiB": 149452
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00009029982190500454,
+          "workingSetKiB": 58408
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.010803784844822943,
+          "workingSetKiB": 98672
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.2949354597679773,
+          "workingSetKiB": 158552
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:35:12.135Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03687769741627409,
+          "workingSetKiB": 183424
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4793202466225043,
+          "workingSetKiB": 149204
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0,
+          "workingSetKiB": 58408
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0006616763842620184,
+          "workingSetKiB": 98716
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.303291235935583,
+          "workingSetKiB": 158780
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:35:22.147Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03420661574924523,
+          "workingSetKiB": 183488
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.52315775901553,
+          "workingSetKiB": 149204
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0,
+          "workingSetKiB": 58408
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0002818267898916177,
+          "workingSetKiB": 98720
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.32568644795423624,
+          "workingSetKiB": 159652
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:35:32.134Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.027377119562152403,
+          "workingSetKiB": 180524
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4023979420881735,
+          "workingSetKiB": 148272
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00030019955037307135,
+          "workingSetKiB": 58280
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0009118735363068037,
+          "workingSetKiB": 99072
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.22941278071426183,
+          "workingSetKiB": 158384
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:35:42.140Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03190644093891184,
+          "workingSetKiB": 180540
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.48412250418875313,
+          "workingSetKiB": 148228
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.002831920440220174,
+          "workingSetKiB": 58292
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0006452770666056862,
+          "workingSetKiB": 99072
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.2838757991391495,
+          "workingSetKiB": 156716
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:35:52.132Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03125156681593679,
+          "workingSetKiB": 180612
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4458975422091296,
+          "workingSetKiB": 148264
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00007099148902740535,
+          "workingSetKiB": 58292
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.000685520104102983,
+          "workingSetKiB": 99076
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.27752760058132403,
+          "workingSetKiB": 157352
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:36:02.147Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03401124747092171,
+          "workingSetKiB": 180672
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5130039008457241,
+          "workingSetKiB": 148264
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00007863597783214339,
+          "workingSetKiB": 58292
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0016039305560229353,
+          "workingSetKiB": 99212
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3186718793218695,
+          "workingSetKiB": 157008
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:36:12.129Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03472181875516132,
+          "workingSetKiB": 180836
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5073201778079983,
+          "workingSetKiB": 148384
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.0000904673348435848,
+          "workingSetKiB": 58292
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0012261591094612678,
+          "workingSetKiB": 99212
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.31544717794650307,
+          "workingSetKiB": 157608
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:36:22.132Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03491122493000321,
+          "workingSetKiB": 180872
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5092787431298562,
+          "workingSetKiB": 148388
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00004217747441433171,
+          "workingSetKiB": 58292
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00040208914899415605,
+          "workingSetKiB": 99212
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3051874397834368,
+          "workingSetKiB": 158704
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:36:32.132Z",
+      "label": "continuous-work",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03849254267484484,
+          "workingSetKiB": 181040
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5235177297877921,
+          "workingSetKiB": 148620
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00007025742520438229,
+          "workingSetKiB": 58292
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0007456720296098494,
+          "workingSetKiB": 99544
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3113673989356754,
+          "workingSetKiB": 158836
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:36:42.298Z",
+      "label": "hidden",
+      "state": {
+        "phase": "hidden",
+        "model": "",
+        "group": "",
+        "canvases": 0,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.053606709937928404,
+          "workingSetKiB": 181544
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.01952411553229504,
+          "workingSetKiB": 116860
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.0001079107495093289,
+          "workingSetKiB": 58308
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0029394164774077204,
+          "workingSetKiB": 98572
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.023471063029851316,
+          "workingSetKiB": 114304
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:36:52.293Z",
+      "label": "hidden",
+      "state": {
+        "phase": "hidden",
+        "model": "",
+        "group": "",
+        "canvases": 0,
+        "events": 1
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.031721041330600885,
+          "workingSetKiB": 181656
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.002550647262854712,
+          "workingSetKiB": 116868
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.0005065011232569108,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00037049493170437123,
+          "workingSetKiB": 98572
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.0036120780837673454,
+          "workingSetKiB": 114624
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:37:02.400Z",
+      "label": "shown-again",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 3
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.04156495242617834,
+          "workingSetKiB": 182132
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5481580016875827,
+          "workingSetKiB": 152016
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00005750449202831922,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0036836817332619436,
+          "workingSetKiB": 98236
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.4167113300947793,
+          "workingSetKiB": 154688
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:37:12.405Z",
+      "label": "shown-again",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 3
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03290984086636757,
+          "workingSetKiB": 182224
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5166150068734244,
+          "workingSetKiB": 152356
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000054034159083560674,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0008289425406765291,
+          "workingSetKiB": 98232
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3677729498216619,
+          "workingSetKiB": 154008
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:37:22.582Z",
+      "label": "do-not-disturb",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "Idle",
+        "canvases": 1,
+        "events": 5
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.04249355601406096,
+          "workingSetKiB": 182276
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4820077969472356,
+          "workingSetKiB": 152364
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00004483357971739663,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0009544024114321932,
+          "workingSetKiB": 98564
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3321692138176035,
+          "workingSetKiB": 153792
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:37:32.577Z",
+      "label": "do-not-disturb",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "Idle",
+        "canvases": 1,
+        "events": 6
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03418356359652087,
+          "workingSetKiB": 182400
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5103941893197609,
+          "workingSetKiB": 152380
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00008635099612506787,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0012771168001342369,
+          "workingSetKiB": 98844
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3477539862844543,
+          "workingSetKiB": 153268
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:37:42.748Z",
+      "label": "work-restored",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 7
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.04489658925052083,
+          "workingSetKiB": 182452
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.49663154948084764,
+          "workingSetKiB": 152356
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00008910735910270635,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0019081355574897339,
+          "workingSetKiB": 99596
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3435792752030876,
+          "workingSetKiB": 158864
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:37:52.743Z",
+      "label": "work-restored",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 7
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.030692570864660356,
+          "workingSetKiB": 182616
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4766267756447786,
+          "workingSetKiB": 152356
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00006346583114702404,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0003992392032713679,
+          "workingSetKiB": 99596
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3224815125656128,
+          "workingSetKiB": 157344
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:38:02.980Z",
+      "label": "cat",
+      "state": {
+        "phase": "working",
+        "model": "tororo",
+        "group": "Idle",
+        "canvases": 1,
+        "events": 8
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.038015032888136575,
+          "workingSetKiB": 183852
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.40047725147150565,
+          "workingSetKiB": 135676
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00003388514715458543,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0024147011548755495,
+          "workingSetKiB": 97916
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.24628592491301943,
+          "workingSetKiB": 141892
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:38:12.983Z",
+      "label": "cat",
+      "state": {
+        "phase": "working",
+        "model": "tororo",
+        "group": "Idle",
+        "canvases": 1,
+        "events": 8
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.030134172378301072,
+          "workingSetKiB": 182492
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.44524245485067665,
+          "workingSetKiB": 135352
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000049051350628002254,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00040272055889640395,
+          "workingSetKiB": 97916
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.2649656204073063,
+          "workingSetKiB": 141044
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:38:23.233Z",
+      "label": "whale",
+      "state": {
+        "phase": "working",
+        "model": "whale-girl",
+        "group": "idle",
+        "canvases": 1,
+        "events": 9
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.0668167031490199,
+          "workingSetKiB": 179696
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5754801144899655,
+          "workingSetKiB": 139344
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000035973181127674114,
+          "workingSetKiB": 58288
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0014736794149630519,
+          "workingSetKiB": 98872
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.7823912305884405,
+          "workingSetKiB": 155556
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:38:33.234Z",
+      "label": "whale",
+      "state": {
+        "phase": "working",
+        "model": "whale-girl",
+        "group": "idle",
+        "canvases": 1,
+        "events": 9
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.032389066432011795,
+          "workingSetKiB": 179948
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5418950561292663,
+          "workingSetKiB": 139340
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00016841158145761368,
+          "workingSetKiB": 58336
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.000710517356620472,
+          "workingSetKiB": 98888
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.7344091401880578,
+          "workingSetKiB": 159400
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:38:43.512Z",
+      "label": "nailong-restored",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 11
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.04570974655116101,
+          "workingSetKiB": 181060
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5801784850988215,
+          "workingSetKiB": 151564
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00010610966950601954,
+          "workingSetKiB": 58328
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0011516922993401763,
+          "workingSetKiB": 99264
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.40862970559660083,
+          "workingSetKiB": 172720
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:38:53.515Z",
+      "label": "nailong-restored",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 11
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.030727279152996213,
+          "workingSetKiB": 181124
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4824939394460482,
+          "workingSetKiB": 151568
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000034366710749367255,
+          "workingSetKiB": 58328
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00043614663324792024,
+          "workingSetKiB": 99264
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.31491285841398065,
+          "workingSetKiB": 171664
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:39:03.509Z",
+      "label": "nailong-restored",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 11
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.030411504887904797,
+          "workingSetKiB": 181192
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4856145559136301,
+          "workingSetKiB": 151956
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00008505492847280774,
+          "workingSetKiB": 58328
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0011773274096180289,
+          "workingSetKiB": 98760
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3055635857743948,
+          "workingSetKiB": 171544
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:39:13.510Z",
+      "label": "nailong-restored",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 11
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.02877430263271168,
+          "workingSetKiB": 181256
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.45273712475918476,
+          "workingSetKiB": 151800
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000026558683517178582,
+          "workingSetKiB": 58328
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00041056637112220373,
+          "workingSetKiB": 98760
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.2513717943513553,
+          "workingSetKiB": 171944
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:39:23.669Z",
+      "label": "reviewing",
+      "state": {
+        "phase": "reviewing",
+        "model": "naiwa",
+        "group": "Think",
+        "canvases": 1,
+        "events": 12
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.04182361892024002,
+          "workingSetKiB": 181436
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.4978438980091584,
+          "workingSetKiB": 151836
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00005475192040207645,
+          "workingSetKiB": 58328
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00043124674381024965,
+          "workingSetKiB": 98824
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3166625703417083,
+          "workingSetKiB": 173504
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:39:33.655Z",
+      "label": "reviewing",
+      "state": {
+        "phase": "reviewing",
+        "model": "naiwa",
+        "group": "Think",
+        "canvases": 1,
+        "events": 12
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03361277878650174,
+          "workingSetKiB": 181964
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5385252231340766,
+          "workingSetKiB": 152076
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00037847963541838705,
+          "workingSetKiB": 58456
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.0010406644758098904,
+          "workingSetKiB": 99004
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3380949034954015,
+          "workingSetKiB": 172500
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:39:43.795Z",
+      "label": "work-after-review",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 13
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.044306055060384715,
+          "workingSetKiB": 181940
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5655411240233357,
+          "workingSetKiB": 152076
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00006102391170818824,
+          "workingSetKiB": 58456
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.000448124558655868,
+          "workingSetKiB": 99004
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.3586866746605146,
+          "workingSetKiB": 173632
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:39:53.792Z",
+      "label": "work-after-review",
+      "state": {
+        "phase": "working",
+        "model": "naiwa",
+        "group": "WorkingLoop",
+        "canvases": 1,
+        "events": 13
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03360968568072171,
+          "workingSetKiB": 182004
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.5352844554960698,
+          "workingSetKiB": 152064
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00004750989631140167,
+          "workingSetKiB": 58456
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00036007529174350355,
+          "workingSetKiB": 99004
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.33160887122424804,
+          "workingSetKiB": 173732
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:40:03.937Z",
+      "label": "stopped",
+      "state": {
+        "phase": "idle",
+        "model": "naiwa",
+        "group": "Idle",
+        "canvases": 1,
+        "events": 15
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.045611750414867334,
+          "workingSetKiB": 180176
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.13727947485482314,
+          "workingSetKiB": 152172
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.00010318733161675611,
+          "workingSetKiB": 58456
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.001711372969109139,
+          "workingSetKiB": 99132
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.1211833430470981,
+          "workingSetKiB": 174396
+        }
+      ]
+    },
+    {
+      "at": "2026-10-28T23:40:13.932Z",
+      "label": "stopped",
+      "state": {
+        "phase": "idle",
+        "model": "naiwa",
+        "group": "Idle",
+        "canvases": 1,
+        "events": 16
+      },
+      "metrics": [
+        {
+          "pid": 42568,
+          "type": "Browser",
+          "cpuPercent": 0.03682792415068414,
+          "workingSetKiB": 180240
+        },
+        {
+          "pid": 71004,
+          "type": "GPU",
+          "cpuPercent": 0.13951058674303976,
+          "workingSetKiB": 152080
+        },
+        {
+          "pid": 75532,
+          "type": "Utility",
+          "cpuPercent": 0.000028451355810279605,
+          "workingSetKiB": 58456
+        },
+        {
+          "pid": 29168,
+          "type": "Tab",
+          "cpuPercent": 0.00040113473795065033,
+          "workingSetKiB": 99132
+        },
+        {
+          "pid": 60088,
+          "type": "Tab",
+          "cpuPercent": 0.16761368240900876,
+          "workingSetKiB": 160080
+        }
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "label": "continuous-work",
+      "seconds": 120,
+      "elapsedMs": 120124,
+      "expected": {
+        "model": "naiwa",
+        "group": "WorkingLoop"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "hidden",
+      "seconds": 20,
+      "elapsedMs": 20034,
+      "expected": {
+        "hidden": true
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "shown-again",
+      "seconds": 20,
+      "elapsedMs": 20161,
+      "expected": {
+        "model": "naiwa",
+        "group": "WorkingLoop"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "do-not-disturb",
+      "seconds": 20,
+      "elapsedMs": 20151,
+      "expected": {
+        "model": "naiwa",
+        "group": "Idle"
+      },
+      "subsequentMotionEvents": [
+        {
+          "at": 1793230640605,
+          "group": "Idle"
+        },
+        {
+          "at": 1793230648656,
+          "group": "Idle"
+        }
+      ]
+    },
+    {
+      "label": "work-restored",
+      "seconds": 20,
+      "elapsedMs": 20129,
+      "expected": {
+        "model": "naiwa",
+        "group": "WorkingLoop"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "cat",
+      "seconds": 20,
+      "elapsedMs": 20138,
+      "expected": {
+        "model": "tororo",
+        "group": "Idle"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "whale",
+      "seconds": 20,
+      "elapsedMs": 20127,
+      "expected": {
+        "model": "whale-girl",
+        "group": "idle"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "nailong-restored",
+      "seconds": 40,
+      "elapsedMs": 40131,
+      "expected": {
+        "model": "naiwa",
+        "group": "WorkingLoop"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "reviewing",
+      "seconds": 20,
+      "elapsedMs": 20133,
+      "expected": {
+        "model": "naiwa",
+        "group": "Think"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "work-after-review",
+      "seconds": 20,
+      "elapsedMs": 20146,
+      "expected": {
+        "model": "naiwa",
+        "group": "WorkingLoop"
+      },
+      "subsequentMotionEvents": []
+    },
+    {
+      "label": "stopped",
+      "seconds": 20,
+      "elapsedMs": 20108,
+      "expected": {
+        "model": "naiwa",
+        "group": "Idle"
+      },
+      "subsequentMotionEvents": [
+        {
+          "at": 1793230802204,
+          "group": "Idle"
+        },
+        {
+          "at": 1793230810494,
+          "group": "Idle"
+        }
+      ]
+    }
+  ],
+  "statusBridge": {
+    "polls": 106,
+    "sent": 344,
+    "maxInflight": 1
+  },
+  "motionEvents": [
+    {
+      "at": 1793230472115,
+      "group": "WorkingLoop"
+    },
+    {
+      "at": 1793230612383,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230612385,
+      "group": "WorkingLoop"
+    },
+    {
+      "at": 1793230632559,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230640605,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230648656,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230652722,
+      "group": "WorkingLoop"
+    },
+    {
+      "at": 1793230672889,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230693148,
+      "group": "idle"
+    },
+    {
+      "at": 1793230713372,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230713374,
+      "group": "WorkingLoop"
+    },
+    {
+      "at": 1793230753626,
+      "group": "Think"
+    },
+    {
+      "at": 1793230773778,
+      "group": "WorkingLoop"
+    },
+    {
+      "at": 1793230793927,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230802204,
+      "group": "Idle"
+    },
+    {
+      "at": 1793230810494,
+      "group": "Idle"
+    }
+  ],
+  "passed": true,
+  "finishedAt": "2026-10-28T23:40:14.038Z"
+}

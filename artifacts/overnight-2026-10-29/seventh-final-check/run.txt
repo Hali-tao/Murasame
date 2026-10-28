@@ -1,0 +1,23 @@
+START continuous-work 120s
+PASS continuous-work
+START hidden 20s
+PASS hidden
+START shown-again 20s
+PASS shown-again
+START do-not-disturb 20s
+PASS do-not-disturb
+START work-restored 20s
+PASS work-restored
+START cat 20s
+PASS cat
+START whale 20s
+PASS whale
+START nailong-restored 40s
+PASS nailong-restored
+START reviewing 20s
+PASS reviewing
+START work-after-review 20s
+PASS work-after-review
+START stopped 20s
+PASS stopped
+{"passed":true,"phases":11,"samples":34,"bridge":{"polls":106,"sent":344,"maxInflight":1}}
