@@ -107,6 +107,8 @@ export function toolLabel(id: string): string {
 }
 
 export function executionLabel(status: string): string {
+  if (status === 'running') return '进行中'
+  if (status === 'unknown') return '上次结果未知，未恢复执行'
   return EXECUTION_LABELS[status] ?? status
 }
 

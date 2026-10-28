@@ -522,7 +522,7 @@ describe('[CON-01] 形象能力', () => {
   it('[FR-01] 能力缺失时降级到最接近意图', () => {
     const resolved = resolveIntent('naiwa', '惊讶')
     expect(resolved.degraded).toBe(true)
-    expect(resolved.motion).toBe('Idle')
+      expect(resolved.motion).toBe('Agree')
   })
 
   it('[FR-01] 动作优先级与打断正确', () => {

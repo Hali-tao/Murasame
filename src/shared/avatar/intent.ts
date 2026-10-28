@@ -36,10 +36,13 @@ const mapping: Record<string, Partial<Record<PerformanceIntent, { motion: string
     安抚: { motion: 'bubble', expression: '脸红' }
   },
   naiwa: {
-    开心: { motion: 'Idle', expression: 'dan' },
-    思考: { motion: 'Idle', expression: 'sikao' },
-    安抚: { motion: 'Idle', expression: 'pengfu' },
-    否定: { motion: 'Idle', expression: 'expression1' }
+    打招呼: { motion: 'Greet', expression: null },
+    开心: { motion: 'Agree', expression: null },
+    思考: { motion: 'Think', expression: null },
+    困惑: { motion: 'Confused', expression: null },
+    抱歉: { motion: 'Comfort', expression: null },
+    否定: { motion: 'Confused', expression: null },
+    安抚: { motion: 'Comfort', expression: null }
   }
 }
 

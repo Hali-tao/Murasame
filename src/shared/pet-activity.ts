@@ -1,4 +1,5 @@
 import type { TaskStatus } from './types'
+import { approvalSummary } from './task-approval'
 
 /** 桌宠上要让人看见的一件事。优先级对齐 Codex 桌宠：等你确认 > 没做成 > 正在做 > 做完了。 */
 export type PetActivityKind = 'needs-input' | 'blocked' | 'running' | 'ready'
@@ -58,7 +59,10 @@ function labelOf(status: TaskStatus): string {
 
 function detailOf(task: PetActivitySource): string {
   const impact = task.approval?.impact.trim()
-  if (task.status === '等待批准' && impact) return impact
+  if (task.status === '等待批准' && impact && task.approval) {
+    // Preserve plain-language requests; structured execution manifests belong in the full dialog.
+    try { JSON.parse(impact); return approvalSummary(task.approval) } catch { return impact }
+  }
   const result = task.result.trim()
   if ((task.status === '已完成' || task.status === '部分完成') && result) return result
   const summary = task.summary.trim()

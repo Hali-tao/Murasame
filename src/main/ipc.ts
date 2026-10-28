@@ -166,13 +166,22 @@ export function registerIpcHandlers(core: DesktopCore): void {
   core.memory.subscribe(() => broadcast(IPC.core.memoriesUpdated, core.memory.list()))
   core.onMemoryExtractionStatus = status => broadcast(IPC.core.memoryExtractionStatus, status)
 
+  const presentedTaskStates = new Map<string, string>()
   core.tasks.onChange((task) => {
     try { learnVerifiedImageSkill(app.getPath('userData'), task) } catch (error) { log.warn('任务已记录，可复用步骤未保存', error) }
     broadcast(IPC.core.taskUpdated, task)
+    // Per-file progress must not restart the character animation or invalidate
+    // the reply's presentation analysis hundreds of times during one task.
+    if (presentedTaskStates.get(task.id) === task.status) return
+    presentedTaskStates.set(task.id, task.status)
+    if (presentedTaskStates.size > 100) presentedTaskStates.delete(presentedTaskStates.keys().next().value!)
     core.invalidatePresentation()
     if (getSettings().doNotDisturb) return
     const intent = task.status === '已完成' ? '开心' : task.status === '失败' ? '困惑' : '思考'
-    broadcastPetPerformance({ ...performanceCue(getSettings().petPreset, intent, core.affect.pad), text: petSpeech('任务「' + task.title + '」' + task.status + '。' + (task.result.split('\n')[0] || task.summary)) })
+    const preset = getSettings().petPreset
+    const cue = performanceCue(preset, intent, core.affect.pad)
+    if (preset === 'naiwa' && task.status === '执行中') { cue.motion = 'Working'; cue.expression = null }
+    broadcastPetPerformance({ ...cue, text: petSpeech('任务「' + task.title + '」' + task.status + '。' + (task.result.split('\n')[0] || task.summary)) })
   })
 
   onSettingsChanged(settings => {

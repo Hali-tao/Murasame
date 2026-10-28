@@ -39,7 +39,7 @@ export interface MemoryEntry {
   updated: string
 }
 
-export type TaskStepState = '完成' | '进行中' | '待执行' | '等待批准' | '已取消' | '正在停止'
+export type TaskStepState = '完成' | '进行中' | '待执行' | '待核对' | '等待批准' | '已取消' | '正在停止'
 
 export type TaskStatus =
   | '待确认'
@@ -354,6 +354,7 @@ export interface MurasameApi {
     minimize(): Promise<void>
     openPath(path: string): Promise<void>
     onNavigated(listener: (path: string) => void): () => void
+    onHidden(listener: () => void): () => void
   }
   pet: {
     show(): Promise<PetState>

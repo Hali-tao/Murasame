@@ -60,10 +60,10 @@ export const PET_PRESETS: readonly PetPreset[] = [
   {
     id: 'naiwa',
     name: '奶龙',
-    summary: '课程项目预置的黄色形象，适合轻松互动。',
+    summary: '连续呼吸、思考与工作动作，身体和手臂自然跟随。',
     modelUrl: 'live2d/naiwa/奶蛙.model3.json',
     idleMotion: 'Idle',
-    motionCount: '1 组动作',
+    motionCount: '9 组连续动作 · 保留原动作',
     expressionCount: '4 个表情',
     format: 'Cubism 5 · model3',
     source: '课程项目本地资源',
@@ -71,7 +71,10 @@ export const PET_PRESETS: readonly PetPreset[] = [
     mark: '龙',
     tone: 'amber',
     motions: {
-      tap: 'Idle'
+      tap: 'Greet',
+      drag: 'DragLeft',
+      dragUp: 'Agree',
+      dragDown: 'DragRight'
     }
   }
 ]

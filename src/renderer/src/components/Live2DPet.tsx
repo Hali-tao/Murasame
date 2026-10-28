@@ -2,9 +2,10 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import { Application, Ticker } from 'pixi.js'
 import { ShaderSystem } from '@pixi/core'
 import { install as installCspSafeShaders } from '@pixi/unsafe-eval'
-import { Live2DModel } from 'pixi-live2d-display/cubism4'
+import { Live2DModel, MotionPriority, type Cubism4InternalModel } from 'pixi-live2d-display/cubism4'
 import type { PetMotionAction, PetPreset } from '@shared/pet-presets'
 import { alphaHit } from '@shared/pet-geometry'
+import { resolveMotionGroup } from '@shared/avatar/motion-groups'
 
 installCspSafeShaders({ ShaderSystem })
 Live2DModel.registerTicker(Ticker)
@@ -39,10 +40,10 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
   const hostRef = useRef<HTMLDivElement>(null)
   const modelRef = useRef<Live2DModel | null>(null)
   const appRef = useRef<Application | null>(null)
-  const returnTimer = useRef<number | null>(null)
   const mouthRef = useRef<number | null>(null)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const authoredNailong = preset.id === 'naiwa' && preset.modelUrl === 'live2d/naiwa/奶蛙.model3.json'
 
   useImperativeHandle(ref, () => ({
     hitTest(clientX: number, clientY: number): boolean {
@@ -62,29 +63,26 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
     playMotion(action: PetMotionAction): void {
       const model = modelRef.current
       if (!model) return
-      const group = preset.motions[action]
+      const manager = model.internalModel.motionManager
+      const group = resolveMotionGroup(preset.motions[action] ?? '', Object.keys(manager.definitions), action === 'tap' ? ['Tap', 'tap_body', manager.groups.idle] : ['Flick', manager.groups.idle])
       if (!group) return
-      void model.motion(group)
-      if (returnTimer.current !== null) window.clearTimeout(returnTimer.current)
-      returnTimer.current = window.setTimeout(() => {
-        void model.motion(preset.idleMotion, 0)
-      }, action === 'tap' ? 4500 : 2600)
+      // Cubism returns to Idle at the actual motion end. A wall-clock timeout cuts
+      // authored motion short and also runs while the renderer is paused.
+      void model.motion(group, 0, MotionPriority.FORCE).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
     },
     playNamedMotion(group: string, expression: string | null): void {
       const model = modelRef.current
       if (!model) return
-      void model.motion(group)
+      const manager = model.internalModel.motionManager
+      const actualGroup = resolveMotionGroup(group, Object.keys(manager.definitions), [manager.groups.idle])
+      if (actualGroup) void model.motion(actualGroup, 0, MotionPriority.FORCE).catch(cause => console.warn('[Live2D] Motion unavailable', cause))
       if (expression) {
         try {
-          void model.expression(expression)
+          void model.expression(expression).catch(cause => console.warn('[Live2D] Expression unavailable', cause))
         } catch {
           // 形象没有这个表情时只播动作，不中断。
         }
       }
-      if (returnTimer.current !== null) window.clearTimeout(returnTimer.current)
-      returnTimer.current = window.setTimeout(() => {
-        void model.motion(preset.idleMotion, 0)
-      }, 3200)
     },
     setMouth(open: number | null): void {
       mouthRef.current = open
@@ -112,6 +110,8 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
     let disposed = false
     let app: Application | null = null
     let model: Live2DModel | null = null
+    setReady(false)
+    setError(null)
 
     try {
       app = new Application({
@@ -157,10 +157,39 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
           return
         }
         model = loaded
+        const manager = loaded.internalModel.motionManager
+        const idleGroup = resolveMotionGroup(preset.idleMotion, Object.keys(manager.definitions), ['Idle'])
+        if (idleGroup) manager.groups.idle = idleGroup
+        if (authoredNailong) {
+          const internal = loaded.internalModel as Cubism4InternalModel
+          // Authored curves own breath/blink. The stock breath also swings the
+          // head, which otherwise fights those curves and their physics followers.
+          internal.breath?.setParameters([])
+          internal.eyeBlink = undefined
+          const updateFocus = internal.updateFocus.bind(internal)
+          let focusWeight = 0
+          internal.updateFocus = () => {
+            const group = internal.motionManager.state.currentGroup
+            focusWeight += ((group === preset.idleMotion ? 0.12 : 0) - focusWeight) * 0.08
+            const { x, y } = internal.focusController
+            internal.focusController.x *= focusWeight
+            internal.focusController.y *= focusWeight
+            updateFocus()
+            internal.focusController.x = x
+            internal.focusController.y = y
+          }
+        }
+        loaded.internalModel.on('beforeModelUpdate', () => {
+          const open = mouthRef.current
+          if (open === null) return
+          const core = loaded.internalModel.coreModel as Cubism4InternalModel['coreModel']
+          core.setParameterValueById('ParamMouthOpenY', open)
+          core.setParameterValueById('PARAM_MOUTH_OPEN_Y', open)
+        })
         modelRef.current = loaded
         app.stage.addChild(loaded)
         fitModel()
-        await loaded.motion(preset.idleMotion, 0)
+        if (idleGroup) await loaded.motion(idleGroup, 0)
         if (!disposed) {
           setReady(true)
           console.info(`[Live2D] Model ready: ${preset.id}`)
@@ -201,8 +230,6 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       window.clearTimeout(loadTimer)
       observer.disconnect()
       window.removeEventListener('mousemove', handlePointerMove)
-      if (returnTimer.current !== null) window.clearTimeout(returnTimer.current)
-      returnTimer.current = null
       modelRef.current = null
       appRef.current = null
       model?.destroy({ children: true })
@@ -211,25 +238,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       app = null
       canvas.remove()
     }
-  }, [onReady, preset])
-
-  useEffect(() => {
-    const app = appRef.current
-    if (!app || !ready) return
-    const applyMouth = (): void => {
-      const open = mouthRef.current
-      if (open === null) return
-      const core = modelRef.current?.internalModel?.coreModel as { setParameterValueById?: (id: string, value: number) => void } | undefined
-      if (!core?.setParameterValueById) return
-      core.setParameterValueById('ParamMouthOpenY', open)
-      core.setParameterValueById('PARAM_MOUTH_OPEN_Y', open)
-    }
-    app.ticker.add(applyMouth)
-    return () => {
-      // 卸载时主 effect 会先销毁应用，ticker 已经是 null。
-      app.ticker?.remove(applyMouth)
-    }
-  }, [ready])
+  }, [onReady, preset, authoredNailong])
 
   useEffect(() => {
     const ticker = appRef.current?.ticker
@@ -244,7 +253,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
 
   useEffect(() => {
     const model = modelRef.current
-    if (!model || paused) return
+    if (!model || paused || authoredNailong) return
     let reopen: number | undefined
     const timer = window.setInterval(() => {
       const core = model.internalModel?.coreModel as { setParameterValueById?: (id: string, value: number) => void } | undefined
@@ -260,7 +269,7 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       }, 120)
     }, blinkMs)
     return () => { window.clearInterval(timer); window.clearTimeout(reopen) }
-  }, [blinkMs, breath, paused, ready])
+  }, [blinkMs, breath, paused, ready, authoredNailong])
 
   return (
     <div

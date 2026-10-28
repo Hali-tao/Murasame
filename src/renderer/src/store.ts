@@ -360,7 +360,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         const task = unwrap(result, get().notify)
         if (!task) return null
         const data = get().data
-        if (data) set({ data: { ...data, tasks: [task, ...data.tasks] }, selectedTaskId: task.id })
+        if (data) set({ data: { ...data, tasks: [task, ...data.tasks.filter(item => item.id !== task.id)] }, selectedTaskId: task.id })
         get().notify('任务已创建，执行前仍会请求必要批准')
         return task
       })

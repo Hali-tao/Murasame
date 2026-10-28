@@ -50,7 +50,8 @@ const api: MurasameApi = {
     hideMain: (): Promise<void> => ipcRenderer.invoke(IPC.window.hideMain),
     minimize: (): Promise<void> => ipcRenderer.invoke(IPC.window.minimize),
     openPath: (path): Promise<void> => ipcRenderer.invoke(IPC.window.openPath, path),
-    onNavigated: (listener): (() => void) => subscribe(IPC.window.navigated, listener)
+    onNavigated: (listener): (() => void) => subscribe(IPC.window.navigated, listener),
+    onHidden: (listener): (() => void) => subscribe(IPC.window.hidden, listener)
   },
   pet: {
     show: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.show),

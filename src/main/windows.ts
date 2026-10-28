@@ -70,6 +70,11 @@ function loadRenderer(window: BrowserWindow, page: 'index' | 'pet'): void {
 }
 
 function secureWebContents(window: BrowserWindow): void {
+  // A hidden BrowserWindow stays mounted. Its microphone owner must cancel
+  // pending acquisition/transcription as well as an already active stream.
+  const stopVoiceInput = (): void => { window.webContents.send(IPC.window.hidden) }
+  window.on('hide', stopVoiceInput)
+  window.on('minimize', stopVoiceInput)
   if (!app.isPackaged) {
     window.webContents.on('console-message', (details) => {
       log.info(

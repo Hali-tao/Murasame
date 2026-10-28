@@ -1,5 +1,5 @@
 import { ArrowRight, AudioLines, MonitorUp, Plus, Search, Send, Sparkles } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Message } from '@shared/types'
 import { TaskCreateDialog } from '../components/dialogs'
@@ -7,6 +7,7 @@ import { Button, Card, CardHead, EmptyState, Pill, Spinner } from '../components
 import { StatusPill } from '../components/StatusPill'
 import { clockLabel } from '../lib/utils'
 import { playSamples, startRecording, type Recording } from '../lib/audio'
+import { onWindowHidden } from '../lib/window-visibility'
 import { useAppStore } from '../store'
 
 export function ChatPage(): React.JSX.Element {
@@ -33,6 +34,16 @@ export function ChatPage(): React.JSX.Element {
   const recordingRef = useRef<Recording | null>(null)
   const recordingConversationRef = useRef<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const cancelVoiceInput = useCallback((): void => {
+    recordingController.current?.abort()
+    recordingController.current = null
+    const active = recordingRef.current
+    recordingRef.current = null
+    recordingConversationRef.current = null
+    void active?.stop().catch(() => undefined)
+    setVoiceMode(false)
+  }, [])
+  useEffect(() => onWindowHidden(cancelVoiceInput), [cancelVoiceInput])
   useEffect(() => window.murasame?.settings.onChanged(settings => {
     if (!settings.speakReplies) playbackController.current?.abort()
     if (!settings.permissions.microphone) recordingController.current?.abort()
@@ -137,6 +148,7 @@ export function ChatPage(): React.JSX.Element {
   const newConversation = async (): Promise<void> => { await createConversation() }
 
   const toggleVoice = async (): Promise<void> => {
+    if (document.hidden) { cancelVoiceInput(); return }
     if (recordingRef.current) {
       const recording = recordingRef.current
       const controller = recordingController.current
@@ -170,7 +182,9 @@ export function ChatPage(): React.JSX.Element {
     }
     try {
       recordingConversationRef.current = conversation?.id ?? null
-      recordingRef.current = await startRecording(controller.signal)
+      const recording = await startRecording(controller.signal)
+      if (controller.signal.aborted || recordingController.current !== controller) { await recording.stop(); return }
+      recordingRef.current = recording
       setVoiceMode(true)
       notify('正在录音，再点一次结束并识别', 'blue')
     } catch (error) {

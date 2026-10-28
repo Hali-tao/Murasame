@@ -1,5 +1,5 @@
 import type { ChatTurn, ProviderAdapter, ProviderRequest, ResolvedModel, ToolDeclaration } from '../types'
-import { assertImagePlacement } from '../transport'
+import { assertImagePlacement, assertProtectedEndpoint } from '../transport'
 
 function openAiContent(message: ChatTurn): string | Array<Record<string, unknown>> {
   if (!message.images?.length) return message.content
@@ -34,6 +34,7 @@ export const openAiCompatibleAdapter: ProviderAdapter = {
     requiresApiKey: true
   },
   buildChat(model, messages, stream, tools): ProviderRequest {
+    assertProtectedEndpoint(model.endpoint)
     assertImagePlacement(messages, true)
     return {
       url: openAiCompatibleUrl(model.endpoint),

@@ -15,7 +15,8 @@ export const IPC = {
     hideMain: 'window:hide-main',
     minimize: 'window:minimize',
     openPath: 'window:open-path',
-    navigated: 'window:navigated'
+    navigated: 'window:navigated',
+    hidden: 'window:hidden'
   },
   pet: {
     show: 'pet:show',

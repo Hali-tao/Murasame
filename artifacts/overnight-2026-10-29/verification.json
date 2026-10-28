@@ -1,0 +1,40 @@
+{
+  "verifiedAt": "2026-10-29T02:44:18.5961506+08:00",
+  "baseline": "91d1fd92be12d51c5169cb79eaf333b5aec06cc5",
+  "unit": {
+    "files": 42,
+    "log": "verify-final.log",
+    "passed": 475,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "lint": "passed",
+  "trace": {
+    "total": 74,
+    "mapped": 74,
+    "note": "Mapping coverage, not full acceptance"
+  },
+  "e2e": {
+    "log": "e2e-final.log",
+    "fullSuitePassed": 9,
+    "afterFinalTaskStoreFixPassed": 1,
+    "finalTaskLog": "task-e2e-final.log"
+  },
+  "build": {
+    "status": "passed",
+    "log": "build-final.log"
+  },
+  "nativeMotion": {
+    "measurement": "quality-report.json",
+    "interruptMeasurement": "interrupt-report.json",
+    "video": "native-motion-showcase.mp4",
+    "seconds": 35,
+    "groups": 9,
+    "originalAssetsPreserved": true,
+    "assetTestsPassed": 20
+  },
+  "isolationLiveAcceptanceRerun": false,
+  "newInstallerBuilt": false,
+  "userReportAt": "2026-10-29T08:00:00+08:00",
+  "next": "Grounded source reading and reviewed summary writing; see docs/superpowers/plans/2026-10-29-grounded-summary.md"
+}

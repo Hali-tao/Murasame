@@ -58,6 +58,7 @@ function publicProfile(model: StoredModel): ModelProfile {
 const DEMO_SEED_IDS = ['openai-main', 'claude-long', 'qwen-local']
 
 export class ModelRegistry {
+  private readonly verificationVersions = new Map<string, number>()
   private store = new Store<ModelStoreShape>({
     name: 'murasame-models',
     defaults: { models: seedModels() }
@@ -138,7 +139,49 @@ export class ModelRegistry {
     const models = this.store.get('models')
     const index = models.findIndex((item) => item.id === id)
     if (index < 0) throw new Error('模型配置不存在')
-    const current = models[index]
+    const next = this.withInput(models[index], input)
+    const updated = [...models]
+    updated[index] = next
+    this.store.set('models', updated)
+    this.nextVerificationVersion(id)
+    return publicProfile(next)
+  }
+
+  /** 候选配置只在内存中探测；成功提交前不影响当前服务。 */
+  prepareVerification(id: string, input?: ModelInput): {
+    model: ResolvedModel
+    commit: (capabilities: ModelCapability[], latencyMs: number, note: string) => ModelProfile
+  } {
+    const current = this.store.get('models').find((model) => model.id === id)
+    if (!current) throw new Error('模型配置不存在')
+    const candidate = input ? this.withInput(current, input) : current
+    const version = this.nextVerificationVersion(id)
+    return {
+      model: this.resolveStored(candidate),
+      commit: (capabilities, latencyMs, note) => {
+        const models = this.store.get('models')
+        const index = models.findIndex((model) => model.id === id)
+        if (index < 0) throw new Error('模型配置已被删除，验证结果未保存')
+        if (this.verificationVersions.get(id) !== version) throw new Error('模型配置已有较新的修改，之前的验证结果未保存，请重新验证')
+        const next: StoredModel = {
+          ...candidate, default: models[index].default, capabilities, probeNote: note,
+          status: '在线', tone: 'green', latency: `${latencyMs} ms`
+        }
+        models[index] = next
+        this.store.set('models', models)
+        this.nextVerificationVersion(id)
+        return publicProfile(next)
+      }
+    }
+  }
+
+  private nextVerificationVersion(id: string): number {
+    const version = (this.verificationVersions.get(id) ?? 0) + 1
+    this.verificationVersions.set(id, version)
+    return version
+  }
+
+  private withInput(current: StoredModel, input: ModelInput): StoredModel {
     const newKey = input.key.trim()
     let encryptedKey = current.encryptedKey
     if (newKey) encryptedKey = this.encryptKey(newKey)
@@ -147,7 +190,7 @@ export class ModelRegistry {
       current.endpoint !== input.endpoint ||
       current.model !== input.model ||
       Boolean(newKey)
-    const next: StoredModel = {
+    return {
       ...current,
       name: input.name,
       provider: input.provider,
@@ -161,15 +204,20 @@ export class ModelRegistry {
       tone: connectionChanged ? 'gray' : current.tone,
       latency: connectionChanged ? '—' : current.latency
     }
-    const updated = [...models]
-    updated[index] = next
-    this.store.set('models', updated)
-    return publicProfile(next)
   }
 
   setDefault(id: string): ModelProfile[] {
     const models = this.store.get('models')
-    if (!models.some((model) => model.id === id)) throw new Error('模型配置不存在')
+    const target = models.find((model) => model.id === id)
+    if (!target) throw new Error('模型配置不存在')
+    const chat = target.capabilities?.find((item) => item.id === 'text.chat' && item.status === 'verified')
+    if (target.status !== '在线' || !chat) {
+      throw new Error('该模型尚未通过连接验证，当前服务保持不变，请先验证配置')
+    }
+    const probedAt = Date.parse(chat.probedAt)
+    if ((!Number.isFinite(probedAt) || Date.now() - probedAt > 14 * 24 * 60 * 60 * 1000) && !(target.probeNote ?? '').includes('建议重新验证')) {
+      target.probeNote = [target.probeNote, '探测结果已超过有效期，建议重新验证'].filter(Boolean).join('；')
+    }
     const updated = models.map((model) => ({ ...model, default: model.id === id }))
     this.store.set('models', updated)
     return updated.map(publicProfile)

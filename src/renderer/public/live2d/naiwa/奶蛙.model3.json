@@ -1,52 +1,115 @@
 {
-	"Version": 3,
-	"FileReferences": {
-		"Moc": "奶蛙.moc3",
-		"Textures": [
-			"奶蛙.2048/texture_00.png"
-		],
-		"Physics": "奶蛙.physics3.json",
-		"DisplayInfo": "奶蛙.cdi3.json",
-		"Expressions": [
-			{
-				"Name": "dan",
-				"File": "dan.exp3.json"
-			},
-			{
-				"Name": "pengfu",
-				"File": "pengfu.exp3.json"
-			},
-			{
-				"Name": "sikao",
-				"File": "sikao.exp3.json"
-			},
-			{
-				"Name": "expression1",
-				"File": "shuiyin.exp3.json"
-			}
-		],
-		"Motions": {
-			"Idle": [
-				{
-					"File": "hahaha.motion3.json"
-				}
-			]
-		}
-	},
-	"Groups": [
-		{
-			"Target": "Parameter",
-			"Name": "EyeBlink",
-			"Ids": [
-				"ParamEyeLOpen",
-				"ParamEyeROpen"
-			]
-		},
-		{
-			"Target": "Parameter",
-			"Name": "LipSync",
-			"Ids": []
-		}
-	],
-	"HitAreas": []
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "奶蛙.moc3",
+    "Textures": [
+      "奶蛙.2048/texture_00.png"
+    ],
+    "Physics": "奶蛙.physics3.json",
+    "DisplayInfo": "奶蛙.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "dan",
+        "File": "dan.exp3.json"
+      },
+      {
+        "Name": "pengfu",
+        "File": "pengfu.exp3.json"
+      },
+      {
+        "Name": "sikao",
+        "File": "sikao.exp3.json"
+      },
+      {
+        "Name": "expression1",
+        "File": "shuiyin.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "File": "motions/idle-breathe.motion3.json",
+          "FadeInTime": 0.8,
+          "FadeOutTime": 0.8
+        }
+      ],
+      "Greet": [
+        {
+          "File": "motions/greet-welcome.motion3.json",
+          "FadeInTime": 0.3,
+          "FadeOutTime": 0.35
+        }
+      ],
+      "Think": [
+        {
+          "File": "motions/think-consider.motion3.json",
+          "FadeInTime": 0.55,
+          "FadeOutTime": 0.55
+        }
+      ],
+      "Agree": [
+        {
+          "File": "motions/agree-nod.motion3.json",
+          "FadeInTime": 0.25,
+          "FadeOutTime": 0.35
+        }
+      ],
+      "Confused": [
+        {
+          "File": "motions/confused-check.motion3.json",
+          "FadeInTime": 0.4,
+          "FadeOutTime": 0.4
+        }
+      ],
+      "DragLeft": [
+        {
+          "File": "motions/drag-left-settle.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.35
+        }
+      ],
+      "DragRight": [
+        {
+          "File": "motions/drag-right-settle.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.35
+        }
+      ],
+      "Working": [
+        {
+          "File": "motions/working-attentive.motion3.json",
+          "FadeInTime": 0.6,
+          "FadeOutTime": 0.6
+        }
+      ],
+      "Comfort": [
+        {
+          "File": "motions/comfort-soften.motion3.json",
+          "FadeInTime": 0.65,
+          "FadeOutTime": 0.65
+        }
+      ],
+      "LegacyIdle": [
+        {
+          "File": "hahaha.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": []
+    }
+  ],
+  "HitAreas": []
 }

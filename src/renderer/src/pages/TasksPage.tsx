@@ -1,13 +1,16 @@
 import { Check, Circle, Clock3, FileOutput, Plus, RefreshCw, ShieldAlert, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import type { Task } from '@shared/types'
+import type { Task, TaskStatus } from '@shared/types'
+import { approvalSummary } from '@shared/task-approval'
+import { currentTaskCalls } from '@shared/task-call-presentation'
 import { ApprovalDialog, TaskCreateDialog } from '../components/dialogs'
 import { Button, Card, CardHead, ConfirmDialog, EmptyState, Pill } from '../components/ui'
 import { executionLabel, roleLabel, toolLabel, verdictPresentation } from '../lib/status'
 import { useAppStore } from '../store'
 
-type TaskFilter = '全部任务' | '执行中' | '等待批准' | '已完成' | '已取消'
+type TaskFilter = '全部任务' | TaskStatus
+const taskFilters: TaskFilter[] = ['全部任务', '待确认', '已确认', '规划中', '执行中', '等待批准', '正在停止', '已完成', '部分完成', '失败', '已取消', '已中断']
 
 export function TasksPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
@@ -17,22 +20,39 @@ export function TasksPage(): React.JSX.Element {
   const cancelTask = useAppStore((state) => state.cancelTask)
   const busyCancel = useAppStore((state) => Boolean(state.busy['task:cancel']))
   const notify = useAppStore((state) => state.notify)
-  const [filter, setFilter] = useState<TaskFilter>('全部任务')
+  const focus = params.get('focus')
+  const [filterChoice, setFilterChoice] = useState<{ focus: string | null; value: TaskFilter }>({ focus, value: '全部任务' })
+  const filter = filterChoice.focus === focus ? filterChoice.value : '全部任务'
+  const setFilter = (value: TaskFilter): void => setFilterChoice({ focus, value })
   const [createOpen, setCreateOpen] = useState(false)
-  const [approvalOpen, setApprovalOpen] = useState(false)
-  const [cancelOpen, setCancelOpen] = useState(false)
+  const [approvalTaskId, setApprovalTaskId] = useState<string | null>(null)
+  const [cancelTaskId, setCancelTaskId] = useState<string | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
-  const answer = answers[selectedId ?? ''] ?? ''
-  const setAnswer = (value: string): void => setAnswers(current => ({ ...current, [selectedId ?? '']: value }))
   const [continuing, setContinuing] = useState(false)
 
   useEffect(() => {
-    const focus = params.get('focus')
     if (focus) selectTask(focus)
-  }, [params, selectTask])
+  }, [focus, selectTask])
 
   const filtered = data.tasks.filter((task) => filter === '全部任务' || task.status === filter)
-  const selected = data.tasks.find((task) => task.id === selectedId) ?? filtered[0] ?? data.tasks[0]
+  const selected = filtered.find((task) => task.id === selectedId) ?? filtered[0]
+  const approvalOpen = Boolean(selected && approvalTaskId === selected.id)
+  const cancelOpen = Boolean(selected && cancelTaskId === selected.id)
+  const setApprovalOpen = (open: boolean): void => setApprovalTaskId(open && selected ? selected.id : null)
+  const setCancelOpen = (open: boolean): void => setCancelTaskId(open && selected ? selected.id : null)
+  const answer = answers[selected?.id ?? ''] ?? ''
+  const setAnswer = (value: string): void => { if (selected) setAnswers(current => ({ ...current, [selected.id]: value })) }
+  const continueSelected = async (value: string): Promise<void> => {
+    if (!selected || continuing || !value.trim()) return
+    const id = selected.id
+    setContinuing(true)
+    try {
+      const result = await window.murasame.core.continueTask(id, value.trim())
+      if (!result.ok) notify(result.error, 'red')
+      else setAnswers(current => ({ ...current, [id]: '' }))
+    } catch (error) { notify(error instanceof Error ? error.message : '暂时无法继续，请重试', 'red') }
+    finally { setContinuing(false) }
+  }
 
   const confirmCancel = async (): Promise<void> => {
     if (!selected) return
@@ -49,8 +69,8 @@ export function TasksPage(): React.JSX.Element {
             subtitle="确认后才执行 · 可随时取消"
             aside={<Button size="sm" onClick={() => setCreateOpen(true)} icon={<Plus size={15} />} aria-label="新建任务" data-testid="new-task" />}
           />
-          <select className="select" value={filter} onChange={(event) => setFilter(event.target.value as TaskFilter)} aria-label="筛选任务">
-            {(['全部任务', '执行中', '等待批准', '已完成', '已取消'] as TaskFilter[]).map((option) => <option key={option}>{option}</option>)}
+          <select className="select" value={filter} onChange={(event) => { setFilter(event.target.value as TaskFilter); setApprovalOpen(false); setCancelOpen(false) }} aria-label="筛选任务">
+            {taskFilters.map((option) => <option key={option}>{option}</option>)}
           </select>
           <Pill tone={selected?.status === '等待批准' ? 'amber' : 'blue'}>{selected?.status ?? '暂无任务'}</Pill>
           <div className="task-list">
@@ -60,7 +80,7 @@ export function TasksPage(): React.JSX.Element {
                 key={task.id}
                 data-testid="task-item"
                 className={`task-list-item${task.id === selected?.id ? ' active' : ''}`}
-                onClick={() => selectTask(task.id)}
+                onClick={() => { setApprovalOpen(false); setCancelOpen(false); selectTask(task.id) }}
               >
                 <div className="task-list-head">
                   <strong>{task.title}</strong>
@@ -96,20 +116,16 @@ export function TasksPage(): React.JSX.Element {
               </div>
               <h2>{selected.title}</h2>
               <p className="task-summary">{selected.summary}</p>
-              {selected.status === '待确认' ? (
+              {['待确认', '已中断', '失败', '部分完成', '已取消'].includes(selected.status) ? (
                 <form className="task-clarification" onSubmit={async event => {
                   event.preventDefault()
-                  if (!answer.trim() || continuing) return
-                  setContinuing(true)
-                  try {
-                    const result = await window.murasame.core.continueTask(selected.id, answer.trim())
-                    if (!result.ok) notify(result.error, 'red')
-                    else setAnswer('')
-                  } finally { setContinuing(false) }
+                  await continueSelected(answer)
                 }}>
                   <label htmlFor="task-answer">补充任务信息</label>
                   <textarea id="task-answer" value={answer} onChange={event => setAnswer(event.target.value)} placeholder="回答上方问题，补充目录、目标或限制" />
                   <Button type="submit" disabled={continuing || !answer.trim()}>继续规划</Button>
+                  <Button type="button" disabled={continuing} onClick={() => void continueSelected('继续')} data-testid="resume-task">核对并继续</Button>
+                  <p className="muted">先核对已有成果，再为未完成的操作申请批准；结果未知的调用不会自动重做。</p>
                 </form>
               ) : null}
               <div className="task-meta-grid">
@@ -123,7 +139,7 @@ export function TasksPage(): React.JSX.Element {
                   <div className="approval-icon"><ShieldAlert size={19} /></div>
                   <div>
                     <strong>等待批准：{selected.approval.target}</strong>
-                    <p>{selected.approval.impact}</p>
+                    <p>{approvalSummary(selected.approval)}</p>
                   </div>
                   <Button size="sm" variant="primary" onClick={() => setApprovalOpen(true)}>查看并批准</Button>
                 </div>
@@ -151,7 +167,7 @@ export function TasksPage(): React.JSX.Element {
                 <div><h3>调用链</h3><p>声明、执行和核验对照。不展示完整密钥。</p></div>
               </div>
               <div className="step-list">
-                {selected.toolCalls.length ? selected.toolCalls.map((call) => {
+                {selected.toolCalls.length ? currentTaskCalls(selected.toolCalls, selected.status).map((call) => {
                   const hide = (value: string): string => value.replace(/sk-[A-Za-z0-9_-]{8,}/g, 'sk-••••')
                   const actual = call.verification.evidence.map((item) => item.actual).join('、') || call.execution.status
                   return (
@@ -161,8 +177,8 @@ export function TasksPage(): React.JSX.Element {
                         <strong>{roleLabel(call.agentRole)} · {toolLabel(call.toolId)}</strong>
                         <span>声明：{hide(call.declared.intent)}</span>
                         <span>执行：{executionLabel(String(call.execution.status))}</span>
-                        <span>核验：{verdictPresentation[call.verification.verdict]?.label ?? call.verification.verdict}</span>
-                        {call.verification.verdict !== 'confirmed' ? <span>模型声称 {hide(call.declared.intent)}，核验发现 {hide(actual)}</span> : null}
+                        <span>核验：{call.execution.status === 'running' ? '等待执行结果' : call.execution.status === 'unknown' ? '需要核对实际影响，不会自动重做' : verdictPresentation[call.verification.verdict]?.label ?? call.verification.verdict}</span>
+                        {!['running', 'unknown'].includes(call.execution.status) && call.verification.verdict !== 'confirmed' ? <span>模型声称 {hide(call.declared.intent)}，核验发现 {hide(actual)}</span> : null}
                       </div>
                     </div>
                   )

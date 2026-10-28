@@ -2,7 +2,7 @@ import type { ZodType } from 'zod'
 import { anthropicAdapter } from './adapters/anthropic'
 import { ollamaAdapter } from './adapters/ollama'
 import { openAiCompatibleAdapter, withSystem } from './adapters/openai-compatible'
-import { classifyProviderFailure, extractText, readEventStream } from './transport'
+import { classifyProviderFailure, extractText, readEventStream, redactProviderText } from './transport'
 import { RequestQueue } from '../agent/runtime'
 import type { ChatImage, ChatTurn, ProviderAdapter, ResolvedModel, ToolDeclaration } from './types'
 import { toolDeclarationFromSchema } from './contracts'
@@ -57,9 +57,14 @@ async function execute(
         method: 'POST',
         headers: request.headers,
         body: request.body,
+        redirect: 'manual',
         signal: controller.signal
       })
-      if (!response.ok) throw classifyProviderFailure(response.status, await response.text())
+      if (response.status >= 300 && response.status < 400) {
+        await response.body?.cancel()
+        throw new Error('模型服务返回重定向，未向新地址发送密钥或对话。请填写服务商提供的最终 HTTPS 接口地址')
+      }
+      if (!response.ok) throw classifyProviderFailure(response.status, await response.text(), [model.apiKey])
       const contentType = response.headers.get('content-type') ?? ''
       const text = contentType.includes('application/json')
         ? extractText(await response.json())
@@ -70,7 +75,8 @@ async function execute(
       if (error instanceof Error && error.name === 'AbortError') {
         throw new Error(`模型请求超时（${Math.round(timeoutMs / 1000)} 秒），请检查网络或服务地址`, { cause: error })
       }
-      throw error
+      // eslint-disable-next-line preserve-caught-error -- 原始服务异常可能包含完整密钥，不得通过 cause 重新暴露。
+      throw new Error(redactProviderText(error instanceof Error ? error.message : '模型请求失败，请稍后重试', [model.apiKey]))
     } finally {
       clearTimeout(timeout)
       control.signal?.removeEventListener('abort', cancel)
@@ -156,6 +162,7 @@ export class ModelGateway {
   async testConnection(model: ResolvedModel): Promise<{ latencyMs: number; preview: string }> {
     const startedAt = Date.now()
     const preview = await execute(model, [{ role: 'user', content: '请只回复 OK' }], false, () => undefined, undefined, 30_000)
+    if (!preview.trim()) throw new Error('模型返回了空内容，请检查模型名称或服务兼容性')
     return { latencyMs: Date.now() - startedAt, preview: preview.slice(0, 80) }
   }
 }

@@ -16,7 +16,7 @@ import { imageWhereabouts, poseIntent, type StepPose, type TeammateRoute } from 
 import type { DesktopStep } from './services/autonomy-service'
 import log from '../logger'
 import type { PerformanceIntent } from '../../shared/avatar/intent'
-import type { ModelRegistry } from '../model/registry'
+import type { ModelRegistry, ResolvedModel } from '../model/registry'
 import type { SqliteDatabase } from '../data/sqlite-types'
 import { memoryReady, memoryStatusText } from '../local/memory-status'
 import { bumpRelationship, getSettings, readRelationship } from '../settings'
@@ -165,9 +165,10 @@ export class MurasameCore implements CoreApi {
     const affect = new AffectService()
     const taskService = new TaskService(db)
     const bridge: { core?: MurasameCore; handle?: (userText: string, route: TeammateRoute) => Promise<{ say: string; pose?: StepPose }> } = {}
-    taskService.setModelSnapshotProvider(() => models.getDefault())
-    taskService.setPlanner(async (goal) => {
-      const model = models.getDefault()
+    taskService.setModelSnapshotProvider(() => models.getDefault(), id => models.resolve(id))
+    taskService.setPlanner(async (goal, binding) => {
+      // 此 provider/resolver 均返回完整 ResolvedModel；任务层只持久化白名单快照。
+      const model = binding as ResolvedModel | null
       if (!model) return null
       const home = homedir()
       const folders = [['桌面', 'Desktop'], ['下载', 'Downloads'], ['文档', 'Documents']]

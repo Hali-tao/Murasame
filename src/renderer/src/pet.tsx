@@ -1,5 +1,5 @@
 import { Mic, Minus, Plus, RotateCcw, Send, SquarePen, X } from 'lucide-react'
-import { StrictMode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { StrictMode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { DEFAULT_PET_PRESET, getPetPreset } from '@shared/pet-presets'
 import { listPetActivities, type PetActivity } from '@shared/pet-activity'
@@ -12,6 +12,7 @@ import { allowHitSample, targetFps } from '@shared/render-budget'
 import { chooseLayer, idlePresentation, mouthEnvelope, type PerformanceLayer } from './avatar/orchestrator'
 import { idleFromPad, baselinePad } from '@shared/avatar/pad'
 import { playSamples, startRecording, type Recording } from './lib/audio'
+import { onWindowHidden } from './lib/window-visibility'
 import './styles.css'
 
 function clipBubble(text: string, expanded: boolean): string {
@@ -106,6 +107,16 @@ function PetApp(): React.JSX.Element {
   const recordingOrigin = useRef<{ id: string | null; version: number } | null>(null)
   const seenAssistantId = useRef<string | null | undefined>(undefined)
   const logRef = useRef<HTMLDivElement>(null)
+  const cancelVoiceInput = useCallback((): void => {
+    recordingController.current?.abort()
+    recordingController.current = null
+    const active = recordingRef.current
+    recordingRef.current = null
+    recordingOrigin.current = null
+    void active?.stop().catch(() => undefined)
+    setRecording(false)
+  }, [])
+  useEffect(() => onWindowHidden(cancelVoiceInput), [cancelVoiceInput])
   useLayoutEffect(() => {
     speakRef.current = speakReplies
     chatRef.current = chat
@@ -131,10 +142,14 @@ function PetApp(): React.JSX.Element {
 
   useEffect(() => {
     if (!window.murasame) return
-    void window.murasame.pet.getState().then(setPet)
-    const unsubscribe = window.murasame.pet.onStateChanged(setPet)
+    const applyState = (next: PetState): void => {
+      if (!next.visible) cancelVoiceInput()
+      setPet(next)
+    }
+    void window.murasame.pet.getState().then(applyState)
+    const unsubscribe = window.murasame.pet.onStateChanged(applyState)
     return unsubscribe
-  }, [])
+  }, [cancelVoiceInput])
 
   useEffect(() => {
     if (!window.murasame) return
@@ -415,6 +430,7 @@ function PetApp(): React.JSX.Element {
   }
 
   const beginVoice = async (): Promise<void> => {
+    if (document.hidden || !pet.visible) { cancelVoiceInput(); return }
     if (recordingRef.current || sending) return
     if (!microphone) {
       setNotice('录音授权被拒绝。文字输入仍然可用，这次没有生成内容。')
@@ -431,7 +447,9 @@ function PetApp(): React.JSX.Element {
       return
     }
     try {
-      recordingRef.current = await startRecording(controller.signal)
+      const recording = await startRecording(controller.signal)
+      if (controller.signal.aborted || recordingController.current !== controller) { await recording.stop(); return }
+      recordingRef.current = recording
       setRecording(true)
       setNotice('')
     } catch (error) {

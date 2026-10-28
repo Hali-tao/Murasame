@@ -1,12 +1,13 @@
 import type { ModelInput, ModelProfile, Result } from '../../../shared/types'
 import { ModelGateway, type RequestControl } from '../../model/gateway'
 import type { ModelRegistry } from '../../model/registry'
+import { redactProviderText } from '../../model/transport'
 
 const ok = <T>(data: T): Result<T> => ({ ok: true, data })
 const fail = <T>(error: string): Result<T> => ({ ok: false, error })
 
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : '模型请求失败，请稍后重试'
+function errorMessage(error: unknown, secrets: string[] = []): string {
+  return redactProviderText(error instanceof Error ? error.message : '模型请求失败，请稍后重试', secrets)
 }
 
 export class ModelService {
@@ -45,24 +46,22 @@ export class ModelService {
   }
 
   async verify(id: string, input?: ModelInput): Promise<Result<ModelProfile>> {
+    let secret = input?.key.trim() ?? ''
     try {
-      if (input) this.models.save(id, input)
-      const model = this.models.resolve(id)
-      if (!model) return fail('模型配置不存在')
+      const pending = this.models.prepareVerification(id, input)
+      const model = pending.model
+      secret = model.apiKey
       const { probeAll } = await import('../../model/prober')
       const report = await probeAll(this.gateway, model)
       const chat = report.capabilities.find((item) => item.id === 'text.chat')
-      if (chat?.status === 'verified') this.models.markVerified(id, report.latencyMs)
-      else if (!report.capabilities.some((item) => item.detail.includes('待重测'))) this.models.markOffline(id)
-      const note = report.capabilities.some((item) => item.detail.includes('待重测')) ? '建议重新验证' : ''
-      return ok(this.models.saveCapabilities(id, report.capabilities, note))
-    } catch (error) {
-      try {
-        this.models.markOffline(id)
-      } catch {
-        // 保留原始校验错误。
+      if (chat?.status !== 'verified') {
+        return fail(`${redactProviderText(report.failure || chat?.detail || '模型连接验证未通过', [secret])}。未保存本次修改，原配置保持不变。`)
       }
-      return fail(errorMessage(error))
+      const note = report.capabilities.some((item) => item.detail.includes('待重测')) ? '建议重新验证' : ''
+      const capabilities = report.capabilities.map(item => ({ ...item, detail: redactProviderText(item.detail, [secret]) }))
+      return ok(pending.commit(capabilities, report.latencyMs, note))
+    } catch (error) {
+      return fail(`${errorMessage(error, [secret])}。未保存本次修改，原配置保持不变。`)
     }
   }
 

@@ -19,7 +19,7 @@ export interface ToolCallRecord {
   declared: { intent: string; args: unknown }
   /** 2. 执行：工具的真实返回 */
   execution: {
-    status: 'ok' | 'error' | 'timeout' | 'aborted'
+    status: 'running' | 'unknown' | 'ok' | 'error' | 'timeout' | 'aborted'
     raw: unknown
     startedAt: string
     endedAt: string

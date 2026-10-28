@@ -1,5 +1,5 @@
 import type { ChatTurn, ProviderAdapter, ProviderRequest } from '../types'
-import { assertImagePlacement } from '../transport'
+import { assertImagePlacement, assertProtectedEndpoint } from '../transport'
 
 function anthropicUrl(endpoint: string): string {
   const base = endpoint.trim().replace(/\/+$/, '')
@@ -45,6 +45,7 @@ export const anthropicAdapter: ProviderAdapter = {
     requiresApiKey: true
   },
   buildChat(model, messages, stream, tools): ProviderRequest {
+    assertProtectedEndpoint(model.endpoint)
     assertImagePlacement(messages, true)
     const system = messages.find((message) => message.role === 'system')?.content
     return {

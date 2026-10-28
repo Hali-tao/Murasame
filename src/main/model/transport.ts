@@ -1,15 +1,32 @@
 import type { ChatTurn } from './types'
 
-export function redactProviderText(text: string): string {
-  return text
+export function redactProviderText(text: string, secrets: readonly string[] = []): string {
+  let safe = text
+  for (const secret of secrets.filter(Boolean)) {
+    for (const form of new Set([secret, encodeURIComponent(secret), JSON.stringify(secret).slice(1, -1)])) {
+      safe = safe.split(form).join('••••')
+    }
+  }
+  return safe
     .replace(/sk-[A-Za-z0-9_-]{8,}/g, 'sk-••••')
     .replace(/sk-ant-[A-Za-z0-9_-]{8,}/g, 'sk-ant-••••')
     .replace(/(api[-_ ]?key\s*[:=]\s*)\S+/gi, '$1••••')
+    .replace(/(Bearer\s+)\S+/gi, '$1••••')
     .slice(0, 500)
 }
 
-export function classifyProviderFailure(status: number, body: string): Error {
-  const detail = redactProviderText(body.trim())
+export function assertProtectedEndpoint(endpoint: string): void {
+  let url: URL
+  try { url = new URL(endpoint) } catch { throw new Error('服务地址格式无效，请填写完整的 HTTPS 地址') }
+  if (url.username || url.password) throw new Error('服务地址不得包含凭据，请在 API Key 栏填写密钥')
+  const loopback = url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname === '[::1]'
+  if (url.protocol !== 'https:' && !(url.protocol === 'http:' && loopback)) {
+    throw new Error('远程模型服务必须使用 HTTPS，以保护密钥和对话内容；仅本机地址允许 HTTP')
+  }
+}
+
+export function classifyProviderFailure(status: number, body: string, secrets: readonly string[] = []): Error {
+  const detail = redactProviderText(body.trim(), secrets)
   if (status === 400 && /does not support image/i.test(detail)) {
     return new Error('该模型不支持图像输入。请更换支持图像的模型，或改用文字描述。')
   }
@@ -60,32 +77,58 @@ export async function readEventStream(response: Response, onDelta: (delta: strin
   const decoder = new TextDecoder()
   let buffer = ''
   let result = ''
+  let completed = false
   const consumeLine = (line: string): void => {
     const trimmed = line.trim()
     if (!trimmed.startsWith('data:')) return
     const data = trimmed.slice(5).trim()
-    if (!data || data === '[DONE]') return
-    try {
-      const text = extractText(JSON.parse(data) as unknown)
-      if (text) {
-        result += text
-        onDelta(text)
+    if (!data) return
+    if (data === '[DONE]') { completed = true; return }
+    let payload: Record<string, unknown>
+    try { payload = JSON.parse(data) as Record<string, unknown> } catch {
+      throw new Error('模型响应流包含无法读取的数据，回复未完成，请重试')
+    }
+    if (!payload || typeof payload !== 'object') return
+    if (payload.type === 'error' || payload.error) throw new Error('模型响应流返回错误，回复未完成，请重试')
+    if (payload.type === 'message_stop') completed = true
+    const choices = Array.isArray(payload.choices) ? payload.choices : []
+    for (const choice of choices) {
+      const reason = choice && typeof choice === 'object' ? choice.finish_reason : null
+      if (typeof reason !== 'string' || !reason) continue
+      if (!['stop', 'tool_calls', 'function_call'].includes(reason)) {
+        throw new Error(reason === 'length' ? '模型回复达到长度限制，内容未完成，请缩小问题范围后重试' : '模型服务中止了回复，内容未完成，请调整输入后重试')
       }
-    } catch {
-      // 忽略服务商的保活帧。
+      completed = true
+    }
+    if (payload.type === 'message_delta' && payload.delta && typeof payload.delta === 'object') {
+      const reason = (payload.delta as Record<string, unknown>).stop_reason
+      if (typeof reason === 'string' && reason && !['end_turn', 'stop_sequence', 'tool_use'].includes(reason)) {
+        throw new Error(reason === 'max_tokens' ? '模型回复达到长度限制，内容未完成，请缩小问题范围后重试' : '模型服务中止了回复，内容未完成，请调整输入后重试')
+      }
+    }
+    const text = extractText(payload)
+    if (text) {
+      result += text
+      onDelta(text)
     }
   }
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    buffer += decoder.decode(value, { stream: true })
-    const lines = buffer.split('\n')
-    buffer = lines.pop() ?? ''
-    lines.forEach(consumeLine)
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      lines.forEach(consumeLine)
+    }
+    buffer += decoder.decode()
+    if (buffer) consumeLine(buffer)
+    if (!completed) throw new Error('模型响应流提前中断，回复未完成，请重试')
+    return result
+  } finally {
+    await reader.cancel().catch(() => undefined)
+    reader.releaseLock()
   }
-  buffer += decoder.decode()
-  if (buffer) consumeLine(buffer)
-  return result
 }
 
 export function assertImagePlacement(messages: ChatTurn[], imagesInUserMessageOnly: boolean): void {

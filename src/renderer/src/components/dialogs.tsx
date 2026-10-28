@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { DeleteScope, MemoryEntry, Task } from '@shared/types'
 import { Button, ConfirmDialog, Field, Input, Modal, Textarea } from './ui'
 import { useAppStore } from '../store'
+import { ApprovalDetails } from './ApprovalDetails'
 
 const scopeOptions: Array<{ value: DeleteScope; title: string; hint: string }> = [
   { value: 'history', title: '对话历史', hint: '删除所选会话与消息正文。' },
@@ -211,14 +212,18 @@ export function ApprovalDialog({
   onOpenChange: (open: boolean) => void
   task: Task | null
 }): React.JSX.Element {
+  return <ApprovalDialogContent key={`${task?.id}:${task?.approval?.impact}:${open}`} open={open} onOpenChange={onOpenChange} task={task} />
+}
+
+function ApprovalDialogContent({ open, onOpenChange, task }: { open: boolean; onOpenChange: (open: boolean) => void; task: Task | null }): React.JSX.Element {
   const approveTask = useAppStore((state) => state.approveTask)
   const denyTask = useAppStore((state) => state.denyTask)
-  const busy = useAppStore((state) => Boolean(state.busy['task:approve']))
+  const busy = useAppStore((state) => Boolean(state.busy['task:approve'] || state.busy['task:deny']))
 
   const [scope, setScope] = useState<'once' | 'task'>('once')
 
   const approve = async (): Promise<void> => {
-    if (!task) return
+    if (!task?.approval) return
     const next = await approveTask(task.id, scope)
     if (next) onOpenChange(false)
   }
@@ -234,7 +239,7 @@ export function ApprovalDialog({
       open={open}
       onOpenChange={onOpenChange}
       title="批准敏感操作"
-      description="可以选择只批准这一次，或在这个任务里继续使用同一项能力。超过 10 分钟未批准则任务受阻，不会记为失败。"
+      description="先核对操作对象与影响。批准有效期为 10 分钟；过期后可重新核对并申请。"
       confirmLabel="批准并继续"
       cancelLabel="拒绝"
       onConfirm={approve}
@@ -243,15 +248,13 @@ export function ApprovalDialog({
     >
       {task?.approval ? (
         <div className="approval-card">
-          <div className="approval-row"><span>调用能力</span><strong>{task.approval.tool}</strong></div>
-          <div className="approval-row"><span>操作对象</span><strong>{task.approval.target}</strong></div>
-          <div className="approval-row"><span>可能影响</span><p>{task.approval.impact}</p></div>
           <label className="approval-row">范围
             <select value={scope} onChange={(event) => setScope(event.target.value as 'once' | 'task')}>
               <option value="once">仅这一次</option>
               <option value="task">本任务内有效</option>
             </select>
           </label>
+          <ApprovalDetails approval={task.approval} scope={scope} />
         </div>
       ) : (
         <p className="muted">当前任务没有待批准操作。</p>

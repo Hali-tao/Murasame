@@ -1,0 +1,45 @@
+{
+  "groups": [
+    {
+      "group": "Idle",
+      "duration": 8
+    },
+    {
+      "group": "Greet",
+      "duration": 2.8
+    },
+    {
+      "group": "Think",
+      "duration": 4.8
+    },
+    {
+      "group": "Agree",
+      "duration": 2.4
+    },
+    {
+      "group": "Confused",
+      "duration": 3.2
+    },
+    {
+      "group": "DragLeft",
+      "duration": 1.8
+    },
+    {
+      "group": "DragRight",
+      "duration": 1.8
+    },
+    {
+      "group": "Working",
+      "duration": 6
+    },
+    {
+      "group": "Comfort",
+      "duration": 4.2
+    }
+  ],
+  "frameCount": 1050,
+  "fps": 30,
+  "duration": 35,
+  "source": "Original native Cubism render, advanced in 1/60s physics steps and captured at 30fps",
+  "errors": []
+}

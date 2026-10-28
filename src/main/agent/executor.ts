@@ -13,7 +13,7 @@ export interface CheckCondition { kind: 'file-exists' | 'file-absent' | 'file-co
 export interface PlanStep { id?: string; dependsOn?: string[]; workspace?: string; network?: 'none' | 'bridge'; allowedTools?: TaskTool[]; limits?: { timeoutMs?: number }; outputs?: DeclaredOutput[]; title: string; detail: string; expected: string; tool?: TaskTool; args?: { action?: 'organize' | 'list' | 'read' | 'write' | 'move'; path?: string; from?: string; to?: string; content?: string; executable?: string; argv?: string[]; url?: string; files?: FileIntent[] }; checks?: CheckCondition[] }
 export interface TaskPlan { origin?: 'rules' | 'model'; tool: TaskTool; root?: string; url?: string; command?: string; steps: PlanStep[]; question: string }
 export interface WorkerTicket { id: string; stepId: string; root: string | null; allowedTools: TaskTool[]; limits: { timeoutMs: number; maxSteps: number } }
-export interface AgentCall { agentRole: 'Planner' | 'Worker' | 'Critic'; toolId: string; declared: string; executionStatus: ToolRun['status']; raw: string; evidence: Evidence[]; verdict: Verdict; stepId?: string; args?: unknown; startedAt?: string; endedAt?: string; traceId?: string; phase?: 'started' | 'result' }
+export interface AgentCall { agentRole: 'Planner' | 'Worker' | 'Critic'; toolId: string; declared: string; executionStatus: ToolRun['status'] | 'running'; raw: string; evidence: Evidence[]; verdict: Verdict; stepId?: string; args?: unknown; startedAt?: string; endedAt?: string; traceId?: string; phase?: 'started' | 'result' }
 export interface GoalOutcome { status: TaskPhase; calls: AgentCall[]; artifacts: string[]; approval: { target: string; impact: string; tool: string; requestedAt: number } | null; summary: string; result: string; steps: Array<{ id: string; title: string; detail: string; state: '完成' | '进行中' | '待执行' | '等待批准' | '已取消'; tone: 'blue' | 'green' | 'amber' | 'red' | 'gray' }> }
 export function extractRoot(goal: string): string | null { const match = /[A-Za-z]:[\\/][^\s"'，。]+/.exec(goal); return match ? match[0].replace(/[\\/]+$/, '') : null }
 export function chooseTool(goal: string): TaskTool { return /https?:\/\//.test(goal) || /打开网页/.test(goal) ? 'browser' : /\bgit\b|差异|提交记录/.test(goal) ? 'git' : /运行命令|终端/.test(goal) ? 'terminal' : 'filesystem' }
@@ -48,6 +48,17 @@ function splitCommand(text: string): string[] {
   if (active) tokens.push(token)
   return tokens
 }
+function invocationArgs(step: PlanStep, plan: TaskPlan, goal: string): NonNullable<PlanStep['args']> {
+  const tool = step.tool ?? plan.tool
+  const args = step.args ?? {}
+  if (tool === 'terminal') {
+    const parts = splitCommand(plan.command ?? /运行命令\s+(.+)/.exec(goal)?.[1] ?? '')
+    return { ...args, executable: args.executable ?? parts[0] ?? '', argv: args.argv ?? parts.slice(1) }
+  }
+  if (tool === 'git') return { ...args, executable: 'git', argv: args.argv ?? ['status'] }
+  if (tool === 'browser') return { ...args, url: args.url ?? plan.url ?? /https?:\/\/\S+/.exec(goal)?.[0] ?? '' }
+  return args
+}
 export async function executeGoal(input: { goal: string; root: string | null; approved: boolean; cancelled: boolean; now?: number; plan?: TaskPlan | null; control?: WorkControl; runner?: IsolatedRunner; taskId?: string; toolGate?: (tool: string) => string | null; executionGuard?: () => string | null; onCall?: (call: AgentCall) => void; approvalScope?: 'once' | 'task'; checkpoints?: StepCheckpoint[]; onCheckpoint?: (checkpoint: StepCheckpoint) => void }): Promise<GoalOutcome> {
   const tool = input.plan?.tool ?? chooseTool(input.goal)
   const plan = input.plan ?? localRulePlan(input.goal)
@@ -78,12 +89,25 @@ export async function executeGoal(input: { goal: string; root: string | null; ap
       done.add(node.id); attempted.add(node.id); confirmed += 1; steps[node.index] = { ...steps[node.index], state: '完成', tone: 'green', detail: `${node.step.title}：恢复后独立复核通过，未重复执行` }
     }
   }
+  const scopeKey = (node: (typeof graph)[number]): string => {
+    const step = node.step; const stepTool = step.tool ?? tool
+    let workspace = input.root ?? ''
+    try { if (input.root) workspace = resolveInside(input.root, step.workspace ?? '.') } catch { workspace = `invalid:${step.workspace}` }
+    return JSON.stringify({ tool: stepTool, workspace, network: step.network ?? 'none', ...(stepTool === 'browser' ? { url: invocationArgs(step, plan, input.goal).url } : {}) })
+  }
+  const pendingNodes = (): typeof graph => graph.filter(node => !done.has(node.id) && (!attempted.has(node.id) || Boolean(input.checkpoints?.find(checkpoint => checkpoint.stepId === node.id)?.output.run.awaitingExport)))
+  const describeNode = (node: (typeof graph)[number]): Record<string, unknown> => ({ id: node.id, title: node.step.title, detail: node.step.detail, tool: node.step.tool ?? tool, scopeKey: scopeKey(node), workspace: node.step.workspace ?? '.', network: node.step.network ?? 'none', args: invocationArgs(node.step, plan, input.goal), outputs: node.step.outputs, staged: (input.checkpoints ?? []).find(checkpoint => checkpoint.stepId === node.id)?.output.run.awaitingExport, expected: node.step.expected, checks: node.step.checks })
   const requestApproval = (): GoalOutcome => {
-    const next = graph.filter((node) => !done.has(node.id) && !attempted.has(node.id) && node.dependsOn.every((id) => done.has(id)))
+    const remaining = pendingNodes()
+    const next = remaining.filter(node => node.dependsOn.every(id => done.has(id)))
+    try { remaining.forEach(node => invocationArgs(node.step, plan, input.goal)) } catch (error) { return finish('待确认', `${error instanceof Error ? error.message : '命令参数无法解析'}；请补充明确参数后重新规划。`) }
     next.forEach((node) => { steps[node.index] = { ...steps[node.index], state: '等待批准', tone: 'amber' } })
-    return finish('等待批准', confirmed || dispatches ? '已尝试的调用与已完成成果保留，下一项操作需要新的批准。' : '任务受阻：操作尚未批准，没有执行。', { target: input.root ?? plan.url ?? input.goal, impact: JSON.stringify({ taskId: input.taskId, planHash, next: next.map((node) => ({ id: node.id, tool: node.step.tool ?? tool, args: node.step.args, outputs: node.step.outputs, staged: (input.checkpoints ?? []).find((checkpoint) => checkpoint.stepId === node.id)?.output.run.awaitingExport, expected: node.step.expected, checks: node.step.checks })), plan }), tool: next[0]?.step.tool ?? tool, requestedAt: input.now ?? Date.now() })
+    return finish('等待批准', confirmed || dispatches ? '已尝试的调用与已完成成果保留，下一项操作需要新的批准。' : '任务受阻：操作尚未批准，没有执行。', { target: input.root ?? plan.url ?? input.goal, impact: JSON.stringify({ taskId: input.taskId, planHash, next: next.map(describeNode), remaining: remaining.map(describeNode), plan }), tool: next[0]?.step.tool ?? tool, requestedAt: input.now ?? Date.now() })
   }
   if (!input.approved) return requestApproval()
+  // D-06: task approval is limited to the next operation's tool and concrete scope.
+  const firstApproved = pendingNodes().find(node => node.dependsOn.every(id => done.has(id)))
+  const approvedScope = firstApproved ? scopeKey(firstApproved) : null
   const runNode = async (node: (typeof graph)[number]): Promise<void> => {
     if (stopped()) return
     dispatches += 1; attempted.add(node.id)
@@ -94,7 +118,7 @@ export async function executeGoal(input: { goal: string; root: string | null; ap
     Object.freeze(ticket.allowedTools); Object.freeze(ticket.limits); Object.freeze(ticket)
     const startedAt = new Date().toISOString(); const args = { ticket, operation: step.args }
     const gate = scopeError ?? (step.allowedTools && !step.allowedTools.includes(stepTool) ? '当前 Worker 任务单不允许此工具' : null) ?? input.executionGuard?.() ?? input.toolGate?.(stepTool)
-    input.onCall?.({ agentRole: 'Worker', toolId: stepTool, declared: step.detail, executionStatus: 'error', raw: '操作开始；结果尚未知，不得重放', evidence: [], verdict: 'inconclusive', stepId, args, startedAt, traceId: ticket.id, phase: 'started' })
+    input.onCall?.({ agentRole: 'Worker', toolId: stepTool, declared: step.detail, executionStatus: 'running', raw: '操作开始；结果尚未知，不得重放', evidence: [], verdict: 'inconclusive', stepId, args, startedAt, traceId: ticket.id, phase: 'started' })
     let output: StepResult
     try { output = gate ? { run: errorRun(gate), effects: [], artifacts: [] } : await runStep(ticket, step, plan, input) } catch (error) { output = { run: errorRun(error instanceof Error ? error.message : String(error)), effects: [], artifacts: [] } }
     const verifierTicket: WorkerTicket = { ...ticket, id: randomUUID(), allowedTools: [...ticket.allowedTools] }
@@ -118,7 +142,8 @@ export async function executeGoal(input: { goal: string; root: string | null; ap
     const ready = graph.filter((node) => !done.has(node.id) && !attempted.has(node.id) && node.dependsOn.every((id) => done.has(id)))
     if (!ready.length) break
     if (input.approvalScope === 'once' && dispatches > 0) return requestApproval()
-    const parallel = input.approvalScope !== 'once' ? ready.filter((node) => readOnlyStep(node.step, node.step.tool ?? tool)) : []
+    if (input.approvalScope === 'task' && scopeKey(ready[0]) !== approvedScope) return requestApproval()
+    const parallel = input.approvalScope !== 'once' ? ready.filter((node) => (input.approvalScope !== 'task' || scopeKey(node) === approvedScope) && readOnlyStep(node.step, node.step.tool ?? tool)) : []
     await Promise.all((parallel.length ? parallel : [ready[0]]).map(runNode))
   }
   if (awaitingExport && !stopped()) return requestApproval()
@@ -126,7 +151,7 @@ export async function executeGoal(input: { goal: string; root: string | null; ap
   return finish(failed ? confirmed ? '部分完成' : '失败' : confirmed ? '已完成' : '失败', failed ? '核验未通过，后续依赖步骤已停止；已产生的影响与失败项可查看。' : '所有步骤已独立核验。')
 }
 async function runStep(ticket: WorkerTicket, step: PlanStep, plan: TaskPlan, input: Parameters<typeof executeGoal>[0]): Promise<StepResult> {
-  const tool = ticket.allowedTools[0]; const args = step.args; const root = ticket.root
+  const tool = ticket.allowedTools[0]; const args = invocationArgs(step, plan, input.goal); const root = ticket.root
   const wrap = (run: ToolRun, invocation: unknown = step.args): StepResult => ({ run, invocation, effects: run.effects ?? [], artifacts: run.artifacts ?? [] })
   const checkpoint = input.checkpoints?.find((item) => item.stepId === ticket.stepId)
   const staged = checkpoint?.output.run.awaitingExport
@@ -135,8 +160,7 @@ async function runStep(ticket: WorkerTicket, step: PlanStep, plan: TaskPlan, inp
   if (tool === 'browser') return wrap(await readVisiblePage(args?.url ?? plan.url ?? /https?:\/\/\S+/.exec(input.goal)?.[0] ?? '', fetch, options))
   if (!root) return wrap(errorRun('没有授权目录'))
   if (tool === 'terminal') {
-    const parts = splitCommand(plan.command ?? /运行命令\s+(.+)/.exec(input.goal)?.[1] ?? '')
-    const executable = args?.executable ?? parts[0] ?? ''; const argv = args?.argv ?? parts.slice(1)
+    const executable = args.executable!; const argv = args.argv!
     return wrap(await runTerminal(root, executable, argv, options), { executable, argv, root, network: step.network ?? 'none', outputs: options.outputs, resumeStageId: options.resumeStageId })
   }
   if (tool === 'git') return wrap(await runGit(root, args?.argv ?? ['status'], options), { executable: 'git', argv: args?.argv ?? ['status'], root, readOnly: true })

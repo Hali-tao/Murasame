@@ -333,6 +333,25 @@ a:focus-visible {
 .approval-row span { color: var(--muted); }
 .approval-row strong { font-weight: 600; word-break: break-all; }
 .approval-row p { margin: 0; line-height: 1.5; }
+.approval-details { min-width: 0; padding: 0 12px 12px; font-size: 12px; line-height: 1.6; }
+.approval-details .approval-row { padding-inline: 0; }
+.approval-step { padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+.approval-step h4 { margin: 0 0 5px; font-size: 13px; }
+.approval-step p { margin: 5px 0; overflow-wrap: anywhere; }
+.approval-change-scroll { max-height: 260px; overflow: auto; border: 1px solid var(--line-soft); border-radius: 6px; margin-top: 8px; }
+.approval-details table { width: 100%; border-collapse: collapse; text-align: left; }
+.approval-details caption { text-align: left; padding: 8px; color: var(--muted); }
+.approval-details th, .approval-details td { padding: 7px 8px; border-top: 1px solid var(--line-soft); vertical-align: top; }
+.approval-details th:first-child { width: 50px; }
+.approval-details code { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+.approval-arrow, .approval-warning { display: block; font-size: 11px; color: var(--muted); }
+.approval-warning { color: var(--amber); }
+.approval-command { display: grid; gap: 4px; padding: 8px; background: var(--card); border-radius: 6px; }
+.approval-command ol { margin: 0; padding-left: 24px; }
+.approval-details details { margin-top: 10px; }
+.approval-details summary { cursor: pointer; }
+.approval-details pre { max-height: 260px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: 8px; background: var(--card); font-size: 11px; }
+.task-clarification .button { margin-right: 8px; }
 .delete-preview { padding: 12px; background: var(--card-alt); border: 1px solid var(--line-soft); border-radius: 9px; }
 .delete-preview p { margin: 8px 0 0; line-height: 1.6; }
 .cancel-summary, .quit-summary { padding: 12px; background: var(--card-alt); border: 1px solid var(--line-soft); border-radius: 9px; }

@@ -26,11 +26,11 @@ export const AVATAR_CAPABILITIES: Record<string, AvatarCapability> = {
   },
   naiwa: {
     id: 'naiwa',
-    motions: ['Idle'],
-    motionFiles: 1,
+    motions: ['Idle', 'Greet', 'Think', 'Agree', 'Confused', 'DragLeft', 'DragRight', 'Working', 'Comfort', 'LegacyIdle'],
+    motionFiles: 10,
     expressions: ['dan', 'pengfu', 'sikao', 'expression1'],
     expressionFiles: 4,
-    parameters: ['mouth', 'eye', 'head']
+    parameters: ['mouth', 'eye', 'head', 'breath']
   }
 }
 

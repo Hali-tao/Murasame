@@ -1,0 +1,15 @@
+{
+  "奶蛙.moc3": "7f999ccbc7abddc253f682a501ad72cc86763692b73a46c12dc545880dd7bdf7",
+  "奶蛙.2048/texture_00.png": "cc835607e5da874801a1266a8560a05e24627864e4c42bb8d5647a6e10e7bc3b",
+  "奶蛙.physics3.json": "37cdb8a450999dac9e407f79b105fa1c1ead8fccb32c43b9f8f74ec7450dfb97",
+  "奶蛙.model3.json": "3d7dedc377c0aa67e5af4f28d75fc895749fe045fe4efbbc21a34b1a845592a7",
+  "motions/agree-nod.motion3.json": "ca54a460fd50dc5e2b11dbf204460ec38a9ce5b9319f42130e40d1242418627d",
+  "motions/comfort-soften.motion3.json": "6d5a50fac61e47eaa8a3320cce7ec976da4d5d243527bb013a58a94104ecce28",
+  "motions/confused-check.motion3.json": "a41b8739e2f222dacd375f481f35c977ed84d8c172b5a844f73613d798b884a6",
+  "motions/drag-left-settle.motion3.json": "a1a6374fb86559a5ccab7acda2e037294737955b89b59d6558d64418c4a6b033",
+  "motions/drag-right-settle.motion3.json": "10a9cb98c0c90024973816d9bd64cb230dd7acd16d05a3400e04c3ac3bcde1f6",
+  "motions/greet-welcome.motion3.json": "6064f632fe4825be1ed080242ad64982eb2d08df39fc3b7441801506f690e59b",
+  "motions/idle-breathe.motion3.json": "c189b2634164aa82376b6422eb39a6e879ea2357f959f6fe8506349d36d8e33d",
+  "motions/think-consider.motion3.json": "1e2ad9ff4949be954b6e2a2de1cd2a5b37505c443bf8e388b453b3ac7b770185",
+  "motions/working-attentive.motion3.json": "c3f208ee037a2fe390a0b81ffaaab2eae045b4b680d60a66ca5adebdb39dbbc2"
+}
