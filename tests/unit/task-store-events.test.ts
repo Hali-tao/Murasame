@@ -18,3 +18,11 @@ it('shows one task when the creation event arrives before the IPC reply', async 
   await useAppStore.getState().createTask('整理文件')
   expect(useAppStore.getState().data?.tasks.map(item => item.id)).toEqual(['same-task'])
 })
+
+it('[FR-16] 将所选目录作为独立字段传递，保留用户原始任务标题', async () => {
+  vi.useFakeTimers(); resetStoreForTests()
+  const createTask = vi.fn(async () => ({ ok: false, error: 'fixture boundary' }))
+  window.murasame = { core: { createTask } } as unknown as MurasameApi
+  await useAppStore.getState().createTask('整理资料', 'E:\\独立测试目录')
+  expect(createTask).toHaveBeenCalledWith('整理资料', 'E:\\独立测试目录')
+})

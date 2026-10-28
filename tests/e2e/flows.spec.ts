@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { spawn } from 'node:child_process'
 import { join } from 'node:path'
+import { IPC } from '../../src/shared/ipc'
 import {
   closeApp,
   configureTestModel,
@@ -49,6 +50,19 @@ test('history clearing, memory editing and model switching are end-to-end usable
     await editedCard.getByRole('button', { name: '删除' }).click()
     await page.getByRole('dialog').getByRole('button', { name: '删除记忆' }).click()
     await expect(page.getByText('E2E 记忆已编辑', { exact: true })).toHaveCount(0)
+
+    // Progress values are controlled at the main-process event boundary. The
+    // actual service indexing/cancellation is covered by the SQLite regressions.
+    await app.evaluate(({ BrowserWindow }, channel) => {
+      for (const win of BrowserWindow.getAllWindows()) win.webContents.send(channel, { state: 'rebuilding', completed: 3, total: 10, message: '正在后台整理记忆，对话可以继续。' })
+    }, IPC.core.memoryIndexStatus)
+    await expect(page.getByRole('progressbar', { name: '记忆整理进度' })).toHaveAttribute('aria-valuenow', '3')
+    await expect(page.getByText('正在后台整理记忆，对话可以继续。')).toBeVisible()
+    await page.screenshot({ path: test.info().outputPath('memory-index-progress.png') })
+    await app.evaluate(({ BrowserWindow }, channel) => {
+      for (const win of BrowserWindow.getAllWindows()) win.webContents.send(channel, { state: 'failed', completed: 3, total: 10, message: '整理暂时中断，已有内容仍保留。' })
+    }, IPC.core.memoryIndexStatus)
+    await expect(page.getByText('整理暂时中断', { exact: true })).toBeVisible()
 
     await configureTestModel(page, server.url, '本地 Qwen · 隐私模式')
   } finally {

@@ -22,6 +22,9 @@ function displayTime(value: string): string {
 const uid = (prefix: string): string => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
 const ok = <T>(data: T): Result<T> => ({ ok: true, data })
 const fail = <T>(error: string): Result<T> => ({ ok: false, error })
+const notify = (observer: () => void): void => {
+  try { observer() } catch { /* A secondary observer cannot cancel a completed turn. */ }
+}
 
 interface MessageRow {
   id: string
@@ -151,13 +154,9 @@ export class ConversationService {
       })()
       const title = existing.title === '新的对话' ? text.slice(0, 24) : existing.title
       this.db.prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`).run(title, new Date().toISOString(), conversationId)
-      try {
-        this.context.onTurn?.(text, conversationId)
-        this.context.onRecall?.(conversationId, { turnId, ids: [] })
-        this.context.onReply?.(petSpeech(say), pose)
-      } catch {
-        // 台词已经记下。提取或表演失败不改这句。
-      }
+      notify(() => this.context.onTurn?.(text, conversationId))
+      notify(() => this.context.onRecall?.(conversationId, { turnId, ids: [] }))
+      notify(() => this.context.onReply?.(petSpeech(say), pose))
       return ok(this.require(conversationId))
     }
     const model = this.models.getDefault()
@@ -181,19 +180,24 @@ export class ConversationService {
     const relationship = this.context.relationship?.()
     const prompt = composePrompt(character, relationship?.stage)
     const memoryEnabled = this.context.memoryEnabled?.() ?? false
-    const recalled = memoryEnabled && this.context.recall
-      ? await this.context.recall(text)
-      : { text: '', ids: [] as string[] }
+    let recalled = { text: '', ids: [] as string[] }
+    let recallUnavailable = false
+    if (memoryEnabled && this.context.recall) {
+      try { recalled = await this.context.recall(text) } catch {
+        recallUnavailable = true
+      }
+    }
     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
     const earlier = compacted.summary ? `\n更早的对话记录摘录（保留来源角色；更正以较新的用户陈述为准，助手陈述不等于用户事实）：\n${compacted.summary}` : ''
     const voice = relationship ? `\n关系表达：${relationship.tone ?? ''} ${relationship.joke ?? ''}` : ''
-    const system = `${prompt.text}${voice}\n按用户需要给出完整、清楚的回答，详细说明和代码会保存在控制台。桌宠另行显示一句短话。不要自称人工智能或助手，不要声称已经操作了文件、命令或网页。${earlier}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
+    const memoryStatus = recallUnavailable ? '\n本轮长期记忆检索暂不可用；只能依据当前对话作答，不得声称已查到或不存在历史记忆。' : ''
+    const system = `${prompt.text}${voice}\n按用户需要给出完整、清楚的回答，详细说明和代码会保存在控制台。桌宠另行显示一句短话。不要自称人工智能或助手，不要声称已经操作了文件、命令或网页。${earlier}${memoryStatus}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
 
     onStart?.()
     let reply: string
     const startedAt = Date.now()
+    notify(() => this.context.onRecall?.(conversationId, { turnId, ids: [...recalled.ids] }))
     try {
-      this.context.onRecall?.(conversationId, { turnId, ids: [...recalled.ids] })
       // 闲聊也不把模型原文一个字一个字流进气泡，等这一句完整回来。
       reply = await this.gateway.chat(model, messages, undefined, system)
       void onDelta
@@ -216,12 +220,8 @@ export class ConversationService {
       .prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`)
       .run(title, new Date().toISOString(), conversationId)
     this.models.markVerified(model.id, Date.now() - startedAt)
-    try {
-      this.context.onTurn?.(text, conversationId)
-      this.context.onReply?.(petSpeech(reply))
-    } catch {
-      // 提取失败时保留已经写好的回复和既有记忆。
-    }
+    notify(() => this.context.onTurn?.(text, conversationId))
+    notify(() => this.context.onReply?.(petSpeech(reply)))
     return ok(this.require(conversationId))
   }
 

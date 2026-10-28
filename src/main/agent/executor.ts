@@ -1,6 +1,7 @@
 import type { DeclaredOutput } from '../task/staging'
 import type { GroundedSummaryWorkflow } from '../../shared/grounded-summary'
 import { executeGroundedSummary, type GroundedExecutionOptions } from './grounded-executor'
+import { extractTaskRoot } from './task-root'
 import { randomUUID, createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import type { Evidence, Verdict } from '../../shared/evidence'
@@ -18,9 +19,7 @@ export interface WorkerTicket { id: string; stepId: string; root: string | null;
 export interface AgentCall { agentRole: 'Planner' | 'Worker' | 'Critic'; toolId: string; declared: string; executionStatus: ToolRun['status'] | 'running'; raw: string; evidence: Evidence[]; verdict: Verdict; stepId?: string; args?: unknown; startedAt?: string; endedAt?: string; traceId?: string; phase?: 'started' | 'result' }
 export interface GoalOutcome { status: TaskPhase; calls: AgentCall[]; artifacts: string[]; approval: { target: string; impact: string; tool: string; requestedAt: number } | null; summary: string; result: string; steps: Array<{ id: string; title: string; detail: string; state: '完成' | '进行中' | '待执行' | '等待批准' | '已取消'; tone: 'blue' | 'green' | 'amber' | 'red' | 'gray' }> }
 export function extractRoot(goal: string): string | null {
-  const quoted = /"([A-Za-z]:[\\/][^"\r\n]+)"|'([A-Za-z]:[\\/][^'\r\n]+)'|“([A-Za-z]:[\\/][^”\r\n]+)”/.exec(goal)
-  const path = quoted?.slice(1).find(Boolean) ?? /[A-Za-z]:[\\/][^\s"'，。]+/.exec(goal)?.[0]
-  return path ? path.replace(/[\\/]+$/, '') : null
+  return extractTaskRoot(goal)
 }
 export function chooseTool(goal: string): TaskTool { return /https?:\/\//.test(goal) || /打开网页/.test(goal) ? 'browser' : /\bgit\b|差异|提交记录/.test(goal) ? 'git' : /运行命令|终端/.test(goal) ? 'terminal' : 'filesystem' }
 export function nextAfterCritic(verdict: Verdict, replanCount: number): 'continue' | 'stop' | 'partial' { return verdict === 'confirmed' ? 'continue' : replanCount >= 3 ? 'partial' : 'stop' }

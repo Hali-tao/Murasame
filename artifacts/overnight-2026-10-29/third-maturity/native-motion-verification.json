@@ -1,0 +1,252 @@
+{
+  "generatedAt": "2026-10-28T19:47:28.270Z",
+  "label": "final",
+  "componentSha256": "719f11815de763b4ba6dc6fd22985c57797fd35c288073b438933f30a521f56c",
+  "runtime": "Actual Live2DPet.tsx bundled with installed React, Pixi, pixi-live2d-display and original moc3. Pause uses real time; cadence feeds the real Pixi ticker controlled display times. No mocked model.",
+  "checks": [
+    {
+      "name": "hidden-pause: model clock is frozen",
+      "passed": true,
+      "before": {
+        "elapsed": 1091.199999988079,
+        "pending": 0,
+        "frames": 5,
+        "group": "Greet",
+        "wall": 6238.899999976158
+      },
+      "held": {
+        "elapsed": 1091.199999988079,
+        "pending": 0,
+        "frames": 5,
+        "group": "Greet",
+        "wall": 10987.699999988079
+      },
+      "elapsedWhilePaused": 0
+    },
+    {
+      "name": "hidden-pause: first frames resume the interrupted action",
+      "passed": true,
+      "maxResumeDeltaMs": 49.900000000001455,
+      "resumed": {
+        "snapshot": {
+          "elapsed": 1222.799999964238,
+          "pending": 0,
+          "frames": 8,
+          "group": "Greet",
+          "wall": 11193.199999988079
+        },
+        "frames": [
+          {
+            "wall": 11107.399999976158,
+            "dt": 48.199999976157414,
+            "now": 1139.3999999642365,
+            "group": "Greet",
+            "step": 0.0007421970367431641
+          },
+          {
+            "wall": 11157.199999988079,
+            "dt": 49.900000000001455,
+            "now": 1189.299999964238,
+            "group": "Greet",
+            "step": 0.0011105239391326904
+          },
+          {
+            "wall": 11190.5,
+            "dt": 33.5,
+            "now": 1222.799999964238,
+            "group": "Greet",
+            "step": 0.002396039664745331
+          }
+        ]
+      }
+    },
+    {
+      "name": "zero-fps: model clock is frozen",
+      "passed": true,
+      "before": {
+        "elapsed": 1389.3999999642365,
+        "pending": 0,
+        "frames": 12,
+        "group": "Think",
+        "wall": 11836.100000023842
+      },
+      "held": {
+        "elapsed": 1389.3999999642365,
+        "pending": 0,
+        "frames": 12,
+        "group": "Think",
+        "wall": 14051.300000011921
+      },
+      "elapsedWhilePaused": 0
+    },
+    {
+      "name": "zero-fps: first frames resume the interrupted action",
+      "passed": true,
+      "maxResumeDeltaMs": 50.100000000000364,
+      "resumed": {
+        "snapshot": {
+          "elapsed": 1531.9999999523152,
+          "pending": 0,
+          "frames": 15,
+          "group": "Think",
+          "wall": 14278.899999976158
+        },
+        "frames": [
+          {
+            "wall": 14173.800000011921,
+            "dt": 42.49999998807834,
+            "now": 1431.8999999523148,
+            "group": "Think",
+            "step": 0.002249300479888916
+          },
+          {
+            "wall": 14223.600000023842,
+            "dt": 50.100000000000364,
+            "now": 1481.9999999523152,
+            "group": "Think",
+            "step": 0.00260964035987854
+          },
+          {
+            "wall": 14273.600000023842,
+            "dt": 50,
+            "now": 1531.9999999523152,
+            "group": "Think",
+            "step": 0.0036282986402511597
+          }
+        ]
+      }
+    },
+    {
+      "name": "60 fps preserves motion time and render budget over two seconds",
+      "passed": true,
+      "before": {
+        "elapsed": 1615.2999999523163,
+        "pending": 0,
+        "frames": 17,
+        "group": "Think",
+        "wall": 14368.800000011921
+      },
+      "after": {
+        "elapsed": 3615.2999999523163,
+        "pending": 0,
+        "frames": 137,
+        "group": "Think",
+        "wall": 14463.5
+      },
+      "elapsedDelta": 2000,
+      "renders": 120
+    },
+    {
+      "name": "24 fps preserves motion time and render budget over two seconds",
+      "passed": true,
+      "before": {
+        "elapsed": 3615.2999999523163,
+        "pending": 0,
+        "frames": 137,
+        "group": "Think",
+        "wall": 14465.5
+      },
+      "after": {
+        "elapsed": 5598.633333285648,
+        "pending": 0,
+        "frames": 184,
+        "group": "Think",
+        "wall": 14500.100000023842
+      },
+      "elapsedDelta": 1983.3333333333321,
+      "renders": 47
+    },
+    {
+      "name": "12 fps preserves motion time and render budget over two seconds",
+      "passed": true,
+      "before": {
+        "elapsed": 5598.633333285648,
+        "pending": 0,
+        "frames": 184,
+        "group": "Think",
+        "wall": 14503
+      },
+      "after": {
+        "elapsed": 7531.9666666189805,
+        "pending": 0,
+        "frames": 207,
+        "wall": 14518.699999988079
+      },
+      "elapsedDelta": 1933.3333333333321,
+      "renders": 23
+    },
+    {
+      "name": "8 fps preserves motion time and render budget over two seconds",
+      "passed": true,
+      "before": {
+        "elapsed": 7531.9666666189805,
+        "pending": 0,
+        "frames": 207,
+        "group": "Idle",
+        "wall": 14521
+      },
+      "after": {
+        "elapsed": 9415.299999952313,
+        "pending": 0,
+        "frames": 222,
+        "group": "Idle",
+        "wall": 14532.699999988079
+      },
+      "elapsedDelta": 1883.3333333333321,
+      "renders": 15
+    },
+    {
+      "name": "unmount detaches animation clock",
+      "passed": true,
+      "removedStart": {
+        "elapsed": 9415.299999952313,
+        "pending": 0,
+        "frames": 222,
+        "wall": 14547
+      },
+      "removedEnd": {
+        "elapsed": 9415.299999952313,
+        "pending": 0,
+        "frames": 222,
+        "wall": 14850.100000023842
+      }
+    },
+    {
+      "name": "initial reduced-motion mode shows a static native character",
+      "passed": true,
+      "reducedBefore": {
+        "elapsed": 74.16666666666667,
+        "pending": 0,
+        "frames": 1,
+        "group": "Idle",
+        "wall": 223.39999997615814,
+        "visiblePixels": 118639
+      },
+      "reducedAfter": {
+        "elapsed": 74.16666666666667,
+        "pending": 0,
+        "frames": 1,
+        "group": "Idle",
+        "wall": 1680.199999988079
+      }
+    },
+    {
+      "name": "static native character stays visible after resize without advancing animation",
+      "passed": true,
+      "resized": {
+        "elapsed": 74.16666666666667,
+        "pending": 0,
+        "frames": 1,
+        "group": "Idle",
+        "wall": 1812.3999999761581,
+        "visiblePixels": 79339
+      }
+    },
+    {
+      "name": "native page has no runtime errors",
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "passed": true
+}

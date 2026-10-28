@@ -58,6 +58,7 @@ export const IPC = {
     screenUpdated: 'core:screen-updated',
     memoriesUpdated: 'core:memories-updated',
     memoryExtractionStatus: 'core:memory-extraction-status',
+    memoryIndexStatus: 'core:memory-index-status',
     activeChanged: 'core:active-changed',
     deleteConversation: 'core:delete-conversation',
     addMemory: 'core:add-memory',

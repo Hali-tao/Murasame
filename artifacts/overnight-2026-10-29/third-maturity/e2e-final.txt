@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:89928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (10.7s)
+  ok 2 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (37.9s)
+
+  2 passed (49.7s)

@@ -224,6 +224,13 @@ export interface AppSettings {
   permissions: Permissions
 }
 
+export interface MemoryIndexStatus {
+  state: 'idle' | 'rebuilding' | 'paused' | 'failed'
+  completed: number
+  total: number
+  message: string
+}
+
 export interface BootstrapData {
   conversations: Conversation[]
   memories: MemoryEntry[]
@@ -235,6 +242,7 @@ export interface BootstrapData {
   settings: AppSettings
   activeConversationId: string | null
   memoryNote?: string
+  memoryIndex?: MemoryIndexStatus
   /** 向量服务和记忆模型都就绪时为 true；否则记忆不会被带进对话。 */
   memoryReady?: boolean
 }
@@ -319,7 +327,7 @@ export interface MurasameCore {
   updateMemory(id: string, category: string, text: string): Promise<Result<MemoryEntry>>
   deleteMemory(id: string): Promise<Result<string>>
   clearMemories(): Promise<Result<MemoryEntry[]>>
-  createTask(title: string): Promise<Result<Task>>
+  createTask(title: string, root?: string): Promise<Result<Task>>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Result<Task>>
   continueTask(id: string, answer: string): Promise<Result<Task>>
   openArtifact(id: string, artifact: string): Promise<Result<string>>
@@ -423,6 +431,7 @@ export interface MurasameApi {
     onTaskUpdated(listener: (task: Task) => void): () => void
     onMemoriesUpdated(listener: (memories: MemoryEntry[]) => void): () => void
     onMemoryExtractionStatus(listener: (status: MemoryExtractionStatus) => void): () => void
+    onMemoryIndexStatus(listener: (status: MemoryIndexStatus) => void): () => void
     onActiveConversation(listener: (payload: { id: string }) => void): () => void
   }
 }

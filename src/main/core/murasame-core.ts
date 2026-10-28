@@ -8,7 +8,7 @@ import { executeImageCopy } from '../isolation/image-workflow'
 import { transcribeAudio } from '../local/stt'
 import { captureScreen } from './screen-capture'
 import { relationshipVoice } from './services/relationship-service'
-import { homedir } from 'node:os'
+import { taskSystemFolders } from '../agent/system-folders'
 import { dirname, join } from 'node:path'
 import { findSkill, skillFits } from '../agent/skills'
 import { desktopStepSchema, firstJsonObject, memoryExtractionSchema, performanceIntentSchema, taskPlanSchema } from '../model/contracts'
@@ -176,10 +176,7 @@ export class MurasameCore implements CoreApi {
       // 此 provider/resolver 均返回完整 ResolvedModel；任务层只持久化白名单快照。
       const model = binding as ResolvedModel | null
       if (!model) return null
-      const home = homedir()
-      const folders = [['桌面', 'Desktop'], ['下载', 'Downloads'], ['文档', 'Documents']]
-        .map(([label, name]) => `${label}：${join(home, name)}`)
-        .join('\n')
+      const folders = taskSystemFolders()
       return gateway.callStructured(
         model,
         taskPlanSchema,
@@ -396,6 +393,7 @@ export class MurasameCore implements CoreApi {
         settings: getSettings(),
         activeConversationId,
         memoryNote: memoryStatusText(),
+        memoryIndex: this.memory.indexStatus(),
         memoryReady: memoryReady()
       }
     }
@@ -476,14 +474,14 @@ export class MurasameCore implements CoreApi {
     return this.memory.clear()
   }
 
-  createTask(title: string): Promise<Result<Task>> {
+  createTask(title: string, root?: string): Promise<Result<Task>> {
     const tool = chooseTool(title)
     try {
       this.tools.assertCallable(tool)
     } catch (error) {
       return Promise.resolve({ ok: false, error: error instanceof Error ? error.message : '这个工具已停用，没有执行' })
     }
-    return this.tasks.create(title)
+    return this.tasks.create(title, root)
   }
 
   approveTask(id: string, scope: 'once' | 'task' = 'once'): Promise<Result<Task>> {

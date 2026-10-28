@@ -48,7 +48,7 @@ interface AppStore {
   updateMemory(id: string, category: string, text: string): Promise<MemoryEntry | null>
   deleteMemory(id: string): Promise<boolean>
   clearMemories(): Promise<boolean>
-  createTask(title: string): Promise<Task | null>
+  createTask(title: string, root?: string): Promise<Task | null>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Task | null>
   cancelTask(id: string): Promise<Task | null>
   denyTask(id: string): Promise<Task | null>
@@ -181,6 +181,10 @@ export const useAppStore = create<AppStore>((set, get) => {
         window.murasame.events.onMemoriesUpdated?.((memories) => {
           const current = get().data
           if (current) set({ data: { ...current, memories } })
+        })
+        window.murasame.events.onMemoryIndexStatus?.((memoryIndex) => {
+          const current = get().data
+          if (current) set({ data: { ...current, memoryIndex } })
         })
         window.murasame.events.onMemoryExtractionStatus?.((status) => {
           set((state) => ({ memoryExtractions: { ...state.memoryExtractions, [status.conversationId]: status } }))
@@ -354,9 +358,9 @@ export const useAppStore = create<AppStore>((set, get) => {
       })
     },
 
-    async createTask(title) {
+    async createTask(title, root) {
       return busyRun('task:create', async () => {
-        const result = await window.murasame.core.createTask(title)
+        const result = await window.murasame.core.createTask(title, root)
         const task = unwrap(result, get().notify)
         if (!task) return null
         const data = get().data

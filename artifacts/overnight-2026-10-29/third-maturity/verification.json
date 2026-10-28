@@ -1,0 +1,32 @@
+{
+  "electronAfterBackgroundIndex": {
+    "passed": 2,
+    "total": 2
+  },
+  "baseline": "e10f25fbe1ccf030d3bb303f62c9d8cff89e475f",
+  "unitFiles": 48,
+  "traceMapped": 74,
+  "electronAfterLayout": {
+    "passed": 1,
+    "total": 1
+  },
+  "electronBeforeBackgroundIndex": {
+    "passed": 13,
+    "total": 13
+  },
+  "traceTotal": 74,
+  "checkedAt": "2026-10-29T04:04:07.9948242+08:00",
+  "build": "passed",
+  "nativeComponent": {
+    "total": 12,
+    "passed": 12,
+    "sha256": "719f11815de763b4ba6dc6fd22985c57797fd35c288073b438933f30a521f56c"
+  },
+  "lint": "passed",
+  "realProviderQualityMeasured": false,
+  "reviewOpenFindings": 0,
+  "types": "passed",
+  "userDataTouched": false,
+  "newInstaller": false,
+  "unitPassed": 577
+}

@@ -53,6 +53,19 @@ export function TasksPage(): React.JSX.Element {
     } catch (error) { notify(error instanceof Error ? error.message : '暂时无法继续，请重试', 'red') }
     finally { setContinuing(false) }
   }
+  const pickAndContinue = async (): Promise<void> => {
+    if (!selected || continuing) return
+    const id = selected.id
+    setContinuing(true)
+    try {
+      const root = await window.murasame.app.pickOpen({ title: '确认这个任务的工作目录', directory: true })
+      if (!root) return
+      const result = await window.murasame.core.continueTask(id, `使用工作目录 "${root}"`)
+      if (!result.ok) notify(result.error, 'red')
+      else setAnswers(current => ({ ...current, [id]: '' }))
+    } catch (error) { notify(error instanceof Error ? error.message : '暂时无法选择目录，请重试', 'red') }
+    finally { setContinuing(false) }
+  }
 
   const confirmCancel = async (): Promise<void> => {
     if (!selected) return
@@ -124,6 +137,7 @@ export function TasksPage(): React.JSX.Element {
                   <label htmlFor="task-answer">补充任务信息</label>
                   <textarea id="task-answer" value={answer} onChange={event => setAnswer(event.target.value)} placeholder="回答上方问题，补充目录、目标或限制" />
                   <Button type="submit" disabled={continuing || !answer.trim()}>继续规划</Button>
+                  <Button type="button" disabled={continuing} onClick={() => void pickAndContinue()} data-testid="pick-continue-directory">选择目录并继续</Button>
                   <Button type="button" disabled={continuing} onClick={() => void continueSelected('继续')} data-testid="resume-task">核对并继续</Button>
                   <p className="muted">先核对已有成果，再为未完成的操作申请批准；结果未知的调用不会自动重做。</p>
                 </form>

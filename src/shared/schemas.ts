@@ -23,7 +23,8 @@ export const memoryUpdateSchema = memoryAddSchema.extend({
 export const memoryDeleteSchema = z.object({ id: z.string().min(1) })
 
 export const taskCreateSchema = z.object({
-  title: z.string().trim().min(1).max(4000)
+  title: z.string().trim().min(1).max(4000),
+  root: z.string().trim().min(1).max(32767).optional()
 })
 
 export const idSchema = z.object({ id: z.string().min(1) })

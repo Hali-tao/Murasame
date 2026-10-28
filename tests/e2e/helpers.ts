@@ -59,7 +59,7 @@ export interface TestModelServer {
   close(): Promise<void>
 }
 
-export async function startModelServer(): Promise<TestModelServer> {
+export async function startModelServer(options: { taskRoot?: string } = {}): Promise<TestModelServer> {
   const server = createServer((request, response) => {
     if (request.method !== 'POST' || !request.url?.endsWith('/chat/completions')) {
       response.writeHead(404, { 'Content-Type': 'application/json' })
@@ -85,7 +85,7 @@ export async function startModelServer(): Promise<TestModelServer> {
       const tool = payload.tools?.[0]?.function?.name
       if (tool === 'plan_task' || tool === 'performance' || tool === 'remember') {
         const goal = String(payload.messages?.filter(item => item.role === 'user').at(-1)?.content ?? '').split('任务：').at(-1) ?? ''
-        const folder = goal.replace(/^整理文件夹\s*/, '').trim()
+        const folder = options.taskRoot ?? goal.replace(/^整理文件夹\s*/, '').trim()
         const value = tool === 'plan_task' ? { tool:'filesystem', root:folder, steps:[{id:'organize',tool:'filesystem',title:'整理文件',detail:'按类型移动并核验',expected:'文件内容保持一致',args:{action:'organize'},checks:[{kind:'file-content',path:'文档/example.txt',value:'e2e real file'}]}],question:'' } : tool === 'performance' ? { intent:'思考',relevance:0.3,consequence:0,coping:0.3,norm:0 } : { memories:[] }
         response.writeHead(200, { 'Content-Type':'application/json' })
         response.end(JSON.stringify({choices:[{message:{role:'assistant',tool_calls:[{type:'function',function:{name:tool,arguments:JSON.stringify(value)}}]}}]}))

@@ -106,8 +106,8 @@ const api: MurasameApi = {
       ipcRenderer.invoke(IPC.core.deleteMemory, { id }),
     clearMemories: (): Promise<Result<MemoryEntry[]>> =>
       ipcRenderer.invoke(IPC.core.clearMemories),
-    createTask: (title: string): Promise<Result<Task>> =>
-      ipcRenderer.invoke(IPC.core.createTask, { title }),
+    createTask: (title: string, root?: string): Promise<Result<Task>> =>
+      ipcRenderer.invoke(IPC.core.createTask, { title, root }),
     approveTask: (id: string, scope?: 'once' | 'task'): Promise<Result<Task>> =>
       ipcRenderer.invoke(IPC.core.approveTask, { id, scope }),
     cancelTask: (id: string): Promise<Result<Task>> =>
@@ -176,6 +176,7 @@ const api: MurasameApi = {
     onScreenUpdated: listener => subscribe(IPC.core.screenUpdated, listener),
     onMemoriesUpdated: (listener) => subscribe(IPC.core.memoriesUpdated, listener),
     onMemoryExtractionStatus: (listener) => subscribe(IPC.core.memoryExtractionStatus, listener),
+    onMemoryIndexStatus: (listener) => subscribe(IPC.core.memoryIndexStatus, listener),
     onMessageDelta: (listener: (payload: ChatDelta) => void): (() => void) =>
       subscribe(IPC.core.messageDelta, listener),
     onMessageStarted: (listener: (payload: ChatTurnStarted) => void): (() => void) =>

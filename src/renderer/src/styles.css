@@ -625,6 +625,10 @@ a:focus-visible {
 /* Memory */
 .memory-banner { background: #faf8f3; border-color: var(--line); }
 .memory-banner.disabled { background: var(--amber-soft); border-color: #f0dcc0; }
+.memory-index-status { display: grid; gap: 10px; margin-top: 16px; padding: 16px 18px; }
+.memory-index-status > .pill { justify-self: start; }
+.memory-index-status > p { margin: 0; color: var(--text); line-height: 1.6; }
+.memory-index-status > small { color: var(--muted); }
 .banner-copy { flex: 1; }
 .banner-titleline { display: flex; align-items: center; gap: 9px; }
 .banner-titleline strong { font-size: 11.5px; }

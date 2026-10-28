@@ -1,0 +1,42 @@
+
+> murasame-desktop@0.9.0 test
+> vitest run tests/unit/conversation-memory-maturity.test.ts -t gated background
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:77400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/conversation-memory-maturity.test.ts (31 tests | 1 failed | 30 skipped) 225ms
+   ❯ memory maturity across turns and restarts (27)
+     × [NFR-P02] a gated background fact embedding does not hold the current chat response 222ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [NFR-P02] a gated background fact embedding does not hold the current chat response
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:71:23
+     69|     try {
+     70|       for (let step = 0; step < 20; step++) await Promise.resolve()
+     71|       expect(settled).toBe(true)
+       |                       ^
+     72|       expect(service.list()[0].messages.at(-1)?.text).toBe('当前对话可以继续。')
+     73|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 30 skipped (31)
+   Start at  03:54:37
+   Duration  1.15s (tests 37%, import 34%, transform 28%, worker 1%)

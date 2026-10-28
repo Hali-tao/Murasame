@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { Application, Ticker } from 'pixi.js'
+import { Application, UPDATE_PRIORITY } from 'pixi.js'
 import { ShaderSystem } from '@pixi/core'
 import { install as installCspSafeShaders } from '@pixi/unsafe-eval'
 import { Live2DModel, MotionPriority, type Cubism4InternalModel } from 'pixi-live2d-display/cubism4'
@@ -8,7 +8,6 @@ import { alphaHit } from '@shared/pet-geometry'
 import { resolveMotionGroup } from '@shared/avatar/motion-groups'
 
 installCspSafeShaders({ ShaderSystem })
-Live2DModel.registerTicker(Ticker)
 
 declare global {
   interface Window {
@@ -147,7 +146,9 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       try {
         const loaded = await Live2DModel.from(new URL(preset.modelUrl, document.baseURI).href, {
           autoInteract: false,
-          autoUpdate: true,
+          // The SDK's autoUpdate uses Ticker.shared. That clock keeps accumulating
+          // while app.ticker is stopped, skipping motion/physics on resume.
+          autoUpdate: false,
           idleMotionGroup: preset.idleMotion
         })
         if (disposed || !app) {
@@ -188,9 +189,17 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
         })
         modelRef.current = loaded
         app.stage.addChild(loaded)
+        const ticker = app.ticker
+        ticker.add(() => loaded.update(ticker.deltaMS), undefined, UPDATE_PRIORITY.HIGH)
         fitModel()
         if (idleGroup) await loaded.motion(idleGroup, 0)
         if (!disposed) {
+          // Reduced-motion mode may stop the ticker before the asset loads.
+          // Draw its initial pose once so a static character is still visible.
+          if (!ticker.started) {
+            loaded.update(1000 / 60)
+            app.render()
+          }
           setReady(true)
           console.info(`[Live2D] Model ready: ${preset.id}`)
           onReady?.()
@@ -216,6 +225,8 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       if (!app) return
       app.renderer.resize(canvas.clientWidth, canvas.clientHeight)
       fitModel()
+      // A resize clears the WebGL buffer even when animation is disabled.
+      if (model && !app.ticker.started) app.render()
     })
     observer.observe(canvas)
     window.addEventListener('mousemove', handlePointerMove)
@@ -247,7 +258,11 @@ export const Live2DPet = forwardRef<Live2DPetHandle, Live2DPetProps>(function Li
       ticker.stop()
       return
     }
+    // Pixi's default minFPS=10 otherwise raises our 8 fps idle budget to 10.
+    // Keep enough delta-time headroom for a full frame at the selected rate.
+    ticker.minFPS = 0
     ticker.maxFPS = fps
+    ticker.minFPS = Math.min(10, fps / 2)
     ticker.start()
   }, [paused, fps, ready])
 

@@ -1,0 +1,709 @@
+
+> murasame-desktop@0.9.0 test
+> vitest run tests/unit/conversation-memory-maturity.test.ts
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:80552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/conversation-memory-maturity.test.ts (8 tests | 8 failed) 583ms
+   ❯ memory maturity across turns and restarts (7)
+     × [FR-14] later extraction in one conversation sees the earlier completed fact before judging a correction 75ms
+     × [UC-05] a naturally replaced preference can later return without being permanently suppressed 70ms
+     × [NFR-R02] malformed vector JSON cannot hide valid facts or erase them on the next save 72ms
+     × [NFR-C02] incompatible embedding data stays invalidated across a second restart 76ms
+     × [FR-15] a pending duplicate add cannot undo a newer deletion 70ms
+     × [UC-05] duplicate extraction reports unchanged and does not emit a saved event 65ms
+     × [FR-15] editing one fact to an existing fact does not create duplicate active memories 70ms
+   ❯ conversation reliability at memory boundaries (1)
+     × [NFR-U03] unavailable recall does not discard a valid model reply or the current turn 83ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [FR-14] later extraction in one conversation sees the earlier completed fact before judging a correction
+AssertionError: expected [] to deeply equal [ '喜欢绿茶' ]
+
+- Expected
++ Received
+
+- [
+-   "喜欢绿茶",
+- ]
++ []
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:72:31
+     70|     first.release([proposal('喜欢绿茶')])
+     71|     await Promise.all([a, b])
+     72|     expect(knownAtCorrection).toEqual(['喜欢绿茶'])
+       |                               ^
+     73|     expect(new MemoryService(db).list().map((fact) => fact.text)).toEq…
+     74|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [UC-05] a naturally replaced preference can later return without being permanently suppressed
+AssertionError: expected [ '喜欢白茶' ] to deeply equal [ '喜欢绿茶' ]
+
+- Expected
++ Received
+
+  [
+-   "喜欢绿茶",
++   "喜欢白茶",
+  ]
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:81:67
+     79|     await memory.ingestProposed('改白茶', async () => [{ action: 'UPDATE'…
+     80|     await memory.ingestProposed('恢复绿茶', async () => [{ action: 'UPDATE…
+     81|     expect(new MemoryService(db).list().map((fact) => fact.text)).toEq…
+       |                                                                   ^
+     82|     expect(memory.history().filter((fact) => fact.updated === '已失效')).…
+     83|     expect(db.prepare('SELECT * FROM suppressed_facts').all()).toEqual…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [NFR-R02] malformed vector JSON cannot hide valid facts or erase them on the next save
+AssertionError: expected [] to deeply equal [ '喜欢绿茶', '项目白桦' ]
+
+- Expected
++ Received
+
+- [
+-   "喜欢绿茶",
+-   "项目白桦",
+- ]
++ []
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:91:61
+     89|     db.prepare('UPDATE memories SET vector_json = ? WHERE text = ?').r…
+     90|     const reopened = new MemoryService(db)
+     91|     expect(reopened.list().map((fact) => fact.text).sort()).toEqual(['…
+       |                                                             ^
+     92|     expect(reopened.active().find((fact) => fact.text === '喜欢绿茶')?.vec…
+     93|     expect((await reopened.add('feedback', '回答简洁')).ok).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [NFR-C02] incompatible embedding data stays invalidated across a second restart
+AssertionError: expected [ 1, +0, +0, +0, +0, +0, +0, …(505) ] to be null
+
+- Expected:
+null
+
++ Received:
+[
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+]
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:102:54
+    100|     db.prepare('UPDATE meta SET value = ? WHERE key = ?').run('older-e…
+    101|     expect(new MemoryService(db).active()[0].vector).toBeNull()
+    102|     expect(new MemoryService(db).active()[0].vector).toBeNull()
+       |                                                      ^
+    103|     expect((db.prepare('SELECT vector_json FROM memories').get() as { …
+    104|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [FR-15] a pending duplicate add cannot undo a newer deletion
+AssertionError: expected [ { …(5) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "category": "偏好",
++     "id": "mem-8a74be7f-aa00-4d53-a9cf-2b5feb784fa7",
++     "source": "长期记忆",
++     "text": "喜欢绿茶",
++     "updated": "有效",
++   },
++ ]
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:116:42
+    114|     slow.release(vector())
+    115|     await pending
+    116|     expect(new MemoryService(db).list()).toEqual([])
+       |                                          ^
+    117|   })
+    118|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [UC-05] duplicate extraction reports unchanged and does not emit a saved event
+AssertionError: expected { status: 'saved' } to deeply equal { status: 'unchanged' }
+
+- Expected
++ Received
+
+  {
+-   "status": "unchanged",
++   "status": "saved",
+  }
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:124:79
+    122|     let events = 0
+    123|     memory.subscribe(() => { events++ })
+    124|     expect(await memory.ingestProposed('绿茶', async () => [proposal('喜欢…
+       |                                                                               ^
+    125|     expect(events).toBe(0)
+    126|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [FR-15] editing one fact to an existing fact does not create duplicate active memories
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:134:23
+    132|     if (!old.ok) throw new Error(old.error)
+    133|     const result = await memory.update(old.data.id, 'user', '喜欢白茶')
+    134|     expect(result.ok).toBe(false)
+       |                       ^
+    135|     expect(new MemoryService(db).list().map((fact) => fact.text).sort(…
+    136|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] unavailable recall does not discard a valid model reply or the current turn
+Error: synthetic local index failure
+ ❯ Object.recall tests/unit/conversation-memory-maturity.test.ts:144:35
+    142|     const service = new ConversationService(db, models, { chat: async …
+    143|       memoryEnabled: () => true,
+    144|       recall: async () => { throw new Error('synthetic local index fai…
+       |                                   ^
+    145|     })
+    146|     const chat = service.create()
+ ❯ ConversationService.sendTurn src/main/core/services/conversation-service.ts:185:28
+ ❯ src/main/core/services/conversation-service.ts:121:59
+ ❯ src/main/agent/runtime.ts:55:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed (8)
+   Start at  03:39:18
+   Duration  1.05s (tests 78%, import 13%, transform 9%, worker 1%)

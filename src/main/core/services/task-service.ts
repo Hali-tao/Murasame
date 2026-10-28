@@ -16,6 +16,7 @@ import { getSettings } from '../../settings'
 import type { SummaryGenerator } from '../../agent/grounded-summary'
 import type { GroundedCheckpoint } from '../../../shared/grounded-summary'
 import type { GroundedExecutionOptions } from '../../agent/grounded-executor'
+import { normalizeTaskRoot, taskRootsEqual } from '../../agent/task-root'
 
 
 function notifyTask(task: Task): void {
@@ -61,6 +62,12 @@ function snapshotModel(model: TaskModelBinding): StoredTaskModelSnapshot {
     endpoint: model.endpoint ? (() => { try { const url = new URL(model.endpoint); url.username = ''; url.password = ''; url.search = ''; url.hash = ''; return url.href } catch { return undefined } })() : undefined,
     bindingSalt, bindingFingerprint: bindingFingerprint(model, bindingSalt)
   }
+}
+
+function confirmedDirectory(path: string): string {
+  const canonical = normalizeTaskRoot(path)
+  try { if (!statSync(canonical).isDirectory()) throw new Error('所选对象不是目录') } catch (error) { throw new Error('工作目录不存在、不可访问或不是目录；请重新选择实际目录', { cause: error }) }
+  return canonical
 }
 
 export class TaskService {
@@ -199,18 +206,25 @@ export class TaskService {
     return '失败'
   }
 
-  async create(title: string): Promise<Result<Task>> {
+  async create(title: string, selectedRoot?: string): Promise<Result<Task>> {
     if (!this.db) return fail('任务存储不可用')
     const intent = recognizeIntent(title, true)
     if (intent.question) return fail(intent.question)
+    let root: string | null
+    try { root = selectedRoot !== undefined ? confirmedDirectory(selectedRoot) : extractRoot(title) } catch (error) { return fail(error instanceof Error ? error.message : '目录无法核对') }
     const selected = structuredClone(this.modelSnapshotProvider?.() ?? null)
     const snapshot = selected ? snapshotModel(selected) : null
     let plan: TaskPlan | null
-    try { plan = await this.plan(title, selected) ?? localRulePlan(title) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
+    const plannerGoal = selectedRoot !== undefined && root ? `${title}\n用户明确确认的工作目录："${root}"；所有文件操作限定在该目录内。` : title
+    try { plan = await this.plan(plannerGoal, selected) ?? localRulePlan(title) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
     const id = `task-${randomUUID()}`
-    const planned = plan?.root && isAbsolute(plan.root) ? plan.root.replace(/[\\/]+$/, '') : null
-    const root = extractRoot(title)
-    if (planned && root && planned.toLowerCase() !== root.toLowerCase()) return fail('计划目录与用户指定目录不一致，需重新确认')
+    let planned: string | null
+    try {
+      planned = plan.root?.trim() ? normalizeTaskRoot(plan.root) : null
+      if (planned && root && !taskRootsEqual(planned, root)) return fail('计划目录与用户指定目录不一致，需重新确认')
+      if (root && plan.tool !== 'browser') root = confirmedDirectory(root)
+      if (planned) plan.root = planned
+    } catch (error) { return fail(error instanceof Error ? error.message : '计划目录无法核对') }
     const now = new Date().toISOString()
     this.db.prepare(
       `INSERT INTO tasks(id, title, status, tone, progress, scope, summary, result, artifacts_json, created_at, updated_at)
@@ -230,7 +244,7 @@ export class TaskService {
       return ok(this.emit(id))
     }
     if (!root && (plan?.tool ?? chooseTool(title)) !== 'browser') {
-      this.touch(id, '要处理哪个目录或文件？未确认具体对象前不会执行。', '还缺少具体目录')
+      this.touch(id, planned ? `计划建议的工作目录是 ${planned}。请使用“选择目录并继续”确认实际位置；确认前不会读取文件内容或执行操作。` : '要处理哪个目录或文件？请使用“选择目录并继续”确认实际位置；确认前不会执行。', '还缺少明确确认的目录')
       return ok(this.emit(id))
     }
     this.move(id, '已确认')
@@ -540,7 +554,7 @@ export class TaskService {
         step.args = { ...step.args, action: 'organize', ...(root ? { files: organizeManifest(resolveInside(root, step.workspace ?? '.')) } : {}) }
       }
     }
-    for (const step of plan.steps) for (const output of step.outputs ?? []) {
+    for (const step of plan.steps) for (const output of root ? step.outputs ?? [] : []) {
       const path = resolveInside(resolveInside(root, step.workspace ?? '.'), output.path)
       try { if (!statSync(path).isFile()) throw new Error('声明的产物目标不是文件'); output.baselineHash = createHash('sha256').update(readFileSync(path)).digest('hex') } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') output.baselineHash = null; else throw error }
       const check = step.checks?.find((item) => item.path === output.path && (item.kind === 'file-content' || item.kind === 'file-hash'))
@@ -594,7 +608,13 @@ export class TaskService {
     const goal = resumeRequested ? current.title : `${current.title}\n用户补充：${answer}`
     let plan: TaskPlan | null
     try { plan = resume ? this.getPlan(id) ?? null : await this.plan(goal, this.boundModel(id)) ?? localRulePlan(goal) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
-    const root = extractRoot(answer) ?? (current.scope || null)
+    let root: string | null
+    try {
+      // Preserve the stored spelling on resume: existing checkpoint hashes include that exact scope.
+      root = extractRoot(answer) ?? (current.scope || null)
+      if (root && plan?.root?.trim() && !taskRootsEqual(root, plan.root)) return fail('计划目录与本次确认的目录不一致；原计划与授权范围已保留，请重新确认')
+      if (root && !resume && plan?.tool !== 'browser') root = confirmedDirectory(root)
+    } catch (error) { return fail(error instanceof Error ? error.message : '目录无法核对') }
     if (!root && (plan?.tool ?? chooseTool(goal)) !== 'browser') return fail('仍缺少明确授权目录')
     if (plan && !resume) this.savePlan(id, plan, root ?? '')
     let preview: GoalOutcome

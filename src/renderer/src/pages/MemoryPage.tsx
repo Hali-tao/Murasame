@@ -8,6 +8,7 @@ import { useAppStore } from '../store'
 export function MemoryPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const extractions = useAppStore((state) => state.memoryExtractions)
+  const index = data.memoryIndex
   const latestExtractions = Object.values(extractions).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 3)
   const extractionLabels: Record<MemoryExtractionStatus['status'], string> = { processing: '正在提取', saved: '已保存新记忆', unchanged: '没有新的长期信息', skipped: '提取已暂停', failed: '提取失败' }
   const updateSettings = useAppStore((state) => state.updateSettings)
@@ -75,6 +76,23 @@ export function MemoryPage(): React.JSX.Element {
           <ToggleSwitch checked={data.settings.memoryEnabled} onCheckedChange={(checked) => void toggleMemory(checked)} label="启用长期记忆" />
         </div>
       </div>
+
+      {index && (index.total > 0 || index.state !== 'idle') ? (
+        <Card className="memory-index-status" role="status" aria-live="polite">
+          <Pill tone={index.state === 'failed' ? 'amber' : index.state === 'idle' ? 'green' : 'blue'}>
+            {{ idle: '记忆整理完成', rebuilding: '正在整理记忆', paused: '记忆整理已暂停', failed: '整理暂时中断' }[index.state]}
+          </Pill>
+          <p>{index.message}</p>
+          {index.total > 0 ? (
+            <>
+              <div className="progress-track" role="progressbar" aria-label="记忆整理进度" aria-valuemin={0} aria-valuemax={index.total} aria-valuenow={index.completed}>
+                <span style={{ width: `${Math.min(100, index.completed / index.total * 100)}%` }} />
+              </div>
+              <small>已整理 {index.completed} / {index.total} 条</small>
+            </>
+          ) : null}
+        </Card>
+      ) : null}
 
       <div className="stat-grid four">
         <StatTile label="记忆条目" value={data.memories.length} caption="可逐条更正或删除" tone="violet" />

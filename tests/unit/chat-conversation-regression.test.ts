@@ -35,7 +35,7 @@ beforeEach(async () => {
     core: { getBootstrap: async () => ({ ok: true, data }), setActiveConversation: async () => ({ ok: true, data: 'a' }), sendMessage: vi.fn() },
     events: {
       onConversationUpdated: listen('updated'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'),
-      onMessageDelta: listen('delta'), onActiveConversation: listen('active'), onTaskUpdated: listen('task'), onMemoriesUpdated: listen('memories'), onMemoryExtractionStatus: listen('extraction')
+      onMessageDelta: listen('delta'), onActiveConversation: listen('active'), onTaskUpdated: listen('task'), onMemoriesUpdated: listen('memories'), onMemoryExtractionStatus: listen('extraction'), onMemoryIndexStatus: listen('index')
     }
   } as unknown as MurasameApi
   Object.defineProperty(window, 'murasame', { configurable: true, value: api })
@@ -45,6 +45,20 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.restoreAllMocks() })
 
 describe('conversation UI isolation', () => {
+  it('[D-17] 展示后台记忆整理的实际进度与失败，保持已有记忆可查看', () => {
+    render(createElement(MemoryPage))
+    const previous = useAppStore.getState().data!.memories
+    act(() => emit('index', { state: 'rebuilding', completed: 3, total: 10, message: '正在后台整理记忆，对话可以继续。' }))
+    const progress = screen.getByRole('progressbar', { name: '记忆整理进度' })
+    expect(progress.getAttribute('aria-valuenow')).toBe('3')
+    expect(progress.getAttribute('aria-valuemax')).toBe('10')
+    expect(screen.getByText('正在后台整理记忆，对话可以继续。')).toBeTruthy()
+    act(() => emit('index', { state: 'failed', completed: 3, total: 10, message: '整理暂时中断，已有内容仍保留。' }))
+    expect(screen.getByText('整理暂时中断')).toBeTruthy()
+    expect(screen.getByText('整理暂时中断，已有内容仍保留。')).toBeTruthy()
+    expect(useAppStore.getState().data!.memories).toEqual(previous)
+  })
+
   it('keeps current selection on background events and background send completion', async () => {
     const pending = deferred<Result<Conversation>>()
     vi.mocked(api.core.sendMessage).mockImplementation(() => pending.promise)

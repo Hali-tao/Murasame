@@ -163,7 +163,9 @@ describe('task isolated runtime adapter', () => {
       if (args[0] === 'rm') removed = true
       return ''
     }
-    const outcome = await createTaskRunner(run)({ root, executable: 'touch', args: ['a.txt'], timeoutMs: 1000, signal: controller.signal })
+    // Cancellation is the condition under test; slow concurrent disk staging must
+    // not turn this into a one-second performance/deadline test before run aborts.
+    const outcome = await createTaskRunner(run)({ root, executable: 'touch', args: ['a.txt'], timeoutMs: 30_000, signal: controller.signal })
     expect(outcome.status).toBe('aborted'); expect(removed).toBe(true); expect(commands).toBe(0)
   })
 })

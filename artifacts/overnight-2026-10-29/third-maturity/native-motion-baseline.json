@@ -1,0 +1,162 @@
+{
+  "generatedAt": "2026-10-28T19:42:11.915Z",
+  "label": "baseline",
+  "baseline": "e10f25fbe1ccf030d3bb303f62c9d8cff89e475f",
+  "componentSha256": "f103008de0f5a19da7f48f8793c2c4fe0d7f6cb9423fe58fec078645db1e9106",
+  "runtime": "Actual Live2DPet.tsx bundled with installed React, Pixi, pixi-live2d-display and original moc3. Pause uses real time; cadence feeds the real Pixi ticker controlled display times. No mocked model.",
+  "checks": [
+    {
+      "name": "hidden-pause: model clock is frozen",
+      "passed": false,
+      "before": {
+        "elapsed": 975.0999999523162,
+        "pending": 100,
+        "frames": 5,
+        "group": "Greet",
+        "wall": 4280.399999976158
+      },
+      "held": {
+        "elapsed": 4425.0999999523165,
+        "pending": 3550,
+        "frames": 5,
+        "group": "Greet",
+        "wall": 9017.399999976158
+      },
+      "elapsedWhilePaused": 3450
+    },
+    {
+      "name": "hidden-pause: first frames resume the interrupted action",
+      "passed": false,
+      "maxResumeDeltaMs": 3683.300000000001,
+      "resumed": {
+        "snapshot": {
+          "elapsed": 4641.799999952317,
+          "pending": 0,
+          "frames": 8,
+          "group": "Idle",
+          "wall": 9222.299999952316
+        },
+        "frames": [
+          {
+            "wall": 9136.299999952316,
+            "dt": 3683.300000000001,
+            "now": 4558.399999952318,
+            "group": "Greet",
+            "step": 0.003265976905822754
+          },
+          {
+            "wall": 9185.799999952316,
+            "dt": 50,
+            "now": 4608.399999952318,
+            "step": 0.0000368952751159668
+          },
+          {
+            "wall": 9218.799999952316,
+            "dt": 33.399999999999636,
+            "now": 4641.799999952317,
+            "group": "Idle",
+            "step": 0.0000030994415283203125
+          }
+        ]
+      }
+    },
+    {
+      "name": "zero-fps: model clock is frozen",
+      "passed": false,
+      "before": {
+        "elapsed": 4808.299999952317,
+        "pending": 0,
+        "frames": 12,
+        "group": "Think",
+        "wall": 9920.699999988079
+      },
+      "held": {
+        "elapsed": 6574.999999952316,
+        "pending": 1766.699999999999,
+        "frames": 12,
+        "group": "Think",
+        "wall": 12052.199999988079
+      },
+      "elapsedWhilePaused": 1766.699999999999
+    },
+    {
+      "name": "zero-fps: first frames resume the interrupted action",
+      "passed": false,
+      "maxResumeDeltaMs": 1900,
+      "resumed": {
+        "snapshot": {
+          "elapsed": 6791.5999999523165,
+          "pending": 0,
+          "frames": 15,
+          "group": "Think",
+          "wall": 12271.199999988079
+        },
+        "frames": [
+          {
+            "wall": 12185.599999964237,
+            "dt": 1900,
+            "now": 6708.299999952317,
+            "group": "Think",
+            "step": 0.177119642496109
+          },
+          {
+            "wall": 12219,
+            "dt": 33.399999999999636,
+            "now": 6741.699999952317,
+            "group": "Think",
+            "step": 0.0004713069647550583
+          },
+          {
+            "wall": 12268.599999964237,
+            "dt": 49.899999999999636,
+            "now": 6791.5999999523165,
+            "group": "Think",
+            "step": 0.0003521963953971863
+          }
+        ]
+      }
+    },
+    {
+      "name": "12 fps renders about 24 frames across two seconds without slowing or double advancing motion time",
+      "passed": false,
+      "before": {
+        "elapsed": 6874.899999952316,
+        "pending": 0,
+        "frames": 17,
+        "group": "Think",
+        "wall": 12352.699999988079
+      },
+      "after": {
+        "elapsed": 6874.899999952316,
+        "pending": 0,
+        "frames": 17,
+        "group": "Think",
+        "wall": 12359.199999988079
+      },
+      "elapsedDelta": 0,
+      "renders": 0
+    },
+    {
+      "name": "unmount detaches animation clock",
+      "passed": true,
+      "removedStart": {
+        "elapsed": 6874.899999952316,
+        "pending": 0,
+        "frames": 17,
+        "wall": 12376.899999976158
+      },
+      "removedEnd": {
+        "elapsed": 6874.899999952316,
+        "pending": 0,
+        "frames": 17,
+        "wall": 12687.099999964237
+      }
+    },
+    {
+      "name": "native page has no runtime errors",
+      "passed": true,
+      "errors": []
+    }
+  ],
+  "passed": false
+}

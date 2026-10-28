@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DeleteScope, MemoryEntry, Task } from '@shared/types'
 import { Button, ConfirmDialog, Field, Input, Modal, Textarea } from './ui'
 import { useAppStore } from '../store'
@@ -96,17 +96,39 @@ export function TaskCreateDialog({
   initialTitle?: string
 }): React.JSX.Element {
   const [title, setTitle] = useState(initialTitle)
+  const [root, setRoot] = useState('')
+  const [picking, setPicking] = useState(false)
+  const selectionVersion = useRef(0)
+  const notify = useAppStore((state) => state.notify)
   const createTask = useAppStore((state) => state.createTask)
   const busy = useAppStore((state) => Boolean(state.busy['task:create']))
 
+  useEffect(() => () => { selectionVersion.current += 1 }, [open])
+
   const handleOpenChange = (next: boolean): void => {
-    if (!next) setTitle(initialTitle)
+    if (!next) {
+      selectionVersion.current += 1
+      setTitle(initialTitle)
+      setRoot('')
+      setPicking(false)
+    }
     onOpenChange(next)
   }
 
+  const pickDirectory = async (): Promise<void> => {
+    if (busy || picking) return
+    const version = ++selectionVersion.current
+    setPicking(true)
+    try {
+      const path = await window.murasame.app.pickOpen({ title: '选择任务的工作目录', directory: true })
+      if (version === selectionVersion.current && path) setRoot(path)
+    } catch { if (version === selectionVersion.current) notify('暂时无法选择目录，请重试', 'red') }
+    finally { if (version === selectionVersion.current) setPicking(false) }
+  }
+
   const submit = async (): Promise<void> => {
-    if (!title.trim()) return
-    const task = await createTask(title.trim())
+    if (!title.trim() || busy || picking) return
+    const task = await createTask(title.trim(), root || undefined)
     if (task) handleOpenChange(false)
   }
 
@@ -119,7 +141,7 @@ export function TaskCreateDialog({
       footer={
         <>
           <Button onClick={() => handleOpenChange(false)} disabled={busy}>取消</Button>
-          <Button variant="primary" onClick={() => void submit()} disabled={!title.trim() || busy}>
+          <Button variant="primary" onClick={() => void submit()} disabled={!title.trim() || busy || picking}>
             创建并开始
           </Button>
         </>
@@ -138,9 +160,14 @@ export function TaskCreateDialog({
           data-testid="task-title-input"
         />
       </Field>
+      <Field label="工作目录" hint="文件任务可先选目录。选择范围后，具体写入和移动仍需批准。">
+        <Input value={root} readOnly aria-label="已选择的工作目录" placeholder="可选；也可以在任务中写明完整目录" />
+        <Button disabled={busy || picking} onClick={() => void pickDirectory()} data-testid="pick-task-directory">{picking ? '正在选择…' : '选择目录'}</Button>
+        {root ? <Button disabled={busy || picking} onClick={() => setRoot('')}>清除选择</Button> : null}
+      </Field>
       <div className="info-grid compact">
         <div><span>模型</span><strong>当前默认服务</strong></div>
-        <div><span>范围</span><strong>已授权目录与本地记录</strong></div>
+        <div><span>范围</span><strong>{root ? '所选工作目录' : '以明确确认的目录为准'}</strong></div>
         <div><span>审批</span><strong>敏感动作逐次确认</strong></div>
       </div>
     </Modal>

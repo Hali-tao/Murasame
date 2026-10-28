@@ -1,0 +1,491 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/chat-conversation-regression.test.ts (8 tests | 1 failed | 7 skipped) 217ms
+   ❯ conversation UI isolation (5)
+     × [D-17] 展示后台记忆整理的实际进度与失败，保持已有记忆可查看 215ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > [D-17] 展示后台记忆整理的实际进度与失败，保持已有记忆可查看
+TestingLibraryElementError: Unable to find an accessible element with the role "progressbar" and name "记忆整理进度"
+
+Here are the accessible roles:
+
+  strong:
+
+  Name "":
+  <strong />
+
+  Name "":
+  <strong />
+
+  Name "":
+  <strong />
+
+  Name "":
+  <strong />
+
+  Name "":
+  <strong />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  --------------------------------------------------
+  switch:
+
+  Name "启用长期记忆":
+  <button
+    aria-checked="true"
+    aria-label="启用长期记忆"
+    class="switch"
+    data-state="checked"
+    role="switch"
+    type="button"
+    value="on"
+  />
+
+  --------------------------------------------------
+  textbox:
+
+  Name "搜索记忆":
+  <input
+    aria-label="搜索记忆"
+    placeholder="搜索记忆内容…"
+    value=""
+  />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "筛选类别":
+  <select
+    aria-label="筛选类别"
+    class="select"
+  />
+
+  --------------------------------------------------
+  option:
+
+  Name "全部类别":
+  <option />
+
+  Name "偏好":
+  <option />
+
+  --------------------------------------------------
+  button:
+
+  Name "清空…":
+  <button
+    class="btn btn-danger btn-sm"
+    type="button"
+  />
+
+  Name "添加记忆":
+  <button
+    class="btn btn-primary btn-sm"
+    data-testid="add-memory"
+    type="button"
+  />
+
+  Name "编辑":
+  <button
+    type="button"
+  />
+
+  Name "删除":
+  <button
+    class="danger-link"
+    type="button"
+  />
+
+  Name "编辑":
+  <button
+    type="button"
+  />
+
+  Name "删除":
+  <button
+    class="danger-link"
+    type="button"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page memory-page"
+    >
+      <div
+        class="memory-banner"
+      >
+        <div
+          class="banner-copy"
+        >
+          <div
+            class="banner-titleline"
+          >
+            <span
+              class="pill pill-violet"
+            >
+              自动提取已启用
+            </span>
+            <strong>
+              长期记忆不是对话历史
+            </strong>
+          </div>
+          <p>
+            从交流与任务中提取稳定信息，跨会话使用。关闭后停止提取与召回，已有条目仍可查看。
+          </p>
+        </div>
+        <div
+          class="banner-toggle"
+        >
+          <span>
+            启用记忆
+          </span>
+          <button
+            aria-checked="true"
+            aria-label="启用长期记忆"
+            class="switch"
+            data-state="checked"
+            role="switch"
+            type="button"
+            value="on"
+          >
+            <span
+              class="switch-thumb"
+              data-state="checked"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="stat-grid four"
+      >
+        <section
+          class="card stat-tile"
+        >
+          <div
+            class="stat-topline"
+          >
+            <span>
+              记忆条目
+            </span>
+            <span
+              class="stat-dot dot-violet"
+            />
+          </div>
+          <strong>
+            2
+          </strong>
+          <p>
+            可逐条更正或删除
+          </p>
+        </section>
+        <section
+          class="card stat-tile"
+        >
+          <div
+            class="stat-topline"
+          >
+            <span>
+              自动提取
+            </span>
+            <span
+              class="stat-dot dot-green"
+            />
+          </div>
+          <strong>
+            开启
+          </strong>
+          <p>
+            失败时不展示未保存内容
+          </p>
+        </section>
+        <section
+          class="card stat-tile"
+        >
+          <div
+            class="stat-topline"
+          >
+            <span>
+              记忆条数
+            </span>
+            <span
+              class="stat-dot dot-coral"
+            />
+          </div>
+          <strong>
+            2
+          </strong>
+          <p>
+            只统计当前还保留的条目
+          </p>
+        </section>
+        <section
+          class="card stat-tile"
+        >
+          <div
+            class="stat-topline"
+          >
+            <span>
+              隐私边界
+            </span>
+            <span
+              class="stat-dot dot-blue"
+            />
+          </div>
+          <strong>
+            本地
+          </strong>
+          <p>
+            加密存储，不默认外发
+          </p>
+        </section>
+      </div>
+      <div
+        class="memory-toolbar"
+      >
+        <div
+          class="search-box wide"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-search"
+            fill="none"
+            height="15"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="15"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m21 21-4.34-4.34"
+            />
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+            />
+          </svg>
+          <input
+            aria-label="搜索记忆"
+            placeholder="搜索记忆内容…"
+            value=""
+          />
+        </div>
+        <select
+          aria-label="筛选类别"
+          class="select"
+        >
+          <option>
+            全部类别
+          </option>
+          <option>
+            偏好
+          </option>
+        </select>
+        <div
+          class="toolbar-spacer"
+        />
+        <button
+          class="btn btn-danger btn-sm"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-trash lucide-trash-2"
+            fill="none"
+            height="14"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="14"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 11v6"
+            />
+            <path
+              d="M14 11v6"
+            />
+            <path
+              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
+            />
+            <path
+              d="M3 6h18"
+            />
+            <path
+              d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+            />
+          </svg>
+          清空…
+        </button>
+        <button
+          class="btn btn-primary btn-sm"
+          data-testid="add-memory"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-plus"
+            fill="none"
+            height="15"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="15"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 12h14"
+            />
+            <path
+              d="M12 5v14"
+            />
+          </svg>
+          添加记忆
+        </button>
+      </div>
+      <div
+        class="memory-grid"
+      >
+        <section
+          class="card memory-card"
+          data-testid="memory-card"
+        >
+          <div
+            class="memory-card-head"
+          >
+            <span
+              class="pill pill-violet"
+            >
+              偏好
+            </span>
+            <span>
+              有效
+            </span>
+          </div>
+          <p>
+            没有注入的记忆
+          </p>
+          <div
+            class="memory-card-foot"
+          >
+            <span>
+              手动
+            </span>
+            <div>
+              <button
+                type="button"
+              >
+                编辑
+              </button>
+              <button
+                class="danger-link"
+                type="button"
+              >
+                删除
+              </button>
+            </div>
+          </div>
+        </section>
+        <section
+          class="card memory-card"
+          data-testid="memory-card"
+        >
+          <div
+            class="memory-card-head"
+          >
+            <span
+              class="pill pill-violet"
+            >
+              偏好
+            </span>
+            <span>
+              有效
+            </span>
+          </div>
+          <p>
+            实际注入的白茶偏好
+          </p>
+          <div
+            class="memory-card-foot"
+          >
+            <span>
+              手动
+            </span>
+            <div>
+              <button
+                type="button"
+              >
+                编辑
+              </button>
+              <button
+                class="danger-link"
+                type="button"
+              >
+                删除
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/unit/chat-conversation-regression.test.ts:52:29
+     50|     const previous = useAppStore.getState().data!.memories
+     51|     act(() => emit('index', { state: 'rebuilding', completed: 3, total…
+     52|     const progress = screen.getByRole('progressbar', { name: '记忆整理进度' …
+       |                             ^
+     53|     expect(progress.getAttribute('aria-valuenow')).toBe('3')
+     54|     expect(progress.getAttribute('aria-valuemax')).toBe('10')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  03:54:55
+   Duration  2.60s (environment 64%, import 21%, tests 9%, transform 5%)

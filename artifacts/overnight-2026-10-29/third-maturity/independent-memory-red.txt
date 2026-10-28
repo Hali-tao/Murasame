@@ -1,0 +1,18 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Recall must not await unrelated missing-vector rebuilds
+
+false !== true
+
+    at file:///E:/Desktop/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/murasame/previews/tmp/third-review-memory-red.mjs:519:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.19.0

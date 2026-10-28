@@ -164,6 +164,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   core.onScreenAnalysis = analysis => broadcast(IPC.core.screenUpdated, analysis)
   core.onConversationUpdate = conversation => broadcast(IPC.core.conversationUpdated, conversation)
   core.memory.subscribe(() => broadcast(IPC.core.memoriesUpdated, core.memory.list()))
+  core.memory.subscribeIndex(status => broadcast(IPC.core.memoryIndexStatus, status))
   core.onMemoryExtractionStatus = status => broadcast(IPC.core.memoryExtractionStatus, status)
 
   const presentedTaskStates = new Map<string, string>()
@@ -366,7 +367,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   )
   handleCore<MemoryEntry[]>(IPC.core.clearMemories, z.undefined(), () => core.clearMemories())
   handleCore<Task>(IPC.core.createTask, taskCreateSchema, (input) =>
-    core.createTask((input as { title: string }).title)
+    core.createTask((input as { title: string; root?: string }).title, (input as { root?: string }).root)
   )
   handleCore<Task>(IPC.core.approveTask, z.object({ id: z.string().min(1), scope: z.enum(['once', 'task']).optional() }), (input) => {
     const value = input as { id: string; scope?: 'once' | 'task' }

@@ -1,0 +1,217 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:48904) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/task-directory.test.ts (14 tests | 14 failed) 135ms
+   ❯ Windows task directory boundaries (14)
+     × [FR-16] 保留盘符根目录 E:\，不能变为驱动器相对路径 10ms
+     × [FR-16] 保留盘符根目录 E:/，不能变为驱动器相对路径 1ms
+     × [FR-16] 按出现顺序解析目标，不让后面的引号输出目录取代前面的工作目录 3ms
+     × [FR-16] 支持含空格的明确引号目录和中文引号 1ms
+     × [FR-16] 同一目录不同斜线、大小写和尾分隔符仍为同一授权范围 11ms
+     × [FR-18] 没有明确目录前不相对进程目录读取产物或生成哈希基线 15ms
+     × [FR-16] 原生选择的目录单独传入计划器、审批和执行，不必用户抄写路径 9ms
+     × [FR-18] 拒绝含糊或设备目录 E:，不调用模型 10ms
+     × [FR-18] 拒绝含糊或设备目录 \Windows，不调用模型 9ms
+     × [FR-18] 拒绝含糊或设备目录 \\?\C:\，不调用模型 7ms
+     × [FR-18] 拒绝含糊或设备目录 relative，不调用模型 8ms
+     × [FR-18] 选择的对象必须是实际目录，不能把文件当根目录 7ms
+     × [FR-18] 模型不能替换用户从目录选择器确认的目录 16ms
+     × [FR-18] 补充明确目录时也核对模型范围，拒绝后保留原计划与范围 26ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-16] 保留盘符根目录 E:\，不能变为驱动器相对路径
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-16] 保留盘符根目录 E:/，不能变为驱动器相对路径
+AssertionError: expected null to be 'E:\' // Object.is equality
+
+- Expected:
+"E:\\"
+
++ Received:
+null
+
+ ❯ tests/unit/task-directory.test.ts:25:39
+     23| describe('Windows task directory boundaries', () => {
+     24|   it.each(['E:\\', 'E:/'])('[FR-16] 保留盘符根目录 %s，不能变为驱动器相对路径', path => {
+     25|     expect(extractRoot(`整理 ${path}`)).toBe('E:\\')
+       |                                       ^
+     26|   })
+     27|   it('[FR-16] 按出现顺序解析目标，不让后面的引号输出目录取代前面的工作目录', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-16] 按出现顺序解析目标，不让后面的引号输出目录取代前面的工作目录
+AssertionError: expected 'E:\output notes' to be 'E:\input' // Object.is equality
+
+Expected: "E:\input"
+Received: "E:\output notes"
+
+ ❯ tests/unit/task-directory.test.ts:28:65
+     26|   })
+     27|   it('[FR-16] 按出现顺序解析目标，不让后面的引号输出目录取代前面的工作目录', () => {
+     28|     expect(extractRoot('整理 E:\\input，并另存到 "E:\\output notes"')).toBe('…
+       |                                                                 ^
+     29|   })
+     30|   it('[FR-16] 支持含空格的明确引号目录和中文引号', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-16] 支持含空格的明确引号目录和中文引号
+AssertionError: expected 'E:/my notes' to be 'E:\my notes' // Object.is equality
+
+Expected: "E:\my notes"
+Received: "E:/my notes"
+
+ ❯ tests/unit/task-directory.test.ts:31:46
+     29|   })
+     30|   it('[FR-16] 支持含空格的明确引号目录和中文引号', () => {
+     31|     expect(extractRoot('整理 “E:/my notes/”')).toBe('E:\\my notes')
+       |                                              ^
+     32|   })
+     33|   it('[FR-16] 同一目录不同斜线、大小写和尾分隔符仍为同一授权范围', async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-16] 同一目录不同斜线、大小写和尾分隔符仍为同一授权范围
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/task-directory.test.ts:36:23
+     34|     const f = fixture(); f.tasks.setPlanner(async () => organize(f.roo…
+     35|     const result = await f.tasks.create(`按类型整理 ${f.root}`)
+     36|     expect(result.ok).toBe(true)
+       |                       ^
+     37|     if (result.ok) expect(result.data.status).toBe('等待批准')
+     38|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 没有明确目录前不相对进程目录读取产物或生成哈希基线
+AssertionError: expected { …(3) } to not have property "baselineHash"
+
+- Expected:
+undefined
+
++ Received:
+"d86e6111f8d1f3283c892ea0c76979537a1e4020812be2f37dd8f76670f3fbd4"
+
+ ❯ tests/unit/task-directory.test.ts:47:66
+     45|     expect(result.data.status).toBe('待确认'); expect(result.data.scope).…
+     46|     const stored = f.db.prepare('SELECT plan_json FROM task_execution_…
+     47|     expect(JSON.parse(stored.plan_json).steps[0].outputs[0]).not.toHav…
+       |                                                                  ^
+     48|     expect(readFileSync(join(f.root, 'a.txt'), 'utf8')).toBe('independ…
+     49|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-16] 原生选择的目录单独传入计划器、审批和执行，不必用户抄写路径
+AssertionError: expected '按类型整理这些资料' to contain 'E:\Desktop\软件工程\murasame\previews\tmp…'
+
+Expected: "E:\Desktop\软件工程\murasame\previews\tmp\task-directory-6iZtmS"
+Received: "按类型整理这些资料"
+
+ ❯ tests/unit/task-directory.test.ts:56:25
+     54|     expect(result.ok).toBe(true)
+     55|     if (!result.ok) return
+     56|     expect(plannedGoal).toContain(f.root)
+       |                         ^
+     57|     expect(result.data.title).toBe('按类型整理这些资料')
+     58|     expect(result.data.scope).toBe(f.root); expect(result.data.approva…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 拒绝含糊或设备目录 E:，不调用模型
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 拒绝含糊或设备目录 \Windows，不调用模型
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 拒绝含糊或设备目录 \\?\C:\，不调用模型
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 拒绝含糊或设备目录 relative，不调用模型
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-directory.test.ts:67:54
+     65|     const f = fixture(); let planned = false
+     66|     f.tasks.setPlanner(async () => { planned = true; return organize(f…
+     67|     expect((await f.tasks.create('按类型整理', path)).ok).toBe(false)
+       |                                                      ^
+     68|     expect(planned).toBe(false)
+     69|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 选择的对象必须是实际目录，不能把文件当根目录
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-directory.test.ts:73:71
+     71|     const f = fixture(); let planned = false
+     72|     f.tasks.setPlanner(async () => { planned = true; return organize(f…
+     73|     expect((await f.tasks.create('按类型整理', join(f.root, 'a.txt'))).ok).…
+       |                                                                       ^
+     74|     expect(planned).toBe(false)
+     75|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 模型不能替换用户从目录选择器确认的目录
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-directory.test.ts:80:23
+     78|     f.tasks.setPlanner(async () => organize(other.root))
+     79|     const result = await f.tasks.create('按类型整理', f.root)
+     80|     expect(result.ok).toBe(false); expect(f.tasks.list()).toHaveLength…
+       |                       ^
+     81|   })
+     82|   it('[FR-18] 补充明确目录时也核对模型范围，拒绝后保留原计划与范围', async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/task-directory.test.ts > Windows task directory boundaries > [FR-18] 补充明确目录时也核对模型范围，拒绝后保留原计划与范围
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-directory.test.ts:88:26
+     86|     f.tasks.setPlanner(async () => organize(other.root))
+     87|     const continued = await f.tasks.continueTask(result.data.id, `仍使用 …
+     88|     expect(continued.ok).toBe(false)
+       |                          ^
+     89|     expect(f.tasks.list()[0].scope).toBe(f.root)
+     90|     const stored = f.db.prepare('SELECT plan_json FROM task_execution_…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed (14)
+   Start at  03:39:51
+   Duration  1.18s (import 37%, tests 34%, transform 27%, worker 2%)
