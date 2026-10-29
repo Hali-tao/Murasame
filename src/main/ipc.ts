@@ -177,6 +177,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   let previousPrivacy = privacyKey()
   core.onScreenAnalysis = analysis => broadcast(IPC.core.screenUpdated, analysis)
   core.onConversationUpdate = conversation => broadcast(IPC.core.conversationUpdated, conversation)
+  core.onConversationDeleted = event => broadcast(IPC.core.conversationDeleted, event)
   core.memory.subscribe(() => broadcast(IPC.core.memoriesUpdated, core.memory.list()))
   core.subscribeModels(models => broadcast(IPC.core.modelsUpdated, models))
   core.memory.subscribeIndex(status => broadcast(IPC.core.memoryIndexStatus, status))

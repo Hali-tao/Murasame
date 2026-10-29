@@ -1,0 +1,60 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/chat-conversation-regression.test.ts (13 tests | 2 failed) 844ms
+   ❯ conversation UI isolation (7)
+     × removes externally deleted history and rejects a late conversation update 17ms
+     × cannot restore deleted history from a delayed initial snapshot 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > removes externally deleted history and rejects a late conversation update
+AssertionError: expected [ 'a', 'b' ] to deeply equal [ 'b' ]
+
+- Expected
++ Received
+
+  [
++   "a",
+    "b",
+  ]
+
+ ❯ tests/unit/chat-conversation-regression.test.ts:51:77
+     49|     emit('deleted', { id: 'a', activeConversationId: 'b' })
+     50|     emit('updated', { ...chats[0], messages: [{ id: 'late', role: 'ass…
+     51|     expect(useAppStore.getState().data?.conversations.map(item => item…
+       |                                                                             ^
+     52|     expect(useAppStore.getState().selectedConversationId).toBe('b')
+     53|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > cannot restore deleted history from a delayed initial snapshot
+AssertionError: expected [ 'a', 'b' ] to deeply equal [ 'b' ]
+
+- Expected
++ Received
+
+  [
++   "a",
+    "b",
+  ]
+
+ ❯ tests/unit/chat-conversation-regression.test.ts:64:77
+     62|     pending.release(initial)
+     63|     await loading
+     64|     expect(useAppStore.getState().data?.conversations.map(item => item…
+       |                                                                             ^
+     65|     expect(useAppStore.getState().selectedConversationId).toBe('b')
+     66|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 passed (13)
+   Start at  19:14:27
+   Duration  3.73s (environment 52%, tests 23%, import 19%, transform 5%)

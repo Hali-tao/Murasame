@@ -1,0 +1,13 @@
+import { readFileSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import assert from 'node:assert/strict'
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const root = 'artifacts/nailong-3d-calibration-2026-10-29'
+const manifest = JSON.parse(readFileSync(`${root}/manifest.json`, 'utf8'))
+const mismatches = manifest.files.filter(file => hash(readFileSync(`${root}/${file.path}`)) !== file.sha256).map(file => file.path)
+assert.deepEqual(mismatches, [])
+assert.equal(hash(readFileSync('artifacts/nailong-3d-2026-10-29/reference.png')), '1c6231a9f32e7a3df9a1a455a55966eaa82713bbfa57abac1fd0092379189da7')
+assert.equal(hash(readFileSync('artifacts/nailong-3d-refined-2026-10-29/nailong-reference-r6.blend')), '93d2ac57f8d9b97ea1777fae3c6f28fab90fec7b945ebaa1580b83b541d249a6')
+const report = { at: new Date().toISOString(), files: manifest.files.length, mismatches, referenceUnchanged: true, oldR6Unchanged: true, r9AppearanceAccepted: false, r10: 'Interrupted; retained locally; no new modeling or independent reopen performed in this heartbeat' }
+writeFileSync('previews/coworker-issues-2026-10-29/character-archive-check.json', JSON.stringify(report, null, 2) + '\n')
+console.log(JSON.stringify(report))

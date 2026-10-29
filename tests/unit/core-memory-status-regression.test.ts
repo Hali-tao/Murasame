@@ -4,6 +4,7 @@ import { MemoryDatabase } from '../helpers/memory-db'
 import type { ModelRegistry } from '../../src/main/model/registry'
 import { ModelGateway } from '../../src/main/model/gateway'
 import { MurasameCore } from '../../src/main/core/murasame-core'
+import { getActiveConversationId } from '../../src/main/core/active-conversation'
 const seams = vi.hoisted(() => ({ settings: {} as Record<string, unknown>, cues: [] as Array<{ text?: string }> }))
 vi.mock('electron', () => ({ shell: { openExternal: vi.fn() }, Notification: { isSupported: () => false } }))
 vi.mock('../../src/main/windows', () => ({ broadcastPetPerformance: (cue: { text?: string }) => seams.cues.push(cue) }))
@@ -14,6 +15,28 @@ const models = { getDefault: () => model, markOffline: vi.fn(), markVerified: vi
 beforeEach(() => { vi.restoreAllMocks(); seams.settings = { ...structuredClone(initialSettings), memoryEnabled: true, memoryAutoExtract: true }; seams.cues = [] })
 
 describe('core memory extraction status propagation', () => {
+  it('publishes a successful history deletion even when a later selected scope fails', async () => {
+    const core = MurasameCore.create(new MemoryDatabase(), models)
+    const first = await core.createConversation(), second = await core.createConversation()
+    if (!first.ok || !second.ok) throw new Error('Independent fixture failed')
+    const events: unknown[] = []
+    core.onConversationDeleted = event => events.push(event)
+    vi.spyOn(core.memory, 'clearSource').mockResolvedValue({ ok: false, error: '受控记忆清理失败' })
+    expect((await core.deleteConversation(second.data.id, ['history', 'memory'])).ok).toBe(false)
+    expect(events).toEqual([{ id: second.data.id, activeConversationId: first.data.id }])
+  })
+
+  it('does not publish or change active history when its transaction fails', async () => {
+    const db = new MemoryDatabase(), core = MurasameCore.create(db, models)
+    const chat = await core.createConversation()
+    if (!chat.ok) throw new Error(chat.error)
+    const events: unknown[] = []
+    core.onConversationDeleted = event => events.push(event)
+    vi.spyOn(db, 'transaction').mockImplementationOnce(() => () => { throw new Error('受控事务失败') })
+    expect((await core.deleteConversation(chat.data.id, ['history'])).ok).toBe(false)
+    expect(events).toEqual([])
+    expect(getActiveConversationId()).toBe(chat.data.id)
+  })
   it('does not disable future memory extraction when deleting history fails', async () => {
     vi.spyOn(ModelGateway.prototype, 'chat').mockResolvedValue('完整回答')
     const db = new MemoryDatabase()

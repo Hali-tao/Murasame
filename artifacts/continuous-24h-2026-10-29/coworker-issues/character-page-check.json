@@ -1,0 +1,91 @@
+{
+  "manifestFiles": 36,
+  "mismatches": [],
+  "errors": [],
+  "views": [
+    {
+      "width": 1440,
+      "overflow": false,
+      "images": [
+        {
+          "loaded": true,
+          "source": "../nailong-3d-2026-10-29/reference.png"
+        },
+        {
+          "loaded": true,
+          "source": "../nailong-3d-refined-2026-10-29/renders/r6-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-front.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-side.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-back.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r7-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r8-back.png"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "images": [
+        {
+          "loaded": true,
+          "source": "../nailong-3d-2026-10-29/reference.png"
+        },
+        {
+          "loaded": true,
+          "source": "../nailong-3d-refined-2026-10-29/renders/r6-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-front.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-side.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r9-back.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r7-reference-angle.png"
+        },
+        {
+          "loaded": true,
+          "source": "renders/r8-back.png"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/core-memory-status-regression.test.ts (11 tests | 1 failed) 650ms
+   ❯ core memory extraction status propagation (11)
+     × publishes a successful history deletion even when a later selected scope fails 25ms
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts (7 tests | 1 failed) 334ms
+   × clears deleted conversation text immediately and rejects late events while switching 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/core-memory-status-regression.test.ts > core memory extraction status propagation > publishes a successful history deletion even when a later selected scope fails
+AssertionError: expected [] to deeply equal [ { …(2) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "activeConversationId": "chat-1793272404531-pu03k",
+-     "id": "chat-1793272404545-whf7e",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/core-memory-status-regression.test.ts:26:20
+     24|     vi.spyOn(core.memory, 'clearSource').mockResolvedValue({ ok: false…
+     25|     expect((await core.deleteConversation(second.data.id, ['history', …
+     26|     expect(events).toEqual([{ id: second.data.id, activeConversationId…
+       |                    ^
+     27|   })
+     28|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > clears deleted conversation text immediately and rejects late events while switching
+AssertionError: expected '应该被删除的旧回复90%正在运行代码实际运行脚本查看活动结束活动MURAS…' not to contain '应该被删除的旧回复'
+
+Expected: "应该被删除的旧回复"
+Received: "应该被删除的旧回复90%正在运行代码实际运行脚本查看活动结束活动MURASAME"
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:57:41
+     55|   vi.mocked(api.core.getBootstrap).mockReturnValue(pending.promise)
+     56|   await act(async () => emit('deleted', { id: 'chat', activeConversati…
+     57|   expect(document.body.textContent).not.toContain('应该被删除的旧回复')
+       |                                         ^
+     58|   await act(async () => {
+     59|     emit('updated', data.conversations[0])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 16 passed (18)
+   Start at  19:13:23
+   Duration  1.42s (tests 44%, environment 36%, import 13%, transform 7%)

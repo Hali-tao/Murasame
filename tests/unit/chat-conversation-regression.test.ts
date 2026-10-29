@@ -34,7 +34,7 @@ beforeEach(async () => {
     settings: { get: async () => data.settings, onChanged: listen('settings') },
     core: { getBootstrap: async () => ({ ok: true, data }), setActiveConversation: async () => ({ ok: true, data: 'a' }), sendMessage: vi.fn() },
     events: {
-      onConversationUpdated: listen('updated'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'),
+      onConversationDeleted: listen('deleted'), onConversationUpdated: listen('updated'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'),
       onMessageDelta: listen('delta'), onActiveConversation: listen('active'), onTaskUpdated: listen('task'), onMemoriesUpdated: listen('memories'), onMemoryExtractionStatus: listen('extraction'), onMemoryIndexStatus: listen('index')
     }
   } as unknown as MurasameApi
@@ -45,6 +45,26 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.restoreAllMocks() })
 
 describe('conversation UI isolation', () => {
+  it('removes externally deleted history and rejects a late conversation update', () => {
+    emit('deleted', { id: 'a', activeConversationId: 'b' })
+    emit('updated', { ...chats[0], messages: [{ id: 'late', role: 'assistant', text: '迟到旧回复', time: '现在' }] })
+    expect(useAppStore.getState().data?.conversations.map(item => item.id)).toEqual(['b'])
+    expect(useAppStore.getState().selectedConversationId).toBe('b')
+  })
+
+  it('cannot restore deleted history from a delayed initial snapshot', async () => {
+    const initial = await api.core.getBootstrap()
+    resetStoreForTests()
+    const pending = deferred<typeof initial>()
+    api.core.getBootstrap = () => pending.promise
+    const loading = useAppStore.getState().init()
+    emit('deleted', { id: 'a', activeConversationId: 'b' })
+    pending.release(initial)
+    await loading
+    expect(useAppStore.getState().data?.conversations.map(item => item.id)).toEqual(['b'])
+    expect(useAppStore.getState().selectedConversationId).toBe('b')
+  })
+
   it('[D-17] 展示后台记忆整理的实际进度与失败，保持已有记忆可查看', () => {
     render(createElement(MemoryRouter, null, createElement(MemoryPage)))
     const previous = useAppStore.getState().data!.memories

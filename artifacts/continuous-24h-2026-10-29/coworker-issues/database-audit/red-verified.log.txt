@@ -1,0 +1,853 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: fresh-restart 1145ms
+FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file 1208ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-file
+FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry 1165ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-entry
+FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry 1252ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs null-key-entry
+FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key 1327ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs mismatched-key
+FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key 1094ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs undecryptable-key
+FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key 1095ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs invalid-key
+FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1820:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file 1150ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs malformed-key-file
+FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1827:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db.backup'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal 1061ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs orphan-journal
+FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1820:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure 1303ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs migration-failure
+FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1827:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db.backup'
+}
+
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-clear-restart 1746ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-file
+FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 48892, stdout: '
+', stderr: 'FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-entry
+FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 61000, stdout: '
+', stderr: 'FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs null-key-entry
+FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 58004, stdout: '
+', stderr: 'FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs mismatched-key
+FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 61216, stdout: '
+', stderr: 'FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs undecryptable-key
+FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 59452, stdout: '
+', stderr: 'FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-6WQqDw\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs invalid-key
+FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 57060, stdout: '
+', stderr: 'FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs malformed-key-file
+FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1799:25
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' ], pid: 57356, stdout: '
+', stderr: 'FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1799:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1865:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs orphan-journal
+FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1820:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1820:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+' ], pid: 53764, stdout: '
+', stderr: 'FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1820:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs migration-failure
+FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1827:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db.backup'
+}
+
+ ❯ tests/unit/database-recovery.test.ts:31:20
+     29|   delete env.ELECTRON_RUN_AS_NODE
+     30|   try {
+     31|     const output = execFileSync(require('electron') as string, [entry,…
+       |                    ^
+     32|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     33|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1827:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db.backup'
+}
+' ], pid: 61152, stdout: '
+', stderr: 'FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-o6edYc\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1827:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-o6edYc\\murasame.db.backup'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 2 passed (11)
+   Start at  19:11:44
+   Duration  13.95s (tests 100%)

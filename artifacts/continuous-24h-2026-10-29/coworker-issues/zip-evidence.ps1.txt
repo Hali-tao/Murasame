@@ -1,0 +1,20 @@
+$ErrorActionPreference = 'Stop'
+$evidenceRoot = (Resolve-Path 'previews/coworker-issues-2026-10-29').Path
+$databaseRoot = (Resolve-Path 'previews/issue2-database-2026-10-29').Path
+$archivePath = Join-Path $evidenceRoot 'raw-text-evidence.zip'
+if (Test-Path -LiteralPath $archivePath) { throw 'Raw archive already exists; preserve it.' }
+Add-Type -AssemblyName System.IO.Compression
+$files = @(Get-ChildItem -LiteralPath $evidenceRoot -File -Recurse) + @(Get-ChildItem -LiteralPath $databaseRoot -File -Recurse)
+$files = $files | Where-Object {
+  $_.Extension -in @('.txt', '.md', '.json', '.mjs', '.cjs', '.ps1', '.log') -and $_.FullName -notlike '*\.playwright-artifacts*' -and $_.Name -ne 'worker-processes.json'
+}
+$archive = [System.IO.Compression.ZipFile]::Open($archivePath, [System.IO.Compression.ZipArchiveMode]::Create)
+try {
+  foreach ($file in $files) {
+    if ($file.FullName.StartsWith($databaseRoot + [System.IO.Path]::DirectorySeparatorChar)) {
+      $entry = 'database-audit/' + [System.IO.Path]::GetRelativePath($databaseRoot, $file.FullName).Replace('\', '/')
+    } else { $entry = [System.IO.Path]::GetRelativePath($evidenceRoot, $file.FullName).Replace('\', '/') }
+    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $file.FullName, $entry) | Out-Null
+  }
+} finally { $archive.Dispose() }
+Write-Output "Raw text files preserved: $($files.Count)"

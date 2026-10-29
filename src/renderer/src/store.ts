@@ -65,6 +65,9 @@ interface AppStore {
 }
 
 let initialized = false
+const deletedConversationIds = new Set<string>()
+let deletedSelection: string | null | undefined
+let unsubscribeDeleted: (() => void) | undefined
 let modelEventVersion = 0
 let latestModelSnapshot: ModelProfile[] | undefined
 let unsubscribeModels: (() => void) | undefined
@@ -146,6 +149,20 @@ export const useAppStore = create<AppStore>((set, get) => {
         return
       }
       try {
+        unsubscribeDeleted = window.murasame.events.onConversationDeleted?.(({ id, activeConversationId }) => {
+          deletedConversationIds.add(id)
+          deletedSelection = activeConversationId
+          set(state => {
+            const busy = { ...state.busy }
+            delete busy[`chat:remote:${id}`]
+            const memoryExtractions = { ...state.memoryExtractions }; delete memoryExtractions[id]
+            return {
+              data: state.data ? { ...state.data, activeConversationId, conversations: state.data.conversations.filter(item => item.id !== id) } : null,
+              selectedConversationId: !state.selectedConversationId || state.selectedConversationId === id ? activeConversationId : state.selectedConversationId,
+              busy, memoryExtractions
+            }
+          })
+        })
         unsubscribeModels = window.murasame.events.onModelsUpdated?.(models => {
           modelEventVersion++
           latestModelSnapshot = models
@@ -162,6 +179,8 @@ export const useAppStore = create<AppStore>((set, get) => {
         ])
         if (!bootstrap.ok) throw new Error(bootstrap.error)
         const data: BootstrapData = { ...bootstrap.data, settings, models: latestModelSnapshot ?? bootstrap.data.models }
+        data.conversations = data.conversations.filter(item => !deletedConversationIds.has(item.id))
+        if (deletedSelection !== undefined) data.activeConversationId = deletedSelection
         set({
           data,
           info,
@@ -180,6 +199,7 @@ export const useAppStore = create<AppStore>((set, get) => {
           if (current) set({ data: { ...current, screenAnalysis } })
         })
         window.murasame.events.onConversationUpdated((conversation) => {
+          if (deletedConversationIds.has(conversation.id)) return
           const current = get().data
           if (!current) return
           const exists = current.conversations.some((item) => item.id === conversation.id)
@@ -194,6 +214,7 @@ export const useAppStore = create<AppStore>((set, get) => {
           })
         })
         window.murasame.events.onMessageStarted(({ conversationId }) => {
+          if (deletedConversationIds.has(conversationId)) return
           set((state) => ({ busy: { ...state.busy, [`chat:remote:${conversationId}`]: true } }))
         })
         window.murasame.events.onMessageFailed(({ conversationId }) => {
@@ -216,6 +237,7 @@ export const useAppStore = create<AppStore>((set, get) => {
           })
         })
         window.murasame.events.onActiveConversation(({ id }) => {
+          if (deletedConversationIds.has(id)) return
           set({ selectedConversationId: id })
         })
         window.murasame.events.onTaskUpdated((task) => {
@@ -230,6 +252,8 @@ export const useAppStore = create<AppStore>((set, get) => {
           })
         })
       } catch (error) {
+        unsubscribeDeleted?.()
+        unsubscribeDeleted = undefined
         unsubscribeModels?.()
         unsubscribeModels = undefined
         set({
@@ -596,6 +620,10 @@ export const useAppStore = create<AppStore>((set, get) => {
 
 export function resetStoreForTests(): void {
   initialized = false
+  unsubscribeDeleted?.()
+  unsubscribeDeleted = undefined
+  deletedConversationIds.clear()
+  deletedSelection = undefined
   unsubscribeModels?.()
   unsubscribeModels = undefined
   latestModelSnapshot = undefined

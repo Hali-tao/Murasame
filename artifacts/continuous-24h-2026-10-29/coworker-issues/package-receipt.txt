@@ -1,0 +1,11 @@
+{
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-coworker-issues-final\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292522616,
+    "sha256": "5580e6c9f7901abb299264adb63c20fdc8c2efa19ceea8885ab3897fcd7b4354"
+  },
+  "codeFiles": 109,
+  "models": 18,
+  "isolation": 6,
+  "previousInstallers": 8
+}

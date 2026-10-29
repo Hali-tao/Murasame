@@ -1,0 +1,100 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts (13 tests | 5 failed) 547ms
+   × completes a pending switch when deleting chat 20ms
+   × completes a pending switch when deleting unrelated 12ms
+   × keeps a new draft after deleting a pending send, successful result: false 120ms
+   × keeps a new draft after deleting a pending send, successful result: true 43ms
+   × initializes saved settings despite a deleted pending bootstrap; newer settings: false 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > completes a pending switch when deleting chat
+AssertionError: expected '切换前的旧内容90%正在运行代码实际运行脚本查看活动结束活动MURASAME' not to contain '切换前的旧内容'
+
+Expected: "切换前的旧内容"
+Received: "切换前的旧内容90%正在运行代码实际运行脚本查看活动结束活动MURASAME"
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:83:60
+     81|   await act(async () => emit('active', { id: 'next' }))
+     82|   await act(async () => emit('deleted', { id, activeConversationId: 'n…
+     83|   if (id === 'chat') expect(document.body.textContent).not.toContain('…
+       |                                                            ^
+     84|   const next = { ...data.conversations[0], id: 'next', messages: [{ id…
+     85|   await act(async () => pending.resolve({ ok: true, data: { ...data, a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > completes a pending switch when deleting unrelated
+AssertionError: expected '切换前的旧内容90%正在运行代码实际运行脚本查看活动结束活动MURASAME' to contain '目标会话的新内容'
+
+Expected: "目标会话的新内容"
+Received: "切换前的旧内容90%正在运行代码实际运行脚本查看活动结束活动MURASAME"
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:86:37
+     84|   const next = { ...data.conversations[0], id: 'next', messages: [{ id…
+     85|   await act(async () => pending.resolve({ ok: true, data: { ...data, a…
+     86|   expect(document.body.textContent).toContain('目标会话的新内容')
+       |                                     ^
+     87|   expect(document.body.textContent).not.toContain('切换前的旧内容')
+     88| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > keeps a new draft after deleting a pending send, successful result: false
+AssertionError: expected '被删会话中的旧请求' to be '删除后的新草稿' // Object.is equality
+
+Expected: "删除后的新草稿"
+Received: "被删会话中的旧请求"
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:102:23
+    100|   const old = { ...data.conversations[0], messages: [{ id: 'late', rol…
+    101|   await act(async () => pending.resolve(success ? { ok: true, data: ol…
+    102|   expect(input.value).toBe('删除后的新草稿')
+       |                       ^
+    103|   expect(document.body.textContent).not.toContain('被删会话中的旧回复')
+    104|   expect(document.body.textContent).not.toContain('旧请求失败')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > keeps a new draft after deleting a pending send, successful result: true
+AssertionError: expected '被删会话中的旧回复90%正在运行代码实际运行脚本查看活动结束活动MURAS…' not to contain '被删会话中的旧回复'
+
+Expected: "被删会话中的旧回复"
+Received: "被删会话中的旧回复90%正在运行代码实际运行脚本查看活动结束活动MURASAME被删会话中的旧回复询问写图免问删除后的新草稿"
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:103:41
+    101|   await act(async () => pending.resolve(success ? { ok: true, data: ol…
+    102|   expect(input.value).toBe('删除后的新草稿')
+    103|   expect(document.body.textContent).not.toContain('被删会话中的旧回复')
+       |                                         ^
+    104|   expect(document.body.textContent).not.toContain('旧请求失败')
+    105| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/pet-bootstrap-lifecycle.test.ts > initializes saved settings despite a deleted pending bootstrap; newer settings: false
+AssertionError: expected 'false' to be 'true' // Object.is equality
+
+Expected: "true"
+Received: "false"
+
+ ❯ tests/unit/pet-bootstrap-lifecycle.test.ts:116:113
+    114|   await act(async () => pending.resolve({ ok: true, data }))
+    115|   await act(async () => emit('focus', undefined))
+    116|   expect(screen.getByRole('button', { name: newer ? '询问' : '写图免问', exa…
+       |                                                                                                                 ^
+    117| })
+    118|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 8 passed (13)
+   Start at  19:28:49
+   Duration  1.82s (environment 54%, tests 32%, import 11%, transform 3%)

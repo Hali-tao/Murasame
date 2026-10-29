@@ -1,0 +1,57 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+FAIL database-recovery orphan-journal-with-key AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1876:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: fresh-restart
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal-with-key 1120ms
+   → expected '\r\n' to contain 'PASS database-recovery orphan-journal…'
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-clear-restart
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-partial-clear-restart 2358ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal-with-key
+AssertionError: expected '\r\n' to contain 'PASS database-recovery orphan-journal…'
+
+- Expected
++ Received
+
+- PASS database-recovery orphan-journal-with-key
++
++
+
+ ❯ tests/unit/database-recovery.test.ts:35:20
+     33|       cwd: root, encoding: 'utf8', timeout: 30_000, env
+     34|     })
+     35|     expect(output).toContain(`PASS database-recovery ${scenario}`)
+       |                    ^
+     36|     if (scenario === 'fresh-restart' || scenario === 'scoped-clear-res…
+     37|       const savedKey = readFileSync(join(fixture, 'murasame-db-key.jso…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 11 skipped (13)
+   Start at  19:14:33
+   Duration  3.93s (tests 98%, import 1%, transform 1%)

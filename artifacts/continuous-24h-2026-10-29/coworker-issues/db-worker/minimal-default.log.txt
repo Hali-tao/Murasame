@@ -1,0 +1,3 @@
+{"node":"v22.19.0","source":"C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-db-copy-source-HKK9q2","target":"C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-db-copy-target-02fLdh"}
+before cpSync
+after cpSync roundtrip=true

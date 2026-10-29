@@ -1,0 +1,38 @@
+import { createHash } from 'node:crypto'
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
+import { extractFile } from '@electron/asar'
+import assert from 'node:assert/strict'
+const root = process.cwd(), output = resolve('release/continuous-2026-10-29-coworker-issues-final')
+const resources = join(output, 'win-unpacked/resources'), archive = join(resources, 'app.asar')
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const walk = dir => readdirSync(dir, { withFileTypes: true }).flatMap(item => item.isDirectory() ? walk(join(dir, item.name)) : [join(dir, item.name)])
+const code = ['main', 'preload', 'renderer'].flatMap(folder => walk(join(root, 'out', folder))).map(file => {
+  const path = relative(root, file), actual = hash(extractFile(archive, path))
+  assert.equal(actual, hash(readFileSync(file)), path)
+  return { path: path.replaceAll('\\', '/'), sha256: actual }
+})
+const compareTree = (source, target) => walk(source).filter(file => !relative(source, file).startsWith('.')).map(file => {
+  const path = relative(source, file), actual = hash(readFileSync(join(target, path)))
+  assert.equal(actual, hash(readFileSync(file)), path)
+  return { path: path.replaceAll('\\', '/'), sha256: actual }
+})
+const models = compareTree(join(root, 'build/bundled-models'), join(resources, 'models')); assert.equal(models.length, 18)
+const isolation = compareTree(join(root, 'isolation'), join(resources, 'isolation'))
+const currentInstaller = join(output, 'Murasame-Setup-0.9.0.exe')
+const previousReceipt = JSON.parse(readFileSync('previews/model-status-sync-2026-10-29/package-receipt.json', 'utf8'))
+const previousInstallers = [
+  ...previousReceipt.previousInstallers,
+  previousReceipt.installer,
+  {path: 'release/continuous-2026-10-29-coworker-issues/Murasame-Setup-0.9.0.exe', sha256: 'c1cf2b17b1cbaeb11c4f2b54996d110e567f6179c39e71f0d744f65dece859bc'}
+].map(({ path, sha256 }) => { assert.equal(hash(readFileSync(path)), sha256); return { path, sha256, unchanged: true } })
+const sourceFiles = ['src/main/core/murasame-core.ts', 'src/main/data/cipher.ts', 'src/main/data/db.ts', 'src/main/data/keys.ts', 'src/main/data/recovery.ts', 'src/main/ipc.ts', 'src/preload/index.ts', 'src/renderer/src/pet.tsx', 'src/renderer/src/store.ts', 'src/shared/ipc.ts', 'src/shared/types.ts', 'tests/unit/chat-conversation-regression.test.ts', 'tests/unit/core-memory-status-regression.test.ts', 'tests/unit/pet-bootstrap-lifecycle.test.ts', 'tests/unit/database-recovery.test.ts', 'tests/electron/database-recovery-entry.ts', 'tests/e2e/pet-history-sync.spec.ts']
+const receipt = {
+  at: new Date().toISOString(), baseline: '4c52d2e6d010bd9eac8a7bbe10497f73d2bc3e79', output,
+  asarSha256: hash(readFileSync(archive)),
+  installer: { path: currentInstaller, bytes: statSync(currentInstaller).size, sha256: hash(readFileSync(currentInstaller)) },
+  previousInstallers, code, models, isolation,
+  sourceFiles: sourceFiles.map(path => ({ path, sha256: hash(readFileSync(path)), textLfSha256: hash(readFileSync(path, 'utf8').replaceAll('\r\n', '\n')) }))
+}
+writeFileSync('previews/coworker-issues-2026-10-29/package-receipt.json', JSON.stringify(receipt, null, 2) + '\n')
+console.log(JSON.stringify({ installer: receipt.installer, codeFiles: code.length, models: models.length, isolation: isolation.length, previousInstallers: previousInstallers.length }, null, 2))

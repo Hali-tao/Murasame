@@ -41,6 +41,11 @@ export interface Conversation {
   recalledAtMessageId?: string
 }
 
+export interface ConversationDeleted {
+  id: string
+  activeConversationId: string | null
+}
+
 export interface MemoryExtractionStatus {
   conversationId: string
   status: 'processing' | 'saved' | 'unchanged' | 'skipped' | 'failed' | 'cleared'
@@ -448,6 +453,7 @@ export interface MurasameApi {
     onMessageStarted(listener: (payload: ChatTurnStarted) => void): () => void
     onMessageFailed(listener: (payload: ChatTurnFailed) => void): () => void
     onConversationUpdated(listener: (conversation: Conversation) => void): () => void
+    onConversationDeleted(listener: (event: ConversationDeleted) => void): () => void
     onScreenUpdated(listener: (analysis: ScreenAnalysis) => void): () => void
     onTaskUpdated(listener: (task: Task) => void): () => void
     onMemoriesUpdated(listener: (memories: MemoryEntry[]) => void): () => void

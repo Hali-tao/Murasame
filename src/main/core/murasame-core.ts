@@ -81,6 +81,7 @@ export class MurasameCore implements CoreApi {
   private readonly imageRequests = new Set<AbortController>()
   private readonly activityConversations = new Map<string, string>()
   onConversationUpdate?: (conversation: Conversation) => void
+  onConversationDeleted?: (event: { id: string; activeConversationId: string | null }) => void
   onScreenAnalysis?: (analysis: ScreenAnalysis) => void
   onMemoryExtractionStatus?: (status: MemoryExtractionStatus) => void
   private screenJob: Promise<Result<ScreenAnalysis>> | null = null
@@ -453,10 +454,16 @@ export class MurasameCore implements CoreApi {
     const statusVersion = this.memoryStatusRuns.get(id)?.version
     if (scopes.includes('history')) {
       try {
-        this.conversations.deleteHistory(id)
+        const remaining = this.conversations.deleteHistory(id)
         this.memory.invalidateSource(id)
         succeeded.add('history')
         this.clearMemoryStatus(id, statusVersion)
+        const current = getActiveConversationId()
+        const activeConversationId = remaining.some(item => item.id === current) ? current : remaining[0]?.id ?? null
+        rememberActiveConversation(activeConversationId)
+        // Publish this committed scope even if a subsequent memory/cache clear fails.
+        try { this.onConversationDeleted?.({ id, activeConversationId }) }
+        catch (error) { log.warn('历史已删除，但页面通知未送达', error) }
       } catch {
         // 保留失败范围，下面的报告不会把它算作成功。
       }

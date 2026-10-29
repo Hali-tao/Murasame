@@ -1,0 +1,35 @@
+import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
+import { join, relative, resolve, extname } from 'node:path'
+import { createHash } from 'node:crypto'
+import assert from 'node:assert/strict'
+const source = resolve('previews/coworker-issues-2026-10-29')
+const target = resolve('artifacts/continuous-24h-2026-10-29/coworker-issues')
+const hash = value => createHash('sha256').update(value).digest('hex')
+const normalize = value => value.toString('utf8').replace(/\r\n/g, '\n').split('\n').map(line => line.trimEnd()).join('\n').trimEnd() + '\n'
+const walk = dir => readdirSync(dir, { withFileTypes: true }).filter(item => !item.name.startsWith('.playwright-artifacts')).flatMap(item => item.isDirectory() ? walk(join(dir, item.name)) : [join(dir, item.name)])
+assert.match(readFileSync(join(source, 'package-e2e.txt'), 'utf8'), /31 passed/)
+assert.match(readFileSync(join(source, 'verify-final.txt'), 'utf8'), /839 passed/)
+const receipt = JSON.parse(readFileSync(join(source, 'package-receipt.json'), 'utf8'))
+for (const file of receipt.sourceFiles) assert.equal(hash(readFileSync(file.path)), file.sha256, file.path)
+assert.ok(!existsSync(target), 'Choose a new archive rather than overwriting frozen evidence')
+mkdirSync(target, { recursive: true })
+const entries = []
+const copy = (from, dest) => {
+  const bytes = readFileSync(from), textual = ['.txt', '.md', '.json', '.mjs', '.cjs', '.ps1', '.log'].includes(extname(from))
+  const result = textual ? Buffer.from(normalize(bytes)) : bytes
+  if (['.mjs', '.cjs', '.ps1', '.log'].includes(extname(dest))) dest += '.txt'
+  const to = join(target, dest)
+  mkdirSync(resolve(to, '..'), { recursive: true }); writeFileSync(to, result)
+  entries.push({ path: dest.replaceAll('\\', '/'), bytes: result.length, sha256: hash(result), ...(textual ? { originalSha256: hash(bytes) } : {}) })
+}
+for (const path of walk(source)) {
+  const relativePath = relative(source, path)
+  if (relativePath === 'worker-processes.json') continue
+  copy(path, relativePath)
+}
+const database = resolve('previews/issue2-database-2026-10-29')
+for (const path of walk(database)) copy(path, join('database-audit', relative(database, path)))
+writeFileSync(join(target, '.gitattributes'), '* -text\n')
+writeFileSync(join(target, 'manifest.json'), JSON.stringify({ archivedAt: new Date().toISOString(), baseline: receipt.baseline, sourceFiles: receipt.sourceFiles, files: entries }, null, 2) + '\n')
+for (const entry of entries) assert.equal(hash(readFileSync(join(target, entry.path))), entry.sha256)
+console.log(JSON.stringify({ archivedFiles: entries.length, bytes: entries.reduce((sum, entry) => sum + entry.bytes, 0), mismatches: 0 }))

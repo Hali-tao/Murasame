@@ -1,0 +1,1335 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-7pLii7'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-7pLii7',
+  syscall: 'rm'
+}
+FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-VuJHav'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-VuJHav',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: fresh-restart 1532ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs fresh-restart
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-7pLii7'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-7pLii7',
+  syscall: 'rm'
+}
+
+FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-4eyFSf'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-4eyFSf',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file 1123ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-file
+FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-VuJHav'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-VuJHav',
+  syscall: 'rm'
+}
+
+FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-TtTyXN'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-TtTyXN',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry 1181ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-entry
+FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-4eyFSf'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-4eyFSf',
+  syscall: 'rm'
+}
+
+FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-l19gFq'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-l19gFq',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry 1104ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs null-key-entry
+FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-TtTyXN'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-TtTyXN',
+  syscall: 'rm'
+}
+
+FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-MtJvTh'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key 1161ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs mismatched-key
+FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-l19gFq'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-l19gFq',
+  syscall: 'rm'
+}
+
+FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-yBBEHK'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-yBBEHK',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key 947ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs undecryptable-key
+FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-MtJvTh'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh',
+  syscall: 'rm'
+}
+
+FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-HIqurs'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-HIqurs',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key 967ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs invalid-key
+FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-yBBEHK'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-yBBEHK',
+  syscall: 'rm'
+}
+
+FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1819:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-A6PJmk'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-A6PJmk',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file 969ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs malformed-key-file
+FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-HIqurs'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-HIqurs',
+  syscall: 'rm'
+}
+
+FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1826:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db.backup'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal 977ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs orphan-journal
+FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1819:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-A6PJmk'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-A6PJmk',
+  syscall: 'rm'
+}
+
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-DgUic3'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-DgUic3',
+  syscall: 'rm'
+}
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure 1167ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs migration-failure
+FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1826:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db.backup'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx',
+  syscall: 'rm'
+}
+
+ × tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-clear-restart 1266ms
+   → Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs scoped-clear-restart
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-DgUic3'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-DgUic3',
+  syscall: 'rm'
+}
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: fresh-restart
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs fresh-restart
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-7pLii7'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-7pLii7',
+  syscall: 'rm'
+}
+
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+PASS database-recovery fresh-restart
+', 'Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-7pLii7'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-7pLii7',
+  syscall: 'rm'
+}
+' ], pid: 62216, stdout: '
+PASS database-recovery fresh-restart
+', stderr: 'Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-7pLii7'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-7pLii7',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-file
+FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-VuJHav'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-VuJHav',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-VuJHav'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-VuJHav',
+  syscall: 'rm'
+}
+' ], pid: 61376, stdout: '
+', stderr: 'FAIL database-recovery missing-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-VuJHav'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-VuJHav',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs missing-key-entry
+FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-4eyFSf'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-4eyFSf',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-4eyFSf'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-4eyFSf',
+  syscall: 'rm'
+}
+' ], pid: 42392, stdout: '
+', stderr: 'FAIL database-recovery missing-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-4eyFSf'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-4eyFSf',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs null-key-entry
+FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-TtTyXN'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-TtTyXN',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-TtTyXN'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-TtTyXN',
+  syscall: 'rm'
+}
+' ], pid: 22864, stdout: '
+', stderr: 'FAIL database-recovery null-key-entry AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-TtTyXN'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-TtTyXN',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs mismatched-key
+FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-l19gFq'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-l19gFq',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-l19gFq'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-l19gFq',
+  syscall: 'rm'
+}
+' ], pid: 36172, stdout: '
+', stderr: 'FAIL database-recovery mismatched-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'file is not a database'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'file is not a database',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-l19gFq'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-l19gFq',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs undecryptable-key
+FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-MtJvTh'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-MtJvTh'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh',
+  syscall: 'rm'
+}
+' ], pid: 60828, stdout: '
+', stderr: 'FAIL database-recovery undecryptable-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '本机安全存储无法解密已保存的数据库密钥。这通常意味着密钥记录已损坏，请删除 C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh\\murasame-db-key.json 后重新启动，原有加密数据将无法再读取。',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-MtJvTh'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-MtJvTh',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs invalid-key
+FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-yBBEHK'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-yBBEHK',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-yBBEHK'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-yBBEHK',
+  syscall: 'rm'
+}
+' ], pid: 56192, stdout: '
+', stderr: 'FAIL database-recovery invalid-key AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+'数据库密钥格式无效'
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '数据库密钥格式无效',
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-yBBEHK'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-yBBEHK',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs malformed-key-file
+FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-HIqurs'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-HIqurs',
+  syscall: 'rm'
+}
+
+ ❯ Object.assertRecoveryGuidance out/electron-tests/database-recovery.cjs:1798:25
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-HIqurs'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-HIqurs',
+  syscall: 'rm'
+}
+' ], pid: 53220, stdout: '
+', stderr: 'FAIL database-recovery malformed-key-file AssertionError [ERR_ASSERTION]: The input did not match the regular expression /保留|未修改/. Input:
+
+"Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+    at Object.assertRecoveryGuidance (E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1798:25)
+    at expectedException (node:assert:578:17)
+    at expectsError (node:assert:703:21)
+    at strict.throws (node:assert:759:3)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1864:29 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+  expected: /保留|未修改/,
+  operator: 'match',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-HIqurs'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-HIqurs',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs orphan-journal
+FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1819:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-A6PJmk'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-A6PJmk',
+  syscall: 'rm'
+}
+
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1819:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-A6PJmk'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-A6PJmk',
+  syscall: 'rm'
+}
+' ], pid: 57808, stdout: '
+', stderr: 'FAIL database-recovery orphan-journal AssertionError [ERR_ASSERTION]: Missing expected exception (assertRecoveryGuidance).
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1819:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: [Function: assertRecoveryGuidance],
+  operator: 'throws',
+  diff: 'simple'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-A6PJmk'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-A6PJmk',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs migration-failure
+FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1826:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db.backup'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx',
+  syscall: 'rm'
+}
+
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+', 'FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1826:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db.backup'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx',
+  syscall: 'rm'
+}
+' ], pid: 30388, stdout: '
+', stderr: 'FAIL database-recovery migration-failure Error: EBUSY: resource busy or locked, rename 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db' -> 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx\murasame.db.backup'
+    at renameSync (node:fs:1073:11)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1826:38 {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'rename',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db',
+  dest: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx\\murasame.db.backup'
+}
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-pUZPzx'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-pUZPzx',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-clear-restart
+Error: Command failed: E:\Desktop\软件工程\murasame\node_modules\electron\dist\electron.exe E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs scoped-clear-restart
+Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-DgUic3'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-DgUic3',
+  syscall: 'rm'
+}
+
+ ❯ tests/unit/database-recovery.test.ts:27:18
+     25|   const env = { ...process.env }
+     26|   delete env.ELECTRON_RUN_AS_NODE
+     27|   const output = execFileSync(require('electron') as string, [entry, s…
+       |                  ^
+     28|     cwd: root, encoding: 'utf8', timeout: 30_000, env
+     29|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, '
+PASS database-recovery scoped-clear-restart
+', 'Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-DgUic3'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-DgUic3',
+  syscall: 'rm'
+}
+' ], pid: 60056, stdout: '
+PASS database-recovery scoped-clear-restart
+', stderr: 'Temporary-fixture cleanup failed Error: ENOTEMPTY, Directory not empty: 'C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-DgUic3'
+    at rmSync (node:fs:1282:18)
+    at E:\Desktop\软件工程\murasame\out\electron-tests\database-recovery.cjs:1881:34 {
+  errno: 41,
+  code: 'ENOTEMPTY',
+  path: 'C:\\Users\\LENOVO\\AppData\\Local\\Temp\\murasame-database-recovery-DgUic3',
+  syscall: 'rm'
+}
+' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  11 failed (11)
+   Start at  19:11:13
+   Duration  12.85s (tests 99%)

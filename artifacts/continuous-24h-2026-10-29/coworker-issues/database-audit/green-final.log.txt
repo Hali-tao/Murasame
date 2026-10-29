@@ -1,0 +1,26 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ✓ tests/unit/native-encryption.test.ts > [NFR-S01] 加密数据库 > [NFR-S01] 加密数据库在错误口令下不可读 2887ms
+ ✓ tests/unit/native-encryption.test.ts > [NFR-S01] 加密数据库 > [NFR-S01] 迁移后的库保持静态加密且迁移可重复执行 1329ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: fresh-restart 4922ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file 1211ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry 1161ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry 1123ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key 1217ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key 1094ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key 1078ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file 1094ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal 860ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal-with-key 951ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure 1375ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-clear-restart 2466ms
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-partial-clear-restart 2423ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  19:16:44
+   Duration  22.70s (tests 99%)

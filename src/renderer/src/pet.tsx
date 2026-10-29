@@ -99,10 +99,11 @@ function PetApp(): React.JSX.Element {
     ready: boolean
     started: boolean
   } | null>(null)
-  const chatRef = useRef(chat)
   const conversationRef = useRef(conversation)
   const activeIdRef = useRef<string | null>(null)
   const selectionVersion = useRef(0)
+  const deletedConversationIds = useRef(new Set<string>())
+  const settingsVersion = useRef(0)
   const recordingRef = useRef<Recording | null>(null)
   const composerRef = useRef<HTMLTextAreaElement>(null)
   const openChatRef = useRef<() => Promise<void>>(async () => undefined)
@@ -124,7 +125,6 @@ function PetApp(): React.JSX.Element {
   useEffect(() => onWindowHidden(cancelVoiceInput), [cancelVoiceInput])
   useLayoutEffect(() => {
     speakRef.current = speakReplies
-    chatRef.current = chat
     conversationRef.current = conversation
   })
 
@@ -159,7 +159,9 @@ function PetApp(): React.JSX.Element {
   useEffect(() => {
     if (!window.murasame) return
     let cancelled = false
+    const deletedIds = deletedConversationIds.current
     const applyConversation = (next: Conversation | null): void => {
+      if (next && deletedIds.has(next.id)) return
       if (conversationRef.current?.id !== next?.id) {
         speechController.current?.abort()
         recordingController.current?.abort()
@@ -179,21 +181,27 @@ function PetApp(): React.JSX.Element {
       setProactiveText('')
     }
     const initialVersion = selectionVersion.current
+    const initialSettingsVersion = settingsVersion.current
     void window.murasame.core.getBootstrap().then((result) => {
-      if (cancelled || !result.ok || selectionVersion.current !== initialVersion) return
+      if (cancelled || !result.ok) return
+      if (settingsVersion.current === initialSettingsVersion) {
+        setMicrophone(result.data.settings.permissions.microphone)
+        setFileApproval(result.data.settings.fileApproval ?? 'ask')
+        setSpeakReplies(result.data.settings.speakReplies)
+        setDoNotDisturb(result.data.settings.doNotDisturb)
+      }
+      if (selectionVersion.current !== initialVersion) return
       const id = result.data.activeConversationId ?? result.data.conversations[0]?.id ?? null
-      setMicrophone(result.data.settings.permissions.microphone)
-      setFileApproval(result.data.settings.fileApproval ?? 'ask')
-      setSpeakReplies(result.data.settings.speakReplies)
-      setDoNotDisturb(result.data.settings.doNotDisturb)
       applyConversation(result.data.conversations.find((item) => item.id === id) ?? null)
     })
     const stopUpdated = window.murasame.events.onConversationUpdated((next) => {
+      if (deletedIds.has(next.id)) return
       setSendingIds(current => ({ ...current, [next.id]: false }))
       if (activeIdRef.current && activeIdRef.current !== next.id) return
       applyConversation(next)
     })
     const stopActive = window.murasame.events.onActiveConversation(({ id }) => {
+      if (deletedIds.has(id)) return
       if (activeIdRef.current === id) return
       speechController.current?.abort()
       recordingController.current?.abort()
@@ -208,12 +216,14 @@ function PetApp(): React.JSX.Element {
       })
     })
     const stopDelta = window.murasame.events.onMessageDelta((payload) => {
+      if (deletedIds.has(payload.conversationId)) return
       const currentId = activeIdRef.current
       if (currentId && payload.conversationId !== currentId) return
       setProactiveText('')
       setStreaming((value) => `${value}${payload.delta}`)
     })
     const stopStarted = window.murasame.events.onMessageStarted((payload) => {
+      if (deletedIds.has(payload.conversationId)) return
       setSendingIds(current => ({ ...current, [payload.conversationId]: true }))
       const currentId = activeIdRef.current
       if (currentId && payload.conversationId !== currentId) return
@@ -221,6 +231,7 @@ function PetApp(): React.JSX.Element {
       setStreaming('')
     })
     const stopFailed = window.murasame.events.onMessageFailed((payload) => {
+      if (deletedIds.has(payload.conversationId)) return
       setSendingIds(current => ({ ...current, [payload.conversationId]: false }))
       const currentId = activeIdRef.current
       if (currentId && payload.conversationId !== currentId) return
@@ -231,6 +242,23 @@ function PetApp(): React.JSX.Element {
     const stopFocus = window.murasame.pet.onFocusChat(() => {
       void openChatRef.current()
     })
+    const stopDeleted = window.murasame.events.onConversationDeleted?.(({ id, activeConversationId }) => {
+      deletedIds.add(id)
+      setSendingIds(current => { const next = { ...current }; delete next[id]; return next })
+      // The displayed history can differ from the target while a switch is loading.
+      const target = activeIdRef.current
+      if (target && target !== id && conversationRef.current?.id !== id) return
+      const nextId = target && target !== id ? target : activeConversationId
+      const version = ++selectionVersion.current
+      applyConversation(null)
+      setPendingUser(''); setDraft(''); setNotice('')
+      activeIdRef.current = nextId
+      if (!nextId) return
+      void window.murasame.core.getBootstrap().then(result => {
+        if (cancelled || !result.ok || selectionVersion.current !== version) return
+        applyConversation(result.data.conversations.find(item => item.id === nextId) ?? null)
+      })
+    })
     return () => {
       cancelled = true
       stopUpdated()
@@ -239,6 +267,7 @@ function PetApp(): React.JSX.Element {
       stopStarted()
       stopFailed()
       stopFocus()
+      stopDeleted?.()
     }
   }, [])
 
@@ -286,6 +315,7 @@ function PetApp(): React.JSX.Element {
   useEffect(() => {
     if (!window.murasame) return
     return window.murasame.settings.onChanged((settings) => {
+      settingsVersion.current++
       speakRef.current = settings.speakReplies
       setSpeakReplies(settings.speakReplies)
       setDoNotDisturb(settings.doNotDisturb)
@@ -388,12 +418,14 @@ function PetApp(): React.JSX.Element {
   }
 
   const startFresh = async (): Promise<void> => {
+    const version = selectionVersion.current
     const created = await window.murasame.core.createConversation()
     if (!created.ok) {
-      setNotice(created.error)
+      if (selectionVersion.current === version) setNotice(created.error)
       return
     }
-    if (activeIdRef.current && activeIdRef.current !== created.data.id) return
+    if (deletedConversationIds.current.has(created.data.id)
+      || (activeIdRef.current !== created.data.id && (activeIdRef.current || selectionVersion.current !== version))) return
     setConversation(created.data)
     setDraft('')
     setNotice('')
@@ -407,6 +439,7 @@ function PetApp(): React.JSX.Element {
     if (!content || sending) return
     setNotice('')
     const pendingId = conversationRef.current?.id ?? 'new'
+    const version = selectionVersion.current
     let sentId = pendingId
     setSendingIds(current => ({ ...current, [pendingId]: true }))
     setDraft('')
@@ -417,6 +450,7 @@ function PetApp(): React.JSX.Element {
       let id = conversationRef.current?.id
       if (!id) {
         const created = await window.murasame.core.createConversation()
+        if (selectionVersion.current !== version) return
         if (!created.ok) {
           setNotice(created.error)
           setDraft(content)
@@ -424,12 +458,13 @@ function PetApp(): React.JSX.Element {
           return
         }
         id = created.data.id
+        if (deletedConversationIds.current.has(id) || (activeIdRef.current && activeIdRef.current !== id)) return
         setConversation(created.data)
       }
       sentId = id
       setSendingIds(current => ({ ...current, [id]: true }))
       const result = await window.murasame.core.sendMessage(id, content)
-      if (activeIdRef.current && activeIdRef.current !== id) return
+      if (selectionVersion.current !== version || deletedConversationIds.current.has(id) || (activeIdRef.current && activeIdRef.current !== id)) return
       if (!result.ok) {
         setNotice(result.error)
         setDraft(content)
@@ -538,10 +573,7 @@ function PetApp(): React.JSX.Element {
       live2dRef.current?.playMotion('drag')
     } else if (performance.now() - lastTapAt.current > 700) {
       lastTapAt.current = performance.now()
-      const bounds = event.currentTarget.getBoundingClientRect()
-      const upper = event.clientY - bounds.top < bounds.height * 0.42
-      live2dRef.current?.playMotion(upper ? 'tap' : 'drag')
-      if (!chatRef.current.open) void openChat()
+      live2dRef.current?.playMotion('tap')
     }
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId)
@@ -642,7 +674,7 @@ function PetApp(): React.JSX.Element {
         }}
         role="button"
           tabIndex={0}
-          aria-label="拖动桌宠，单击打开对话"
+          aria-label="拖动桌宠，单击互动，右键打开菜单"
         >
           <ErrorBoundary compact resetKey={`${preset.id}:${preset.modelUrl}`}>
             <Live2DPet
@@ -721,7 +753,7 @@ function PetApp(): React.JSX.Element {
         <div className="pet-brand" data-pet-hit><span />MURASAME</div>
         {menuOpen ? (
           <div className="pet-menu" data-pet-hit role="menu">
-            <button type="button" onClick={() => { setMenuOpen(false); void openChat() }}>打开对话</button>
+            <button type="button" onClick={() => { setMenuOpen(false); void (chat.open ? closeChat() : openChat()) }}>{chat.open ? '收起对话' : '打开对话'}</button>
             <button type="button" onClick={() => { setMenuOpen(false); void window.murasame.window.showMain() }}>打开控制台</button>
             <button type="button" onClick={() => { setMenuOpen(false); void window.murasame.window.showMain(); void window.murasame.core.analyzeScreen() }}>截图提问</button>
             <button type="button" onClick={() => { setMenuOpen(false); void changeScale(0.1) }}>放大</button>

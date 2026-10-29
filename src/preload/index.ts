@@ -190,6 +190,8 @@ const api: MurasameApi = {
       subscribe(IPC.core.messageFailed, listener),
     onConversationUpdated: (listener: (conversation: Conversation) => void): (() => void) =>
       subscribe(IPC.core.conversationUpdated, listener),
+    onConversationDeleted: (listener: (event: { id: string; activeConversationId: string | null }) => void): (() => void) =>
+      subscribe(IPC.core.conversationDeleted, listener),
     onTaskUpdated: (listener: (task: Task) => void): (() => void) =>
       subscribe(IPC.core.taskUpdated, listener),
     onActiveConversation: (listener: (payload: { id: string }) => void): (() => void) =>

@@ -23,8 +23,13 @@ export function openMigratedDatabase(
   migrations: readonly Migration[] = embeddedMigrations
 ): SqliteDatabase {
   const db = openCipherDatabase(file, key)
-  migrate(db, migrations)
-  return db
+  try {
+    migrate(db, migrations)
+    return db
+  } catch (error) {
+    db.close()
+    throw error
+  }
 }
 
 export function readMigrationFile(migrationsDir: string, fileName: string): Migration {

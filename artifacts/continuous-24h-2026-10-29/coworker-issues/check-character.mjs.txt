@@ -1,0 +1,24 @@
+import { chromium } from '@playwright/test'
+import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+const root=resolve('artifacts/nailong-3d-calibration-2026-10-29'), out=resolve('previews/coworker-issues-2026-10-29')
+const manifest=JSON.parse(readFileSync(resolve(root,'manifest.json'),'utf8'))
+const mismatches=manifest.files.filter(f=>createHash('sha256').update(readFileSync(resolve(root,f.path))).digest('hex')!==f.sha256).map(f=>f.path)
+const browser=await chromium.launch({channel:'msedge',headless:true}), page=await browser.newPage()
+const errors=[];page.on('pageerror',e=>errors.push(String(e)))
+const rows=[]
+try {
+  for (const [name,width,height] of [['desktop',1440,1000],['mobile',390,844]]) {
+    await page.setViewportSize({width,height})
+    await page.goto(pathToFileURL(resolve(root,'index.html')).href)
+    await page.waitForFunction(()=>[...document.images].every(i=>i.complete))
+    rows.push(await page.evaluate(()=>({width:innerWidth,overflow:document.documentElement.scrollWidth>innerWidth,images:[...document.images].map(i=>({loaded:i.complete&&i.naturalWidth>0,source:i.getAttribute('src')}))})))
+    await page.screenshot({path:resolve(out,`character-${name}.png`),fullPage:true})
+  }
+} finally {await browser.close()}
+const report={manifestFiles:manifest.files.length,mismatches,errors,views:rows}
+writeFileSync(resolve(out,'character-page-check.json'),JSON.stringify(report,null,2))
+console.log(JSON.stringify(report))
+if(mismatches.length||errors.length||rows.some(r=>r.overflow||r.images.some(i=>!i.loaded)))process.exitCode=1

@@ -1,0 +1,8 @@
+node=v22.19.0 temp=E:\Desktop\软件工程\murasame\previews\tmp
+created primary E:\Desktop\软件工程\murasame\previews\tmp\murasame-database-recovery-rV2HhX
+before first execFileSync
+after first execFileSync PASS=true items=6
+before restart execFileSync
+after restart execFileSync PASS=true LocalState=true
+created restored E:\Desktop\软件工程\murasame\previews\tmp\murasame-database-recovery-CNWhaz
+before cpSync

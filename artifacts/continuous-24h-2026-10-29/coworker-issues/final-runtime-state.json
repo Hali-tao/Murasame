@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-29T20:51:48.1168713+08:00",
+  "testProcesses": [],
+  "e2eProfiles": [],
+  "retainedDiagnostics": [
+    "murasame-database-recovery-CNWhaz",
+    "murasame-database-recovery-in84RU",
+    "murasame-database-recovery-IxmT1M",
+    "murasame-database-recovery-kecaPK",
+    "murasame-database-recovery-MhknUL",
+    "murasame-database-recovery-rV2HhX",
+    "murasame-db-copy-source-uFFqdn",
+    "murasame-db-copy-target-ADRqeM"
+  ],
+  "runningContainers": [],
+  "legacyDeniedCleanup": "Not retried; original eleven directories documented separately"
+}

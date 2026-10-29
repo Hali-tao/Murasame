@@ -38,14 +38,118 @@ beforeEach(() => {
     core: { getBootstrap: vi.fn(async () => ({ ok: true, data })) },
     window: { onHidden: listen('hidden'), openPath: vi.fn(async () => {}) },
     settings: { onChanged: listen('settings') },
-    pet: { getState: async () => pet, onStateChanged: listen('pet'), onFocusChat: listen('focus'), onPerformance: listen('performance'), getAffect: async () => ({ p: 0, a: 0, d: 0 }), setIgnoreMouseEvents: async () => {} },
+    pet: { getState: async () => pet, onStateChanged: listen('pet'), onFocusChat: listen('focus'), onPerformance: listen('performance'), getAffect: async () => ({ p: 0, a: 0, d: 0 }), setIgnoreMouseEvents: async () => {}, setChatOpen: async (open: boolean) => ({ open, side: 'left' }) },
     autonomy: { status: vi.fn(async () => active), onStatusChanged: listen('autonomy'), stop: vi.fn(async () => ({ ok: false, error: '清理失败，可以重试' })) },
-    events: { onConversationUpdated: listen('updated'), onActiveConversation: listen('active'), onMessageDelta: listen('delta'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'), onTaskUpdated: listen('task') }
+    events: { onConversationDeleted: listen('deleted'), onConversationUpdated: listen('updated'), onActiveConversation: listen('active'), onMessageDelta: listen('delta'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'), onTaskUpdated: listen('task') }
   } as unknown as MurasameApi
   Object.defineProperty(window, 'murasame', { configurable: true, value: api })
 })
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 const mount = async () => { await act(async () => { render(harness.element as ReactNode) }) }
+
+it('clears deleted conversation text immediately and rejects late events while switching', async () => {
+  data.conversations[0].messages = [{ id: 'old-reply', role: 'assistant', text: '应该被删除的旧回复', time: '现在' }]
+  await mount()
+  expect(document.body.textContent).toContain('应该被删除的旧回复')
+  const pending = deferred<Awaited<ReturnType<MurasameApi['core']['getBootstrap']>>>()
+  vi.mocked(api.core.getBootstrap).mockReturnValue(pending.promise)
+  await act(async () => emit('deleted', { id: 'chat', activeConversationId: null }))
+  expect(document.body.textContent).not.toContain('应该被删除的旧回复')
+  await act(async () => {
+    emit('updated', data.conversations[0])
+    emit('delta', { conversationId: 'chat', delta: '不应复活的迟到回复' })
+    emit('started', { conversationId: 'chat', userText: '不应复活的请求' })
+  })
+  expect(document.body.textContent).not.toContain('应该被删除的旧回复')
+  expect(document.body.textContent).not.toContain('不应复活')
+  await act(async () => pending.resolve({ ok: true, data }))
+  expect(document.body.textContent).not.toContain('应该被删除的旧回复')
+})
+
+it('keeps the visible conversation when a different history is deleted', async () => {
+  data.conversations[0].messages = [{ id: 'keep-reply', role: 'assistant', text: '仍然保留的当前回复', time: '现在' }]
+  await mount()
+  await act(async () => emit('deleted', { id: 'other', activeConversationId: 'chat' }))
+  expect(document.body.textContent).toContain('仍然保留的当前回复')
+})
+
+it.each(['chat', 'unrelated'])('completes a pending switch when deleting %s', async id => {
+  data.conversations[0].messages = [{ id: 'old', role: 'assistant', text: '切换前的旧内容', time: '现在' }]
+  await mount()
+  const pending = deferred<Awaited<ReturnType<MurasameApi['core']['getBootstrap']>>>()
+  vi.mocked(api.core.getBootstrap).mockReturnValue(pending.promise)
+  await act(async () => emit('active', { id: 'next' }))
+  await act(async () => emit('deleted', { id, activeConversationId: 'next' }))
+  if (id === 'chat') expect(document.body.textContent).not.toContain('切换前的旧内容')
+  const next = { ...data.conversations[0], id: 'next', messages: [{ id: 'new', role: 'assistant' as const, text: '目标会话的新内容', time: '现在' }] }
+  await act(async () => pending.resolve({ ok: true, data: { ...data, activeConversationId: 'next', conversations: [next] } }))
+  expect(document.body.textContent).toContain('目标会话的新内容')
+  expect(document.body.textContent).not.toContain('切换前的旧内容')
+})
+
+it.each([false, true])('keeps a new draft after deleting a pending send, successful result: %s', async success => {
+  const pending = deferred<Awaited<ReturnType<MurasameApi['core']['sendMessage']>>>()
+  api.core.sendMessage = () => pending.promise
+  await mount()
+  await act(async () => emit('focus', undefined))
+  const input = screen.getByRole('textbox', { name: '对桌宠说' }) as HTMLTextAreaElement
+  fireEvent.change(input, { target: { value: '被删会话中的旧请求' } })
+  await act(async () => { fireEvent.submit(input.closest('form')!) })
+  await act(async () => emit('deleted', { id: 'chat', activeConversationId: null }))
+  fireEvent.change(input, { target: { value: '删除后的新草稿' } })
+  const old = { ...data.conversations[0], messages: [{ id: 'late', role: 'assistant' as const, text: '被删会话中的旧回复', time: '现在' }] }
+  await act(async () => pending.resolve(success ? { ok: true, data: old } : { ok: false, error: '旧请求失败' }))
+  expect(input.value).toBe('删除后的新草稿')
+  expect(document.body.textContent).not.toContain('被删会话中的旧回复')
+  expect(document.body.textContent).not.toContain('旧请求失败')
+})
+
+it.each([false, true])('initializes saved settings despite a deleted pending bootstrap; newer settings: %s', async newer => {
+  const pending = deferred<Awaited<ReturnType<MurasameApi['core']['getBootstrap']>>>()
+  vi.mocked(api.core.getBootstrap).mockReturnValue(pending.promise)
+  data.settings.fileApproval = 'allow'
+  await mount()
+  await act(async () => emit('deleted', { id: 'chat', activeConversationId: null }))
+  if (newer) await act(async () => emit('settings', { ...data.settings, fileApproval: 'ask' }))
+  await act(async () => pending.resolve({ ok: true, data }))
+  await act(async () => emit('focus', undefined))
+  expect(screen.getByRole('button', { name: newer ? '询问' : '写图免问' }).getAttribute('aria-pressed')).toBe('true')
+})
+
+it.each([false, true])('ignores a pending create after deletion; successful result: %s', async success => {
+  const pending = deferred<Awaited<ReturnType<MurasameApi['core']['createConversation']>>>()
+  const old = data.conversations[0]
+  data.conversations = []; data.activeConversationId = null
+  api.core.createConversation = () => pending.promise
+  api.core.sendMessage = vi.fn()
+  await mount()
+  await act(async () => emit('focus', undefined))
+  const input = screen.getByRole('textbox', { name: '对桌宠说' }) as HTMLTextAreaElement
+  fireEvent.change(input, { target: { value: '创建中的请求' } })
+  await act(async () => { fireEvent.submit(input.closest('form')!) })
+  await act(async () => emit('deleted', { id: old.id, activeConversationId: null }))
+  fireEvent.change(input, { target: { value: '新草稿' } })
+  await act(async () => pending.resolve(success ? { ok: true, data: old } : { ok: false, error: '过时的创建失败' }))
+  expect(input.value).toBe('新草稿')
+  expect(document.body.textContent).not.toContain('过时的创建失败')
+  expect(api.core.sendMessage).not.toHaveBeenCalled()
+})
+
+it('sends a first message when its own create broadcasts arrive before the result', async () => {
+  const created = data.conversations[0]
+  data.conversations = []; data.activeConversationId = null
+  api.core.createConversation = async () => {
+    emit('updated', created); emit('active', { id: created.id })
+    return { ok: true, data: created }
+  }
+  api.core.sendMessage = vi.fn(async () => ({ ok: true as const, data: created }))
+  await mount()
+  await act(async () => emit('focus', undefined))
+  const input = screen.getByRole('textbox', { name: '对桌宠说' })
+  fireEvent.change(input, { target: { value: '新的首条请求' } })
+  await act(async () => { fireEvent.submit(input.closest('form')!) })
+  expect(api.core.sendMessage).toHaveBeenCalledWith(created.id, '新的首条请求')
+})
 
 it('shows offline creation progress without a VNC URL, allows cleanup retry, and removes stopped residue', async () => {
   await mount()

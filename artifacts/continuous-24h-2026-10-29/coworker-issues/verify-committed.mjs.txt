@@ -1,0 +1,19 @@
+import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { readFileSync, writeFileSync } from 'node:fs'
+const root = 'artifacts/continuous-24h-2026-10-29/coworker-issues'
+const revision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
+const gitFile = path => execFileSync('git', ['show', `${revision}:${path}`], { maxBuffer: 128 * 1024 * 1024 })
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const manifest = JSON.parse(gitFile(`${root}/manifest.json`).toString())
+const mismatches = manifest.files.filter(file => hash(gitFile(`${root}/${file.path}`)) !== file.sha256).map(file => file.path)
+const sourceMismatches = manifest.sourceFiles.filter(file => hash(gitFile(file.path).toString().replaceAll('\r\n', '\n')) !== file.textLfSha256).map(file => file.path)
+const receipt = JSON.parse(readFileSync(`${root}/package-receipt.json`, 'utf8'))
+const installerMatches = hash(readFileSync(receipt.installer.path)) === receipt.installer.sha256
+const characterRoot = 'artifacts/nailong-3d-calibration-2026-10-29'
+const character = JSON.parse(gitFile(`${characterRoot}/manifest.json`).toString())
+const characterMismatches = character.files.filter(file => hash(gitFile(`${characterRoot}/${file.path}`)) !== file.sha256).map(file => file.path)
+const result = { revision, files: manifest.files.length, mismatches, sourceMismatches, installerMatches, characterFiles: character.files.length, characterMismatches, passed: !mismatches.length && !sourceMismatches.length && installerMatches && !characterMismatches.length }
+writeFileSync('previews/coworker-issues-2026-10-29/committed-hashes.json', JSON.stringify(result, null, 2) + '\n')
+console.log(JSON.stringify(result))
+if (!result.passed) process.exitCode = 1

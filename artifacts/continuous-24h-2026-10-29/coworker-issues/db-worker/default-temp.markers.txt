@@ -1,0 +1,12 @@
+node=v22.19.0 temp=C:\Users\LENOVO\AppData\Local\Temp
+created primary C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-MA7VhD
+before first execFileSync
+after first execFileSync PASS=true items=6
+before restart execFileSync
+after restart execFileSync PASS=true LocalState=true
+created restored C:\Users\LENOVO\AppData\Local\Temp\murasame-database-recovery-QQvkU7
+before cpSync
+after cpSync items=6
+before restored execFileSync
+after restored execFileSync PASS=true sameKey=true
+diagnostic complete; generated profiles retained for inspection

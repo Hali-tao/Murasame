@@ -54,6 +54,7 @@ export const IPC = {
     messageStarted: 'core:message-started',
     messageFailed: 'core:message-failed',
     conversationUpdated: 'core:conversation-updated',
+    conversationDeleted: 'core:conversation-deleted',
     taskUpdated: 'core:task-updated',
     screenUpdated: 'core:screen-updated',
     memoriesUpdated: 'core:memories-updated',

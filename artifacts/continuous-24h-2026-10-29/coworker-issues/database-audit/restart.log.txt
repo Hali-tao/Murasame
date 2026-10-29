@@ -1,0 +1,22 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: fresh-restart 2624ms
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-file
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: missing-key-entry
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: null-key-entry
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: mismatched-key
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: undecryptable-key
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: invalid-key
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: malformed-key-file
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: orphan-journal
+ ↓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: migration-failure
+ ✓ tests/unit/database-recovery.test.ts > [NFR-R02] database recovery: scoped-clear-restart 2217ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 9 skipped (11)
+   Start at  19:14:06
+   Duration  5.25s (tests 99%)

@@ -1,0 +1,53 @@
+
+Running 1 test using 1 worker
+
+(node:5132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\pet-history-sync.spec.ts:4:5 › [FR-15] deleting the active history clears the open pet chat without restarting (11.0s)
+
+
+  1) tests\e2e\pet-history-sync.spec.ts:4:5 › [FR-15] deleting the active history clears the open pet chat without restarting
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: locator('.pet-chat')
+    Expected substring: not "这条历史删除后不应留在桌宠窗口"
+    Received string: "我在。这条历史删除后不应留在桌宠窗口这是来自测试模型的真实流式回复。询问写图免问"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "not toContainText" locator('.pet-chat') with timeout 5000ms
+      - waiting for locator('.pet-chat')
+        9 × locator resolved to <section data-pet-hit="true" class="pet-chat left" data-testid="pet-chat">…</section>
+          - unexpected value "我在。这条历史删除后不应留在桌宠窗口这是来自测试模型的真实流式回复。询问写图免问"
+
+
+      19 |     await main.getByRole('dialog').getByRole('button', { name: '按范围清除' }).click()
+      20 |     await expect(main.getByTestId('history-item')).toHaveCount(0)
+    > 21 |     await expect(pet.locator('.pet-chat')).not.toContainText('这条历史删除后不应留在桌宠窗口')
+         |                                                ^
+      22 |     await expect(pet.locator('.pet-chat')).not.toContainText('真实流式回复')
+      23 |     await pet.screenshot({ path: test.info().outputPath('pet-history-cleared.png') })
+      24 |   } finally { await closeApp(app); await server.close() }
+        at E:\Desktop\软件工程\murasame\tests\e2e\pet-history-sync.spec.ts:21:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\coworker-issues-2026-10-29\old-history-repro\pet-history-sync--FR-15-de-86698-pet-chat-without-restarting\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\coworker-issues-2026-10-29\old-history-repro\pet-history-sync--FR-15-de-86698-pet-chat-without-restarting\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\coworker-issues-2026-10-29\old-history-repro\pet-history-sync--FR-15-de-86698-pet-chat-without-restarting\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\coworker-issues-2026-10-29\old-history-repro\pet-history-sync--FR-15-de-86698-pet-chat-without-restarting\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\coworker-issues-2026-10-29\old-history-repro\pet-history-sync--FR-15-de-86698-pet-chat-without-restarting\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\pet-history-sync.spec.ts:4:5 › [FR-15] deleting the active history clears the open pet chat without restarting
