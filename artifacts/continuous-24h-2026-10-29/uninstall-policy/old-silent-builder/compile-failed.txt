@@ -1,0 +1,9 @@
+MakeNSIS v3.04 - Copyright 1999-2018 Contributors
+See the file COPYING for license details.
+Credits can be found in the Users Manual.
+
+Processing config: C:\Users\LENOVO\AppData\Local\electron-builder\Cache\nsis-3.0.4.1\nsis-3.0.4.1-1mx3n\nsisconf.nsh
+Processing script file: "<stdin>" (UTF8)
+
+!include: could not find: "E:/Desktop/��������/murasame/node_modules/app-builder-lib/templates/nsis/include/StdUtils.nsh"
+Error in script "<stdin>" on line 8 -- aborting creation process

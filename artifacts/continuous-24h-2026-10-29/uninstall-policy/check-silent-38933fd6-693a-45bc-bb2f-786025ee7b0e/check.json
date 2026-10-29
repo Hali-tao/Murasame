@@ -1,0 +1,12 @@
+{
+  "runName": "check-silent-38933fd6-693a-45bc-bb2f-786025ee7b0e",
+  "completed": true,
+  "changed": [],
+  "preserved": true,
+  "retainedEntries": [
+    "Local State",
+    "logs",
+    "murasame-db-key.json",
+    "murasame.db"
+  ]
+}

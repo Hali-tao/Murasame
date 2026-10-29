@@ -1,0 +1,22 @@
+﻿Unicode true
+RequestExecutionLevel user
+Name "Murasame isolated uninstall test"
+OutFile "fixture.exe"
+AutoCloseWindow true
+ShowInstDetails nevershow
+!include "LogicLib.nsh"
+!include "StdUtils.nsh"
+!addplugindir "C:/Users/LENOVO/AppData/Local/electron-builder/Cache/nsis-resources-3.4.1/nsis-resources-3.4.1-2jx2y/plugins/x86-unicode"
+!macro _isUpdated _a _b _t _f
+  ${StdUtils.TestParameter} $R9 "updated"
+  StrCmp "$R9" "true" `${_t}` `${_f}`
+!macroend
+!define isUpdated `"" isUpdated ""`
+!include "hook.nsh"
+Page instfiles
+Section
+  !insertmacro customUnInstall
+  FileOpen $0 "$EXEDIR\completed.txt" w
+  FileWrite $0 "hook returned"
+  FileClose $0
+SectionEnd

@@ -1,0 +1,24 @@
+{
+  "source": "build/installer.nsh",
+  "sourceSha256": "6fb4f16e39796954b8cddc7efd877b77dbe099379706ed49fc7f2a1f74d2d542",
+  "isolatedSourceSha256": "a73d122f166a6d753ae834c53d4356756716b138dc0464d748f22fa7c688ef1c",
+  "compiler": "C:\\Users\\LENOVO\\AppData\\Local\\electron-builder\\Cache\\nsis-3.0.4.1\\nsis-3.0.4.1-1mx3n\\Bin\\makensis.exe",
+  "files": [
+    {
+      "path": "murasame.db",
+      "sha256": "eab180f8e1de737fc075e1b8fcdddbe5d2c1b62450244520d8c7905c17158702"
+    },
+    {
+      "path": "murasame-db-key.json",
+      "sha256": "c27250919b85b927e19faabea883a1ee0b35838a02c548726ac99069e7cd6a92"
+    },
+    {
+      "path": "Local State",
+      "sha256": "a092828aec64177553f50718df1c71568f66b1a96aa4d382976813c1cc2e44ee"
+    },
+    {
+      "path": "logs/synthetic.txt",
+      "sha256": "a74b4cea9b068f870ad3f44aad752f5e6b07b9c07b9675dc51ca5b0f400fc799"
+    }
+  ]
+}

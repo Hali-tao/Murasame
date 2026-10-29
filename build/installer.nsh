@@ -12,7 +12,16 @@
 !macroend
 
 !macro customUnInstall
-  MessageBox MB_YESNO|MB_ICONQUESTION "要删除 Murasame 保存在这台电脑上的数据吗？$\n$\n包括对话、记忆和数据库密钥。删除后无法恢复。$\n选「否」会保留数据，下次安装可以继续用。" IDYES removeData IDNO keepData
+  ; electron-builder also calls this hook while replacing the old version.
+  ; Only an explicit choice during an interactive uninstall may remove data.
+  ${If} ${isUpdated}
+    Goto keepData
+  ${EndIf}
+  ${If} ${Silent}
+    Goto keepData
+  ${EndIf}
+  MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "要删除 Murasame 保存在这台电脑上的数据吗？$\n$\n包括对话、记忆和数据库密钥。删除后无法恢复。$\n选「否」会保留数据，下次安装可以继续用。" /SD IDNO IDYES removeData IDNO keepData
+  Goto keepData
   removeData:
     RMDir /r "$APPDATA\murasame-desktop"
   keepData:

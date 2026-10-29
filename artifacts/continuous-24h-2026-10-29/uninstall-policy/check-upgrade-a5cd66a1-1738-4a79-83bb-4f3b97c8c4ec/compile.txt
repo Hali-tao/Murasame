@@ -1,0 +1,20 @@
+MakeNSIS v3.04 - Copyright 1999-2018 Contributors
+See the file COPYING for license details.
+Credits can be found in the Users Manual.
+
+Processing config: C:\Users\LENOVO\AppData\Local\electron-builder\Cache\nsis-3.0.4.1\nsis-3.0.4.1-1mx3n\nsisconf.nsh
+Processing script file: "<stdin>" (UTF8)
+
+Processed 1 file, writing output (x86-unicode):
+
+Output: "E:\Desktop\��������\murasame\previews\uninstall-policy-2026-10-29\check-upgrade-a5cd66a1-1738-4a79-83bb-4f3b97c8c4ec\fixture.exe"
+Install: 1 page (64 bytes), 1 section (16408 bytes), 31 instructions (868 bytes), 227 strings (1780 bytes), 1 language table (198 bytes).
+
+Using zlib compression.
+
+EXE header size:               37888 / 39424 bytes
+Install code:                   1310 / 19710 bytes
+Install data:                  45612 / 102404 bytes
+CRC (0xCC63D911):                  4 / 4 bytes
+
+Total size:                    84814 / 161542 bytes (52.5%)

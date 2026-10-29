@@ -1,0 +1,9 @@
+{"runName":"old-silent-localinclude","completed":false,"changed":[],"preserved":true,"retainedEntries":["Local State","logs","murasame-db-key.json","murasame.db"]}
+AssertionError [ERR_ASSERTION]: The hook did not finish; it may be blocked on a dialog
+
+false !== true
+
+    at file:///E:/Desktop/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/murasame/scripts/verify-uninstall-hook.mjs:69:10
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)
+    at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)

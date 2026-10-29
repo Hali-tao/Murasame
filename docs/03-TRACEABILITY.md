@@ -211,8 +211,8 @@
 | NFR-M01 | tests/unit/errors.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-M02 | tests/unit/p0-finish.test.ts<br>tests/unit/traceability.test.ts |
 | OR-01 | tests/unit/murasame-core.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
-| OR-02 | tests/unit/capacity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
-| OR-03 | tests/unit/p7-p8.test.ts |
+| OR-02 | tests/unit/capacity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/uninstall-policy-native.test.ts |
+| OR-03 | tests/unit/p7-p8.test.ts<br>tests/unit/uninstall-policy-native.test.ts |
 | CON-01 | tests/unit/p4-p6.test.ts |
 | CON-02 | tests/unit/p7-p8.test.ts |
 | CON-03 | tests/unit/p4-p6.test.ts |

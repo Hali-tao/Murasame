@@ -1,0 +1,57 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/uninstall-policy-native.test.ts (3 tests | 3 failed) 17336ms
+   × [OR-02][OR-03] native uninstall hook preserves all data during silent without prompting 5766ms
+   × [OR-02][OR-03] native uninstall hook preserves all data during silent-upgrade without prompting 5754ms
+   × [OR-02][OR-03] native uninstall hook preserves all data during upgrade without prompting 5815ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/uninstall-policy-native.test.ts > [OR-02][OR-03] native uninstall hook preserves all data during silent without prompting
+Error: Command failed: D:\node.exe E:\Desktop\软件工程\murasame\scripts\verify-uninstall-hook.mjs run check-silent-42a6229b-16f9-4b2e-953e-69f682993072 /S
+ ❯ run tests/unit/uninstall-policy-native.test.ts:16:52
+     14| ] as const)('[OR-02][OR-03] native uninstall hook preserves all data d…
+     15|   const fixture = `check-${scenario}-${randomUUID()}`
+     16|   const run = (...parameters: string[]): string => execFileSync(proces…
+       |                                                    ^
+     17|   expect(run('build', fixture)).toContain('"compiled":true')
+     18|   expect(run('run', fixture, ...args)).toContain('"timedOut":false')
+ ❯ tests/unit/uninstall-policy-native.test.ts:18:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/uninstall-policy-native.test.ts > [OR-02][OR-03] native uninstall hook preserves all data during silent-upgrade without prompting
+Error: Command failed: D:\node.exe E:\Desktop\软件工程\murasame\scripts\verify-uninstall-hook.mjs run check-silent-upgrade-852b5cc1-94bb-46b6-bfe3-416f75e3ac36 /S --updated
+ ❯ run tests/unit/uninstall-policy-native.test.ts:16:52
+     14| ] as const)('[OR-02][OR-03] native uninstall hook preserves all data d…
+     15|   const fixture = `check-${scenario}-${randomUUID()}`
+     16|   const run = (...parameters: string[]): string => execFileSync(proces…
+       |                                                    ^
+     17|   expect(run('build', fixture)).toContain('"compiled":true')
+     18|   expect(run('run', fixture, ...args)).toContain('"timedOut":false')
+ ❯ tests/unit/uninstall-policy-native.test.ts:18:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/uninstall-policy-native.test.ts > [OR-02][OR-03] native uninstall hook preserves all data during upgrade without prompting
+Error: Command failed: D:\node.exe E:\Desktop\软件工程\murasame\scripts\verify-uninstall-hook.mjs run check-upgrade-7e9ea916-e55e-4f45-9966-8e2141c522e3 --updated
+ ❯ run tests/unit/uninstall-policy-native.test.ts:16:52
+     14| ] as const)('[OR-02][OR-03] native uninstall hook preserves all data d…
+     15|   const fixture = `check-${scenario}-${randomUUID()}`
+     16|   const run = (...parameters: string[]): string => execFileSync(proces…
+       |                                                    ^
+     17|   expect(run('build', fixture)).toContain('"compiled":true')
+     18|   expect(run('run', fixture, ...args)).toContain('"timedOut":false')
+ ❯ tests/unit/uninstall-policy-native.test.ts:18:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  21:26:11
+   Duration  18.18s (tests 100%)

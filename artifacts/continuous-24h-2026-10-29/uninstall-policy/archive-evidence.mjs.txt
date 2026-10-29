@@ -1,0 +1,33 @@
+import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
+import { join, relative, resolve, extname } from 'node:path'
+import { createHash } from 'node:crypto'
+import assert from 'node:assert/strict'
+
+const source = resolve('previews/uninstall-policy-2026-10-29')
+const target = resolve('artifacts/continuous-24h-2026-10-29/uninstall-policy')
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const walk = dir => readdirSync(dir, { withFileTypes: true }).filter(item => !item.name.startsWith('.playwright-artifacts') && item.name !== 'synthetic-profile').flatMap(item => item.isDirectory() ? walk(join(dir, item.name)) : [join(dir, item.name)])
+assert.match(readFileSync(join(source, 'verify-final.txt'), 'utf8'), /842 passed/)
+assert.match(readFileSync(join(source, 'package-smoke.txt'), 'utf8'), /4 passed/)
+const receipt = JSON.parse(readFileSync(join(source, 'package-receipt.json'), 'utf8'))
+for (const entry of receipt.sourceFiles) assert.equal(hash(readFileSync(entry.path)), entry.sha256)
+assert.ok(!existsSync(target), 'Preserve old archive; choose a new directory')
+mkdirSync(target, { recursive: true })
+const entries = []
+for (const file of walk(source)) {
+  const path = relative(source, file).replaceAll('\\', '/')
+  // Generated executables and dependency headers stay local; receipts preserve source/run hashes.
+  if (['fixture.exe', 'StdUtils.nsh'].some(name => path.endsWith('/' + name))) continue
+  if (!['.txt', '.md', '.json', '.png', '.nsi', '.nsh', '.mjs', '.ps1', '.zip'].includes(extname(file))) continue
+  const bytes = readFileSync(file)
+  const text = !['.png', '.zip'].includes(extname(file))
+  const output = text ? Buffer.from(bytes.toString('utf8').replaceAll('\r\n', '\n').split('\n').map(line => line.trimEnd()).join('\n').trimEnd() + '\n') : bytes
+  const destination = ['.nsi', '.nsh', '.mjs', '.ps1'].includes(extname(file)) ? path + '.txt' : path
+  const final = join(target, destination)
+  mkdirSync(resolve(final, '..'), { recursive: true }); writeFileSync(final, output)
+  entries.push({ path: destination, bytes: output.length, sha256: hash(output), ...(text ? { originalSha256: hash(bytes) } : {}) })
+}
+writeFileSync(join(target, '.gitattributes'), '* -text\n')
+writeFileSync(join(target, 'manifest.json'), JSON.stringify({ archivedAt: new Date().toISOString(), baseline: receipt.baseline, sourceFiles: receipt.sourceFiles, files: entries }, null, 2) + '\n')
+for (const entry of entries) assert.equal(hash(readFileSync(join(target, entry.path))), entry.sha256)
+console.log(JSON.stringify({ archivedFiles: entries.length, bytes: entries.reduce((sum, entry) => sum + entry.bytes, 0), mismatches: 0 }))

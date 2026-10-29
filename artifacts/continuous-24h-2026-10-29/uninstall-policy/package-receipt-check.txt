@@ -1,0 +1,11 @@
+{
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-uninstall-policy\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292522626,
+    "sha256": "4e7a96773208f1fb831a5c7c54d5efaef0187ae30db228203e00ccff83541292"
+  },
+  "applicationFiles": 109,
+  "models": 18,
+  "isolation": 6,
+  "previousInstallers": 9
+}

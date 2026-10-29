@@ -1,0 +1,9 @@
+MakeNSIS v3.04 - Copyright 1999-2018 Contributors
+See the file COPYING for license details.
+Credits can be found in the Users Manual.
+
+Processing config: C:\Users\LENOVO\AppData\Local\electron-builder\Cache\nsis\3.0.4.1\nsisconf.nsh
+Processing script file: "E:\Desktop\��������\murasame\previews\uninstall-policy-2026-10-29\old-silent-bin\fixture.nsi" (UTF8)
+
+!include: could not find: "E:/Desktop/��������/murasame/node_modules/app-builder-lib/templates/nsis/include/StdUtils.nsh"
+Error in script "E:\Desktop\��������\murasame\previews\uninstall-policy-2026-10-29\old-silent-bin\fixture.nsi" on line 8 -- aborting creation process

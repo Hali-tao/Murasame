@@ -1,0 +1,17 @@
+import { createHash } from 'node:crypto'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import assert from 'node:assert/strict'
+const root = 'previews/uninstall-policy-2026-10-29'
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const fixtures = readdirSync(root, { withFileTypes: true }).filter(item => item.isDirectory() && existsSync(join(root, item.name, 'receipt.json'))).map(item => {
+  const dir = join(root, item.name), receipt = JSON.parse(readFileSync(join(dir, 'receipt.json'), 'utf8'))
+  const files = receipt.files.map(file => ({ path: file.path, unchanged: hash(readFileSync(join(dir, 'synthetic-profile', file.path))) === file.sha256 }))
+  assert.ok(files.every(file => file.unchanged), item.name)
+  const exit = existsSync(join(dir, 'exit.json')) ? JSON.parse(readFileSync(join(dir, 'exit.json'), 'utf8')) : null
+  return { name: item.name, sourceSha256: receipt.sourceSha256, fixtureSha256: hash(readFileSync(join(dir, 'fixture.exe'))), exit, completed: existsSync(join(dir, 'completed.txt')), files }
+})
+assert.equal(fixtures.filter(item => item.exit?.timedOut === true).length, 3)
+assert.equal(fixtures.filter(item => item.completed && item.exit?.code === 0).length, 6)
+writeFileSync(join(root, 'fixture-inventory.json'), JSON.stringify({ at: new Date().toISOString(), fixtureCount: fixtures.length, allSyntheticDataUnchanged: true, fixtures }, null, 2) + '\n')
+console.log(JSON.stringify({ fixtures: fixtures.length, redTimedOut: 3, greenCompleted: 6, allSyntheticDataUnchanged: true }))

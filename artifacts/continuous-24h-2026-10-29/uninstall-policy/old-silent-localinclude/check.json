@@ -1,0 +1,12 @@
+{
+  "runName": "old-silent-localinclude",
+  "completed": false,
+  "changed": [],
+  "preserved": true,
+  "retainedEntries": [
+    "Local State",
+    "logs",
+    "murasame-db-key.json",
+    "murasame.db"
+  ]
+}

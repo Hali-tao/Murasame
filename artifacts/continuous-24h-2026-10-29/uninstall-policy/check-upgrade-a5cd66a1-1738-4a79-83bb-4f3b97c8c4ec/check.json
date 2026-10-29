@@ -1,0 +1,12 @@
+{
+  "runName": "check-upgrade-a5cd66a1-1738-4a79-83bb-4f3b97c8c4ec",
+  "completed": true,
+  "changed": [],
+  "preserved": true,
+  "retainedEntries": [
+    "Local State",
+    "logs",
+    "murasame-db-key.json",
+    "murasame.db"
+  ]
+}

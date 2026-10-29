@@ -1,0 +1,12 @@
+{
+  "runName": "check-silent-upgrade-d751d410-077c-43a2-a538-de068998b80f",
+  "completed": true,
+  "changed": [],
+  "preserved": true,
+  "retainedEntries": [
+    "Local State",
+    "logs",
+    "murasame-db-key.json",
+    "murasame.db"
+  ]
+}
