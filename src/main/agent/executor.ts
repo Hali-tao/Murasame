@@ -9,6 +9,7 @@ import type { TaskPhase } from './state-machine'
 import { readVisiblePage } from '../tools/browser'
 import { organizeByKind, moveInside, readInside, resolveInside, writeInside, type FileEffect, type FileIntent, type WorkControl } from '../tools/filesystem'
 import { taskGraph, readOnlyStep } from '../task/plan-graph'
+import { expectedDirectoryListing } from '../task/directory-observation'
 import { runGit } from '../tools/git'
 import { runTerminal, type IsolatedRunner, type ToolRun } from '../tools/terminal'
 export type TaskTool = 'filesystem' | 'terminal' | 'git' | 'browser'
@@ -81,17 +82,29 @@ export async function executeGoal(input: GroundedExecutionOptions & { goal: stri
   let graph: ReturnType<typeof taskGraph>
   try { graph = taskGraph(plan.steps); if (!graph.length || graph.length > 6) throw new Error('计划必须为 1 至 6 步') } catch (error) { return finish('失败', error instanceof Error ? error.message : String(error)) }
   const done = new Set<string>(); const attempted = new Set<string>(); let confirmed = 0; let failed = false; let dispatches = 0; let awaitingExport = false
+  const matchesCheckpoint = (checkpoint: StepCheckpoint, node: (typeof graph)[number]): boolean => {
+    const stepHash = createHash('sha256').update(JSON.stringify({ root: input.root, step: node.step })).digest('hex')
+    return (checkpoint.stepHash ?? checkpoint.planHash) === (checkpoint.stepHash ? stepHash : planHash)
+  }
+  const follows = (id: string, ancestor: string): boolean => graph.find(node => node.id === id)!.dependsOn.some(dependency => dependency === ancestor || follows(dependency, ancestor))
+  const completed = (input.checkpoints ?? []).filter(checkpoint => {
+    const node = graph.find(entry => entry.id === checkpoint.stepId)
+    return node && checkpoint.completed && checkpoint.outcomeKnown && checkpoint.output.run.status === 'ok' && matchesCheckpoint(checkpoint, node)
+  })
   for (const checkpoint of input.checkpoints ?? []) {
     const node = graph.find((entry) => entry.id === checkpoint.stepId)
     if (!node) { artifacts.push(...checkpoint.output.artifacts); continue }
     artifacts.push(...checkpoint.output.artifacts)
     if (!checkpoint.outcomeKnown) return finish('失败', `步骤 ${node.id} 的实际副作用未知，需要先核对；没有重放。`)
-    const stepHash = createHash('sha256').update(JSON.stringify({ root: input.root, step: node.step })).digest('hex')
-    if ((checkpoint.stepHash ?? checkpoint.planHash) !== (checkpoint.stepHash ? stepHash : planHash)) continue
+    if (!matchesCheckpoint(checkpoint, node)) continue
     if (checkpoint.completed) {
       const ticket: WorkerTicket = { id: randomUUID(), stepId: node.id, root: input.root ? resolveInside(input.root, node.step.workspace ?? '.') : null, allowedTools: [node.step.tool ?? tool], limits: { timeoutMs: node.step.limits?.timeoutMs ?? 8000, maxSteps: 1 } }
-      const checked = await independentlyVerify(ticket, node.step, checkpoint.output, input)
-      if (!checked.length || !checked.every((item) => item.matched)) return finish('失败', `步骤 ${node.id} 的已完成结果发生变化；未重新执行或覆盖。`)
+      const directoryExpected = input.root && ticket.root && ticket.allowedTools[0] === 'filesystem' && node.step.args?.action === 'list'
+        ? expectedDirectoryListing(input.root, resolveInside(ticket.root, node.step.args.path ?? '.'), checkpoint.output.run.raw, completed.filter(item => follows(item.stepId, node.id)).flatMap(item => item.output.effects)) : undefined
+      const checked = await independentlyVerify(ticket, node.step, checkpoint.output, input, directoryExpected)
+      const verified = checked.length > 0 && checked.every(item => item.matched)
+      record({ agentRole: 'Critic', toolId: 'critic', declared: `恢复前独立核对 ${node.id}，不重复执行`, executionStatus: verified ? 'ok' : 'error', raw: JSON.stringify(checked), evidence: checked, verdict: verified ? 'confirmed' : 'refuted', stepId: node.id, traceId: ticket.id, phase: 'result', args: { restoredCheckpoint: checkpoint.traceId, readOnly: true } })
+      if (!verified) return finish('失败', `步骤 ${node.id} 的已完成结果发生变化；未重新执行或覆盖。`)
       done.add(node.id); attempted.add(node.id); confirmed += 1; steps[node.index] = { ...steps[node.index], state: '完成', tone: 'green', detail: `${node.step.title}：恢复后独立复核通过，未重复执行` }
     }
   }
@@ -182,7 +195,7 @@ async function runStep(ticket: WorkerTicket, step: PlanStep, plan: TaskPlan, inp
   if (action === 'move' && args?.from && args.to) { const hash = createHash('sha256').update(readFileSync(resolveInside(root, args.from))).digest('hex'); moveInside(root, args.from, args.to); const destination = resolveInside(root, args.to); return { run: { status: 'ok', raw: destination, evidence: fact(destination, '移动', '', false) }, effects: [{ source: resolveInside(root, args.from), destination, hash, status: 'moved' }], artifacts: [destination] } }
   return wrap(errorRun('计划没有可执行的受控操作；任意自然语言指令尚未执行。'))
 }
-async function independentlyVerify(ticket: WorkerTicket, step: PlanStep, output: StepResult, input: Parameters<typeof executeGoal>[0]): Promise<Evidence[]> {
+async function independentlyVerify(ticket: WorkerTicket, step: PlanStep, output: StepResult, input: Parameters<typeof executeGoal>[0], directoryExpected?: string): Promise<Evidence[]> {
   const evidence: Evidence[] = []
   let observedRaw = output.run.raw
   if (output.run.status === 'ok' && ticket.allowedTools[0] === 'browser') {
@@ -191,7 +204,13 @@ async function independentlyVerify(ticket: WorkerTicket, step: PlanStep, output:
     observedRaw = observed.raw; evidence.push(observed.evidence)
   }
   if (output.run.status === 'ok' && ticket.allowedTools[0] === 'filesystem' && !output.effects.length && ['list', 'read'].includes(step.args?.action ?? '')) {
-    try { observedRaw = step.args?.action === 'list' ? JSON.stringify(readdirSync(resolveInside(ticket.root!, step.args?.path ?? '.'))) : readInside(ticket.root!, step.args?.path ?? ''); evidence.push(fact(ticket.root!, '独立只读观察与执行返回一致', observedRaw, observedRaw === output.run.raw)) } catch (error) { evidence.push(fact(ticket.root!, '独立只读观察', error instanceof Error ? error.message : String(error), false)) }
+    try {
+      const names = step.args?.action === 'list' ? readdirSync(resolveInside(ticket.root!, step.args.path ?? '.')) : undefined
+      observedRaw = names ? JSON.stringify(names) : readInside(ticket.root!, step.args?.path ?? '')
+      const actual = names && directoryExpected !== undefined ? JSON.stringify([...names].sort()) : observedRaw
+      const expected = directoryExpected ?? output.run.raw
+      evidence.push(fact(ticket.root!, directoryExpected === undefined ? '独立只读观察与执行返回一致' : `原目录及本任务已核验新增项：${directoryExpected}`, actual, actual === expected))
+    } catch (error) { evidence.push(fact(ticket.root!, '独立只读观察', error instanceof Error ? error.message : String(error), false)) }
   }
   for (const effect of output.effects) {
     if (effect.operation === 'delete') { let missing = false; try { missing = !existsSync(resolveInside(ticket.root!, effect.destination)) } catch { /* Boundary failures cannot confirm deletion. */ } evidence.push(fact(effect.destination, '已批准文件不存在', missing ? '不存在' : '仍存在或范围无效', effect.status === 'moved' && missing)); continue }
