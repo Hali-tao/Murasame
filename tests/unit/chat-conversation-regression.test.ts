@@ -45,6 +45,47 @@ beforeEach(async () => {
 afterEach(() => { cleanup(); vi.restoreAllMocks() })
 
 describe('conversation UI isolation', () => {
+  it.each([
+    ['complete', [], '未找到相关记忆'], ['complete', ['used'], '已使用记忆'],
+    ['limited', ['used'], '记忆检索受限'], ['unavailable', [], '记忆检索暂不可用'],
+    ['disabled', [], '该次未启用记忆'], ['not-used', [], '该次未检索记忆'],
+    ['unknown', [], '历史状态未记录']
+  ] as const)('shows the completed reply status %s without inferring it from current settings', (status, ids, label) => {
+    useAppStore.setState((state) => ({ data: state.data ? { ...state.data, conversations: state.data.conversations.map((chat) => chat.id === 'a' ? { ...chat, memoryRecallStatus: status, recalledMemoryIds: [...ids], recalledAtMessageId: 'reply-a' } : chat) } : null }))
+    render(createElement(MemoryRouter, null, createElement(ChatPage)))
+    expect(screen.getByTestId('memory-recall-status').textContent).toContain(label)
+    const settings = useAppStore.getState().data!.settings
+    act(() => emit('settings', { ...settings, memoryEnabled: !settings.memoryEnabled }))
+    expect(screen.getByTestId('memory-recall-status').textContent).toContain(label)
+  })
+
+  it('keeps recall warnings with their conversation through pending replies, deleted facts, collapse and background completion', () => {
+    act(() => emit('updated', { ...chats[0], memoryRecallStatus: 'limited', recalledMemoryIds: ['used'], recalledAtMessageId: 'reply-a' }))
+    render(createElement(MemoryRouter, null, createElement(ChatPage)))
+    const status = () => screen.getByTestId('memory-recall-status').textContent
+    expect(status()).toContain('记忆检索受限')
+    act(() => emit('started', { conversationId: 'a', userText: '等待中的问题' }))
+    act(() => emit('updated', { ...chats[1], memoryRecallStatus: 'complete', recalledMemoryIds: [], recalledAtMessageId: 'reply-b' }))
+    expect(status()).toContain('记忆检索受限')
+    act(() => emit('memories', []))
+    expect(status()).toContain('记忆检索受限')
+    expect(screen.queryByText('实际注入的白茶偏好')).toBeNull()
+    expect(screen.getByText(/部分曾注入的记忆已更正或删除/)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: '收起上下文' }))
+    fireEvent.click(screen.getByRole('button', { name: '展开上下文' }))
+    fireEvent.click(screen.getByText('会话b'))
+    expect(status()).toContain('未找到相关记忆')
+    fireEvent.click(screen.getByText('会话a'))
+    expect(status()).toContain('记忆检索受限')
+  })
+
+  it('distinguishes a fresh conversation from an older reply without recorded health', () => {
+    render(createElement(MemoryRouter, null, createElement(ChatPage)))
+    expect(screen.getByTestId('memory-recall-status').textContent).toContain('尚无检索记录')
+    act(() => emit('updated', { ...chats[0], recalledAtMessageId: 'legacy-reply', recalledMemoryIds: [] }))
+    expect(screen.getByTestId('memory-recall-status').textContent).toContain('历史状态未记录')
+  })
+
   it('removes externally deleted history and rejects a late conversation update', () => {
     emit('deleted', { id: 'a', activeConversationId: 'b' })
     emit('updated', { ...chats[0], messages: [{ id: 'late', role: 'assistant', text: '迟到旧回复', time: '现在' }] })

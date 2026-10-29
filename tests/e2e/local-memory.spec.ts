@@ -41,6 +41,7 @@ test('[FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对�
     expect(chatRequest?.filter(message => message.role === 'system').map(message => String(message.content)).join('\n')).not.toContain('检索不完整或暂不可用')
     const reply = page.locator('.message-row.assistant').last()
     await expect(reply).toContainText('真实流式回复')
+    await expect(page.getByTestId('memory-recall-status')).toContainText('已使用记忆')
     await reply.scrollIntoViewIfNeeded()
     await expect(page.locator('#chat-context-panel')).toBeVisible()
     await page.screenshot({ path: test.info().outputPath('actual-local-memory.png') })

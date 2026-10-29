@@ -5,6 +5,7 @@ import type { Message } from '@shared/types'
 import { TaskCreateDialog } from '../components/dialogs'
 import { Button, Card, CardHead, EmptyState, Pill, Spinner } from '../components/ui'
 import { StatusPill } from '../components/StatusPill'
+import { MemoryRecallStatus } from '../components/MemoryRecallStatus'
 import { clockLabel } from '../lib/utils'
 import { playSamples, startRecording, type Recording } from '../lib/audio'
 import { onWindowHidden } from '../lib/window-visibility'
@@ -342,7 +343,7 @@ export function ChatPage(): React.JSX.Element {
 
         <div className="chat-context" id="chat-context-panel" hidden={!contextOpen}>
           <Card>
-            <CardHead title="本轮上下文" subtitle="显示最近一轮实际注入的长期记忆" aside={<Pill tone="gray">仅本机</Pill>} />
+            <CardHead title="本轮上下文" subtitle="显示最近一次已完成回复的记忆使用情况" aside={<Pill tone="gray">仅本机</Pill>} />
             <div className="context-list">
               <div><span>角色</span><strong>{data.character.name.trim() || '未命名'}{data.character.style ? ` · ${data.character.style}` : ''}</strong></div>
               <div><span>模型</span><strong>{defaultModel?.name ?? '尚未配置'}</strong></div>
@@ -350,6 +351,7 @@ export function ChatPage(): React.JSX.Element {
               <div><span>屏幕</span><strong>{data.settings.permissions.screen ? '按需附加画面' : '未附加入口'}</strong></div>
             </div>
             <div className="subheading">已召回的记忆</div>
+            <MemoryRecallStatus status={conversation?.memoryRecallStatus} recorded={Boolean(conversation?.recalledAtMessageId)} count={recalledIds.size} />
             <div className="memory-chips">
               {recalledMemories.map((memory) => (
                 <Pill key={memory.id} tone="coral">{memory.text}</Pill>

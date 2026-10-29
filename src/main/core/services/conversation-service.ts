@@ -7,7 +7,7 @@ import { searchHistory, type HistorySearchResult } from '../../history/search'
 import { compactContext, RequestQueue } from '../../agent/runtime'
 import { petLine, petSpeech, routeUtterance, type StepPose, type TeammateRoute } from '../../agent/teammates'
 import { addressSequence } from '../../data/repositories/trace-repository'
-import type { Conversation, Result } from '../../../shared/types'
+import type { Conversation, MemoryRecallStatus, Result } from '../../../shared/types'
 
 const clone = <T>(value: T): T => structuredClone(value)
 const nowStamp = (): string => new Date().toISOString()
@@ -156,7 +156,7 @@ export class ConversationService {
       this.db.transaction(() => {
         this.insertMessage(conversationId, 'user', text, userAt)
         this.insertMessage(conversationId, 'assistant', say, nowStamp(), turnId)
-        this.recordRecall(conversationId, turnId, [], [])
+        this.recordRecall(conversationId, turnId, [], [], 'not-used')
       })()
       const title = existing.title === '新的对话' ? text.slice(0, 24) : existing.title
       this.db.prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`).run(title, new Date().toISOString(), conversationId)
@@ -187,12 +187,14 @@ export class ConversationService {
     const prompt = composePrompt(character, relationship?.stage)
     const memoryEnabled = this.context.memoryEnabled?.() ?? false
     let recalled: RecalledContext = { text: '', ids: [] }
-    let recallUnavailable = false
+    let recallUnavailable = memoryEnabled && !this.context.recall
     if (memoryEnabled && this.context.recall) {
       try { recalled = await this.context.recall(text) } catch {
         recallUnavailable = true
       }
     }
+    const recallStatus: MemoryRecallStatus = !memoryEnabled ? 'disabled'
+      : recallUnavailable ? 'unavailable' : recalled.degraded ? 'limited' : 'complete'
     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
     const earlier = compacted.summary ? `\n更早的对话记录摘录（保留来源角色；更正以较新的用户陈述为准，助手陈述不等于用户事实）：\n${compacted.summary}` : ''
     const voice = relationship ? `\n关系表达：${relationship.tone ?? ''} ${relationship.joke ?? ''}` : ''
@@ -221,7 +223,7 @@ export class ConversationService {
       this.db.transaction(() => {
         this.insertMessage(conversationId, 'user', text, userAt)
         this.insertMessage(conversationId, 'assistant', reply, nowStamp(), turnId)
-        this.recordRecall(conversationId, turnId, recalled.ids, prompt.prompts)
+        this.recordRecall(conversationId, turnId, recalled.ids, prompt.prompts, recallStatus)
       })()
     } catch { return fail('会话保存失败，这次回复未写入历史') }
     this.recordTrace(conversationId, [...messages.map((item) => String(item.content)), reply])
@@ -256,12 +258,14 @@ export class ConversationService {
   }
 
   /** Last completed turn's actual injection IDs, including an explicitly empty set. */
-  getRecall(conversationId: string): { turnId: string; ids: string[] } | undefined {
+  getRecall(conversationId: string): { turnId: string; ids: string[]; status: MemoryRecallStatus } | undefined {
     const row = this.db.prepare(`SELECT declared_json FROM tool_calls WHERE task_id = ? AND tool_id = 'prompt' ORDER BY created_at DESC, rowid DESC`).get(conversationId) as { declared_json: string } | undefined
     if (!row) return undefined
     try {
       const args = JSON.parse(row.declared_json).args
-      return { turnId: args.turnId, ids: Array.isArray(args.memoryIds) ? args.memoryIds : [] }
+      const known: MemoryRecallStatus[] = ['complete', 'limited', 'unavailable', 'disabled', 'not-used', 'unknown']
+      const status: MemoryRecallStatus = known.includes(args.memoryRecallStatus) ? args.memoryRecallStatus : 'unknown'
+      return { turnId: args.turnId, ids: Array.isArray(args.memoryIds) ? args.memoryIds : [], status }
     } catch { return undefined }
   }
 
@@ -283,12 +287,12 @@ export class ConversationService {
     return queue.enqueue(job)
   }
 
-  private recordRecall(conversationId: string, turnId: string, memoryIds: string[], prompts: Array<{ id: string; version: string }>): void {
+  private recordRecall(conversationId: string, turnId: string, memoryIds: string[], prompts: Array<{ id: string; version: string }>, memoryRecallStatus: MemoryRecallStatus): void {
     const now = nowStamp()
     this.db.prepare(`INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
       uid('call'), conversationId, 'prompt', 'prompt',
-      JSON.stringify({ intent: 'system-prompt', args: { conversationId, turnId, prompts, memoryIds } }),
+      JSON.stringify({ intent: 'system-prompt', args: { conversationId, turnId, prompts, memoryIds, memoryRecallStatus } }),
       JSON.stringify({ status: 'ok', raw: null, startedAt: now, endedAt: now }),
       JSON.stringify({ method: 'prompt-version', evidence: [], verdict: 'confirmed' }), now, 'prompt'
     )
@@ -368,7 +372,8 @@ export class ConversationService {
       pinned: row.pinned === 1,
       messages,
       recalledMemoryIds: recalled?.ids ?? [],
-      recalledAtMessageId: recalled?.turnId
+      recalledAtMessageId: recalled?.turnId,
+      memoryRecallStatus: recalled?.status
     })
   }
 }

@@ -29,6 +29,8 @@ export interface Message {
   time: string
 }
 
+export type MemoryRecallStatus = 'complete' | 'limited' | 'unavailable' | 'disabled' | 'not-used' | 'unknown'
+
 export interface Conversation {
   id: string
   title: string
@@ -39,6 +41,7 @@ export interface Conversation {
   messages: Message[]
   recalledMemoryIds?: string[]
   recalledAtMessageId?: string
+  memoryRecallStatus?: MemoryRecallStatus
 }
 
 export interface ConversationDeleted {

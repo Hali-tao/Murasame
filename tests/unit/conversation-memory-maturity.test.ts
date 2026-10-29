@@ -509,6 +509,66 @@ describe('bounded background memory indexing', () => {
 })
 
 describe('conversation reliability at memory boundaries', () => {
+  it.each([
+    { kind: 'complete', enabled: true, recall: () => ({ text: '', ids: [] }) },
+    { kind: 'limited', enabled: true, recall: () => ({ text: '喜欢白茶', ids: ['fact'], degraded: true }) },
+    { kind: 'unavailable', enabled: true, recall: () => { throw new Error('synthetic recall failure') } },
+    { kind: 'unavailable', enabled: true, recall: undefined },
+    { kind: 'disabled', enabled: false, recall: () => { throw new Error('disabled recall must not run') } }
+  ])('[NFR-U03] persists $kind recall with its completed reply across service reloads', async ({ kind, enabled, recall }) => {
+    const db = database()
+    const service = new ConversationService(db, models, { chat: async () => '当前回复' }, { memoryEnabled: () => enabled, recall })
+    const chat = service.create()
+    expect(chat.memoryRecallStatus).toBeUndefined()
+    const result = await service.send(chat.id, '继续讨论')
+    expect(result.ok).toBe(true)
+    const saved = new ConversationService(db, models).list()[0]
+    expect(saved.memoryRecallStatus).toBe(kind)
+    expect(saved.recalledAtMessageId).toBe(saved.messages.at(-1)?.id)
+    expect(saved.recalledMemoryIds).toEqual(kind === 'limited' ? ['fact'] : [])
+    await service.send(chat.id, '请截图')
+    expect(new ConversationService(db, models).list()[0].memoryRecallStatus).toBe('not-used')
+  })
+
+  it.each([undefined, 'future-status'])('[NFR-U03] does not infer healthy recall from legacy or unknown metadata %s', async (status) => {
+    const db = database()
+    const service = new ConversationService(db, models, { chat: async () => '历史回复' })
+    const chat = service.create()
+    await service.send(chat.id, '继续讨论')
+    const row = db.prepare("SELECT id, declared_json FROM tool_calls WHERE tool_id = 'prompt'").get() as { id: string; declared_json: string }
+    const record = JSON.parse(row.declared_json)
+    record.args.memoryRecallStatus = status
+    db.prepare('UPDATE tool_calls SET declared_json = ? WHERE id = ?').run(JSON.stringify(record), row.id)
+    expect(new ConversationService(db, models).list()[0].memoryRecallStatus).toBe('unknown')
+  })
+
+  it.each(['model', 'write'])('[NFR-R02] %s failure cannot overwrite the previous completed recall status', async (failure) => {
+    const db = database()
+    const pending = deferred<string>()
+    const gateway = { chat: vi.fn(async () => '已保存回复') }
+    let degraded = true
+    const service = new ConversationService(db, models, gateway, {
+      memoryEnabled: () => true, recall: () => ({ text: '', ids: [], degraded })
+    })
+    const chat = service.create()
+    await service.send(chat.id, '第一轮')
+    const original = service.list()[0]
+    expect(original.memoryRecallStatus).toBe('limited')
+    degraded = false
+    gateway.chat.mockImplementationOnce(() => pending.promise)
+    const next = service.send(chat.id, '下一轮')
+    await vi.waitFor(() => expect(gateway.chat).toHaveBeenCalledTimes(2))
+    expect(service.list()[0].recalledAtMessageId).toBe(original.recalledAtMessageId)
+    expect(service.list()[0].memoryRecallStatus).toBe('limited')
+    if (failure === 'write') db.exec("CREATE TRIGGER fail_prompt BEFORE INSERT ON tool_calls BEGIN SELECT RAISE(ABORT, 'synthetic write failure'); END")
+    pending.release(failure === 'model' ? '' : '不能保存的回复')
+    expect((await next).ok).toBe(false)
+    const reloaded = new ConversationService(db, models).list()[0]
+    expect(reloaded.memoryRecallStatus).toBe('limited')
+    expect(reloaded.recalledAtMessageId).toBe(original.recalledAtMessageId)
+    expect(reloaded.messages).toEqual(original.messages)
+  })
+
   it('[NFR-U03] failed local query embeddings reach the model as incomplete recall, not an empty successful search', async () => {
     const db = database(); const memory = new MemoryService(db)
     await memory.add('user', '喜欢白茶')

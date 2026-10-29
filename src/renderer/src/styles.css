@@ -483,6 +483,8 @@ a:focus-visible {
 .context-list strong { font-size: 10px; font-weight: 500; text-align: right; }
 .subheading { margin: 15px 20px 7px; color: #5d5f67; font-size: 10.5px; font-weight: 600; }
 .memory-chips { display: flex; flex-direction: column; gap: 6px; padding: 0 20px; }
+.memory-recall-status { padding: 0 20px 8px; }
+.memory-recall-status p { margin: 6px 0 0; font-size: 10.5px; line-height: 1.6; overflow-wrap: anywhere; }
 .memory-chips .pill { justify-content: flex-start; padding: 7px 9px; border-radius: 7px; text-align: left; white-space: normal; line-height: 1.45; }
 .memory-chips .pill::before { width: 4px; height: 4px; flex: 0 0 4px; background: currentColor; border-radius: 50%; content: ""; }
 .quick-actions { display: flex; flex-direction: column; gap: 6px; padding: 0 20px 19px; }
