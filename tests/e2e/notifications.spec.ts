@@ -32,9 +32,31 @@ test('model setup has one complete result and notifications leave the chat compo
     expect(await page.locator('.toast').count()).toBeLessThanOrEqual(2)
     await page.getByTestId('chat-send').click({ trial: true })
     await page.screenshot({ path: test.info().outputPath('actual-model-memory-notifications.png') })
+    // Measure the visible lifetime in the renderer. Cold local speech loading
+    // can delay the Electron debugging transport after the DOM already changed.
+    // Keep the same eight-second UI deadline and retain that separate latency.
+    await page.evaluate(() => {
+      const scope = window as unknown as { toastExpiry: Promise<{ initial: number; remaining: number; elapsedMs: number }> }
+      scope.toastExpiry = new Promise(resolve => {
+        const started = performance.now()
+        const initial = document.querySelectorAll('.toast').length
+        const observer = new MutationObserver(() => { if (!document.querySelector('.toast')) finish() })
+        const finish = (): void => {
+          observer.disconnect(); clearTimeout(timer)
+          resolve({ initial, remaining: document.querySelectorAll('.toast').length, elapsedMs: performance.now() - started })
+        }
+        const timer = setTimeout(finish, 8000)
+        observer.observe(document.body, { childList: true, subtree: true })
+        if (!initial) finish()
+      })
+    })
     await page.getByTestId('chat-send').click()
     await expect(page.locator('.message-row.assistant').last()).toContainText('真实流式回复')
-    await expect(page.locator('.toast')).toHaveCount(0, { timeout: 8000 })
+    const expiry = await page.evaluate(() => (window as unknown as { toastExpiry: Promise<{ initial: number; remaining: number; elapsedMs: number }> }).toastExpiry)
+    await test.info().attach('actual-toast-expiry', { body: JSON.stringify(expiry), contentType: 'application/json' })
+    expect(expiry.initial).toBeGreaterThan(0)
+    expect(expiry.remaining).toBe(0)
+    expect(expiry.elapsedMs).toBeLessThanOrEqual(8000)
   } finally { await closeApp(app); await server.close() }
 })
 
