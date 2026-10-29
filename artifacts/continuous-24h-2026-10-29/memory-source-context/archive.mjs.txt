@@ -1,0 +1,24 @@
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs'
+import { join, resolve, extname } from 'node:path'
+import { createHash } from 'node:crypto'
+import assert from 'node:assert/strict'
+const target = resolve('artifacts/continuous-24h-2026-10-29/memory-source-context')
+assert.ok(!existsSync(target), 'Preserve existing archive')
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const files = []
+mkdirSync(target, { recursive: true })
+for (const [directory, prefix] of [['previews/memory-source-context-2026-10-29', ''], ['previews/memory-source-context-replay-2026-10-29', 'replay/']]) {
+  for (const item of readdirSync(directory, { withFileTypes: true })) {
+    if (!item.isFile()) continue
+    const name = prefix + item.name + (extname(item.name) === '.mjs' ? '.txt' : '')
+    const raw = readFileSync(join(directory, item.name))
+    // Keep original bytes; .gitattributes disables Git newline conversion.
+    mkdirSync(resolve(target, name, '..'), { recursive: true })
+    writeFileSync(join(target, name), raw)
+    files.push({ path: name, bytes: raw.length, sha256: hash(raw) })
+  }
+}
+writeFileSync(join(target, '.gitattributes'), '* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol\n')
+writeFileSync(join(target, 'manifest.json'), JSON.stringify({ archivedAt: new Date().toISOString(), baseline: '06ebcdfd6a1332b2ad3406600a235e23ba6e15af', productionChanged: false, candidateAccepted: false, files }, null, 2) + '\n')
+for (const file of files) assert.equal(hash(readFileSync(join(target, file.path))), file.sha256)
+console.log(JSON.stringify({ files: files.length, bytes: files.reduce((n, item) => n + item.bytes, 0), mismatches: 0 }))

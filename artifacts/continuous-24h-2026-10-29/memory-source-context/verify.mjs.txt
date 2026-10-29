@@ -1,0 +1,28 @@
+import { createHash } from 'node:crypto'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join, resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import assert from 'node:assert/strict'
+const output = dirname(fileURLToPath(import.meta.url))
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'))
+const replay = JSON.parse(readFileSync('previews/memory-source-context-replay-2026-10-29/report.json', 'utf8'))
+const fixture = readFileSync(join(output, 'fixture.json'))
+assert.equal(report.fixtureSha256, hash(fixture))
+assert.equal(replay.fixtureSha256, report.fixtureSha256)
+assert.equal(JSON.parse(readFileSync(join(output, 'preflight.json'), 'utf8')).fixtureSha256, report.fixtureSha256)
+assert.equal(report.networkAttempts, 0); assert.equal(replay.networkAttempts, 0)
+assert.equal(report.candidateAccepted, false); assert.equal(replay.candidateAccepted, false)
+for (const source of report.sourceFiles) assert.equal(hash(readFileSync(source.path)), source.sha256)
+for (const source of report.modelFiles) assert.equal(hash(readFileSync(join('build/bundled-models/bge-small-zh-v1.5', source.path))), source.sha256)
+for (let index = 0; index < report.reports.length; index++) {
+  const first = report.reports[index]; const second = replay.reports[index]
+  assert.deepEqual(first.summary, second.summary)
+  const outcomes = suite => suite.cases.map(item => ({ query: item.query, variants: item.variants.map(({ variant, ids, expectedHit, negativeIntrusion }) => ({ variant, ids, expectedHit, negativeIntrusion })) }))
+  assert.deepEqual(outcomes(first), outcomes(second))
+}
+const installed = JSON.parse(readFileSync('artifacts/continuous-24h-2026-10-29/memory-recall-ui/package-receipt.json', 'utf8')).installer
+assert.equal(hash(readFileSync(installed.path)), installed.sha256)
+const result = { at: new Date().toISOString(), sourceFiles: report.sourceFiles.length, modelFiles: report.modelFiles.length, cases: report.reports.reduce((n,suite)=>n+suite.cases.length,0), repeatedOutcomesMatch: true, fixtureIdentityMatches: true, networkAttempts: 0, candidateRejected: true, productionAndInstallerUnchanged: true, installer: installed, fixture: resolve(output, 'fixture.json') }
+writeFileSync(join(output, 'verification.json'), JSON.stringify(result, null, 2) + '\n')
+console.log(JSON.stringify(result))

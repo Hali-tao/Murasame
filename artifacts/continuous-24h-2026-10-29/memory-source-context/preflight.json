@@ -1,0 +1,5 @@
+{
+  "at": "2026-10-29T15:26:50.365Z",
+  "fixtureSha256": "b42ee2df9441a907ab48240acf5fa8254ed2064c6e11a93e226b0077bb827571",
+  "acceptance": "Both suites: direct hits do not decrease; indirect hits increase in validation; negative intrusion queries do not increase. No post-result changes to facts, labels, threshold or budget."
+}

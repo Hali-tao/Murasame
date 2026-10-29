@@ -1,0 +1,3 @@
+{"name":"development","summary":[{"variant":"short","direct":{"total":6,"hitCases":6},"indirect":{"total":6,"hitCases":1},"negative":{"total":6,"intrusionCases":1}},{"variant":"source-context","direct":{"total":6,"hitCases":6},"indirect":{"total":6,"hitCases":6},"negative":{"total":6,"intrusionCases":2}}]}
+{"name":"validation","summary":[{"variant":"short","direct":{"total":8,"hitCases":8},"indirect":{"total":16,"hitCases":10},"negative":{"total":12,"intrusionCases":3}},{"variant":"source-context","direct":{"total":8,"hitCases":8},"indirect":{"total":16,"hitCases":16},"negative":{"total":12,"intrusionCases":8}}]}
+{"candidateAccepted":false,"networkAttempts":0}

@@ -1,0 +1,7 @@
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+const report = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'report.json'), 'utf8'))
+for (const suite of report.reports) {
+  console.log(JSON.stringify({ name: suite.name, newNegativeIntrusions: suite.cases.filter(item => item.kind === 'negative' && !item.variants[0].negativeIntrusion && item.variants[1].negativeIntrusion).map(item => ({ query: item.query, ids: item.variants[1].ids, ranking: item.variants[1].ranking.slice(0, 3) })) }))
+}

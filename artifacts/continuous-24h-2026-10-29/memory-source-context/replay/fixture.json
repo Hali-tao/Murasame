@@ -1,0 +1,88 @@
+{
+  "purpose": "Predeclared synthetic comparison of short facts and source-faithful contextual facts; no production change.",
+  "acceptance": "Both suites: direct hits do not decrease; indirect hits increase in validation; negative intrusion queries do not increase. No post-result changes to facts, labels, threshold or budget.",
+  "suites": [
+    {
+      "name": "development",
+      "facts": [
+        { "id": "city", "category": "user", "text": "我住在长沙。", "context": "我住在长沙，周末散步一般只考虑住处附近的公园。" },
+        { "id": "language", "category": "project", "text": "我正在学习 Swift。", "context": "我正在学习 Swift，这周重点练习可选类型的解包以及 ARC 内存管理。" },
+        { "id": "diet", "category": "user", "text": "我是素食者。", "context": "我是素食者，平时午餐只吃蔬菜、豆制品和谷物，不吃肉和鱼。" },
+        { "id": "pet", "category": "user", "text": "我养了一只边境牧羊犬。", "context": "我养了一只边境牧羊犬，平时陪它玩飞盘，周末想安排消耗体力的活动。" },
+        { "id": "device", "category": "user", "text": "我的电脑使用 Arch Linux。", "context": "我的电脑使用 Arch Linux，软件安装主要通过 pacman 和 AUR 完成。" },
+        { "id": "project", "category": "project", "text": "我的青栎项目使用 TypeScript。", "context": "我的青栎项目使用 TypeScript，构建工具是 esbuild，输出给浏览器运行。" }
+      ],
+      "cases": [
+        { "kind": "direct", "query": "我住在哪座城市", "expected": ["city"] },
+        { "kind": "direct", "query": "我在学哪门编程语言", "expected": ["language"] },
+        { "kind": "direct", "query": "我的饮食习惯是什么", "expected": ["diet"] },
+        { "kind": "direct", "query": "我养的狗是什么品种", "expected": ["pet"] },
+        { "kind": "direct", "query": "我的电脑是什么操作系统", "expected": ["device"] },
+        { "kind": "direct", "query": "青栎项目用什么语言", "expected": ["project"] },
+        { "kind": "indirect", "query": "推荐离家近的散步地点", "expected": ["city"] },
+        { "kind": "indirect", "query": "讲解一下可选类型怎么解包", "expected": ["language"] },
+        { "kind": "indirect", "query": "午饭适合做什么菜", "expected": ["diet"] },
+        { "kind": "indirect", "query": "怎么给家里的狗安排消耗精力的游戏", "expected": ["pet"] },
+        { "kind": "indirect", "query": "AUR 软件安装失败怎么排查", "expected": ["device"] },
+        { "kind": "indirect", "query": "我的项目浏览器构建失败了", "expected": ["project"] },
+        { "kind": "negative", "query": "解释公园这个词的词性", "expected": [] },
+        { "kind": "negative", "query": "把 swift 当作英语形容词造句", "expected": [] },
+        { "kind": "negative", "query": "这段虚构故事中的鱼为什么会说话", "expected": [] },
+        { "kind": "negative", "query": "计算飞盘比赛共有多少人，三队每队七人", "expected": [] },
+        { "kind": "negative", "query": "把字符串 linux 改成大写", "expected": [] },
+        { "kind": "negative", "query": "解释树木为什么会进行光合作用", "expected": [] }
+      ]
+    },
+    {
+      "name": "validation",
+      "facts": [
+        { "id": "city", "category": "user", "text": "我住在成都。", "context": "我住在成都，周末想在离家不远的地方骑车或者逛绿道。" },
+        { "id": "language", "category": "project", "text": "我正在学习 Kotlin。", "context": "我正在学习 Kotlin，最近集中学习协程、挂起函数和结构化并发。" },
+        { "id": "diet", "category": "user", "text": "我乳糖不耐受。", "context": "我乳糖不耐受，早餐饮品和甜点都需要避开普通牛奶。" },
+        { "id": "cat", "category": "user", "text": "我养了一只布偶猫。", "context": "我养了一只布偶猫，每周需要给它梳毛，也想准备适合室内玩的玩具。" },
+        { "id": "device", "category": "user", "text": "我平时使用 macOS。", "context": "我平时使用 macOS，软件通过 Homebrew 安装，终端使用 zsh。" },
+        { "id": "project", "category": "project", "text": "我的银杏项目是一个 Python 服务。", "context": "我的银杏项目是一个 Python 服务，使用 FastAPI 提供接口，通过 pytest 做测试。" },
+        { "id": "hobby", "category": "user", "text": "我的爱好是观鸟。", "context": "我的爱好是观鸟，周末常去湿地，用望远镜观察候鸟。" },
+        { "id": "instrument", "category": "user", "text": "我正在学习古典吉他。", "context": "我正在学习古典吉他，每天练习轮指，也需要调整右手指甲。" }
+      ],
+      "cases": [
+        { "kind": "direct", "query": "我现在住在哪儿", "expected": ["city"] },
+        { "kind": "direct", "query": "我最近在学习哪种编程语言", "expected": ["language"] },
+        { "kind": "direct", "query": "我的饮食有什么需要注意的限制", "expected": ["diet"] },
+        { "kind": "direct", "query": "我家里的猫是什么品种", "expected": ["cat"] },
+        { "kind": "direct", "query": "我用的是哪一种电脑系统", "expected": ["device"] },
+        { "kind": "direct", "query": "银杏项目用什么开发", "expected": ["project"] },
+        { "kind": "direct", "query": "我的业余爱好是什么", "expected": ["hobby"] },
+        { "kind": "direct", "query": "我正在学习什么乐器", "expected": ["instrument"] },
+        { "kind": "indirect", "query": "推荐家附近适合周末骑行的地方", "expected": ["city"] },
+        { "kind": "indirect", "query": "周边有哪些绿道可以逛", "expected": ["city"] },
+        { "kind": "indirect", "query": "挂起函数应该怎么写", "expected": ["language"] },
+        { "kind": "indirect", "query": "用我在学的东西解释结构化并发", "expected": ["language"] },
+        { "kind": "indirect", "query": "给我搭配一份早餐饮品", "expected": ["diet"] },
+        { "kind": "indirect", "query": "帮我选一款适合我的甜点", "expected": ["diet"] },
+        { "kind": "indirect", "query": "给家里的猫挑个室内玩具", "expected": ["cat"] },
+        { "kind": "indirect", "query": "给我养的猫梳毛有什么技巧", "expected": ["cat"] },
+        { "kind": "indirect", "query": "brew 更新失败怎么处理", "expected": ["device"] },
+        { "kind": "indirect", "query": "我的终端启动时出现 zsh 错误", "expected": ["device"] },
+        { "kind": "indirect", "query": "帮我给项目的接口写 pytest 测试", "expected": ["project"] },
+        { "kind": "indirect", "query": "我的 FastAPI 服务启动失败", "expected": ["project"] },
+        { "kind": "indirect", "query": "周末去湿地应该带哪些观察装备", "expected": ["hobby"] },
+        { "kind": "indirect", "query": "怎样用望远镜辨认远处的候鸟", "expected": ["hobby"] },
+        { "kind": "indirect", "query": "我的轮指练习怎么安排", "expected": ["instrument"] },
+        { "kind": "indirect", "query": "练习乐器时右手指甲应该留多长", "expected": ["instrument"] },
+        { "kind": "negative", "query": "把字符串 macos 改成大写", "expected": [] },
+        { "kind": "negative", "query": "brew 这个英语动词是什么意思", "expected": [] },
+        { "kind": "negative", "query": "解释布偶一词在儿童文学中的含义", "expected": [] },
+        { "kind": "negative", "query": "把这句话翻译成英语：早餐已经准备好了", "expected": [] },
+        { "kind": "negative", "query": "计算四杯牛奶每杯六元共多少钱", "expected": [] },
+        { "kind": "negative", "query": "给虚构咖啡店写一句不涉及个人偏好的广告", "expected": [] },
+        { "kind": "negative", "query": "统计句子中的字数：我喜欢周末骑车", "expected": [] },
+        { "kind": "negative", "query": "并发与并行的英语单词分别是什么", "expected": [] },
+        { "kind": "negative", "query": "银杏树为什么会落叶", "expected": [] },
+        { "kind": "negative", "query": "为什么候鸟要迁徙，用一句话回答", "expected": [] },
+        { "kind": "negative", "query": "望远镜是谁发明的", "expected": [] },
+        { "kind": "negative", "query": "将 guitar 拼写成大写字母", "expected": [] }
+      ]
+    }
+  ]
+}

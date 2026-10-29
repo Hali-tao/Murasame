@@ -1,0 +1,66 @@
+import { build } from 'esbuild'
+import { createHash } from 'node:crypto'
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, existsSync } from 'node:fs'
+import { join, resolve, dirname } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { cpus } from 'node:os'
+const output = dirname(fileURLToPath(import.meta.url))
+if (existsSync(join(output, 'report.json')) || existsSync(join(output, 'preflight.json'))) throw new Error('Use a fresh output directory; preserve prior evidence')
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const fixtureBytes = readFileSync(join(output, 'fixture.json'))
+const fixture = JSON.parse(fixtureBytes.toString())
+// Freeze fixture identity before loading the model or observing any result.
+writeFileSync(join(output, 'preflight.json'), JSON.stringify({ at: new Date().toISOString(), fixtureSha256: hash(fixtureBytes), acceptance: fixture.acceptance }, null, 2))
+const temp = resolve('previews/tmp'); mkdirSync(temp, { recursive: true })
+const profile = mkdtempSync(join(temp, 'memory-source-evaluation-'))
+const engine = join(profile, 'engine.mjs')
+await build({ stdin: { contents: "export * from './src/main/local/embedding'; export {setBundledModelsRoot} from './src/main/local/model-env'", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, packages: 'external', platform: 'node', format: 'esm', outfile: engine })
+const api = await import(pathToFileURL(engine).href)
+const modelRoot = resolve('build/bundled-models'); api.setBundledModelsRoot(modelRoot)
+const { env } = await import('@huggingface/transformers')
+env.useFSCache = false; env.useBrowserCache = false
+let networkAttempts = 0
+globalThis.fetch = async () => { networkAttempts++; throw new Error('Offline evaluation forbids network') }
+const encode = async text => {
+  const vector = await api.embedLocally(text, profile)
+  if (!vector || vector.length !== 512) throw new Error('Actual local embedding unavailable')
+  return vector
+}
+const reports = []
+for (const suite of fixture.suites) {
+  const entries = {}
+  for (const variant of ['short', 'source-context']) {
+    entries[variant] = []
+    for (const fact of suite.facts) {
+      const text = variant === 'short' ? fact.text : fact.context
+      entries[variant].push({ id: fact.id, category: fact.category, text, vector: await encode(text) })
+    }
+  }
+  const cases = []
+  for (const item of suite.cases) {
+    const vector = await encode(item.query)
+    const variants = Object.entries(entries).map(([variant, facts]) => {
+      const result = api.recallMemories(item.query, facts, vector)
+      return { variant, ids: result.ids, expectedHit: item.expected.every(id => result.ids.includes(id)),
+        negativeIntrusion: item.kind === 'negative' && result.ids.length > 0,
+        ranking: facts.map(fact => ({ id: fact.id, cosine: api.cosine(vector, fact.vector) })).sort((a,b) => b.cosine - a.cosine) }
+    })
+    cases.push({ ...item, variants })
+  }
+  const summary = ['short', 'source-context'].map(variant => Object.fromEntries([
+    ['variant', variant], ...['direct', 'indirect', 'negative'].map(kind => {
+      const selected = cases.filter(item => item.kind === kind).map(item => item.variants.find(entry => entry.variant === variant))
+      return [kind, { total: selected.length, ...(kind === 'negative' ? { intrusionCases: selected.filter(item => item.negativeIntrusion).length } : { hitCases: selected.filter(item => item.expectedHit).length }) }]
+    })
+  ]))
+  reports.push({ name: suite.name, summary, cases, entries })
+  console.log(JSON.stringify({ name: suite.name, summary }))
+}
+const criteria = reports.every(({ name, summary: [before, after] }) => after.direct.hitCases >= before.direct.hitCases && after.negative.intrusionCases <= before.negative.intrusionCases && (name !== 'validation' || after.indirect.hitCases > before.indirect.hitCases))
+const report = { at: new Date().toISOString(), fixtureSha256: hash(fixtureBytes), acceptance: fixture.acceptance,
+  productionChanged: false, candidateAccepted: criteria, actualLocalModel: true, networkAttempts, node: process.version, cpu: cpus()[0]?.model, profile: api.EMBEDDING_PROFILE,
+  sourceFiles: ['src/main/local/embedding.ts','src/main/local/model-env.ts'].map(path => ({ path, sha256: hash(readFileSync(path)) })),
+  modelFiles: api.EMBEDDING_FILES.map(path => ({ path, sha256: hash(readFileSync(join(modelRoot, api.EMBEDDING_MODEL_ID, path))) })), reports }
+if (networkAttempts) throw new Error('Unexpected network access')
+writeFileSync(join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n')
+console.log(JSON.stringify({ candidateAccepted: criteria, networkAttempts }))
