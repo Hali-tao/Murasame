@@ -10,7 +10,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'artifacts' / 'nailong-3d-refined-2026-10-29'
-VERSION = os.environ.get('NAILONG_VERSION', 'r3')
+VERSION = os.environ.get('NAILONG_VERSION', 'r5')
 if not VERSION or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in VERSION):
     raise ValueError('Invalid version')
 path = OUT / f'nailong-reference-{VERSION}.blend'

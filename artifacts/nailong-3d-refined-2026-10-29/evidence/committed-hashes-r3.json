@@ -1,0 +1,16 @@
+{
+  "revision": "d878b423f8a084c7035fb0ecad781f5bc6046e69",
+  "results": [
+    {
+      "directory": "artifacts/nailong-3d-2026-10-29",
+      "files": 45,
+      "mismatches": []
+    },
+    {
+      "directory": "artifacts/nailong-3d-refined-2026-10-29",
+      "files": 39,
+      "mismatches": []
+    }
+  ],
+  "passed": true
+}

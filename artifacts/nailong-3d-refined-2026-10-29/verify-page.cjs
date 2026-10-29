@@ -18,6 +18,7 @@ const out = __dirname;
     const links = await page.locator('a').evaluateAll(nodes => nodes.map(a => a.href));
     const missingLinks = links.filter(link => link.startsWith('file:') && !fs.existsSync(fileURLToPath(link)));
     const desktopOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+    await page.locator('.compare').screenshot({ path: path.join(out, 'evidence/comparison-strip.png') });
     await page.screenshot({ path: path.join(out, 'evidence/comparison-desktop.png'), fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });
     const mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);

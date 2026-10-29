@@ -1,0 +1,65 @@
+Blender 4.5.15 LTS (hash 5afeabba6097 built 2026-10-22 01:35:27)
+Read blend: "E:\Desktop\软件工程\murasame\artifacts\nailong-3d-refined-2026-10-29\nailong-reference-r4.blend"
+Fra:1 Mem:68.38M (Peak 68.38M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Nailong_ContinuousSkin
+Fra:1 Mem:68.39M (Peak 68.39M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | L conforming eye
+Fra:1 Mem:68.41M (Peak 68.41M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | R conforming eye
+Fra:1 Mem:77.02M (Peak 77.02M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Small embedded toe.003
+Fra:1 Mem:77.12M (Peak 77.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Flat palm-aligned claw.002
+Fra:1 Mem:77.16M (Peak 77.16M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Broad upper bounce
+Fra:1 Mem:77.51M (Peak 77.51M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Small lowered palm claw
+Fra:1 Mem:77.63M (Peak 77.63M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Small lowered palm claw.001
+Fra:1 Mem:77.97M (Peak 77.97M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Gentle frontal fill
+Fra:1 Mem:78.06M (Peak 78.06M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Large warm key
+Fra:1 Mem:78.08M (Peak 78.08M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Studio_floor
+Fra:1 Mem:78.16M (Peak 78.16M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Rear head detail 3
+Fra:1 Mem:78.57M (Peak 78.57M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Small lowered palm claw.002
+Fra:1 Mem:78.74M (Peak 78.74M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Rear head detail 2
+Fra:1 Mem:115.45M (Peak 120.94M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:114.00M (Peak 120.94M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:114.00M (Peak 120.94M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:114.00M (Peak 120.94M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:114.00M (Peak 120.94M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:114.09M (Peak 120.94M) | Time:00:00.02 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.02 | Mem:0.02M, Peak:0.02M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.02 | Mem:9.84M, Peak:9.84M | Scene, ViewLayer | Updating Geometry BVH Pear abdomen sculpt mesh 2/1 | Building BVH
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.04 | Mem:31.81M, Peak:31.81M | Scene, ViewLayer | Updating Geometry BVH Pear abdomen sculpt mesh 2/1 | Building BVH 0%
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.09 | Mem:55.84M, Peak:77.81M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.09 | Mem:55.84M, Peak:77.81M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.10 | Mem:57.96M, Peak:77.81M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:123.92M (Peak 123.92M) | Time:00:00.10 | Mem:57.96M, Peak:77.81M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:57.96M, Peak:77.81M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.03M, Peak:78.03M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.03M, Peak:78.03M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.03M, Peak:78.03M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.03M, Peak:78.03M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.03M, Peak:78.03M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:143.99M (Peak 143.99M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:144.00M (Peak 144.00M) | Time:00:00.11 | Mem:78.03M, Peak:78.11M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:144.00M (Peak 144.00M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:144.00M (Peak 144.00M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:144.00M (Peak 144.00M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:144.00M (Peak 144.00M) | Time:00:00.11 | Mem:78.11M, Peak:78.11M | Scene, ViewLayer | Sample 0/64
+Fra:1 Mem:287.09M (Peak 287.09M) | Time:00:00.64 | Remaining:00:33.76 | Mem:220.78M, Peak:220.78M | Scene, ViewLayer | Sample 1/64
+Fra:1 Mem:320.66M (Peak 371.02M) | Time:00:34.94 | Mem:220.78M, Peak:220.78M | Scene, ViewLayer | Sample 64/64
+Fra:1 Mem:320.66M (Peak 371.02M) | Time:00:34.94 | Mem:220.78M, Peak:220.78M | Scene, ViewLayer | Finished
+Fra:1 Mem:112.65M (Peak 371.02M) | Time:00:34.97 | Compositing
+Saved: 'E:\Desktop\软件工程\murasame\artifacts\nailong-3d-refined-2026-10-29\renders\r4-reopened.png'
+Time: 00:35.13 (Saving: 00:00.14)
+
+REFINED_SCULPT_REOPEN {"version": "r4", "blender": "4.5.15 LTS", "reopened": true, "blend_sha256": "dddd6b1350917ad4e14d1a1f044545262655ec194cbdd8598aa43d4a4436b17c", "body_vertices": 359916, "body_faces": 359705, "connected_components": 1, "non_manifold_edges": 0, "signed_volume": 4.232962565164433, "finite_coordinates": true, "armatures": 0, "actions": 0, "camera_count": 4, "images": {"front": {"width": 1000, "height": 1100, "yellow_body_bounds": [204, 101, 789, 1010]}, "reference-angle": {"width": 1000, "height": 1100, "yellow_body_bounds": [181, 115, 788, 1017]}, "side": {"width": 1000, "height": 1100, "yellow_body_bounds": [268, 91, 760, 1010]}, "back": {"width": 1000, "height": 1100, "yellow_body_bounds": [210, 91, 795, 1010]}, "original": {"width": 474, "height": 474, "yellow_body_bounds": [102, 64, 370, 440]}, "previous-v3": {"width": 1000, "height": 1100, "yellow_body_bounds": [224, 135, 786, 998]}}, "reopened_render": "renders/r4-reopened.png", "likeness": "Unapproved; geometry and image-layout checks are not visual acceptance"}
+
+Blender quit
+Error: Not freed memory blocks: 1, total unfreed memory 0.000008 MB

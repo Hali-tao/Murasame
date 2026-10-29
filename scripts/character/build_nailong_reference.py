@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'artifacts' / 'nailong-3d-refined-2026-10-29'
 OUT.mkdir(parents=True, exist_ok=True)
 (OUT / 'renders').mkdir(exist_ok=True)
-VERSION = os.environ.get('NAILONG_VERSION', 'r3')
+VERSION = os.environ.get('NAILONG_VERSION', 'r5')
 if not VERSION or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in VERSION):
     raise ValueError('Use a simple lowercase version label')
 BLEND = OUT / f'nailong-reference-{VERSION}.blend'
@@ -73,6 +73,28 @@ def segment(name, a, b, rx, ry):
     return sphere(name, (a + b) / 2, (rx, ry, (b - a).length / 2 + .7 * rx),
                   rotation=(b - a).to_track_quat('Z', 'Y').to_euler())
 
+
+def arm_bridge(name, a, control, b, radius_a, radius_b):
+    """Tapered curved shoulder-to-palm volume; both caps are inside the skin."""
+    a, control, b = Vector(a), Vector(control), Vector(b)
+    verts, faces = [], []
+    steps, slices = 32, 64
+    for row in range(steps + 1):
+        t = row / steps
+        center = (1-t)**2*a + 2*(1-t)*t*control + t*t*b
+        tangent = 2*(1-t)*(control-a) + 2*t*(b-control)
+        frame = tangent.to_track_quat('Z', 'Y').to_matrix()
+        radius = radius_a*(1-t) + radius_b*t
+        for j in range(slices):
+            angle = 2*math.pi*j/slices
+            verts.append(center + frame @ Vector((radius*math.cos(angle), radius*math.sin(angle), 0)))
+    for row in range(steps):
+        for j in range(slices):
+            x = row*slices+j; y = row*slices+(j+1)%slices
+            faces.append((x, y, y+slices, x+slices))
+    faces += [tuple(reversed(range(slices))), tuple(steps*slices+j for j in range(slices))]
+    return mesh_object(name, verts, faces)
+
 def interpolate(profile, z, column):
     """Monotone cubic interpolation avoids ridges between measured cross-sections."""
     zs, values = [p[0] for p in profile], [p[column] for p in profile]
@@ -92,8 +114,8 @@ def interpolate(profile, z, column):
 # Each row is height, half-width, front depth, back depth. These define a
 # cheek/jaw and pear-shaped abdomen instead of using two scaled spheres.
 HEAD_PROFILE = [
-    (1.86, .012, -.27, -.24), (1.90, .27, -.48, .07),
-    (1.98, .46, -.64, .28), (2.12, .61, -.76, .43),
+    (1.86, .012, -.27, -.24), (1.90, .35, -.48, .07),
+    (1.98, .53, -.64, .28), (2.12, .66, -.76, .43),
     (2.29, .735, -.83, .50), (2.48, .78, -.85, .53),
     (2.69, .795, -.83, .54), (2.90, .78, -.79, .53),
     (3.09, .73, -.73, .48), (3.25, .63, -.63, .38),
@@ -105,8 +127,8 @@ TORSO_PROFILE = [
     (.48, .67, -.50, .33), (.70, .76, -.62, .40),
     (.96, .79, -.68, .45), (1.22, .77, -.65, .47),
     (1.47, .72, -.55, .47), (1.70, .63, -.43, .46),
-    (1.91, .54, -.34, .43), (2.09, .39, -.28, .35),
-    (2.20, .16, -.12, .23), (2.23, .008, .04, .07),
+    (1.91, .58, -.34, .43), (2.09, .51, -.28, .38),
+    (2.20, .37, -.12, .28), (2.30, .008, .04, .07),
 ]
 HEAD_CENTER = Vector((.07, -.03, 2.66))
 HEAD_ROT = Matrix.Rotation(math.radians(7), 3, 'Y')
@@ -144,7 +166,8 @@ def loft(name, profile, transform=None, power=.88, steps=128, slices=96, cx=0):
     return mesh_object(name, verts, faces)
 
 parts = [loft('Cheek and jaw sculpt', HEAD_PROFILE, head_point, power=.94), loft('Pear abdomen sculpt', TORSO_PROFILE, power=1)]
-parts.append(sphere('Hidden neck transition', (0, .10, 2.04), (.45, .36, .40)))
+# The extended torso overlaps the head directly. An extra neck volume created
+# a collar-shaped bulge in r4's rear render, so it is not part of this sculpt.
 for side in (-1, 1):
     foot_profile = [(.025, .25, -.30, .18), (.05, .285, -.35, .20),
                     (.13, .30, -.38, .22), (.28, .28, -.36, .24),
@@ -155,11 +178,11 @@ for side in (-1, 1):
     parts.append(loft('Short grounded leg', foot_profile, leg_point, power=.9, steps=64, slices=64, cx=side * .47))
 
 PALM_CENTER = Vector((-.91, -.23, 1.83))
-PALM_ROT = Matrix.Rotation(math.radians(-20), 3, 'Y')
+PALM_ROT = Matrix.Rotation(math.radians(35), 3, 'Z') @ Matrix.Rotation(math.radians(-20), 3, 'Y')
 parts.extend([
-    segment('Raised upper arm transition', (-.53, .045, 1.84), (-.74, -.04, 1.66), .22, .22),
-    sphere('Raised cupped palm', PALM_CENTER, (.215, .19, .285), rotation=PALM_ROT.to_euler()),
-    segment('Lowered upper arm transition', (.55, .04, 1.78), (.78, -.015, 1.42), .195, .195),
+    arm_bridge('Raised continuous arm', (-.43, .06, 1.83), (-.68, -.04, 1.70), (-.865, -.20, 1.70), .27, .14),
+    sphere('Raised cupped palm', PALM_CENTER, (.215, .125, .285), rotation=PALM_ROT.to_euler()),
+    arm_bridge('Lowered continuous arm', (.48, .06, 1.80), (.76, -.015, 1.67), (.89, -.08, 1.40), .25, .17),
     sphere('Lowered palm', (.91, -.085, 1.34), (.19, .18, .25), rotation=(0, -.23, 0)),
 ])
 for i in range(36):
@@ -197,8 +220,8 @@ def face_surface(x, z, offset=0):
     return p + normal * offset
 
 # Mouth is a cavity in the unified head. No external black mouth sphere.
-mouth_z, width, depth = 2.53, .31, .22
-outline = [(width*math.cos(t*math.pi/64), mouth_z-depth*math.sin(t*math.pi/64)) for t in range(65)]
+mouth_z, width, depth = 2.53, .32, .185
+outline = [(width*math.cos(t*math.pi/64), mouth_z-depth*max(0, math.sin(t*math.pi/64))**.8) for t in range(65)]
 outline += [(-width+2*width*t/32, mouth_z+.009*math.sin(t*math.pi/32)) for t in range(1, 32)]
 count = len(outline)
 verts = [head_point(x, y, z) for y in (-1.2, -.53) for x, z in outline]
@@ -210,7 +233,7 @@ for p in cutter.data.polygons: p.material_index = 1
 # Cache the intact upper-lip boundary before cutting its opening.
 lip_points = []
 for j in range(65):
-    x = -.302+.604*j/64
+    x = -.312+.624*j/64
     lip_points.append(face_surface(x, mouth_z+.015, .002))
 bpy.context.view_layer.objects.active = body
 mod = body.modifiers.new('Inset smile', 'BOOLEAN'); mod.operation = 'DIFFERENCE'; mod.solver = 'EXACT'; mod.object = cutter
@@ -222,7 +245,7 @@ for j, p in enumerate(lip_points):
     top = p + HEAD_ROT @ Vector((0, .005, -.013))
     verts += [top, top + HEAD_ROT @ Vector((0, .007, -.025*taper))]
 mesh_object('Tapered ivory smile edge', verts, [(2*j, 2*j+1, 2*j+3, 2*j+2) for j in range(64)], ivory)
-obj = sphere('Subtle tongue inside cavity', head_point(0, -.59, 2.345), (.135, .065, .023), tongue_mat)
+obj = sphere('Subtle tongue inside cavity', head_point(0, -.59, 2.375), (.125, .060, .018), tongue_mat)
 obj.rotation_euler = HEAD_ROT.to_euler()
 
 # Paint both abdomen and palm onto the same skin instead of adding flat patches.
@@ -239,7 +262,7 @@ for v in body.data.vertices:
     color = [a*(1-mix)+b*mix for a, b in zip(color, cream)]
     local = PALM_ROT.inverted() @ (v.co-PALM_CENTER)
     palm = ((local.x-.005)/.10)**2 + ((local.z+.045)/.125)**2
-    mix = smoothstep((1.02-palm)/.18) * smoothstep((-local.y-.11)/.04)
+    mix = smoothstep((1.02-palm)/.18) * smoothstep((-local.y-.065)/.03)
     color = [a*(1-mix)+b*mix for a, b in zip(color, (1, .35, .22))]
     colors.data[v.index].color = (*color, 1)
 nodes = skin.node_tree.nodes; attr = nodes.new('ShaderNodeVertexColor'); attr.layer_name = 'SkinColor'
@@ -281,7 +304,7 @@ iris.node_tree.links.new(attr.outputs['Color'], nodes.get('Principled BSDF').inp
 def embedded_claw(name, x, z, sx=.045, sz=.048):
     hit, p, normal, _ = body.ray_cast(Vector((x, -3, z)), Vector((0, 1, 0)))
     if not hit: raise ValueError(f'Claw not attached to skin: {x}, {z}')
-    obj = sphere(name, p+normal*.003, (sx, .038, sz), claw, segments=32, rings=24)
+    obj = sphere(name, p-normal*.012, (sx, .027, sz), claw, segments=32, rings=24)
     for v in obj.data.vertices:
         v.co.x *= .88-.28*v.co.z/sz
     return obj
@@ -289,8 +312,12 @@ def embedded_claw(name, x, z, sx=.045, sz=.048):
 for side in (-1, 1):
     for x in (-.18, -.015, .15): embedded_claw('Small embedded toe', side*.56+x, .075, .046, .039)
 for local in [(-.105, 0, .16), (0, 0, .23), (.105, 0, .19)]:
-    p = PALM_CENTER+PALM_ROT@Vector(local)
-    embedded_claw('Short raised palm claw', p.x, p.z, .042, .050)
+    x, _, z = local
+    hit, p, normal, _ = body.ray_cast(PALM_CENTER+PALM_ROT@Vector((x, -2, z)), PALM_ROT@Vector((0, 1, 0)))
+    if not hit: raise ValueError('No palm surface under claw')
+    obj = sphere('Flat palm-aligned claw', p-normal*.012, (.035, .024, .043), claw,
+                 rotation=PALM_ROT.to_euler(), segments=32, rings=24)
+    for v in obj.data.vertices: v.co.x *= .88-.22*v.co.z/.043
 for x, z in [(1.015, 1.44), (1.025, 1.32), (.99, 1.205)]: embedded_claw('Small lowered palm claw', x, z, .042, .045)
 for i, (z, radius) in enumerate([(3.22, .066), (3.02, .083), (2.81, .068)]):
     back = interpolate(HEAD_PROFILE, z, 3)
