@@ -37,7 +37,7 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.node } }
   },
   {
-    files: ['*.cjs', '*.mjs', 'scripts/**/*.mjs', 'scripts/**/*.cjs'],
+    files: ['*.cjs', '*.mjs', 'scripts/**/*.mjs', 'scripts/**/*.cjs', 'artifacts/**/*.cjs'],
     languageOptions: { globals: { ...globals.node } },
     rules: { '@typescript-eslint/no-require-imports': 'off' }
   },
@@ -49,7 +49,7 @@ export default tseslint.config(
   },
   {
     // 这些脚本里有 page.evaluate 回调，回调体在渲染上下文执行。
-    files: ['scripts/inspect-pet.mjs', 'scripts/perf-suite.mjs', 'scripts/probe-window.mjs'],
+    files: ['scripts/inspect-pet.mjs', 'scripts/perf-suite.mjs', 'scripts/probe-window.mjs', 'artifacts/nailong-3d-refined-2026-10-29/verify-page.cjs'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } }
   }
 )

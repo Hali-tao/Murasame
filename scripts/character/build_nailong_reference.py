@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'artifacts' / 'nailong-3d-refined-2026-10-29'
 OUT.mkdir(parents=True, exist_ok=True)
 (OUT / 'renders').mkdir(exist_ok=True)
-VERSION = os.environ.get('NAILONG_VERSION', 'r5')
+VERSION = os.environ.get('NAILONG_VERSION', 'r6')
 if not VERSION or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in VERSION):
     raise ValueError('Use a simple lowercase version label')
 BLEND = OUT / f'nailong-reference-{VERSION}.blend'
@@ -36,7 +36,7 @@ def material(name, color, roughness=.5, specular=.25, subsurface=0):
         bsdf.inputs[key].default_value = value
     return mat
 
-skin = material('Warm soft yellow skin', (1, .64, .01), .57, .22, .055)
+skin = material('Warm soft yellow skin', (1, .67, .04), .54, .20, .10)
 skin.node_tree.nodes.get('Principled BSDF').inputs['Subsurface Scale'].default_value = .09
 mouth_mat = material('Dark warm mouth interior', (.022, .0025, .0035), .8, .08)
 tongue_mat = material('Subtle tongue', (.31, .045, .047), .65, .12)
@@ -114,27 +114,27 @@ def interpolate(profile, z, column):
 # Each row is height, half-width, front depth, back depth. These define a
 # cheek/jaw and pear-shaped abdomen instead of using two scaled spheres.
 HEAD_PROFILE = [
-    (1.86, .012, -.27, -.24), (1.90, .35, -.48, .07),
-    (1.98, .53, -.64, .28), (2.12, .66, -.76, .43),
-    (2.29, .735, -.83, .50), (2.48, .78, -.85, .53),
-    (2.69, .795, -.83, .54), (2.90, .78, -.79, .53),
+    (1.86, .012, -.27, -.24), (1.90, .40, -.51, .07),
+    (1.98, .57, -.68, .28), (2.12, .72, -.82, .43),
+    (2.29, .79, -.86, .50), (2.48, .81, -.86, .53),
+    (2.69, .805, -.83, .54), (2.90, .78, -.79, .53),
     (3.09, .73, -.73, .48), (3.25, .63, -.63, .38),
     (3.37, .48, -.49, .25), (3.44, .31, -.35, .13),
     (3.485, .12, -.20, .035), (3.495, .004, -.085, -.08),
 ]
 TORSO_PROFILE = [
-    (.28, .015, -.01, .02), (.34, .43, -.32, .22),
-    (.48, .67, -.50, .33), (.70, .76, -.62, .40),
-    (.96, .79, -.68, .45), (1.22, .77, -.65, .47),
-    (1.47, .72, -.55, .47), (1.70, .63, -.43, .46),
-    (1.91, .58, -.34, .43), (2.09, .51, -.28, .38),
+    (.20, .015, -.01, .02), (.30, .48, -.38, .25),
+    (.45, .72, -.58, .39), (.70, .84, -.77, .49),
+    (.96, .86, -.82, .52), (1.22, .83, -.75, .53),
+    (1.47, .77, -.63, .50), (1.70, .67, -.48, .47),
+    (1.91, .60, -.35, .43), (2.09, .51, -.28, .38),
     (2.20, .37, -.12, .28), (2.30, .008, .04, .07),
 ]
 HEAD_CENTER = Vector((.07, -.03, 2.66))
 HEAD_ROT = Matrix.Rotation(math.radians(7), 3, 'Y')
 
 def head_point(x, y, z):
-    return HEAD_CENTER + HEAD_ROT @ Vector((x * .94, y, z - 2.66))
+    return HEAD_CENTER + HEAD_ROT @ Vector((x * .98, y, z - 2.66))
 
 def loft(name, profile, transform=None, power=.88, steps=128, slices=96, cx=0):
     verts = []; faces = []
@@ -186,8 +186,8 @@ parts.extend([
     sphere('Lowered palm', (.91, -.085, 1.34), (.19, .18, .25), rotation=(0, -.23, 0)),
 ])
 for i in range(36):
-    t = i / 35; radius = .25 * (1 - t) + .045 * t
-    parts.append(sphere('Rear attached curved tail', (-.99*t*t, .29+.65*t, .49+.44*t*t),
+    t = i / 35; radius = .28 * (1 - t) + .065 * t
+    parts.append(sphere('Rear attached curved tail', (-1.12*t*t, .29+.65*t, .49+.44*t*t),
                         (radius, radius*1.45, radius), segments=24, rings=16))
 
 bpy.ops.object.select_all(action='DESELECT')
@@ -220,8 +220,8 @@ def face_surface(x, z, offset=0):
     return p + normal * offset
 
 # Mouth is a cavity in the unified head. No external black mouth sphere.
-mouth_z, width, depth = 2.53, .32, .185
-outline = [(width*math.cos(t*math.pi/64), mouth_z-depth*max(0, math.sin(t*math.pi/64))**.8) for t in range(65)]
+mouth_z, width, depth = 2.63, .32, .205
+outline = [(width*math.cos(t*math.pi/64), mouth_z-depth*max(0, math.sin(t*math.pi/64))**.75) for t in range(65)]
 outline += [(-width+2*width*t/32, mouth_z+.009*math.sin(t*math.pi/32)) for t in range(1, 32)]
 count = len(outline)
 verts = [head_point(x, y, z) for y in (-1.2, -.53) for x, z in outline]
@@ -245,7 +245,7 @@ for j, p in enumerate(lip_points):
     top = p + HEAD_ROT @ Vector((0, .005, -.013))
     verts += [top, top + HEAD_ROT @ Vector((0, .007, -.025*taper))]
 mesh_object('Tapered ivory smile edge', verts, [(2*j, 2*j+1, 2*j+3, 2*j+2) for j in range(64)], ivory)
-obj = sphere('Subtle tongue inside cavity', head_point(0, -.59, 2.375), (.125, .060, .018), tongue_mat)
+obj = sphere('Subtle tongue inside cavity', head_point(0, -.59, 2.455), (.125, .060, .018), tongue_mat)
 obj.rotation_euler = HEAD_ROT.to_euler()
 
 # Paint both abdomen and palm onto the same skin instead of adding flat patches.
@@ -255,10 +255,10 @@ def smoothstep(v):
 for v in body.data.vertices:
     x, y, z = v.co
     head_mix = smoothstep((z - 1.65) / 1.45)
-    color = [1.0, .47 + .20 * head_mix, .006 + .01 * head_mix]
-    belly = ((x-.055)/.575)**2 + ((z-1.17)/.675)**2
+    color = [1.0, .55 + .14 * head_mix, .028 + .035 * head_mix]
+    belly = ((x-.055)/.615)**2 + ((z-1.12)/.705)**2
     mix = smoothstep((1.035-belly)/.16) * smoothstep((-y-.18)/.17)
-    cream = (1, .94, .42)
+    cream = (1, .94, .56)
     color = [a*(1-mix)+b*mix for a, b in zip(color, cream)]
     local = PALM_ROT.inverted() @ (v.co-PALM_CENTER)
     palm = ((local.x-.005)/.10)**2 + ((local.z+.045)/.125)**2
@@ -275,7 +275,7 @@ skin.node_tree.links.new(bump.outputs['Normal'], nodes.get('Principled BSDF').in
 
 # Small iris openings conform to the actual sculpt, including its cheek profile.
 for side in (-1, 1):
-    cx, cz = side*.36, 2.90
+    cx, cz = side*.39, 2.95
     radii = [.03, .06, .09, .114, .118, .123, .127, .13]
     n = 128; verts = [face_surface(cx, cz, .017)]
     vertex_colors = [(0.04, .2, .01, 1)]
@@ -324,6 +324,18 @@ for i, (z, radius) in enumerate([(3.22, .066), (3.02, .083), (2.81, .068)]):
     sphere(f'Rear head detail {i+1}', head_point(0, back+.018, z), (radius, radius*1.3, radius), claw,
            rotation=HEAD_ROT.to_euler(), segments=40, rings=24)
 
+# Shorten the lower body smoothly while preserving all face proportions and
+# keeping claws/palms on their skin. The abdomen gains depth as well as width;
+# this is not an image stretch or independent scaling of disconnected parts.
+for obj in list(bpy.context.scene.objects):
+    if obj.type != 'MESH': continue
+    world_matrix = obj.matrix_world.copy(); local_matrix = world_matrix.inverted()
+    for vertex in obj.data.vertices:
+        point = world_matrix @ vertex.co
+        point.z -= .14 * smoothstep(point.z / 1.9)
+        vertex.co = local_matrix @ point
+    obj.data.update()
+
 ground_mat = material('White studio ground', (1, 1, 1), .8, .1)
 bpy.ops.mesh.primitive_plane_add(size=200, location=(0, 0, 0))
 ground = bpy.context.object; ground.name = 'Studio_floor'; ground.data.materials.append(ground_mat); ground.is_shadow_catcher = True
@@ -340,14 +352,14 @@ world.node_tree.nodes.get('Background').inputs[0].default_value = (1, 1, 1, 1)
 world.node_tree.nodes.get('Background').inputs[1].default_value = .32
 def camera(name, pos, scale=4.15):
     data = bpy.data.cameras.new(name); obj = bpy.data.objects.new(name, data); bpy.context.collection.objects.link(obj); obj.location = pos
-    obj.rotation_euler = (Vector((0, 0, 1.76))-obj.location).to_track_quat('-Z', 'Y').to_euler()
+    obj.rotation_euler = (Vector((0, 0, 1.69))-obj.location).to_track_quat('-Z', 'Y').to_euler()
     data.type = 'ORTHO'; data.ortho_scale = scale
     return obj
 cams = {
-    'front': camera('Camera_Front', (0, -10, 1.76)),
-    'reference-angle': camera('Camera_ReferenceAngle', (-2.35, -10, 2.55)),
-    'side': camera('Camera_Side', (10, 0, 1.76)),
-    'back': camera('Camera_Back', (0, 10, 1.76)),
+    'front': camera('Camera_Front', (0, -10, 1.69)),
+    'reference-angle': camera('Camera_ReferenceAngle', (-2.0, -10, 2.48)),
+    'side': camera('Camera_Side', (10, 0, 1.69)),
+    'back': camera('Camera_Back', (0, 10, 1.69)),
 }
 scene.render.engine = 'CYCLES'; scene.cycles.samples = 64; scene.cycles.use_denoising = True
 try:
