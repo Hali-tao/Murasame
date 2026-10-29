@@ -1,0 +1,22 @@
+{
+  "version": "r8",
+  "blender": "4.5.15 LTS",
+  "body_vertices": 364650,
+  "body_faces": 364439,
+  "non_manifold_edges": 0,
+  "signed_volume": 4.1135778939224625,
+  "connected_components": 1,
+  "finite_coordinates": true,
+  "armatures": 0,
+  "actions": 0,
+  "camera_count": 4,
+  "stage": "Reference-led static sculpt; likeness pending; no rig or runtime integration",
+  "builder_sha256": "6aef08b87dc9ebce1211be079a49c676e78594a2a4eba95006f42866521e00f5",
+  "blend_sha256": "ddd0a3c55e5d25b1da8f425a06e636c230b98c79bfa3373efcefec44ed8ead10",
+  "renders": [
+    "renders/r8-reference-angle.png",
+    "renders/r8-front.png",
+    "renders/r8-side.png",
+    "renders/r8-back.png"
+  ]
+}
