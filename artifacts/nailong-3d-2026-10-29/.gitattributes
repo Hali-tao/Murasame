@@ -1,0 +1,5 @@
+# Preserve archived source, reports and native assets byte-for-byte.
+* -text whitespace=cr-at-eol
+# Raw tool output and historical builders are immutable evidence snapshots.
+evidence/*.txt -diff
+build-v*.py -diff

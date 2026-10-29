@@ -1,0 +1,81 @@
+{
+  "browser": "Existing Microsoft Edge, headless, independent temporary context",
+  "pages": [
+    {
+      "file": "references.html",
+      "images": [
+        {
+          "src": "reference.png",
+          "loaded": true,
+          "width": 474,
+          "height": 474
+        },
+        {
+          "src": "references/official-fullbody.png",
+          "loaded": true,
+          "width": 488,
+          "height": 473
+        },
+        {
+          "src": "references/licensing-versions.png",
+          "loaded": true,
+          "width": 1871,
+          "height": 1039
+        },
+        {
+          "src": "references/ip365-pose-sheet.png",
+          "loaded": true,
+          "width": 857,
+          "height": 469
+        },
+        {
+          "src": "references/licensing-overview.png",
+          "loaded": true,
+          "width": 1871,
+          "height": 1039
+        },
+        {
+          "src": "references/ip365-character.png",
+          "loaded": true,
+          "width": 857,
+          "height": 524
+        }
+      ],
+      "missing_local_links": [],
+      "page_errors": [],
+      "mobile_horizontal_overflow": false
+    },
+    {
+      "file": "index.html",
+      "images": [
+        {
+          "src": "reference.png",
+          "loaded": true,
+          "width": 474,
+          "height": 474
+        },
+        {
+          "src": "renders/v3-reference-angle.png",
+          "loaded": true,
+          "width": 1000,
+          "height": 1100
+        },
+        {
+          "src": "renders/v3-front.png",
+          "loaded": true,
+          "width": 1000,
+          "height": 1100
+        },
+        {
+          "src": "renders/v3-side.png",
+          "loaded": true,
+          "width": 1000,
+          "height": 1100
+        }
+      ],
+      "missing_local_links": [],
+      "page_errors": [],
+      "mobile_horizontal_overflow": false
+    }
+  ]
+}

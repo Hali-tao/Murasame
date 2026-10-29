@@ -1,0 +1,33 @@
+{
+  "version": "v2",
+  "blend_sha256": "eae899e76b781a9302eac56f2cc93254c1d0eaf9518c552f3139ad1cad12c892",
+  "reopened_with": "4.5.15 LTS",
+  "connected_body_vertices": 201884,
+  "body_faces": 201720,
+  "non_manifold_body_edges": 0,
+  "signed_body_volume": 3.696182313087136,
+  "finite_coordinates": true,
+  "body_materials": [
+    "Warm yellow continuous skin",
+    "Mouth interior"
+  ],
+  "camera_count": 3,
+  "armatures": 0,
+  "actions": 0,
+  "render_dimensions": {
+    "front": [
+      1000,
+      1100
+    ],
+    "reference-angle": [
+      1000,
+      1100
+    ],
+    "side": [
+      1000,
+      1100
+    ]
+  },
+  "reopened_render": "renders/v2-reopened.png",
+  "visual_approval": "pending user review; technical checks are not likeness approval"
+}

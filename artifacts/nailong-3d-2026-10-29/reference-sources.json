@@ -1,0 +1,68 @@
+{
+  "limitations": "Third-party presentation pages are not official model source files; small three-view regions do not define hidden fine detail",
+  "unmodified_source_files": true,
+  "excluded": "Plush toys, inflatable models, unrelated yellow characters, unofficial AI images, logos and awards/statistics pages",
+  "retrieved_at": "2026-10-29T13:20:54.1657643+08:00",
+  "sources": [
+    {
+      "visually_inspected": true,
+      "bytes": 102401,
+      "file": "reference.png",
+      "sha256": "1c6231a9f32e7a3df9a1a455a55966eaa82713bbfa57abac1fd0092379189da7",
+      "source_page": "User attachment in this conversation",
+      "image_url": null,
+      "kind": "primary_user_reference",
+      "use": "Main likeness reference"
+    },
+    {
+      "visually_inspected": true,
+      "bytes": 40661,
+      "file": "references/official-fullbody.png",
+      "sha256": "5d58ae4a3962123fc6c69d504e1a6c84dea212b6189d044618f0a8f57a9d7d7d",
+      "source_page": "https://www.nailoong.com/",
+      "image_url": "https://www.nailoong.com/_ipx/q_85/img/stars/star_image_nl.png",
+      "kind": "official_website",
+      "use": "Full body; raised hands and face"
+    },
+    {
+      "visually_inspected": true,
+      "bytes": 1467527,
+      "file": "references/licensing-versions.png",
+      "sha256": "63d119c1421f1265a0b37c31f13231cbe5299bed1b032b33eda5dd7313ca4093",
+      "source_page": "https://www.yiyebang.com/index/demand_detail/id/47680.html",
+      "image_url": "https://img.shichangbu.com/www/market/upload/20250402/67ed2fb29e745.png",
+      "kind": "third_party_brand_collaboration_page",
+      "use": "Basic 3D vs Q versions; front side back views at bottom right"
+    },
+    {
+      "visually_inspected": true,
+      "bytes": 203696,
+      "file": "references/ip365-pose-sheet.png",
+      "sha256": "1008bcf47501815c32b7413170d35522d8e01c4e4fd259397423465169ad57c6",
+      "source_page": "https://www.ip365.cc/h-pd-303.html",
+      "image_url": "https://13247983.s21i.faiusr.com/4/ABUIABAEGAAgmeC-pwYoxPuryQQw2QY41QM.png",
+      "kind": "third_party_ip_presentation",
+      "use": "Ten poses including front side back"
+    },
+    {
+      "visually_inspected": true,
+      "bytes": 1201377,
+      "file": "references/licensing-overview.png",
+      "sha256": "9ef9b2a95cd193dfd2d6b105e72319884e54cda22a3e001a04b47f4227d27726",
+      "source_page": "https://www.yiyebang.com/index/demand_detail/id/47680.html",
+      "image_url": "https://img.shichangbu.com/www/market/upload/20250402/67ed2fa46a752.png",
+      "kind": "third_party_brand_collaboration_page",
+      "use": "Three-quarter view and palm/arm details"
+    },
+    {
+      "visually_inspected": true,
+      "bytes": 215665,
+      "file": "references/ip365-character.png",
+      "sha256": "70d2c30087f37e430752b190c8e8a42e59865e2895131ded641a69978f308282",
+      "source_page": "https://www.ip365.cc/h-pd-303.html",
+      "image_url": "https://13247983.s21i.faiusr.com/4/ABUIABAEGAAgheC-pwYolvX1uAEw2QY4jAQ.png",
+      "kind": "third_party_ip_presentation",
+      "use": "Standing body proportions and hand details"
+    }
+  ]
+}

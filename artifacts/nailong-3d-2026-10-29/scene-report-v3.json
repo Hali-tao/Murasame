@@ -1,0 +1,141 @@
+{
+  "blender_version": "4.5.15 LTS",
+  "stage": "static shape study, not user-approved",
+  "body_vertices": 210922,
+  "body_faces": 210758,
+  "body_connected_components": [
+    210922
+  ],
+  "finite_coordinates": true,
+  "armatures": 0,
+  "actions": 0,
+  "objects": [
+    {
+      "name": "Nailong_ContinuousSkin",
+      "type": "MESH"
+    },
+    {
+      "name": "Small tongue inside mouth",
+      "type": "MESH"
+    },
+    {
+      "name": "Ivory edge inside smile",
+      "type": "MESH"
+    },
+    {
+      "name": "L embedded eye",
+      "type": "MESH"
+    },
+    {
+      "name": "Small eye catchlight",
+      "type": "MESH"
+    },
+    {
+      "name": "R embedded eye",
+      "type": "MESH"
+    },
+    {
+      "name": "Small eye catchlight.001",
+      "type": "MESH"
+    },
+    {
+      "name": "Embedded rounded toe claw",
+      "type": "MESH"
+    },
+    {
+      "name": "Embedded rounded toe claw.001",
+      "type": "MESH"
+    },
+    {
+      "name": "Embedded rounded toe claw.002",
+      "type": "MESH"
+    },
+    {
+      "name": "Embedded rounded toe claw.003",
+      "type": "MESH"
+    },
+    {
+      "name": "Embedded rounded toe claw.004",
+      "type": "MESH"
+    },
+    {
+      "name": "Embedded rounded toe claw.005",
+      "type": "MESH"
+    },
+    {
+      "name": "Raised palm blush pad",
+      "type": "MESH"
+    },
+    {
+      "name": "Raised hand claw",
+      "type": "MESH"
+    },
+    {
+      "name": "Raised hand claw.001",
+      "type": "MESH"
+    },
+    {
+      "name": "Raised hand claw.002",
+      "type": "MESH"
+    },
+    {
+      "name": "Lowered hand claw",
+      "type": "MESH"
+    },
+    {
+      "name": "Lowered hand claw.001",
+      "type": "MESH"
+    },
+    {
+      "name": "Lowered hand claw.002",
+      "type": "MESH"
+    },
+    {
+      "name": "Rear head nub 1",
+      "type": "MESH"
+    },
+    {
+      "name": "Rear head nub 2",
+      "type": "MESH"
+    },
+    {
+      "name": "Rear head nub 3",
+      "type": "MESH"
+    },
+    {
+      "name": "Studio_floor",
+      "type": "MESH"
+    },
+    {
+      "name": "Large softbox key",
+      "type": "LIGHT"
+    },
+    {
+      "name": "Soft frontal fill",
+      "type": "LIGHT"
+    },
+    {
+      "name": "Soft upper rim",
+      "type": "LIGHT"
+    },
+    {
+      "name": "Camera_Front",
+      "type": "CAMERA"
+    },
+    {
+      "name": "Camera_ReferenceAngle",
+      "type": "CAMERA"
+    },
+    {
+      "name": "Camera_Side",
+      "type": "CAMERA"
+    }
+  ],
+  "renderer": "CYCLES",
+  "device": "GPU",
+  "renders": [
+    "renders/v3-front.png",
+    "renders/v3-reference-angle.png",
+    "renders/v3-side.png"
+  ]
+}
