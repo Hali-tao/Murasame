@@ -1,0 +1,7 @@
+[feat/overnight-2026-10-29 66225ba] Restore directory checkpoints after verified task file additions
+ 6 files changed, 292 insertions(+), 6 deletions(-)
+ create mode 100644 docs/superpowers/plans/2026-10-30-directory-checkpoint.md
+ create mode 100644 docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
+ create mode 100644 src/main/task/directory-observation.ts
+ create mode 100644 tests/e2e/task-directory-checkpoints.spec.ts
+ create mode 100644 tests/unit/task-directory-checkpoints.test.ts

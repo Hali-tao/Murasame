@@ -1,0 +1,149 @@
+
+Running 35 tests using 1 worker
+
+(node:57576) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (6.3s)
+  ok  2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (9.9s)
+  ok  3 tests\e2e\app.spec.ts:98:5 › pet window is created and can be hidden or restored through IPC (5.5s)
+  ok  4 tests\e2e\app.spec.ts:159:5 › character page switches between the three bundled pet presets (7.0s)
+  x   5 tests\e2e\autonomy-external-status.spec.ts:4:5 › an already open autonomy page follows externally started real isolated work and stop (2.5m)
+(node:18104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  6 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (16.1s)
+  ok  7 tests\e2e\flows.spec.ts:74:5 › a second launch exits and the existing instance remains available (15.0s)
+  ok  8 tests\e2e\flows.spec.ts:101:5 › the console hides to the tray and can be restored (12.1s)
+  ok  9 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (16.7s)
+  ok 10 tests\e2e\grounded-summary.spec.ts:100:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (17.5s)
+  x  11 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker (1.4m)
+(node:71192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  12 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker (1.5m)
+(node:61836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 13 tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 (10.3s)
+  ok 14 tests\e2e\memory-clear-ui.spec.ts:21:5 › [FR-15] memory source opens its history and scoped clearing leaves no stale extraction notice (11.0s)
+  ok 15 tests\e2e\memory-clear-ui.spec.ts:71:5 › [FR-15] settings reports real IPC clear failures and keeps persisted memory visible (6.8s)
+  ok 16 tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories (9.7s)
+  ok 17 tests\e2e\memory-correction-source.spec.ts:14:7 › [FR-15] clearing the original conversation keeps corrected memory in its actual source (12.0s)
+  ok 18 tests\e2e\memory-correction-source.spec.ts:14:7 › [FR-15] clearing the correction conversation keeps corrected memory in its actual source (10.3s)
+  ok 19 tests\e2e\memory-degraded-context.spec.ts:7:5 › [NFR-U03] unusable local model does not silently become a successful empty memory search (11.1s)
+  ok 20 tests\e2e\model-lifecycle.spec.ts:55:5 › an old failed chat cannot invalidate a newer actual model verification (16.7s)
+  ok 21 tests\e2e\model-lifecycle.spec.ts:92:5 › removing a model during a real pending request still delivers its complete answer to the conversation (10.2s)
+  ok 22 tests\e2e\model-status-sync.spec.ts:6:5 › [FR-25] verified service status survives a completed chat and renderer reload (9.7s)
+  ok 23 tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading (10.6s)
+  ok 24 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (14.5s)
+  ok 25 tests\e2e\notifications.spec.ts:63:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire (16.2s)
+  ok 26 tests\e2e\pet-history-sync.spec.ts:4:5 › [FR-15] deleting the active history clears the open pet chat without restarting (9.7s)
+  ok 27 tests\e2e\pet-history-sync.spec.ts:27:5 › [FR-02] body taps give tap feedback and the menu explicitly opens and closes chat (7.2s)
+  ok 28 tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output (20.7s)
+  ok 29 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (7.2s)
+  ok 30 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (6.3s)
+  ok 31 tests\e2e\task-continuation.spec.ts:8:5 › [FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务 (7.4s)
+  ok 32 tests\e2e\task-directory-checkpoints.spec.ts:11:51 › [FR-17] 三步任务逐项批准接受本任务新增文件并完成 (9.5s)
+  ok 33 tests\e2e\task-directory-checkpoints.spec.ts:11:51 › [FR-17] 三步任务逐项批准拦截外部新增文件 (9.8s)
+  ok 34 tests\e2e\task-directory.spec.ts:18:5 › [FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围 (9.5s)
+  ok 35 tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 (8.1s)
+
+
+  1) tests\e2e\autonomy-external-status.spec.ts:4:5 › an already open autonomy page follows externally started real isolated work and stop
+
+    Test timeout of 150000ms exceeded.
+
+    Error Context: previews\directory-checkpoints-2026-10-30\package-e2e-final\autonomy-external-status-a-3875b-real-isolated-work-and-stop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\autonomy-external-status-a-3875b-real-isolated-work-and-stop\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\package-e2e-final\autonomy-external-status-a-3875b-real-isolated-work-and-stop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByAltText('离线隔离桌面实时画面')
+    Expected: visible
+    Timeout: 70000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByAltText('离线隔离桌面实时画面') with timeout 70000ms
+      - waiting for getByAltText('离线隔离桌面实时画面')
+
+
+      37 |       await page.getByTestId('autonomy-start').click()
+      38 |       await expect(page.getByTestId('autonomy-create')).toBeDisabled()
+    > 39 |       await expect(page.getByAltText('离线隔离桌面实时画面')).toBeVisible({ timeout: 70_000 })
+         |                                                     ^
+      40 |       expect(await page.getByAltText('离线隔离桌面实时画面').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+      41 |       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')
+      42 |       await page.getByTestId('autonomy-create').click()
+        at E:\Desktop\软件工程\murasame\tests\e2e\isolated-creation.spec.ts:39:53
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-7a832--model-transport-and-Docker\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-7a832--model-transport-and-Docker\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-7a832--model-transport-and-Docker\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-7a832--model-transport-and-Docker\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-7a832--model-transport-and-Docker\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByAltText('离线隔离桌面实时画面')
+    Expected: visible
+    Timeout: 70000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByAltText('离线隔离桌面实时画面') with timeout 70000ms
+      - waiting for getByAltText('离线隔离桌面实时画面')
+
+
+      37 |       await page.getByTestId('autonomy-start').click()
+      38 |       await expect(page.getByTestId('autonomy-create')).toBeDisabled()
+    > 39 |       await expect(page.getByAltText('离线隔离桌面实时画面')).toBeVisible({ timeout: 70_000 })
+         |                                                     ^
+      40 |       expect(await page.getByAltText('离线隔离桌面实时画面').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+      41 |       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')
+      42 |       await page.getByTestId('autonomy-create').click()
+        at E:\Desktop\软件工程\murasame\tests\e2e\isolated-creation.spec.ts:39:53
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-07b63--model-transport-and-Docker\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-07b63--model-transport-and-Docker\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-07b63--model-transport-and-Docker\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-07b63--model-transport-and-Docker\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\package-e2e-final\isolated-creation-real-iso-07b63--model-transport-and-Docker\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests\e2e\autonomy-external-status.spec.ts:4:5 › an already open autonomy page follows externally started real isolated work and stop
+    tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker
+    tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker
+  32 passed (11.4m)

@@ -1,0 +1,19 @@
+{
+  "stats": {
+    "startTime": "2026-10-29T18:13:35.526Z",
+    "duration": 404328.593,
+    "expected": 35,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "failures": [],
+  "expiry": [
+    {
+      "title": "model setup has one complete result and notifications leave the chat composer usable",
+      "initial": 2,
+      "remaining": 0,
+      "elapsedMs": 4481.79999999702
+    }
+  ]
+}

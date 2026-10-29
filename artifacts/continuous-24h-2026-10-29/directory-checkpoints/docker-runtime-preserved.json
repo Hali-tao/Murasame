@@ -1,0 +1,32 @@
+[
+  {
+    "source": "C:\\Users\\LENOVO\\AppData\\Local\\Docker\\run",
+    "destination": "C:\\Users\\LENOVO\\AppData\\Local\\Docker\\run.murasame-preserved-20261030-0210",
+    "entries": [
+      {
+        "Name": "dockerInference",
+        "Length": 0,
+        "Attributes": 1056,
+        "LastWriteTime": "2026-10-29T17:41:25.0716008+08:00"
+      },
+      {
+        "Name": "userAnalyticsOtlpHttp.sock",
+        "Length": 0,
+        "Attributes": 1056,
+        "LastWriteTime": "2026-10-29T17:41:33.1222586+08:00"
+      }
+    ]
+  },
+  {
+    "source": "C:\\Users\\LENOVO\\AppData\\Local\\docker-secrets-engine",
+    "destination": "C:\\Users\\LENOVO\\AppData\\Local\\docker-secrets-engine.murasame-preserved-20261030-0210",
+    "entries": [
+      {
+        "Name": "engine.sock",
+        "Length": 0,
+        "Attributes": 1056,
+        "LastWriteTime": "2026-10-29T17:41:25.0732556+08:00"
+      }
+    ]
+  }
+]

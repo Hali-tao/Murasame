@@ -1,0 +1,90 @@
+diff --git a/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md b/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
+index cb9ce0c..768b128 100644
+--- a/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
++++ b/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
+@@ -2,7 +2,7 @@
+
+ 已确认缺陷：先列目录、后写a.txt、再逐项批准写b.txt，第三次恢复因a.txt改变旧清单而失败。基线5cc5c28，复现见task-resume-diagnostic。用户授权自主决定软件细节，本方案为执行者选择；角色仍暂停。
+
+-恢复目录list检查点时，以原清单为基础，只加入本任务当前计划中、依赖该观察的已完成后续步骤产生的文件项。后续检查点必须完成、结果已知、成功且计划/步骤哈希兼容。新增影响必须无源文件、非删除、实际文件仍位于授权范围内且当前SHA与已核验结果一致。目录只比较直接成员；子目录内文件会贡献其首层目录名。排序比较避免文件系统枚举次序影响。
++恢复目录list检查点时，以原清单为基础，只加入本任务当前计划中、依赖该观察的已完成后续步骤产生的文件项。后续检查点及其全部前置依赖都必须完成、结果已知、成功且计划/步骤哈希兼容，包括图中的另一条来源分支。新增影响必须无源文件、非删除、实际文件仍位于授权范围内且当前SHA与已核验结果一致。目录只比较直接成员；子目录内文件会贡献其首层目录名。排序比较避免文件系统枚举次序影响。
+
+ 所有已完成步骤仍逐一独立核验；额外外部文件、成员删除、已产出文件被改写、读取来源变化、计划变更、不相关或不明结果检查点不能被此补偿掩盖。仅使用图依赖能证明的后续关系，不靠检查点数组顺序推断执行先后。原Worker返回和持久检查点不重写；恢复核验记录独立Critic证据。
+
+diff --git a/src/main/agent/executor.ts b/src/main/agent/executor.ts
+index 54f5be9..56108bc 100644
+--- a/src/main/agent/executor.ts
++++ b/src/main/agent/executor.ts
+@@ -91,6 +91,8 @@ export async function executeGoal(input: GroundedExecutionOptions & { goal: stri
+     const node = graph.find(entry => entry.id === checkpoint.stepId)
+     return node && checkpoint.completed && checkpoint.outcomeKnown && checkpoint.output.run.status === 'ok' && matchesCheckpoint(checkpoint, node)
+   })
++  const completedIds = new Set(completed.map(checkpoint => checkpoint.stepId))
++  const compatibleChain = (id: string): boolean => completedIds.has(id) && graph.find(node => node.id === id)!.dependsOn.every(compatibleChain)
+   for (const checkpoint of input.checkpoints ?? []) {
+     const node = graph.find((entry) => entry.id === checkpoint.stepId)
+     if (!node) { artifacts.push(...checkpoint.output.artifacts); continue }
+@@ -100,7 +102,7 @@ export async function executeGoal(input: GroundedExecutionOptions & { goal: stri
+     if (checkpoint.completed) {
+       const ticket: WorkerTicket = { id: randomUUID(), stepId: node.id, root: input.root ? resolveInside(input.root, node.step.workspace ?? '.') : null, allowedTools: [node.step.tool ?? tool], limits: { timeoutMs: node.step.limits?.timeoutMs ?? 8000, maxSteps: 1 } }
+       const directoryExpected = input.root && ticket.root && ticket.allowedTools[0] === 'filesystem' && node.step.args?.action === 'list'
+-        ? expectedDirectoryListing(input.root, resolveInside(ticket.root, node.step.args.path ?? '.'), checkpoint.output.run.raw, completed.filter(item => follows(item.stepId, node.id)).flatMap(item => item.output.effects)) : undefined
++        ? expectedDirectoryListing(input.root, resolveInside(ticket.root, node.step.args.path ?? '.'), checkpoint.output.run.raw, completed.filter(item => compatibleChain(item.stepId) && follows(item.stepId, node.id)).flatMap(item => item.output.effects)) : undefined
+       const checked = await independentlyVerify(ticket, node.step, checkpoint.output, input, directoryExpected)
+       const verified = checked.length > 0 && checked.every(item => item.matched)
+       record({ agentRole: 'Critic', toolId: 'critic', declared: `恢复前独立核对 ${node.id}，不重复执行`, executionStatus: verified ? 'ok' : 'error', raw: JSON.stringify(checked), evidence: checked, verdict: verified ? 'confirmed' : 'refuted', stepId: node.id, traceId: ticket.id, phase: 'result', args: { restoredCheckpoint: checkpoint.traceId, readOnly: true } })
+diff --git a/tests/unit/task-directory-checkpoints.test.ts b/tests/unit/task-directory-checkpoints.test.ts
+index 03cae54..7160d67 100644
+--- a/tests/unit/task-directory-checkpoints.test.ts
++++ b/tests/unit/task-directory-checkpoints.test.ts
+@@ -123,6 +123,50 @@ describe('resuming directory observations after verified task additions', () =>
+     expect(result.status).toBe('失败'); expect(existsSync(f.b)).toBe(false)
+   })
+
++  it.each(['source-path', 'dependency-edge'] as const)('does not adopt an old output after its intermediate %s changes', async change => {
++    const f = fixture(); writeFileSync(join(f.root, 'new.txt'), 'new source already present')
++    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: ['inspect'], title: '读取依据', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
++    f.plan.steps[2].dependsOn = ['source']
++    await pause(f, 3)
++    if (change === 'source-path') f.plan.steps[1].args!.path = 'new.txt'
++    else f.plan.steps[1].dependsOn = []
++    const result = await f.run()
++    expect(result.status).toBe('失败')
++    expect(result.calls.filter(call => call.agentRole === 'Worker')).toHaveLength(0)
++    expect(existsSync(f.b)).toBe(false); expect(readFileSync(f.a, 'utf8')).toBe('first result')
++  })
++
++  it('does not use a compatible path through the graph to hide a changed sibling prerequisite', async () => {
++    const f = fixture(); writeFileSync(join(f.root, 'new.txt'), 'new source already present')
++    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: [], title: '独立来源', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
++    f.plan.steps[2].dependsOn = ['inspect', 'source']
++    await pause(f, 3)
++    f.plan.steps[1].args!.path = 'new.txt'
++    const result = await f.run()
++    expect(result.status).toBe('失败')
++    expect(result.calls.filter(call => call.agentRole === 'Worker')).toHaveLength(0)
++    expect(existsSync(f.b)).toBe(false)
++  })
++
++  it('keeps a real service replan blocked when the source behind a completed output changes', async () => {
++    const f = fixture(); writeFileSync(join(f.root, 'new.txt'), 'new source already present')
++    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: ['inspect'], title: '读取依据', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
++    f.plan.steps[2].dependsOn = ['source']
++    const db = new DatabaseSync(':memory:')
++    db.exec(readFileSync('src/main/data/migrations/001_init.sql', 'utf8')); db.exec(readFileSync('src/main/data/migrations/003_trace.sql', 'utf8'))
++    try {
++      const service = new TaskService(db as unknown as SqliteDatabase); service.setPlanner(async () => f.plan)
++      const made = await service.create('创建两个文件', f.root); if (!made.ok) throw new Error(made.error)
++      for (let i = 0; i < 3; i++) { await service.approve(made.data.id, 'once'); await service.settled(made.data.id) }
++      await service.deny(made.data.id)
++      f.plan.steps[1].args!.path = 'new.txt'
++      const continued = await service.continueTask(made.data.id, '改用新的来源'); if (!continued.ok) throw new Error(continued.error)
++      expect(continued.data.status).toBe('失败'); expect(continued.data.approval).toBeNull()
++      expect(continued.data.toolCalls.filter(call => call.agentRole === 'Worker' && (call.declared.args as { phase?: string }).phase === 'result')).toHaveLength(3)
++      expect(readFileSync(f.a, 'utf8')).toBe('first result'); expect(existsSync(f.b)).toBe(false)
++    } finally { db.close() }
++  })
++
+   it('restores from persisted SQLite checkpoints after service recreation and executes each worker only once', async () => {
+     const f = fixture(); const db = new DatabaseSync(':memory:')
+     db.exec(readFileSync('src/main/data/migrations/001_init.sql', 'utf8')); db.exec(readFileSync('src/main/data/migrations/003_trace.sql', 'utf8'))

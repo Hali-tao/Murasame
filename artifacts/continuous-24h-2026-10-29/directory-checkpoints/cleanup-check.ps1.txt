@@ -1,0 +1,19 @@
+$ErrorActionPreference = 'Stop'
+$testExecutable = (Resolve-Path 'release/continuous-2026-10-30-directory-checkpoints/win-unpacked/Murasame.exe').Path
+$testProcesses = @(Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -eq $testExecutable } | Select-Object ProcessId, Name)
+$runningContainers = @(docker ps --format '{{.ID}} {{.Names}}')
+if ($LASTEXITCODE -ne 0) { throw 'Docker inventory failed' }
+$remainingProfiles = @(Get-ChildItem -LiteralPath 'previews/tmp' -Directory -Filter 'murasame-e2e-*' | Select-Object Name, CreationTime)
+$checkpointFixtures = @(Get-ChildItem -LiteralPath 'previews/tmp' -Directory -Filter 'directory-checkpoint-ui-*' | Select-Object Name, CreationTime)
+$result = [ordered]@{
+  at = (Get-Date).ToString('o')
+  testExecutable = $testExecutable
+  testProcesses = $testProcesses
+  runningContainers = $runningContainers
+  remainingE2eProfiles = $remainingProfiles
+  remainingCheckpointFixtures = $checkpointFixtures
+  deletionPerformedByThisCheck = $false
+}
+$result | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath 'previews/directory-checkpoints-2026-10-30/cleanup-check.json' -Encoding utf8
+$result | ConvertTo-Json -Depth 5
+if ($testProcesses.Count -ne 0 -or $remainingProfiles.Count -ne 0 -or $checkpointFixtures.Count -ne 0) { throw 'Inspect remaining test resources; do not delete unrelated state' }

@@ -1,0 +1,92 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:51652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/task-directory-checkpoints.test.ts (17 tests | 7 failed) 707ms
+   ❯ resuming directory observations after verified task additions (17)
+     × finishes sequential approvals for list=. outputs= workspace=. without rewriting history 58ms
+     × finishes sequential approvals for list=notes outputs=notes workspace=. without rewriting history 42ms
+     × finishes sequential approvals for list=. outputs=nested/deeper workspace=. without rewriting history 45ms
+     × finishes sequential approvals for list=. outputs=nested workspace=workspace without rewriting history 48ms
+     × uses dependencies rather than plan or checkpoint storage order 39ms
+     × does not hide a changed source file behind an allowed directory addition 67ms
+     × restores from persisted SQLite checkpoints after service recreation and executes each worker only once 48ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > finishes sequential approvals for list=. outputs= workspace=. without rewriting history
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > finishes sequential approvals for list=notes outputs=notes workspace=. without rewriting history
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > finishes sequential approvals for list=. outputs=nested/deeper workspace=. without rewriting history
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > finishes sequential approvals for list=. outputs=nested workspace=workspace without rewriting history
+AssertionError: expected '失败' to be '已完成' // Object.is equality
+
+Expected: "已完成"
+Received: "失败"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:46:27
+     44|     const original = JSON.stringify(f.checkpoints)
+     45|     const result = await f.run()
+     46|     expect(result.status).toBe('已完成')
+       |                           ^
+     47|     expect(result.calls.filter(call => call.agentRole === 'Worker').ma…
+     48|     expect(readFileSync(f.b, 'utf8')).toBe('second result'); expect(re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > uses dependencies rather than plan or checkpoint storage order
+AssertionError: expected '失败' to be '已完成' // Object.is equality
+
+Expected: "已完成"
+Received: "失败"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:56:27
+     54|     const f = fixture(); f.plan.steps.reverse(); await pause(f)
+     55|     const result = await f.run([...f.checkpoints].reverse())
+     56|     expect(result.status).toBe('已完成'); expect(readFileSync(f.b, 'utf8'…
+       |                           ^
+     57|   })
+     58|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > does not hide a changed source file behind an allowed directory addition
+AssertionError: expected '步骤 inspect 的已完成结果发生变化；未重新执行或覆盖。' to contain 'source'
+
+Expected: "source"
+Received: "步骤 inspect 的已完成结果发生变化；未重新执行或覆盖。"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:77:61
+     75|     writeFileSync(join(f.observed, 'input.txt'), 'changed source')
+     76|     const result = await f.run()
+     77|     expect(result.status).toBe('失败'); expect(result.result).toContain(…
+       |                                                             ^
+     78|   })
+     79|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > restores from persisted SQLite checkpoints after service recreation and executes each worker only once
+AssertionError: expected '失败' to be '等待批准' // Object.is equality
+
+Expected: "等待批准"
+Received: "失败"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:109:37
+    107|       const restarted = new TaskService(db as unknown as SqliteDatabas…
+    108|       const continued = await restarted.continueTask(made.data.id, '继续…
+    109|       expect(continued.data.status).toBe('等待批准')
+       |                                     ^
+    110|       await restarted.approve(made.data.id, 'once'); await restarted.s…
+    111|       const result = restarted.list()[0]
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 10 passed (17)
+   Start at  01:05:46
+   Duration  1.31s (tests 80%, import 12%, transform 7%, worker 1%)

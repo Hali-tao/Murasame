@@ -1,0 +1,1580 @@
+{
+  "config": {
+    "argv": [
+      "D:\\node.exe",
+      "E:\\Desktop\\软件工程\\murasame\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--reporter=list,json",
+      "--output=previews/directory-checkpoints-2026-10-30/package-e2e-final"
+    ],
+    "configFile": "E:\\Desktop\\软件工程\\murasame\\playwright.config.ts",
+    "rootDir": "E:/Desktop/软件工程/murasame/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "E:/Desktop/软件工程/murasame/previews/directory-checkpoints-2026-10-30/package-e2e-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "E:/Desktop/软件工程/murasame/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e",
+        "snapshotDir": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 45000,
+        "use": {
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "app.spec.ts",
+      "file": "app.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "first launch leads through model verification to a real first conversation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6343,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:01:41.796Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c31ff144dc4fee3acd0a-0d9f5a7be7a0262c1e68",
+          "file": "app.spec.ts",
+          "line": 6,
+          "column": 5
+        },
+        {
+          "title": "console starts and all ten pages are reachable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9881,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:01:48.182Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c31ff144dc4fee3acd0a-8d138c636e3c42bc7f7b",
+          "file": "app.spec.ts",
+          "line": 26,
+          "column": 5
+        },
+        {
+          "title": "pet window is created and can be hidden or restored through IPC",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5452,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:01:58.093Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c31ff144dc4fee3acd0a-77ceba6f317af21e9cdd",
+          "file": "app.spec.ts",
+          "line": 98,
+          "column": 5
+        },
+        {
+          "title": "character page switches between the three bundled pet presets",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6958,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:02:03.570Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c31ff144dc4fee3acd0a-0a6bc96d46dc5d31fd7f",
+          "file": "app.spec.ts",
+          "line": 159,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "autonomy-external-status.spec.ts",
+      "file": "autonomy-external-status.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "an already open autonomy page follows externally started real isolated work and stop",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 150000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 150007,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 150000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 150000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 150000ms exceeded.\u001b[39m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:02:10.570Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\autonomy-external-status-a-3875b-real-isolated-work-and-stop\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\autonomy-external-status-a-3875b-real-isolated-work-and-stop\\trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "1cc53b05631c46c1e5de-dfb3dfee60e3184d0a90",
+          "file": "autonomy-external-status.spec.ts",
+          "line": 4,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "flows.spec.ts",
+      "file": "flows.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "history clearing, memory editing and model switching are end-to-end usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16135,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:04:42.079Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "86d6a544053f1eb9f224-83993a1e992d6705fc49",
+          "file": "flows.spec.ts",
+          "line": 17,
+          "column": 5
+        },
+        {
+          "title": "a second launch exits and the existing instance remains available",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15047,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:04:58.261Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "86d6a544053f1eb9f224-eee379bfe7fb92438583",
+          "file": "flows.spec.ts",
+          "line": 74,
+          "column": 5
+        },
+        {
+          "title": "the console hides to the tray and can be restored",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12112,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:05:13.334Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "86d6a544053f1eb9f224-4f981b623190c176f26a",
+          "file": "flows.spec.ts",
+          "line": 101,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "grounded-summary.spec.ts",
+      "file": "grounded-summary.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real source is sent only after A; reviewed exact draft is saved only after B",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16679,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:05:25.497Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "38a2503a504b71f60d70-69c5bb76e4275ef365b9",
+          "file": "grounded-summary.spec.ts",
+          "line": 54,
+          "column": 5
+        },
+        {
+          "title": "a slow real summary permits chat, survives hiding, and cancellation discards late output",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17502,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:05:42.207Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "38a2503a504b71f60d70-d2b1aa8c240a20e81145",
+          "file": "grounded-summary.spec.ts",
+          "line": 100,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "isolated-creation.spec.ts",
+      "file": "isolated-creation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "real isolated creation",
+          "file": "isolated-creation.spec.ts",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "office through actual UI, IPC, model transport and Docker",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 180000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 85723,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('离线隔离桌面实时画面')\nExpected: visible\nTimeout: 70000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByAltText('离线隔离桌面实时画面') with timeout 70000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('离线隔离桌面实时画面')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('离线隔离桌面实时画面')\nExpected: visible\nTimeout: 70000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByAltText('离线隔离桌面实时画面') with timeout 70000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('离线隔离桌面实时画面')\u001b[22m\n\n    at E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts:39:53",
+                        "location": {
+                          "file": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts",
+                          "column": 53,
+                          "line": 39
+                        },
+                        "snippet": "  37 |       await page.getByTestId('autonomy-start').click()\n  38 |       await expect(page.getByTestId('autonomy-create')).toBeDisabled()\n> 39 |       await expect(page.getByAltText('离线隔离桌面实时画面')).toBeVisible({ timeout: 70_000 })\n     |                                                     ^\n  40 |       expect(await page.getByAltText('离线隔离桌面实时画面').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)\n  41 |       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')\n  42 |       await page.getByTestId('autonomy-create').click()"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts",
+                            "column": 53,
+                            "line": 39
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('离线隔离桌面实时画面')\nExpected: visible\nTimeout: 70000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByAltText('离线隔离桌面实时画面') with timeout 70000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('离线隔离桌面实时画面')\u001b[22m\n\n\n  37 |       await page.getByTestId('autonomy-start').click()\n  38 |       await expect(page.getByTestId('autonomy-create')).toBeDisabled()\n> 39 |       await expect(page.getByAltText('离线隔离桌面实时画面')).toBeVisible({ timeout: 70_000 })\n     |                                                     ^\n  40 |       expect(await page.getByAltText('离线隔离桌面实时画面').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)\n  41 |       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')\n  42 |       await page.getByTestId('autonomy-create').click()\n    at E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts:39:53"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-29T18:05:59.756Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-7a832--model-transport-and-Docker\\test-failed-1.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-7a832--model-transport-and-Docker\\test-failed-2.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-7a832--model-transport-and-Docker\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-7a832--model-transport-and-Docker\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts",
+                        "column": 53,
+                        "line": 39
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3c67ab34817ccfc246ba-82180cfd818d305ca728",
+              "file": "isolated-creation.spec.ts",
+              "line": 11,
+              "column": 55
+            },
+            {
+              "title": "code through actual UI, IPC, model transport and Docker",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 180000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 91019,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('离线隔离桌面实时画面')\nExpected: visible\nTimeout: 70000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByAltText('离线隔离桌面实时画面') with timeout 70000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('离线隔离桌面实时画面')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('离线隔离桌面实时画面')\nExpected: visible\nTimeout: 70000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByAltText('离线隔离桌面实时画面') with timeout 70000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('离线隔离桌面实时画面')\u001b[22m\n\n    at E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts:39:53",
+                        "location": {
+                          "file": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts",
+                          "column": 53,
+                          "line": 39
+                        },
+                        "snippet": "  37 |       await page.getByTestId('autonomy-start').click()\n  38 |       await expect(page.getByTestId('autonomy-create')).toBeDisabled()\n> 39 |       await expect(page.getByAltText('离线隔离桌面实时画面')).toBeVisible({ timeout: 70_000 })\n     |                                                     ^\n  40 |       expect(await page.getByAltText('离线隔离桌面实时画面').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)\n  41 |       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')\n  42 |       await page.getByTestId('autonomy-create').click()"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts",
+                            "column": 53,
+                            "line": 39
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('离线隔离桌面实时画面')\nExpected: visible\nTimeout: 70000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByAltText('离线隔离桌面实时画面') with timeout 70000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('离线隔离桌面实时画面')\u001b[22m\n\n\n  37 |       await page.getByTestId('autonomy-start').click()\n  38 |       await expect(page.getByTestId('autonomy-create')).toBeDisabled()\n> 39 |       await expect(page.getByAltText('离线隔离桌面实时画面')).toBeVisible({ timeout: 70_000 })\n     |                                                     ^\n  40 |       expect(await page.getByAltText('离线隔离桌面实时画面').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)\n  41 |       await page.getByRole('textbox', { name: '创作目标', exact: false }).fill(kind === 'office' ? '写一份独立测试安排' : '计算1到10的平方和')\n  42 |       await page.getByTestId('autonomy-create').click()\n    at E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts:39:53"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-29T18:07:26.547Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-07b63--model-transport-and-Docker\\test-failed-1.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-07b63--model-transport-and-Docker\\test-failed-2.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-07b63--model-transport-and-Docker\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "E:\\Desktop\\软件工程\\murasame\\previews\\directory-checkpoints-2026-10-30\\package-e2e-final\\isolated-creation-real-iso-07b63--model-transport-and-Docker\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "E:\\Desktop\\软件工程\\murasame\\tests\\e2e\\isolated-creation.spec.ts",
+                        "column": 53,
+                        "line": 39
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3c67ab34817ccfc246ba-55f8e4d05f436ad3de6a",
+              "file": "isolated-creation.spec.ts",
+              "line": 11,
+              "column": 55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "local-memory.spec.ts",
+      "file": "local-memory.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10313,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:08:58.534Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e8c679ba4c3f3ce0025e-abf8b35b20b55c8b7023",
+          "file": "local-memory.spec.ts",
+          "line": 7,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "memory-clear-ui.spec.ts",
+      "file": "memory-clear-ui.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-15] memory source opens its history and scoped clearing leaves no stale extraction notice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11003,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:09:09.055Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d3c9399c914e0598e18-8b02277d8e6b9b67cfe2",
+          "file": "memory-clear-ui.spec.ts",
+          "line": 21,
+          "column": 5
+        },
+        {
+          "title": "[FR-15] settings reports real IPC clear failures and keeps persisted memory visible",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6845,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:09:20.083Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d3c9399c914e0598e18-10a3c8bc914ef16d837b",
+          "file": "memory-clear-ui.spec.ts",
+          "line": 71,
+          "column": 5
+        },
+        {
+          "title": "[FR-15] a retained conversation can learn new facts after clearing only its memories",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9723,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:09:26.955Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d3c9399c914e0598e18-1620efe0a5f1a56cffc3",
+          "file": "memory-clear-ui.spec.ts",
+          "line": 111,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "memory-correction-source.spec.ts",
+      "file": "memory-correction-source.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-15] clearing the original conversation keeps corrected memory in its actual source",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11987,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:09:36.821Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "before-clear",
+                      "contentType": "application/json",
+                      "body": "W3sidGV4dCI6IuWWnOasoueZveiMtiIsInNvdXJjZSI6ImNoYXQtMTc5MzI5NzM4NDc4NS1yYXR1ZyJ9XQ=="
+                    },
+                    {
+                      "name": "after-clear",
+                      "contentType": "application/json",
+                      "body": "W3sidGV4dCI6IuWWnOasoueZveiMtiIsInNvdXJjZSI6ImNoYXQtMTc5MzI5NzM4NDc4NS1yYXR1ZyJ9XQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7e9b520128d812aa501d-6319a7fa9a3fc42ce07d",
+          "file": "memory-correction-source.spec.ts",
+          "line": 14,
+          "column": 7
+        },
+        {
+          "title": "[FR-15] clearing the correction conversation keeps corrected memory in its actual source",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10342,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:09:48.840Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "before-clear",
+                      "contentType": "application/json",
+                      "body": "W3sidGV4dCI6IuWWnOasoueZveiMtiIsInNvdXJjZSI6ImNoYXQtMTc5MzI5NzM5NTM5Ny1oejBjcCJ9XQ=="
+                    },
+                    {
+                      "name": "after-clear",
+                      "contentType": "application/json",
+                      "body": "W10="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7e9b520128d812aa501d-1f97e328725cd925717b",
+          "file": "memory-correction-source.spec.ts",
+          "line": 14,
+          "column": 7
+        }
+      ]
+    },
+    {
+      "title": "memory-degraded-context.spec.ts",
+      "file": "memory-degraded-context.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[NFR-U03] unusable local model does not silently become a successful empty memory search",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11142,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:09:59.297Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "053bbc6f9a53acb9f87d-8203b20be9d84064c888",
+          "file": "memory-degraded-context.spec.ts",
+          "line": 7,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "model-lifecycle.spec.ts",
+      "file": "model-lifecycle.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "an old failed chat cannot invalidate a newer actual model verification",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16651,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:10:10.642Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f3272b4d281c3282c69a-15a321497123ad83a5e3",
+          "file": "model-lifecycle.spec.ts",
+          "line": 55,
+          "column": 5
+        },
+        {
+          "title": "removing a model during a real pending request still delivers its complete answer to the conversation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10166,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:10:27.323Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f3272b4d281c3282c69a-978e4cdb6dedc3c2234f",
+          "file": "model-lifecycle.spec.ts",
+          "line": 92,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "model-status-sync.spec.ts",
+      "file": "model-status-sync.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-25] verified service status survives a completed chat and renderer reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9680,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:10:37.643Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "209e06738740b6caada8-c8da1d8d287d692fb98c",
+          "file": "model-status-sync.spec.ts",
+          "line": 6,
+          "column": 5
+        },
+        {
+          "title": "[FR-25] real chat failure and recovery update the current service without reloading",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10551,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:10:47.353Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "209e06738740b6caada8-71cbe7170e440ef9607e",
+          "file": "model-status-sync.spec.ts",
+          "line": 36,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "notifications.spec.ts",
+      "file": "notifications.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "model setup has one complete result and notifications leave the chat composer usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14480,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:10:58.038Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "actual-toast-expiry",
+                      "contentType": "application/json",
+                      "body": "eyJpbml0aWFsIjoyLCJyZW1haW5pbmciOjAsImVsYXBzZWRNcyI6NDAyOC4zOTk5OTk5OTg1MX0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "be7d0958780d1a4666e5-f6cd7e9692d524849084",
+          "file": "notifications.spec.ts",
+          "line": 5,
+          "column": 5
+        },
+        {
+          "title": "distinct errors remain scrollable and keyboard dismissible after routine notices expire",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16159,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:11:12.546Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "be7d0958780d1a4666e5-038b7da671a423f9e723",
+          "file": "notifications.spec.ts",
+          "line": 63,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "pet-history-sync.spec.ts",
+      "file": "pet-history-sync.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-15] deleting the active history clears the open pet chat without restarting",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9699,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:11:28.877Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c42c8e190d1c6b652156-2dd77aed4981e0fad165",
+          "file": "pet-history-sync.spec.ts",
+          "line": 4,
+          "column": 5
+        },
+        {
+          "title": "[FR-02] body taps give tap feedback and the menu explicitly opens and closes chat",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7238,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:11:38.609Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c42c8e190d1c6b652156-c3ac1d3998d5f1e571f7",
+          "file": "pet-history-sync.spec.ts",
+          "line": 27,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "pet-work.spec.ts",
+      "file": "pet-work.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real pet follows current work, keeps a native loop and stops without celebrating stale output",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 20680,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:11:45.957Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5b8ebf9e781f6f5775af-42f37575b360cf875499",
+          "file": "pet-work.spec.ts",
+          "line": 20,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "recording-hidden.spec.ts",
+      "file": "recording-hidden.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-27] native tray and pet hiding end recording tracks without submitting voice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7247,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:06.753Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4af5c46b92090e1a2e74-f4f28f004bd0f619d05d",
+          "file": "recording-hidden.spec.ts",
+          "line": 61,
+          "column": 5
+        },
+        {
+          "title": "[FR-27] a transcription returning through IPC after native hide cannot change the draft",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6254,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:14.030Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4af5c46b92090e1a2e74-a1fba33d65a15272c69d",
+          "file": "recording-hidden.spec.ts",
+          "line": 108,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "task-continuation.spec.ts",
+      "file": "task-continuation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7384,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:20.407Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "57ea5ff5a32cc0f31ff4-d13476a4f03e2b2d55c2",
+          "file": "task-continuation.spec.ts",
+          "line": 8,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "task-directory-checkpoints.spec.ts",
+      "file": "task-directory-checkpoints.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-17] 三步任务逐项批准接受本任务新增文件并完成",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9518,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:27.913Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fa9583ef15bf473fedff-ec2d98d375e1337fc322",
+          "file": "task-directory-checkpoints.spec.ts",
+          "line": 11,
+          "column": 51
+        },
+        {
+          "title": "[FR-17] 三步任务逐项批准拦截外部新增文件",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9771,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:37.460Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fa9583ef15bf473fedff-af06cf725da75503cb45",
+          "file": "task-directory-checkpoints.spec.ts",
+          "line": 11,
+          "column": 51
+        }
+      ]
+    },
+    {
+      "title": "task-directory.spec.ts",
+      "file": "task-directory.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9467,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:47.338Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5c463fa501ed70095c17-e61a672f833bca83d1f2",
+          "file": "task-directory.spec.ts",
+          "line": 18,
+          "column": 5
+        },
+        {
+          "title": "[FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8135,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T18:12:56.828Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5c463fa501ed70095c17-8e7fa5a00174bf9ae24c",
+          "file": "task-directory.spec.ts",
+          "line": 56,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-29T18:01:41.080Z",
+    "duration": 684018.1259999999,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

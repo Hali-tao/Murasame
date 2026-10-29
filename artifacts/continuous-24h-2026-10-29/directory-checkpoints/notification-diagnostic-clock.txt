@@ -1,0 +1,53 @@
+
+Running 1 test using 1 worker
+
+(node:68984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (15.5s)
+
+
+  1) previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.toast')
+    Expected: 0
+    Received: 2
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.toast') with timeout 8000ms
+      - waiting for locator('.toast')
+        11 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+      42 |     await expect(page.locator('.message-row.assistant').last()).toContainText('真实流式回复')
+      43 |     hostEvents.push({ phase: 'before', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+    > 44 |     await expect(page.locator('.toast')).toHaveCount(0, { timeout: 8000 })
+         |                                          ^
+      45 |   } finally {
+      46 |     hostEvents.push({ phase: 'after', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+      47 |     const events = await page.evaluate(() => (window as unknown as { notificationEvents: unknown[] }).notificationEvents)
+        at E:\Desktop\软件工程\murasame\previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:44:42
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-clock\notification-diagnostic-me-4ce21-thout-changing-timer-delays\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-clock\notification-diagnostic-me-4ce21-thout-changing-timer-delays\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-diagnostic-clock\notification-diagnostic-me-4ce21-thout-changing-timer-delays\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-clock\notification-diagnostic-me-4ce21-thout-changing-timer-delays\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-diagnostic-clock\notification-diagnostic-me-4ce21-thout-changing-timer-delays\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays

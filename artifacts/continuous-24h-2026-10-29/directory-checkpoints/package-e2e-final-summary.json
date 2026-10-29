@@ -1,0 +1,32 @@
+{
+  "stats": {
+    "startTime": "2026-10-29T18:01:41.080Z",
+    "duration": 684018.1259999999,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "failures": [
+    {
+      "title": "an already open autonomy page follows externally started real isolated work and stop",
+      "status": "unexpected"
+    },
+    {
+      "title": "office through actual UI, IPC, model transport and Docker",
+      "status": "unexpected"
+    },
+    {
+      "title": "code through actual UI, IPC, model transport and Docker",
+      "status": "unexpected"
+    }
+  ],
+  "expiry": [
+    {
+      "title": "model setup has one complete result and notifications leave the chat composer usable",
+      "initial": 2,
+      "remaining": 0,
+      "elapsedMs": 4028.39999999851
+    }
+  ]
+}

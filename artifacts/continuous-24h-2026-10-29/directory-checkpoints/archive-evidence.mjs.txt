@@ -1,0 +1,36 @@
+import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
+import { join, relative, resolve, extname } from 'node:path'
+import { createHash } from 'node:crypto'
+import assert from 'node:assert/strict'
+const source = resolve('previews/directory-checkpoints-2026-10-30')
+const target = resolve('artifacts/continuous-24h-2026-10-29/directory-checkpoints')
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const walk = dir => readdirSync(dir, { withFileTypes: true }).filter(item => !item.name.startsWith('.playwright-artifacts')).flatMap(item => item.isDirectory() ? walk(join(dir, item.name)) : [join(dir, item.name)])
+assert.match(readFileSync(join(source, 'verify-reconnected.txt'), 'utf8'), /901 passed/)
+assert.equal(readFileSync(join(source, 'verify-exit.txt'), 'utf8').trim(), '0')
+assert.match(readFileSync(join(source, 'package-e2e-recovered.txt'), 'utf8'), /35 passed/)
+assert.equal(readFileSync(join(source, 'package-e2e-recovered-exit.txt'), 'utf8').trim(), '0')
+const finalReport = JSON.parse(readFileSync(join(source, 'package-e2e-recovered.json'), 'utf8'))
+assert.equal(finalReport.stats.expected, 35)
+assert.equal(finalReport.stats.unexpected, 0)
+assert.equal(finalReport.stats.skipped, 0)
+assert.equal(finalReport.stats.flaky, 0)
+const receipt = JSON.parse(readFileSync(join(source, 'package-receipt.json'), 'utf8'))
+for (const entry of receipt.sourceFiles) assert.equal(hash(readFileSync(entry.path)), entry.sha256)
+assert.ok(!existsSync(target), 'Preserve old archive')
+mkdirSync(target, { recursive: true })
+const entries = []
+for (const file of walk(source)) {
+  const path = relative(source, file).replaceAll('\\', '/')
+  const bytes = readFileSync(file)
+  const text = ['.txt', '.md', '.json', '.mjs', '.ps1', '.log', '.ts'].includes(extname(file))
+  const output = text ? Buffer.from(bytes.toString('utf8').replaceAll('\r\n', '\n').split('\n').map(line => line.trimEnd()).join('\n').trimEnd() + '\n') : bytes
+  const destination = ['.mjs', '.ps1', '.log', '.ts'].includes(extname(file)) ? path + '.txt' : path
+  const final = join(target, destination)
+  mkdirSync(resolve(final, '..'), { recursive: true }); writeFileSync(final, output)
+  entries.push({ path: destination, bytes: output.length, sha256: hash(output), ...(text ? { originalSha256: hash(bytes) } : {}) })
+}
+writeFileSync(join(target, '.gitattributes'), '* -text\n')
+writeFileSync(join(target, 'manifest.json'), JSON.stringify({ archivedAt: new Date().toISOString(), baseline: receipt.baseline, sourceFiles: receipt.sourceFiles, files: entries }, null, 2) + '\n')
+for (const entry of entries) assert.equal(hash(readFileSync(join(target, entry.path))), entry.sha256)
+console.log(JSON.stringify({ archivedFiles: entries.length, bytes: entries.reduce((sum, entry) => sum + entry.bytes, 0), mismatches: 0 }))

@@ -1,0 +1,1 @@
+Preserved the two zero-byte socket directories; no persistent Docker data changed.

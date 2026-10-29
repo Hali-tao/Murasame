@@ -1,0 +1,72 @@
+
+Running 2 tests using 1 worker
+
+(node:50324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (4.8s)
+(node:58628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (5.5s)
+
+
+  1) previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+
+    Error: page.evaluate: TypeError: window.murasame.settings.patch is not a function
+        at eval (eval at evaluate (:370:30), <anonymous>:1:32)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:370:30), <anonymous>:1:32)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at E:\Desktop\软件工程\murasame\previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:11:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+
+    Error: page.evaluate: TypeError: window.murasame.settings.patch is not a function
+        at eval (eval at evaluate (:370:30), <anonymous>:1:32)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:370:30), <anonymous>:1:32)
+        at UtilityScript.evaluate (<anonymous>:372:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at E:\Desktop\软件工程\murasame\previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:11:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-no-speech\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays

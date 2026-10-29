@@ -1,0 +1,656 @@
+{
+  "at": "2026-10-29T17:30:26.663Z",
+  "baseline": "5cc5c282ea1b65e9bd63bf75d4b16d45a24a2c34",
+  "output": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-30-directory-checkpoints",
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-30-directory-checkpoints\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292514466,
+    "sha256": "655f6d7140eadf66529649293765fdb9e59e889b79936f51877db047a6b1e939"
+  },
+  "asarSha256": "65410cc74a3b79f264c08f286ce43da0a70d30d5b5146b6c7bd482d9f329dc4a",
+  "code": [
+    {
+      "path": "out/main/index.js",
+      "sha256": "e2251fbaca88d864373645f6d966881468a34af9fe74d48ff3b198f2555f9201"
+    },
+    {
+      "path": "out/main/prober-nqM_y6yB.js",
+      "sha256": "b0d25e6090e602dbe0dc629a9429d80a687e2c3efe168ccf641e9b4d040ae6be"
+    },
+    {
+      "path": "out/preload/index.js",
+      "sha256": "fbb319fbad904a16a280e2cf9c795350d3801d40c0a2be9bf861e84782161d93"
+    },
+    {
+      "path": "out/renderer/assets/index-DAM2MErD.js",
+      "sha256": "80fd34b95943e0ee7d2248b2f2bdf476f1fb9ce153450b3f2255f352044be42b"
+    },
+    {
+      "path": "out/renderer/assets/pet-ClfKkupM.js",
+      "sha256": "1f0376f7112dfe75644fff6bce8de7ea803f17dc311002f5a20ade48f9f6eb76"
+    },
+    {
+      "path": "out/renderer/assets/styles-CkUcUXYR.js",
+      "sha256": "f35509bde0919703e7b4fb7ecdd00877b482708ab26c0653d23c1f03b7d5d5bf"
+    },
+    {
+      "path": "out/renderer/assets/styles-D0qCMss5.css",
+      "sha256": "5dc9d6e1a09e177a5c2fe630d701dfc4ecc4e9dd4c6b88ec3f193ab748133e43"
+    },
+    {
+      "path": "out/renderer/index.html",
+      "sha256": "988040154d62b8b5848f727a23a5b71bec3887159fe6f4b48ecdcd9f5af326b2"
+    },
+    {
+      "path": "out/renderer/live2d/core/live2dcubismcore.min.js",
+      "sha256": "25ae938cb4fe282ce189b357bcc97e603d1e1f7ec78bf04150d401c23cdc792f"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/dan.exp3.json",
+      "sha256": "b5fdb286a757d1480913b24702c1d8ba54c7a4b5e0f42f1a31a1151c42bbbdc7"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/hahaha.motion3.json",
+      "sha256": "5ecedfa50c9c5fbe62366b73eddbd294675061e6f186d8d400953f27350a21ba"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/agree-nod.motion3.json",
+      "sha256": "ca54a460fd50dc5e2b11dbf204460ec38a9ce5b9319f42130e40d1242418627d"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/comfort-soften.motion3.json",
+      "sha256": "6d5a50fac61e47eaa8a3320cce7ec976da4d5d243527bb013a58a94104ecce28"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/confused-check.motion3.json",
+      "sha256": "a41b8739e2f222dacd375f481f35c977ed84d8c172b5a844f73613d798b884a6"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/drag-left-settle.motion3.json",
+      "sha256": "a1a6374fb86559a5ccab7acda2e037294737955b89b59d6558d64418c4a6b033"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/drag-right-settle.motion3.json",
+      "sha256": "10a9cb98c0c90024973816d9bd64cb230dd7acd16d05a3400e04c3ac3bcde1f6"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/greet-welcome.motion3.json",
+      "sha256": "6064f632fe4825be1ed080242ad64982eb2d08df39fc3b7441801506f690e59b"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/idle-breathe.motion3.json",
+      "sha256": "c189b2634164aa82376b6422eb39a6e879ea2357f959f6fe8506349d36d8e33d"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/README.md",
+      "sha256": "3b5449971ad0ccdb0595fa66498dc72e905b0f5d5fa82b84e6a65e5c875d8e0f"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/think-consider.motion3.json",
+      "sha256": "1e2ad9ff4949be954b6e2a2de1cd2a5b37505c443bf8e388b453b3ac7b770185"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/working-attentive.motion3.json",
+      "sha256": "c3f208ee037a2fe390a0b81ffaaab2eae045b4b680d60a66ca5adebdb39dbbc2"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/motions/working-continuous.motion3.json",
+      "sha256": "bdf2072fa2963704790e2c1846297eb93567220a0d67d78e3ff0fed88aca72b7"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/pengfu.exp3.json",
+      "sha256": "76a367f60d512b59d51e6faa05e1580a936ddf1c5547977375a2f3407efb8fad"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/shuiyin.exp3.json",
+      "sha256": "f15642fa078f2c88abeb3f2ece86761ac822ce7f243486ba492ce9482fe043f5"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/sikao.exp3.json",
+      "sha256": "76f81489c5758c63ca3cd85bf03ce74bf56cf0a0ffbd3c3258fd261c5e877092"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/奶蛙.2048/texture_00.png",
+      "sha256": "cc835607e5da874801a1266a8560a05e24627864e4c42bb8d5647a6e10e7bc3b"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/奶蛙.cdi3.json",
+      "sha256": "c51f97ab8ac5d31efd35b53e9c1807e0a8ec82abcb2286f75ec2c56f714ccbb4"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/奶蛙.moc3",
+      "sha256": "7f999ccbc7abddc253f682a501ad72cc86763692b73a46c12dc545880dd7bdf7"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/奶蛙.model3.json",
+      "sha256": "610272d729a994d07ac3b356f1e80b54dfd5023b59c09dfa1062b4bdbb8b4b9b"
+    },
+    {
+      "path": "out/renderer/live2d/naiwa/奶蛙.physics3.json",
+      "sha256": "37cdb8a450999dac9e407f79b105fa1c1ead8fccb32c43b9f8f74ec7450dfb97"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/LICENSE-Live2D-Sample.txt",
+      "sha256": "d91c9118e0cec632f40581905b6ed9b3677623a91c148c5d1ad2d215cc74b6cc"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/00_idle.motion3.json",
+      "sha256": "02b36a394353859a41156ae8175945ffa50b43b9dda19523bc743460650ffde6"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/01.motion3.json",
+      "sha256": "0ab827e837693b0c1c7304e37ef1e186d4d06105bc70776588a610fbb7794995"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/02.motion3.json",
+      "sha256": "383ce51eec938380da6c69d01fb7ecd5eb929cfbd4f6b3641e3603c0076ce887"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/03.motion3.json",
+      "sha256": "86d0640652c9bea4b2952c0e93012da160f3c68b278e485b204841c0e4134f3d"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/04.motion3.json",
+      "sha256": "0c6889e8f85d6436389961c0cb3806933306248fa29d8db3d31a112d299e76b8"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/05.motion3.json",
+      "sha256": "e82328ca4d12479abe64ddb16d7959ca583769c56cfdc9f6f956e560eb90475d"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/06.motion3.json",
+      "sha256": "87a80cd7441834e7bacb4f7c3bf90cbbefd69e4eba62974c4f75b1fb52de583c"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/07.motion3.json",
+      "sha256": "809735f93bf265202901cdd4c9f9eed19e9a5c3a14595fa2190b3502ecf69de9"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/motion/08.motion3.json",
+      "sha256": "e676b4262cb971f5c2b614f61fc209c7dbd41d159d836e2afbde64e94fa97ba2"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/tororo.2048/texture_00.png",
+      "sha256": "5757babf94c478b0c8dd33b3cd2765cd04c22ba4a21a1cd1ecff57620b5feb66"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/tororo.cdi3.json",
+      "sha256": "d30749ba4d520a5e139239ffe2c7f1db892b5201835ac97c983466a00ae232fb"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/tororo.moc3",
+      "sha256": "2b028f9769db5d5d1abad0034ecefb1aa8cc0bb16ae699d92392fedacc476af4"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/tororo.model3.json",
+      "sha256": "93037935b550f66446b11e904c262fc081e6d551281fac2fe5cdcb8db976d747"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/tororo.physics3.json",
+      "sha256": "2cb1b16872eb310d5bb0a92e3cdc52b8735b9794c4205b00510d89d6c637f5b3"
+    },
+    {
+      "path": "out/renderer/live2d/tororo/tororo.pose3.json",
+      "sha256": "e016dc5f12e24d68b00afa679cad00fb11e8c433efa356ce317f71df57c65279"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/AUTHORS.md",
+      "sha256": "7d56e068c647ccfe02e586e9dab929eb9ee6756f8a6c9cd5ceaee7e538a98512"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/c_0120.2048/texture_00.png",
+      "sha256": "d74a8b7ed11f17f086afd22935d27d869b7d6fc19e94486b21445de19483fc0a"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/c_0120.2048/texture_01.png",
+      "sha256": "39a6da7736cbae495494be1dde515874a2e4fe72c21f399c47da33924b3d43b9"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/c_0120.cdi3.json",
+      "sha256": "a04133a70c8676a9e8e6e3773d1bd047333791b1d3b84896e73dc57eb489f1c5"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/c_0120.moc3",
+      "sha256": "37d62cc7ebe2fe93350c934a2c023aac44e306833f63d83a130c005e2945ce1c"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/c_0120.model3.json",
+      "sha256": "5f2a1d944353dfb73c50a83e2003f5c17d4850185c16cdaf3cd1db48202842e2"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/c_0120.physics3.json",
+      "sha256": "36b71d419c8692e8831641d16e7c16699792531309658b4d71a3f49fc6a00a9c"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/love.exp3.json",
+      "sha256": "caa9a2474cf99ea9419d846978e52fff1173c05b36adc555ca3879be06b53694"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/兔兔贴纸.exp3.json",
+      "sha256": "da65f75a8a64b99af29d81bba1d31806b10ccdeb87e746de1b7ead37eb3e2105"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/单边马尾.exp3.json",
+      "sha256": "bfcf09bb982092d16191887f7f165c14b467c84dff7eed75fea35c6e5fbe1603"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/双手比耶.exp3.json",
+      "sha256": "f85650e953d2f8acc9be501270ce7bc512f4d98dfca877b933c4cff009067070"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/吐舌.exp3.json",
+      "sha256": "2edce2e6973ece82a77e114f60d57d283d30527f9b68a7f082134c0a6bc2b1a0"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/吐魂.exp3.json",
+      "sha256": "3968bdbc5ef6701cfc13235fa877e0a4cd378f0f7a7e1e3c271abb19831b0e70"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/呆呆眼.exp3.json",
+      "sha256": "fda8633386aa2592baefdc00ff45ddffc84ea4a64e536cea78c4e47916b3f253"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/哭.exp3.json",
+      "sha256": "edf4ff77c26e0cf5d8112bf0d5021738b44d829419314a1a2a97827713120013"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/喵喵手~喵~动画.exp3.json",
+      "sha256": "e0feb354e9fda5df1a4ea973ecbfc8c50569b780011bd442a599a0934dc1c30b"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/圆眼镜.exp3.json",
+      "sha256": "2efbb7759f14448a76eaf383469960fb76fe47b37014d18ac847eebda083e6f9"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/墨镜.exp3.json",
+      "sha256": "bb6d0e30aeaec829b32fcc41bd9960e6582d5f9029a3a2bda0908bcd72c07623"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/头箍.exp3.json",
+      "sha256": "cd51d9a1771de3b32f6174f691a691204ae16d7b26b93b45c94040e83889447a"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/巴菲.exp3.json",
+      "sha256": "c392fb0481aaa8262494e19c0c372b25800ee2aad653593e66e1db0ee132c51c"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/开心兴奋.exp3.json",
+      "sha256": "25fb0e4d803187eeef9566512c6f96a99e386a5ce1ac1b0ee6bf6773b178d269"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/心跳.exp3.json",
+      "sha256": "21e51341dd14899f67585774b91f59e1928930f29c2f6a95892dd655fced9512"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/悲伤.exp3.json",
+      "sha256": "c4214cb079d1e6b392e1f48327b51e902a64bef3eb6d807b80ad4e8bef4d641e"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/情绪花花.exp3.json",
+      "sha256": "ffda77f41d5a0c9df8c53d10ba459022893d2fb237dacb7f5eb41e07cd3e9ed3"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/感叹号.exp3.json",
+      "sha256": "0bcfa612595200dcd8ab7894ea31b656adbb48bc54527e34e21703eac3548504"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/手机换色.exp3.json",
+      "sha256": "ffe6d4381d62a6350f0df0227e27be7d8bbd1abcf57da2362db24ee548f20454"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/挤.exp3.json",
+      "sha256": "25aec63e078ddea99be7fe0b4b73df464170a3a5a61e71dd719f2e9ed02adbe1"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/撤回.exp3.json",
+      "sha256": "2ac796fc510041d7a05867758e7c1a6107500f6f5b6cfd4cd13ea1b04f392ad0"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/方眼镜.exp3.json",
+      "sha256": "111fdc92c2bf916dd982ee2d16d9b005f1acfbf063aa39e28c5ba365701ad493"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/星星眼.exp3.json",
+      "sha256": "d4767e003c156c6d7549354dc8caf3ed29925e516b360ab7b9d07da5381ec7f4"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/晕晕.exp3.json",
+      "sha256": "bc0b82f39cb90864e9cdcb8ac33391fe679c097bb049adad42766877da9c1045"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/椭圆眼镜.exp3.json",
+      "sha256": "ffe2b516b9d844d40655ae102dff22829e99af4347cb7e48a1b242f9cb18143d"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/橡皮.exp3.json",
+      "sha256": "a044bf8cb109c866888fe83fa351a9100ab7d85d9eccf3378a7db654197c5e0e"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/流汗.exp3.json",
+      "sha256": "517e5a0b1cd887c869eda083020526c4c240ff6913f49f9021eeac05655f4961"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/深色桌布.exp3.json",
+      "sha256": "1255f9837c220d70036c189d272daff5dfb164a40e0241188ba7ca356c1acffb"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/点菜按下.exp3.json",
+      "sha256": "c4c97a0f12d2d41e186586c1655933d06fdfb7e9b77ea154abd9ac472365eab0"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/爱心眼.exp3.json",
+      "sha256": "5be7abfa7be644592c4dd6c5a8ebaea0462f9ceb96177764d871a47273bea7af"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/猫猫贴纸.exp3.json",
+      "sha256": "0f51de511dff88afb09c7b2e80ad262dedc44014578ce9f4a9a4118f6ec08cc1"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/生气.exp3.json",
+      "sha256": "ec41aada5b001e9de5cb41cbfd108c7dbed3962fc287e90d6a6ce219d49388ec"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/画笔.exp3.json",
+      "sha256": "24b77f1d343332ec1958d2c33fe0c1e04829e7bc5b1ff925c99d6fbc3155ea14"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/脸红.exp3.json",
+      "sha256": "f9c4b846582dfaa5b2ea6f9b502379bbc2594f8d5de0ddf377ef37ecf2fae429"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/蛋包饭.exp3.json",
+      "sha256": "342385b553d35e172f535167b505be28afa868a1ea41f263d5058341fd55a75e"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/蝴蝶结贴纸.exp3.json",
+      "sha256": "0d6f795fe4ef71af10796cb037515a06fd1df7730415df29fbc9b6156ff1fc6f"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/调皮.exp3.json",
+      "sha256": "390e63e1f7ecdbb04d8a10611f06bc14829b98b34fefe35ed543fc69fb35b737"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/闭眼口水.exp3.json",
+      "sha256": "1f493067c7951029c7f2abd77c8888831837d4c55828966e8f386f76804799da"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/问号.exp3.json",
+      "sha256": "eb50ace022b7544ae09bfef7a0eb7ccc9f58371ddc665ea4319d7b0a438a9c56"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/阴暗.exp3.json",
+      "sha256": "8f71ff1b91c03ec2b7dc3773494d94f30c599ee62767fb4e53c98a49cae617cb"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/魔爪.exp3.json",
+      "sha256": "39eed17880a986d38f6ba13f44f721705ccf8ad914aa45a0000a832a19974633"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/魔爪换色.exp3.json",
+      "sha256": "056acaef502cc6e20f6dccbc869ce481eac2f7f50337b8d252120d380aa5dbc2"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/鲸鱼.exp3.json",
+      "sha256": "3627cf66669ebd75ded276188593f5e645cb4e49216f5f4aaeb5912effa29202"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/expressions/鲸鱼放桌上.exp3.json",
+      "sha256": "4c41dd719d607e564dcc0e0fff7416f597fa5ef9fdd13b3543907b140164e2b8"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/icon.png",
+      "sha256": "764fb55b5661eaa06733f47f53fb842b00a349edaac7513c4ad4761248f927cb"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/manifest.json",
+      "sha256": "05d4f0498a676091c374a46e0f01c5e221750deb0c6d1feae5f69cc0e5c216d8"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/chuipaopao.motion3.json",
+      "sha256": "c9672aab4e398f7ca096b47511a6b9ad5af65fd3fb62d7388cc6ae5bd67fb820"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/idle.motion3.json",
+      "sha256": "00364b3e9f4502b04a2794b5d2bd455cc50ac0d6876dc3886d04194e37033a38"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/_aidale.motion3.json",
+      "sha256": "73800fe5d76a6378aec56e249bb5ef57a538e763da1566ae5ababe3e6e8db998"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/喷水.motion3.json",
+      "sha256": "98e36262742639074b73faeffcd4da95c5eca4901fd483f93c7a448b1a1f0ee6"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/开盖.motion3.json",
+      "sha256": "ef5b088705eb20d7f5a55c3ebed52bd2d7ed64e9faf8cf502e7d4f8e20c57512"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/番茄酱.motion3.json",
+      "sha256": "a63332b5a9ad5ad9a9980d9ed32c6c09cabb9cf87a35bc2b3dfceaf3419e342d"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/自拍.motion3.json",
+      "sha256": "5848a992e0ebc4f3447166eb7e38ac678f32d17198b16c0d56048f13b8c2e110"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/motions/自拍简单.motion3.json",
+      "sha256": "9a93e9ac0aa77c45c2c9dbf33558bc265d3a58c9a73033446483861ec768fcd6"
+    },
+    {
+      "path": "out/renderer/live2d/whale-girl/NOTICE.md",
+      "sha256": "4061aba792ca744ac6ec148d03116a5d601d6c7268bf1f1c6c5f0c00ae60980e"
+    },
+    {
+      "path": "out/renderer/pet.html",
+      "sha256": "d991dd8ff8eddf8cad5a6611528d1c358901178448f23384b7d765d712ce9d7d"
+    }
+  ],
+  "changedProgramFiles": [
+    "out/main/index.js"
+  ],
+  "models": [
+    {
+      "path": "bge-small-zh-v1.5/config.json",
+      "sha256": "d4193ead3a810fd694fa8a31d7fc72fbaebc0668b603e398734bf2f6538ff42f"
+    },
+    {
+      "path": "bge-small-zh-v1.5/onnx/model_quantized.onnx",
+      "sha256": "15b717c382bcb518ba457b93ea6850ede7f4f1cd8937454aa06972366cd19bcc"
+    },
+    {
+      "path": "bge-small-zh-v1.5/tokenizer.json",
+      "sha256": "48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26"
+    },
+    {
+      "path": "bge-small-zh-v1.5/tokenizer_config.json",
+      "sha256": "e6f3b96db926a37d4039995fbf5ad17de158dfb8f6343d607e4dbaad18d75f5a"
+    },
+    {
+      "path": "kokoro/config.json",
+      "sha256": "df34b4f930b23447cd4dc410fabfb42eb3f24e803e6c3f97d618fb359380a36f"
+    },
+    {
+      "path": "kokoro/onnx/model_quantized.onnx",
+      "sha256": "fbae9257e1e05ffc727e951ef9b9c98418e6d79f1c9b6b13bd59f5c9028a1478"
+    },
+    {
+      "path": "kokoro/tokenizer.json",
+      "sha256": "77a02c8e164413299b4b4c403b14f8e0e1c1b727db4d46a09d6327b861060a34"
+    },
+    {
+      "path": "kokoro/tokenizer_config.json",
+      "sha256": "be1cb066d6ef6b074b3f15e6a6dd21ac88ff3cdaedf325f0aaed686c70f75d20"
+    },
+    {
+      "path": "kokoro/voices/af_heart.bin",
+      "sha256": "d583ccff3cdca2f7fae535cb998ac07e9fcb90f09737b9a41fa2734ec44a8f0b"
+    },
+    {
+      "path": "kokoro/voices/zf_xiaoxiao.bin",
+      "sha256": "03adb5d5e3ddd88b047954e974e651cb0a4b524c985057e5d872e962c7be1169"
+    },
+    {
+      "path": "kokoro/voices/zm_yunxi.bin",
+      "sha256": "7243892fb4e560d47014090ddf010f8b8b790f3c6b029ff82b2ac06aa4e27c8b"
+    },
+    {
+      "path": "whisper/config.json",
+      "sha256": "f4d0608f7d918166da7edb3e188de5ef1bfe70d9802e785d271fd88111e9cf4b"
+    },
+    {
+      "path": "whisper/generation_config.json",
+      "sha256": "61070cf8de25b1e9256e8e102ded49d8d24a8369ed36ef84fdf21549e68125a0"
+    },
+    {
+      "path": "whisper/onnx/decoder_model_merged_quantized.onnx",
+      "sha256": "fa3ef9902734ce5ae6f9ef2bdb2ba9a6c4b5785b09f4f420ce036573dc9d090b"
+    },
+    {
+      "path": "whisper/onnx/encoder_model_quantized.onnx",
+      "sha256": "5862993336bf33acd23736071aae2b32261d3b1b2f37780194460d4ef974dd46"
+    },
+    {
+      "path": "whisper/preprocessor_config.json",
+      "sha256": "a6a76d28c93edb273669eb9e0b0636a2bddbb1272c3261e47b7ca6dfdbac1b8d"
+    },
+    {
+      "path": "whisper/tokenizer.json",
+      "sha256": "27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566"
+    },
+    {
+      "path": "whisper/tokenizer_config.json",
+      "sha256": "2e036e4dbacfdeb7242c7d4ec4149f4a16e86026048f94d1637e3a8ee9c6a573"
+    }
+  ],
+  "isolation": [
+    {
+      "path": "creation-runner.py",
+      "sha256": "0b7dfeadf268119c470eebadea74bf346bc92078e46299824a583a922d1db9ce"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "42cef916c5a2ed85386e06a01b0e69e0b9b741181613dee9bf6e9c3a511bdebb"
+    },
+    {
+      "path": "editor-settings.json",
+      "sha256": "4c1a536a990392da0556a4ad8047f428c0a48da6d189e25ccc01b19d9916694a"
+    },
+    {
+      "path": "firefox-policies.json",
+      "sha256": "46f333b00444de8bbf218837555ccbaa124c8903ceaca58ab4a3f825bb75f236"
+    },
+    {
+      "path": "office-registry.xcu",
+      "sha256": "496639ded919a9a88faa0634289cbb614448fdd9bb6693215fb5fca29335ee0b"
+    },
+    {
+      "path": "supervisord.conf",
+      "sha256": "3b1c9fcfaa15459581f2749f5dc1a42287716a597926ab759b730ad5cd6818f2"
+    }
+  ],
+  "previousInstallers": [
+    {
+      "path": "release/continuous-2026-10-29-model-status-sync/Murasame-Setup-0.9.0.exe",
+      "sha256": "07c99b31d53e15f936b36d77547149f0951e778011ce63598f5de7f12a3c35b7",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-memory-clear-ui-final/Murasame-Setup-0.9.0.exe",
+      "sha256": "3af372833652bd76ddeefcb8bc2d93eba83af450410fd086c51de506b43b7eac",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-memory-source/Murasame-Setup-0.9.0.exe",
+      "sha256": "b68e342f0861f541164d7f50d1788f8a5e8bf9c833b292abf57f3d9d828d320b",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-model-lifecycle/Murasame-Setup-0.9.0.exe",
+      "sha256": "3d03081adfdda0b0930380da869ae372e10eb25a2b41e00015ac4c59b18bef69",
+      "unchanged": true
+    },
+    {
+      "path": "release/overnight-2026-10-29-sixth-delivery/Murasame-Setup-0.9.0.exe",
+      "sha256": "4cf9487c442b62ca24c562610e15387d37b843cf0a93caa1dd0214effb8fd6bd",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-autonomy-sync/Murasame-Setup-0.9.0.exe",
+      "sha256": "7b5d5c4fd3704140a7c6a5f0f005bf747eac60e5901b9b3dd3861ebdf2f2337c",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-model-status-sync-final\\Murasame-Setup-0.9.0.exe",
+      "sha256": "0e4fb2f3a68e84c40aceaa3871087bb5280f19851e55c25e1d9b6660acf9847c",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-coworker-issues/Murasame-Setup-0.9.0.exe",
+      "sha256": "c1cf2b17b1cbaeb11c4f2b54996d110e567f6179c39e71f0d744f65dece859bc",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-coworker-issues-final\\Murasame-Setup-0.9.0.exe",
+      "sha256": "5580e6c9f7901abb299264adb63c20fdc8c2efa19ceea8885ab3897fcd7b4354",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-uninstall-policy\\Murasame-Setup-0.9.0.exe",
+      "sha256": "4e7a96773208f1fb831a5c7c54d5efaef0187ae30db228203e00ccff83541292",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-degraded-context\\Murasame-Setup-0.9.0.exe",
+      "sha256": "fc6fbbb6e976276f365fcab19f71f896180a8d578c9aa9b9160c0f78e4b62828",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-recall-ui\\Murasame-Setup-0.9.0.exe",
+      "sha256": "c71291faf9813cb5beb5eeb314ed52cbdcd1b25483354d249330c250cb8c6d5c",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-recall-ui-final\\Murasame-Setup-0.9.0.exe",
+      "sha256": "5cf14a6331c409f61e29fc1355a21db32f059d8124419da2909bd784b246e8be",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-recall-status\\Murasame-Setup-0.9.0.exe",
+      "sha256": "7b3f23621cf3d76a5a80c2ee9ae4fe4967ba00c46196eb3d4accd284419b0d68",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-recall-status-verified\\Murasame-Setup-0.9.0.exe",
+      "sha256": "4eb667971f5f19e6eaf51dc958d1880dfc82bfd67df6dbec87daac15016d07b5",
+      "unchanged": true
+    },
+    {
+      "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-30-task-continuation\\Murasame-Setup-0.9.0.exe",
+      "sha256": "84034a0d54b7d4b5930013beb610a6318146276929214f720eab4545d0d95bef",
+      "unchanged": true
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "src/main/agent/executor.ts",
+      "sha256": "888797906a71c0eff6e9579ce1c95a85c6519a27b3b537c3d4bf6b8c23936177",
+      "textLfSha256": "7235e6dc1dcd1ae220536dc70dfc1f11278510a8ac544615d8f5caedf802ef62"
+    },
+    {
+      "path": "src/main/task/directory-observation.ts",
+      "sha256": "1faeae4e121be064dd3692e09bda4400ddc35a00067958be7dbf8135eb090264",
+      "textLfSha256": "1faeae4e121be064dd3692e09bda4400ddc35a00067958be7dbf8135eb090264"
+    },
+    {
+      "path": "tests/unit/task-directory-checkpoints.test.ts",
+      "sha256": "41ba072e2a2067e9ff5fbc82c90b1475dd926539a8122c36e3b504f58d6657d4",
+      "textLfSha256": "41ba072e2a2067e9ff5fbc82c90b1475dd926539a8122c36e3b504f58d6657d4"
+    },
+    {
+      "path": "tests/e2e/task-directory-checkpoints.spec.ts",
+      "sha256": "1d13ced478fe10ce8e1d9e147af141e81056dac8ae9cc734a01bab58592cdaf0",
+      "textLfSha256": "1d13ced478fe10ce8e1d9e147af141e81056dac8ae9cc734a01bab58592cdaf0"
+    }
+  ]
+}

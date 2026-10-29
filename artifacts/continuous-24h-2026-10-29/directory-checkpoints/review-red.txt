@@ -1,0 +1,52 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:50460) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/task-directory-checkpoints.test.ts (24 tests | 2 failed | 21 skipped) 280ms
+   ❯ resuming directory observations after verified task additions (24)
+     × does not adopt an old output after its intermediate source-path changes 115ms
+     × does not use a compatible path through the graph to hide a changed sibling prerequisite 85ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > does not adopt an old output after its intermediate source-path changes
+AssertionError: expected '等待批准' to be '失败' // Object.is equality
+
+Expected: "失败"
+Received: "等待批准"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:134:27
+    132|     else f.plan.steps[1].dependsOn = []
+    133|     const result = await f.run()
+    134|     expect(result.status).toBe('失败')
+       |                           ^
+    135|     expect(result.calls.filter(call => call.agentRole === 'Worker')).t…
+    136|     expect(existsSync(f.b)).toBe(false); expect(readFileSync(f.a, 'utf…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > does not use a compatible path through the graph to hide a changed sibling prerequisite
+AssertionError: expected '等待批准' to be '失败' // Object.is equality
+
+Expected: "失败"
+Received: "等待批准"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:146:27
+    144|     f.plan.steps[1].args!.path = 'new.txt'
+    145|     const result = await f.run()
+    146|     expect(result.status).toBe('失败')
+       |                           ^
+    147|     expect(result.calls.filter(call => call.agentRole === 'Worker')).t…
+    148|     expect(existsSync(f.b)).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed | 21 skipped (24)
+   Start at  01:20:04
+   Duration  816ms (tests 62%, import 23%, transform 14%, worker 1%)

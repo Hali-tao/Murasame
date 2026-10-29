@@ -1,0 +1,214 @@
+{
+  "hostEvents": [
+    {
+      "phase": "before",
+      "host": {
+        "wall": 1793295794223,
+        "perf": 4468.3277
+      },
+      "page": {
+        "wall": 1793295794224,
+        "perf": 2937.10000000149,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793295794229,
+        "perf": 4474.7455
+      },
+      "page": {
+        "wall": 1793295794228,
+        "perf": 2941.10000000149,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793295794341,
+        "perf": 4586.7882
+      },
+      "page": {
+        "wall": 1793295794340,
+        "perf": 3053,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793295794605,
+        "perf": 4850.16
+      },
+      "page": {
+        "wall": 1793295794603,
+        "perf": 3315.900000002235,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793295795119,
+        "perf": 5364.1767
+      },
+      "page": {
+        "wall": 1793295795117,
+        "perf": 3829.699999999255,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793295796126,
+        "perf": 6371.7949
+      },
+      "page": {
+        "wall": 1793295796124,
+        "perf": 4837,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793295802694,
+        "perf": 12939.379
+      },
+      "page": {
+        "wall": 1793295797541,
+        "perf": 6253.199999999255,
+        "count": 2
+      }
+    },
+    {
+      "phase": "after",
+      "host": {
+        "wall": 1793295802231,
+        "perf": 12476.3417
+      },
+      "page": {
+        "wall": 1793295802693,
+        "perf": 11405.5,
+        "count": 0
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4108:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async addModel (murasame://app/assets/index-DAM2MErD.js:13692:8)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+      },
+      "time": 686.9000000022352,
+      "wall": 1793295791974,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "已添加新的模型配置",
+      "time": 687.1999999992549,
+      "wall": 1793295791975,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4086:38\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async verifyAndUse (murasame://app/assets/index-DAM2MErD.js:13721:18)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+      },
+      "time": 1377.699999999255,
+      "wall": 1793295792665,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "独立计时诊断 连接验证成功 · 13 ms",
+      "time": 1377.800000000745,
+      "wall": 1793295792665,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4162:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async verifyAndUse (murasame://app/assets/index-DAM2MErD.js:13734:8)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+      },
+      "time": 1387.199999999255,
+      "wall": 1793295792675,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "独立计时诊断 已验证并设为当前服务 · 13 ms",
+      "time": 1387.4000000022352,
+      "wall": 1793295792675,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:3968:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async submit (murasame://app/assets/index-DAM2MErD.js:11161:76)"
+      },
+      "time": 2234.199999999255,
+      "wall": 1793295793522,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "独立计时诊断 已验证并设为当前服务 · 13 ms|已添加记忆条目",
+      "time": 2236.800000000745,
+      "wall": 1793295793524,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "fired",
+      "detail": {
+        "elapsed": 5009.699999999255
+      },
+      "time": 6396.800000000745,
+      "wall": 1793295797684,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "已添加记忆条目",
+      "time": 6397.5,
+      "wall": 1793295797685,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "fired",
+      "detail": {
+        "elapsed": 5002.5
+      },
+      "time": 7236.60000000149,
+      "wall": 1793295798524,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "",
+      "time": 7237.10000000149,
+      "wall": 1793295798524,
+      "visible": "visible",
+      "focus": true
+    }
+  ]
+}

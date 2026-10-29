@@ -1,0 +1,42 @@
+import { createHash } from 'node:crypto'
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
+import assert from 'node:assert/strict'
+import { extractFile, listPackage } from '@electron/asar'
+const base = 'previews/directory-checkpoints-2026-10-30'
+const output = resolve('release/continuous-2026-10-30-directory-checkpoints')
+const previous = JSON.parse(readFileSync('previews/task-continuation-2026-10-30/package-receipt.json', 'utf8'))
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const archive = join(output, 'win-unpacked/resources/app.asar')
+assert.ok(!listPackage(archive).some(path => path.replaceAll('\\', '/').includes('/out/electron-tests/')))
+const walk = dir => readdirSync(dir, { withFileTypes: true }).flatMap(item => item.isDirectory() ? walk(join(dir, item.name)) : [join(dir, item.name)])
+const code = ['main', 'preload', 'renderer'].flatMap(folder => walk(join('out', folder))).map(file => {
+  const sha256 = hash(extractFile(archive, file)); assert.equal(sha256, hash(readFileSync(file)), file)
+  return { path: file.replaceAll('\\', '/'), sha256 }
+})
+assert.equal(code.length, previous.code.length)
+const changedProgramFiles = code.filter(file => previous.code.find(item => item.path === file.path)?.sha256 !== file.sha256).map(file => file.path)
+assert.deepEqual(changedProgramFiles, ['out/main/index.js'])
+const compare = (source, destination, expected) => {
+  const files = walk(source).filter(file => !relative(source, file).startsWith('.')).map(file => {
+    const path = relative(source, file).replaceAll('\\', '/')
+    const sha256 = hash(readFileSync(join(destination, path)))
+    assert.equal(sha256, hash(readFileSync(file)), path); assert.equal(sha256, expected.find(item => item.path === path)?.sha256, path)
+    return { path, sha256 }
+  })
+  assert.equal(files.length, expected.length); return files
+}
+const resources = join(output, 'win-unpacked/resources')
+const models = compare('build/bundled-models', join(resources, 'models'), previous.models)
+const isolation = compare('isolation', join(resources, 'isolation'), previous.isolation)
+const previousInstallers = [...previous.previousInstallers, previous.installer].map(({ path, sha256 }) => {
+  assert.equal(hash(readFileSync(path)), sha256, path); return { path, sha256, unchanged: true }
+})
+const installerPath = join(output, 'Murasame-Setup-0.9.0.exe')
+const sources = ['src/main/agent/executor.ts', 'src/main/task/directory-observation.ts', 'tests/unit/task-directory-checkpoints.test.ts', 'tests/e2e/task-directory-checkpoints.spec.ts', 'tests/e2e/notifications.spec.ts']
+const receipt = { at: new Date().toISOString(), baseline: '5cc5c282ea1b65e9bd63bf75d4b16d45a24a2c34', output,
+  installer: { path: installerPath, bytes: statSync(installerPath).size, sha256: hash(readFileSync(installerPath)) },
+  asarSha256: hash(readFileSync(archive)), code, changedProgramFiles, models, isolation, previousInstallers,
+  sourceFiles: sources.map(path => ({ path, sha256: hash(readFileSync(path)), textLfSha256: hash(readFileSync(path, 'utf8').replaceAll('\r\n', '\n')) })) }
+writeFileSync(join(base, 'package-receipt.json'), JSON.stringify(receipt, null, 2) + '\n')
+console.log(JSON.stringify({ installer: receipt.installer, applicationFiles: code.length, changedProgramFiles, models: models.length, isolation: isolation.length, previousInstallers: previousInstallers.length }, null, 2))

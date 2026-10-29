@@ -1,0 +1,2 @@
+[feat/overnight-2026-10-29 d60ebbb] Require compatible prerequisite receipts before restoring additions
+ 4 files changed, 49 insertions(+), 3 deletions(-)

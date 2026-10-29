@@ -1,0 +1,11 @@
+
+Running 2 tests using 1 worker
+
+(node:65988) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (12.0s)
+(node:61060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (12.7s)
+
+  2 passed (26.1s)

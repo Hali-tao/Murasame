@@ -1,0 +1,425 @@
+# Review package: 5cc5c282ea1b65e9bd63bf75d4b16d45a24a2c34..HEAD
+
+## Commits
+66225ba Restore directory checkpoints after verified task file additions
+
+## Files changed
+ .../plans/2026-10-30-directory-checkpoint.md       |  35 +++++
+ .../2026-10-30-directory-checkpoint-design.md      |  11 ++
+ src/main/agent/executor.ts                         |  31 ++++-
+ src/main/task/directory-observation.ts             |  28 ++++
+ tests/e2e/task-directory-checkpoints.spec.ts       |  50 +++++++
+ tests/unit/task-directory-checkpoints.test.ts      | 143 +++++++++++++++++++++
+ 6 files changed, 292 insertions(+), 6 deletions(-)
+
+## Diff
+diff --git a/docs/superpowers/plans/2026-10-30-directory-checkpoint.md b/docs/superpowers/plans/2026-10-30-directory-checkpoint.md
+new file mode 100644
+index 0000000..b9820cf
+--- /dev/null
++++ b/docs/superpowers/plans/2026-10-30-directory-checkpoint.md
+@@ -0,0 +1,35 @@
++# Directory Checkpoint Implementation Plan
++
++> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
++
++**Goal:** 本任务已核验的文件新增不再使目录观察检查点误判失败。
++**Architecture:** 保留原检查点，按兼容的依赖后续步骤计算恢复时预期目录成员；新增文件核对实际哈希，其他步骤和条件仍独立复核，记录恢复证据。
++**Tech Stack:** TypeScript、Node文件系统、SQLite、Vitest、Playwright、Electron；不增加依赖。
++**Spec:** docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
++
++## Global Constraints
++
++原需求不改；角色暂停；仅合成资料；原审批/文件保护/未知副作用停止规则保持；验证与打包串行；保留失败与旧包；只普通推送已检查代码；不评论/关闭issue。
++
++## Review Focus
++
++- 依赖关系及计划/步骤哈希失配不得把旧产物认作新任务的合法新增。
++- 外部新增/删除、已完成产物改写、读取来源变化仍阻止继续。
++- 嵌套路径、step.workspace和检查点乱序仍正确限定真实目录。
++- 未知/失败/未完成影响和移动/删除不作为新增白名单。
++- 恢复后的历史Worker输出不变，单次批准仍只有一次新调用；服务重启后规则一致。
++
++### Task 1: Reconcile directory observations with verified additions
++
++**Files:** 新增src/main/task/directory-observation.ts；修改src/main/agent/executor.ts；新增tests/unit/task-directory-checkpoints.test.ts、tests/e2e/task-directory-checkpoints.spec.ts；新增交付记录与独立证据。
++
++**Interfaces:** `expectedDirectoryListing(root: string, directory: string, observed: string, effects: readonly FileEffect[]): string | undefined`返回可独立对照的排序JSON，仅接受当前哈希匹配的文件新增；executor筛选当前图中的兼容已完成后续检查点。独立核验可接受可选目录预期，其他路径不变。
++
++- [ ] 编写真实执行器/SQLite测试，先证明连续三次批准、重启恢复、嵌套/workspace/乱序时旧代码失败；检查反例保持停止、无重放、原回执不变。
++- [ ] 新增旧包真实IPC/页面三次批准场景及外部新增反例，保存失败证据。
++- [ ] 实施目录预期计算、依赖筛选和恢复Critic证据；运行定向测试，期望全部通过。
++- [ ] 完整`npm run verify`通过后本地提交；一次新上下文只读审阅，阻塞项RED→GREEN修正。
++- [ ] 串行独立打包、资源核对及最终包完整Playwright，0失败0跳过；目视实际截图。
++- [ ] 归档失败/通过证据和限制，普通推送并核对远端SHA。
++
++源码任务完成门为`npm run verify`；发布另须最终包与归档门完成。执行者在当前已授权分支完成，不重复创建自动任务或角色稿。
+diff --git a/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md b/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
+new file mode 100644
+index 0000000..cb9ce0c
+--- /dev/null
++++ b/docs/superpowers/specs/2026-10-30-directory-checkpoint-design.md
+@@ -0,0 +1,11 @@
++# 目录观察检查点与本任务新增文件
++
++已确认缺陷：先列目录、后写a.txt、再逐项批准写b.txt，第三次恢复因a.txt改变旧清单而失败。基线5cc5c28，复现见task-resume-diagnostic。用户授权自主决定软件细节，本方案为执行者选择；角色仍暂停。
++
++恢复目录list检查点时，以原清单为基础，只加入本任务当前计划中、依赖该观察的已完成后续步骤产生的文件项。后续检查点必须完成、结果已知、成功且计划/步骤哈希兼容。新增影响必须无源文件、非删除、实际文件仍位于授权范围内且当前SHA与已核验结果一致。目录只比较直接成员；子目录内文件会贡献其首层目录名。排序比较避免文件系统枚举次序影响。
++
++所有已完成步骤仍逐一独立核验；额外外部文件、成员删除、已产出文件被改写、读取来源变化、计划变更、不相关或不明结果检查点不能被此补偿掩盖。仅使用图依赖能证明的后续关系，不靠检查点数组顺序推断执行先后。原Worker返回和持久检查点不重写；恢复核验记录独立Critic证据。
++
++这次增量处理已核验文件新增，不把移动/删除/重复修改同一产物的全套历史合成声称完成。现有自定义完成条件照常复核。原SRS、审批有效期、单次/本任务批准和现有文件保护不改，不自动重放。
++
++验证采用真实执行器、SQLite恢复及临时合成文件，覆盖直接/嵌套路径、workspace、逆序依赖/检查点、外部变化、哈希/结果未知/非后续关系。实际旧包复现三次批准失败，新包同流程通过且Worker每步骤只有一次；加入外部文件的反例仍停止。完整验证与打包串行，独立只读审阅后验证最终包。普通推送GitHub，不评论/关闭issue，保留旧包和失败证据。
+diff --git a/src/main/agent/executor.ts b/src/main/agent/executor.ts
+index 9acf0a4..54f5be9 100644
+--- a/src/main/agent/executor.ts
++++ b/src/main/agent/executor.ts
+@@ -2,20 +2,21 @@ import type { DeclaredOutput } from '../task/staging'
+ import type { GroundedSummaryWorkflow } from '../../shared/grounded-summary'
+ import { executeGroundedSummary, type GroundedExecutionOptions } from './grounded-executor'
+ import { extractTaskRoot } from './task-root'
+ import { randomUUID, createHash } from 'node:crypto'
+ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+ import type { Evidence, Verdict } from '../../shared/evidence'
+ import type { TaskPhase } from './state-machine'
+ import { readVisiblePage } from '../tools/browser'
+ import { organizeByKind, moveInside, readInside, resolveInside, writeInside, type FileEffect, type FileIntent, type WorkControl } from '../tools/filesystem'
+ import { taskGraph, readOnlyStep } from '../task/plan-graph'
++import { expectedDirectoryListing } from '../task/directory-observation'
+ import { runGit } from '../tools/git'
+ import { runTerminal, type IsolatedRunner, type ToolRun } from '../tools/terminal'
+ export type TaskTool = 'filesystem' | 'terminal' | 'git' | 'browser'
+ export interface CheckCondition { kind: 'file-exists' | 'file-absent' | 'file-content' | 'file-hash' | 'output-includes' | 'exit-code'; path?: string; value?: string }
+ export interface PlanStep { id?: string; dependsOn?: string[]; workspace?: string; network?: 'none' | 'bridge'; allowedTools?: TaskTool[]; limits?: { timeoutMs?: number }; outputs?: DeclaredOutput[]; title: string; detail: string; expected: string; tool?: TaskTool; args?: { action?: 'organize' | 'list' | 'read' | 'write' | 'move'; path?: string; from?: string; to?: string; content?: string; executable?: string; argv?: string[]; url?: string; files?: FileIntent[] }; checks?: CheckCondition[] }
+ export interface TaskPlan { origin?: 'rules' | 'model'; tool: TaskTool; root?: string; url?: string; command?: string; steps: PlanStep[]; question: string; workflow?: GroundedSummaryWorkflow }
+ export interface WorkerTicket { id: string; stepId: string; root: string | null; allowedTools: TaskTool[]; limits: { timeoutMs: number; maxSteps: number } }
+ export interface AgentCall { agentRole: 'Planner' | 'Worker' | 'Critic'; toolId: string; declared: string; executionStatus: ToolRun['status'] | 'running'; raw: string; evidence: Evidence[]; verdict: Verdict; stepId?: string; args?: unknown; startedAt?: string; endedAt?: string; traceId?: string; phase?: 'started' | 'result' }
+ export interface GoalOutcome { status: TaskPhase; calls: AgentCall[]; artifacts: string[]; approval: { target: string; impact: string; tool: string; requestedAt: number } | null; summary: string; result: string; steps: Array<{ id: string; title: string; detail: string; state: '完成' | '进行中' | '待执行' | '等待批准' | '已取消'; tone: 'blue' | 'green' | 'amber' | 'red' | 'gray' }> }
+ export function extractRoot(goal: string): string | null {
+@@ -74,31 +75,43 @@ export async function executeGoal(input: GroundedExecutionOptions & { goal: stri
+   record({ agentRole: 'Planner', toolId: input.plan && plan.origin !== 'rules' ? 'model' : 'rules', declared: input.plan && plan.origin !== 'rules' ? JSON.stringify(plan) : `没有可用的模型，仅按明确支持的本地规则处理：${JSON.stringify(plan)}`, executionStatus: 'ok', raw: JSON.stringify(plan), evidence: [fact('taskPlanSchema', '受控计划结构', `${plan.steps.length} 步`, true, 'schema-check')], verdict: 'confirmed', stepId: 'plan' })
+   const steps: GoalOutcome['steps'] = plan.steps.map((step, index) => ({ id: step.id ?? `step-${index}`, title: step.title, detail: step.detail, state: '待执行', tone: 'blue' }))
+   const finish = (status: TaskPhase, result: string, approval: GoalOutcome['approval'] = null): GoalOutcome => ({ status, calls, artifacts: [...new Set(artifacts)], approval, summary: status === '已完成' ? '所有执行步骤与完成条件已核验' : result, result, steps })
+   const stopped = (): boolean => input.cancelled || Boolean(input.control?.stopped()) || Boolean(input.control?.signal?.aborted)
+   if (stopped()) return finish('已取消', '任务已取消，已产生的影响保留。')
+   if (plan.question.trim() && plan.question.trim() !== '无') return finish('待确认', `${plan.question} 回答之前不会执行。`)
+   if (!input.root && plan.steps.some((step) => (step.tool ?? tool) !== 'browser')) return finish('待确认', '要处理哪个具体目录？回答之前不会执行。')
+   let graph: ReturnType<typeof taskGraph>
+   try { graph = taskGraph(plan.steps); if (!graph.length || graph.length > 6) throw new Error('计划必须为 1 至 6 步') } catch (error) { return finish('失败', error instanceof Error ? error.message : String(error)) }
+   const done = new Set<string>(); const attempted = new Set<string>(); let confirmed = 0; let failed = false; let dispatches = 0; let awaitingExport = false
++  const matchesCheckpoint = (checkpoint: StepCheckpoint, node: (typeof graph)[number]): boolean => {
++    const stepHash = createHash('sha256').update(JSON.stringify({ root: input.root, step: node.step })).digest('hex')
++    return (checkpoint.stepHash ?? checkpoint.planHash) === (checkpoint.stepHash ? stepHash : planHash)
++  }
++  const follows = (id: string, ancestor: string): boolean => graph.find(node => node.id === id)!.dependsOn.some(dependency => dependency === ancestor || follows(dependency, ancestor))
++  const completed = (input.checkpoints ?? []).filter(checkpoint => {
++    const node = graph.find(entry => entry.id === checkpoint.stepId)
++    return node && checkpoint.completed && checkpoint.outcomeKnown && checkpoint.output.run.status === 'ok' && matchesCheckpoint(checkpoint, node)
++  })
+   for (const checkpoint of input.checkpoints ?? []) {
+     const node = graph.find((entry) => entry.id === checkpoint.stepId)
+     if (!node) { artifacts.push(...checkpoint.output.artifacts); continue }
+     artifacts.push(...checkpoint.output.artifacts)
+     if (!checkpoint.outcomeKnown) return finish('失败', `步骤 ${node.id} 的实际副作用未知，需要先核对；没有重放。`)
+-    const stepHash = createHash('sha256').update(JSON.stringify({ root: input.root, step: node.step })).digest('hex')
+-    if ((checkpoint.stepHash ?? checkpoint.planHash) !== (checkpoint.stepHash ? stepHash : planHash)) continue
++    if (!matchesCheckpoint(checkpoint, node)) continue
+     if (checkpoint.completed) {
+       const ticket: WorkerTicket = { id: randomUUID(), stepId: node.id, root: input.root ? resolveInside(input.root, node.step.workspace ?? '.') : null, allowedTools: [node.step.tool ?? tool], limits: { timeoutMs: node.step.limits?.timeoutMs ?? 8000, maxSteps: 1 } }
+-      const checked = await independentlyVerify(ticket, node.step, checkpoint.output, input)
+-      if (!checked.length || !checked.every((item) => item.matched)) return finish('失败', `步骤 ${node.id} 的已完成结果发生变化；未重新执行或覆盖。`)
++      const directoryExpected = input.root && ticket.root && ticket.allowedTools[0] === 'filesystem' && node.step.args?.action === 'list'
++        ? expectedDirectoryListing(input.root, resolveInside(ticket.root, node.step.args.path ?? '.'), checkpoint.output.run.raw, completed.filter(item => follows(item.stepId, node.id)).flatMap(item => item.output.effects)) : undefined
++      const checked = await independentlyVerify(ticket, node.step, checkpoint.output, input, directoryExpected)
++      const verified = checked.length > 0 && checked.every(item => item.matched)
++      record({ agentRole: 'Critic', toolId: 'critic', declared: `恢复前独立核对 ${node.id}，不重复执行`, executionStatus: verified ? 'ok' : 'error', raw: JSON.stringify(checked), evidence: checked, verdict: verified ? 'confirmed' : 'refuted', stepId: node.id, traceId: ticket.id, phase: 'result', args: { restoredCheckpoint: checkpoint.traceId, readOnly: true } })
++      if (!verified) return finish('失败', `步骤 ${node.id} 的已完成结果发生变化；未重新执行或覆盖。`)
+       done.add(node.id); attempted.add(node.id); confirmed += 1; steps[node.index] = { ...steps[node.index], state: '完成', tone: 'green', detail: `${node.step.title}：恢复后独立复核通过，未重复执行` }
+     }
+   }
+   const scopeKey = (node: (typeof graph)[number]): string => {
+     const step = node.step; const stepTool = step.tool ?? tool
+     let workspace = input.root ?? ''
+     try { if (input.root) workspace = resolveInside(input.root, step.workspace ?? '.') } catch { workspace = `invalid:${step.workspace}` }
+     return JSON.stringify({ tool: stepTool, workspace, network: step.network ?? 'none', ...(stepTool === 'browser' ? { url: invocationArgs(step, plan, input.goal).url } : {}) })
+   }
+   const pendingNodes = (): typeof graph => graph.filter(node => !done.has(node.id) && (!attempted.has(node.id) || Boolean(input.checkpoints?.find(checkpoint => checkpoint.stepId === node.id)?.output.run.awaitingExport)))
+@@ -175,30 +188,36 @@ async function runStep(ticket: WorkerTicket, step: PlanStep, plan: TaskPlan, inp
+   if (action === 'organize') {
+     const organized = await organizeByKind(root, { ...input.control, files: args?.files, stopped: () => Boolean(input.control?.stopped() || input.control?.signal?.aborted), guard: () => input.executionGuard?.() ?? input.toolGate?.('filesystem') ?? null, progress: (...args) => input.control?.progress(...args) })
+     return { run: { status: organized.stopped ? 'aborted' : organized.error || organized.effects.some((e) => e.status === 'failed') || !organized.moved.length ? 'error' : 'ok', raw: organized.note, evidence: fact(root, '文件归类', organized.note, false) }, effects: organized.effects, artifacts: organized.effects.filter((e) => existsSync(e.destination)).map((e) => e.destination) }
+   }
+   if (action === 'list') { const names = readdirSync(resolveInside(root, args?.path ?? '.')); return wrap({ status: 'ok', raw: JSON.stringify(names), evidence: fact(root, '可读取目录', `${names.length} 项`, true) }) }
+   if (action === 'read' && args?.path) { const raw = readInside(root, args.path); return wrap({ status: 'ok', raw, evidence: fact(args.path, '读取文件', raw, true) }) }
+   if (action === 'write' && args?.path && args.content !== undefined) { const written = writeInside(root, args.path, args.content); return { run: { status: 'ok', raw: written.path, evidence: fact(written.path, '写入', '', false) }, effects: [{ source: '', destination: written.path, hash: written.hash, status: 'moved' }], artifacts: [written.path] } }
+   if (action === 'move' && args?.from && args.to) { const hash = createHash('sha256').update(readFileSync(resolveInside(root, args.from))).digest('hex'); moveInside(root, args.from, args.to); const destination = resolveInside(root, args.to); return { run: { status: 'ok', raw: destination, evidence: fact(destination, '移动', '', false) }, effects: [{ source: resolveInside(root, args.from), destination, hash, status: 'moved' }], artifacts: [destination] } }
+   return wrap(errorRun('计划没有可执行的受控操作；任意自然语言指令尚未执行。'))
+ }
+-async function independentlyVerify(ticket: WorkerTicket, step: PlanStep, output: StepResult, input: Parameters<typeof executeGoal>[0]): Promise<Evidence[]> {
++async function independentlyVerify(ticket: WorkerTicket, step: PlanStep, output: StepResult, input: Parameters<typeof executeGoal>[0], directoryExpected?: string): Promise<Evidence[]> {
+   const evidence: Evidence[] = []
+   let observedRaw = output.run.raw
+   if (output.run.status === 'ok' && ticket.allowedTools[0] === 'browser') {
+     const blocked = input.toolGate?.('browser')
+     const observed = blocked ? errorRun(blocked) : await readVisiblePage(step.args?.url ?? input.plan?.url ?? /https?:\/\/\S+/.exec(input.goal)?.[0] ?? '', fetch, { signal: input.control?.signal, timeoutMs: ticket.limits.timeoutMs })
+     observedRaw = observed.raw; evidence.push(observed.evidence)
+   }
+   if (output.run.status === 'ok' && ticket.allowedTools[0] === 'filesystem' && !output.effects.length && ['list', 'read'].includes(step.args?.action ?? '')) {
+-    try { observedRaw = step.args?.action === 'list' ? JSON.stringify(readdirSync(resolveInside(ticket.root!, step.args?.path ?? '.'))) : readInside(ticket.root!, step.args?.path ?? ''); evidence.push(fact(ticket.root!, '独立只读观察与执行返回一致', observedRaw, observedRaw === output.run.raw)) } catch (error) { evidence.push(fact(ticket.root!, '独立只读观察', error instanceof Error ? error.message : String(error), false)) }
++    try {
++      const names = step.args?.action === 'list' ? readdirSync(resolveInside(ticket.root!, step.args.path ?? '.')) : undefined
++      observedRaw = names ? JSON.stringify(names) : readInside(ticket.root!, step.args?.path ?? '')
++      const actual = names && directoryExpected !== undefined ? JSON.stringify([...names].sort()) : observedRaw
++      const expected = directoryExpected ?? output.run.raw
++      evidence.push(fact(ticket.root!, directoryExpected === undefined ? '独立只读观察与执行返回一致' : `原目录及本任务已核验新增项：${directoryExpected}`, actual, actual === expected))
++    } catch (error) { evidence.push(fact(ticket.root!, '独立只读观察', error instanceof Error ? error.message : String(error), false)) }
+   }
+   for (const effect of output.effects) {
+     if (effect.operation === 'delete') { let missing = false; try { missing = !existsSync(resolveInside(ticket.root!, effect.destination)) } catch { /* Boundary failures cannot confirm deletion. */ } evidence.push(fact(effect.destination, '已批准文件不存在', missing ? '不存在' : '仍存在或范围无效', effect.status === 'moved' && missing)); continue }
+     let actual: string; let matched = false
+     try { const destination = resolveInside(ticket.root!, effect.destination); const hash = createHash('sha256').update(readFileSync(destination)).digest('hex'); const sourceGone = !effect.source || !existsSync(resolveInside(ticket.root!, effect.source)); actual = `sha256=${hash};源${sourceGone ? '不存在' : '仍存在'}${effect.error ? `;${effect.error}` : ''}`; matched = effect.status === 'moved' && hash === effect.hash && sourceGone } catch (error) { actual = error instanceof Error ? error.message : String(error) }
+     evidence.push(fact(effect.destination, `sha256=${effect.hash};源不存在`, actual, matched, 'fs-hash'))
+   }
+   for (const check of step.checks ?? []) {
+     let actual: string; let matched = false
+     try {
+diff --git a/src/main/task/directory-observation.ts b/src/main/task/directory-observation.ts
+new file mode 100644
+index 0000000..62f732e
+--- /dev/null
++++ b/src/main/task/directory-observation.ts
+@@ -0,0 +1,28 @@
++import { createHash } from 'node:crypto'
++import { readFileSync, realpathSync, statSync } from 'node:fs'
++import { basename, isAbsolute, relative, sep } from 'node:path'
++import { resolveInside, type FileEffect } from '../tools/filesystem'
++
++/** Reconcile an old listing only with verified additions selected by the executor.
++ * Keep the original observation/receipt intact; other checkpoint checks still run.
++ */
++export function expectedDirectoryListing(root: string, directory: string, observed: string, effects: readonly FileEffect[]): string | undefined {
++  let entries: unknown
++  try { entries = JSON.parse(observed) } catch { return undefined }
++  if (!Array.isArray(entries) || entries.some(name => typeof name !== 'string' || !name || name === '.' || name === '..' || basename(name) !== name)) return undefined
++  if (new Set(entries).size !== entries.length) return undefined
++  const expected = new Set(entries as string[])
++  let actualDirectory: string
++  try { actualDirectory = realpathSync(resolveInside(root, directory)); if (!statSync(actualDirectory).isDirectory()) return undefined } catch { return undefined }
++  for (const effect of effects) {
++    if (effect.status !== 'moved' || effect.source !== '' || effect.operation) continue
++    try {
++      const destination = resolveInside(root, effect.destination)
++      if (!statSync(destination).isFile() || createHash('sha256').update(readFileSync(destination)).digest('hex') !== effect.hash) continue
++      const member = relative(actualDirectory, realpathSync(destination))
++      if (!member || isAbsolute(member) || member === '..' || member.startsWith(`..${sep}`)) continue
++      expected.add(member.split(sep)[0])
++    } catch { /* An inaccessible or changed output cannot justify a new directory member. */ }
++  }
++  return JSON.stringify([...expected].sort())
++}
+diff --git a/tests/e2e/task-directory-checkpoints.spec.ts b/tests/e2e/task-directory-checkpoints.spec.ts
+new file mode 100644
+index 0000000..9aadd72
+--- /dev/null
++++ b/tests/e2e/task-directory-checkpoints.spec.ts
+@@ -0,0 +1,50 @@
++import { expect, test, type Page } from '@playwright/test'
++import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
++import { tmpdir } from 'node:os'
++import { join } from 'node:path'
++import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
++
++async function approveOnce(page: Page): Promise<void> {
++  await page.getByTestId('approve-task').click()
++  await page.getByRole('button', { name: '批准并继续', exact: true }).click()
++}
++for (const externalAddition of [false, true]) test(`[FR-17] 三步任务逐项批准${externalAddition ? '拦截外部新增文件' : '接受本任务新增文件并完成'}`, async () => {
++  test.setTimeout(90_000)
++  const root = mkdtempSync(join(tmpdir(), 'directory-checkpoint-ui-'))
++  writeFileSync(join(root, 'input.txt'), 'synthetic source')
++  const server = await startModelServer({ toolResponse: tool => tool === 'plan_task' ? {
++    tool: 'filesystem', root, question: '', steps: [
++      { id: 'inspect', title: '查看目录', detail: '读取原目录清单', expected: '', args: { action: 'list', path: '.' } },
++      { id: 'a', dependsOn: ['inspect'], title: '创建第一份文件', detail: '创建a.txt', expected: '', args: { action: 'write', path: 'a.txt', content: 'first result' } },
++      { id: 'b', dependsOn: ['a'], title: '创建第二份文件', detail: '创建b.txt', expected: '', args: { action: 'write', path: 'b.txt', content: 'second result' } }
++    ]
++  } : undefined })
++  const app = await launchApp()
++  try {
++    const page = await findMainPage(app); await configureTestModel(page, server.url)
++    const made = await page.evaluate(root => window.murasame.core.createTask('查看目录并创建两个文件', root), root)
++    if (!made.ok) throw new Error(made.error)
++    const task = async () => {
++      const result = await page.evaluate(() => window.murasame.core.getBootstrap())
++      if (!result.ok) throw new Error(result.error)
++      return result.data.tasks.find(task => task.id === made.data.id)!
++    }
++    const workerCount = async () => (await task()).toolCalls.filter(call => call.agentRole === 'Worker' && (call.declared.args as { phase?: string }).phase === 'result').length
++    await page.getByTestId('nav-tasks').click()
++    for (let i = 0; i < 2; i++) {
++      await approveOnce(page)
++      await expect.poll(workerCount).toBe(i + 1)
++      await expect(page.locator('.task-detail-titleline .pill')).toHaveText('等待批准')
++    }
++    expect(readFileSync(join(root, 'a.txt'), 'utf8')).toBe('first result')
++    if (externalAddition) writeFileSync(join(root, 'external.txt'), 'user-added synthetic file')
++    await approveOnce(page)
++    await expect.poll(async () => (await task()).status).toBe(externalAddition ? '失败' : '已完成')
++    await expect(page.locator('.task-detail-titleline .pill')).toHaveText(externalAddition ? '失败' : '已完成')
++    await page.screenshot({ path: test.info().outputPath(externalAddition ? 'external-change-blocked.png' : 'three-step-complete.png') })
++    expect(await workerCount()).toBe(externalAddition ? 2 : 3)
++    expect(readFileSync(join(root, 'a.txt'), 'utf8')).toBe('first result')
++    if (externalAddition) { expect(existsSync(join(root, 'b.txt'))).toBe(false); expect(readFileSync(join(root, 'external.txt'), 'utf8')).toBe('user-added synthetic file') }
++    else expect(readFileSync(join(root, 'b.txt'), 'utf8')).toBe('second result')
++  } finally { await closeApp(app); await server.close(); rmSync(root, { recursive: true, force: true }) }
++})
+diff --git a/tests/unit/task-directory-checkpoints.test.ts b/tests/unit/task-directory-checkpoints.test.ts
+new file mode 100644
+index 0000000..03cae54
+--- /dev/null
++++ b/tests/unit/task-directory-checkpoints.test.ts
+@@ -0,0 +1,143 @@
++import { afterEach, describe, expect, it, vi } from 'vitest'
++import { DatabaseSync } from 'node:sqlite'
++import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs'
++import { tmpdir } from 'node:os'
++import { join } from 'node:path'
++import { executeGoal, type StepCheckpoint, type TaskPlan } from '../../src/main/agent/executor'
++import type { SqliteDatabase } from '../../src/main/data/sqlite-types'
++vi.mock('electron', () => ({ Notification: { isSupported: () => false } }))
++vi.mock('../../src/main/settings', () => ({ getSettings: () => ({ taskNotifications: false }) }))
++import { TaskService } from '../../src/main/core/services/task-service'
++
++const roots: string[] = []
++afterEach(() => roots.splice(0).forEach(root => rmSync(root, { recursive: true, force: true })))
++function fixture(listPath = '.', outputDirectory = '', workspace = '.') {
++  const root = mkdtempSync(join(tmpdir(), 'directory-checkpoint-')); roots.push(root)
++  const work = join(root, workspace); const observed = join(work, listPath)
++  mkdirSync(observed, { recursive: true }); writeFileSync(join(observed, 'input.txt'), 'synthetic input')
++  const a = join(outputDirectory, 'a.txt'); const b = join(outputDirectory, 'b.txt')
++  const plan: TaskPlan = { tool: 'filesystem', root, question: '', steps: [
++    { id: 'inspect', workspace, title: '读取目录', detail: '', expected: '', args: { action: 'list', path: listPath } },
++    { id: 'a', workspace, dependsOn: ['inspect'], title: '创建a', detail: '', expected: '', args: { action: 'write', path: a, content: 'first result' } },
++    { id: 'b', workspace, dependsOn: ['a'], title: '创建b', detail: '', expected: '', args: { action: 'write', path: b, content: 'second result' } }
++  ] }
++  const checkpoints: StepCheckpoint[] = []
++  const run = (saved = checkpoints) => executeGoal({ goal: '读取目录并创建两个文件', root, plan, approved: true, cancelled: false, approvalScope: 'once', checkpoints: [...saved], onCheckpoint: checkpoint => {
++    const index = checkpoints.findIndex(item => item.stepId === checkpoint.stepId)
++    if (index >= 0) checkpoints[index] = checkpoint; else checkpoints.push(checkpoint)
++  } })
++  return { root, work, observed, plan, checkpoints, run, a: join(work, a), b: join(work, b) }
++}
++async function pause(f: ReturnType<typeof fixture>, approvals = 2) {
++  for (let i = 0; i < approvals; i++) expect((await f.run()).status).toBe('等待批准')
++  expect(readFileSync(f.a, 'utf8')).toBe('first result')
++}
++
++describe('resuming directory observations after verified task additions', () => {
++  it.each([
++    ['.', '', '.'],
++    ['notes', 'notes', '.'],
++    ['.', 'nested/deeper', '.'],
++    ['.', 'nested', 'workspace']
++  ])('finishes sequential approvals for list=%s outputs=%s workspace=%s without rewriting history', async (listPath, outputDirectory, workspace) => {
++    const f = fixture(listPath, outputDirectory, workspace); await pause(f)
++    const original = JSON.stringify(f.checkpoints)
++    const result = await f.run()
++    expect(result.status).toBe('已完成')
++    expect(result.calls.filter(call => call.agentRole === 'Worker').map(call => call.stepId)).toEqual(['b'])
++    expect(readFileSync(f.b, 'utf8')).toBe('second result'); expect(readFileSync(f.a, 'utf8')).toBe('first result')
++    expect(JSON.stringify(f.checkpoints.slice(0, 2))).toBe(original)
++    expect(result.calls.some(call => call.agentRole === 'Critic' && call.stepId === 'inspect' && call.evidence.some(item => item.matched && item.expected.includes('本任务')))).toBe(true)
++  })
++
++  it('uses dependencies rather than plan or checkpoint storage order', async () => {
++    const f = fixture(); f.plan.steps.reverse(); await pause(f)
++    const result = await f.run([...f.checkpoints].reverse())
++    expect(result.status).toBe('已完成'); expect(readFileSync(f.b, 'utf8')).toBe('second result')
++  })
++
++  it('does not add a verified output from outside the observed subdirectory', async () => {
++    const f = fixture('notes'); await pause(f)
++    expect((await f.run()).status).toBe('已完成')
++    expect(readFileSync(f.b, 'utf8')).toBe('second result')
++  })
++
++  it.each([true, false])('accepts legacy checkpoints only when the whole plan still matches: %s', async samePlan => {
++    const f = fixture(); await pause(f)
++    const saved = structuredClone(f.checkpoints)
++    for (const checkpoint of saved) delete (checkpoint as Partial<StepCheckpoint>).stepHash
++    if (!samePlan) saved[1].planHash = 'unrelated-plan'
++    const result = await f.run(saved)
++    expect(result.status).toBe(samePlan ? '已完成' : '失败')
++    expect(existsSync(f.b)).toBe(samePlan)
++  })
++
++  it('treats directory enumeration order as irrelevant while preserving the saved observation', async () => {
++    const f = fixture(); writeFileSync(join(f.observed, 'z.txt'), 'synthetic')
++    await pause(f)
++    const saved = structuredClone(f.checkpoints)
++    saved[0].output.run.raw = JSON.stringify((JSON.parse(saved[0].output.run.raw) as string[]).reverse())
++    const original = JSON.stringify(saved)
++    expect((await f.run(saved)).status).toBe('已完成')
++    expect(JSON.stringify(saved)).toBe(original)
++  })
++
++  it.each(['external-addition', 'original-removal', 'output-edit'] as const)('still blocks %s without replay or further writes', async change => {
++    const f = fixture(); await pause(f)
++    if (change === 'external-addition') writeFileSync(join(f.observed, 'external.txt'), 'user file')
++    if (change === 'original-removal') unlinkSync(join(f.observed, 'input.txt'))
++    if (change === 'output-edit') writeFileSync(f.a, 'user revision')
++    const result = await f.run()
++    expect(result.status).toBe('失败'); expect(result.calls.filter(call => call.agentRole === 'Worker')).toHaveLength(0)
++    expect(existsSync(f.b)).toBe(false)
++    expect(readFileSync(f.a, 'utf8')).toBe(change === 'output-edit' ? 'user revision' : 'first result')
++  })
++
++  it('does not hide a changed source file behind an allowed directory addition', async () => {
++    const f = fixture()
++    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: ['inspect'], title: '读取来源', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
++    f.plan.steps[2].dependsOn = ['source']
++    await pause(f, 3)
++    writeFileSync(join(f.observed, 'input.txt'), 'changed source')
++    const result = await f.run()
++    expect(result.status).toBe('失败'); expect(result.result).toContain('source'); expect(existsSync(f.b)).toBe(false)
++  })
++
++  it.each(['incompatible', 'unfinished', 'unknown', 'failed', 'move', 'delete'] as const)('does not whitelist %s effects', async kind => {
++    const f = fixture(); await pause(f)
++    const saved = structuredClone(f.checkpoints); const output = saved.find(item => item.stepId === 'a')!
++    if (kind === 'incompatible') output.stepHash = 'different-plan'
++    if (kind === 'unfinished') output.completed = false
++    if (kind === 'unknown') output.outcomeKnown = false
++    if (kind === 'failed') output.output.run.status = 'error'
++    if (kind === 'move') output.output.effects[0].source = join(f.root, 'previous.txt')
++    if (kind === 'delete') output.output.effects[0].operation = 'delete'
++    const result = await f.run(saved)
++    expect(result.status).toBe('失败'); expect(existsSync(f.b)).toBe(false)
++    expect(result.calls.filter(call => call.agentRole === 'Worker')).toHaveLength(0)
++  })
++
++  it('requires an actual downstream dependency even if another step created the file', async () => {
++    const f = fixture(); f.plan.steps[1].dependsOn = []; await pause(f)
++    const result = await f.run()
++    expect(result.status).toBe('失败'); expect(existsSync(f.b)).toBe(false)
++  })
++
++  it('restores from persisted SQLite checkpoints after service recreation and executes each worker only once', async () => {
++    const f = fixture(); const db = new DatabaseSync(':memory:')
++    db.exec(readFileSync('src/main/data/migrations/001_init.sql', 'utf8')); db.exec(readFileSync('src/main/data/migrations/003_trace.sql', 'utf8'))
++    try {
++      const first = new TaskService(db as unknown as SqliteDatabase); first.setPlanner(async () => f.plan)
++      const made = await first.create('创建两个文件', f.root); if (!made.ok) throw new Error(made.error)
++      for (let i = 0; i < 2; i++) { await first.approve(made.data.id, 'once'); await first.settled(made.data.id) }
++      const restarted = new TaskService(db as unknown as SqliteDatabase)
++      const continued = await restarted.continueTask(made.data.id, '继续'); if (!continued.ok) throw new Error(continued.error)
++      expect(continued.data.status).toBe('等待批准')
++      await restarted.approve(made.data.id, 'once'); await restarted.settled(made.data.id)
++      const result = restarted.list()[0]
++      expect(result.status).toBe('已完成'); expect(readFileSync(f.b, 'utf8')).toBe('second result')
++      const workers = result.toolCalls.filter(call => call.agentRole === 'Worker' && (call.declared.args as { phase?: string }).phase === 'result')
++      expect(workers).toHaveLength(3); expect(new Set(workers.map(call => call.stepId)).size).toBe(3)
++    } finally { db.close() }
++  })
++})

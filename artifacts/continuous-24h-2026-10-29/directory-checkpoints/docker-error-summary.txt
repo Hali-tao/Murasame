@@ -1,0 +1,3 @@
+[2026-10-29T18:02:27.040461700Z][com.docker.backend.exe.engines] engines shutdown complete
+[2026-10-29T18:02:27.040461700Z][com.docker.backend.exe] backend crashed, dumping error to file and reporting to user: starting services: initializing Inference manager: listening on unix://<HOME>\AppData\Local\Docker\run\dockerInference: remove <HOME>\AppData\Local\Docker\run\dockerInference: The file cannot be accessed by the system. (listener: The filename, directory name, or volume label syntax is incorrect.)
+[2026-10-29T18:06:21.331489900Z][com.docker.backend.exe] backend server is already running

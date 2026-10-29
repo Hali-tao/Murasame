@@ -1,0 +1,1881 @@
+{
+  "archivedAt": "2026-10-29T18:21:35.954Z",
+  "baseline": "5cc5c282ea1b65e9bd63bf75d4b16d45a24a2c34",
+  "sourceFiles": [
+    {
+      "path": "src/main/agent/executor.ts",
+      "sha256": "888797906a71c0eff6e9579ce1c95a85c6519a27b3b537c3d4bf6b8c23936177",
+      "textLfSha256": "7235e6dc1dcd1ae220536dc70dfc1f11278510a8ac544615d8f5caedf802ef62"
+    },
+    {
+      "path": "src/main/task/directory-observation.ts",
+      "sha256": "1faeae4e121be064dd3692e09bda4400ddc35a00067958be7dbf8135eb090264",
+      "textLfSha256": "1faeae4e121be064dd3692e09bda4400ddc35a00067958be7dbf8135eb090264"
+    },
+    {
+      "path": "tests/unit/task-directory-checkpoints.test.ts",
+      "sha256": "41ba072e2a2067e9ff5fbc82c90b1475dd926539a8122c36e3b504f58d6657d4",
+      "textLfSha256": "41ba072e2a2067e9ff5fbc82c90b1475dd926539a8122c36e3b504f58d6657d4"
+    },
+    {
+      "path": "tests/e2e/task-directory-checkpoints.spec.ts",
+      "sha256": "1d13ced478fe10ce8e1d9e147af141e81056dac8ae9cc734a01bab58592cdaf0",
+      "textLfSha256": "1d13ced478fe10ce8e1d9e147af141e81056dac8ae9cc734a01bab58592cdaf0"
+    },
+    {
+      "path": "tests/e2e/notifications.spec.ts",
+      "sha256": "e02ac0db025fba58647c275f1e27d17855e676873389460925714157f4887f4d",
+      "textLfSha256": "e02ac0db025fba58647c275f1e27d17855e676873389460925714157f4887f4d"
+    }
+  ],
+  "files": [
+    {
+      "path": "archive-evidence.mjs.txt",
+      "bytes": 2842,
+      "sha256": "b536ebd67fad21a29e331811aa617494eac7243f1db09dc3ba7857980feea990",
+      "originalSha256": "cb32add8f793029efc1b2768fe7988e23f2f359b6afdecfa4ec8c472b29dd5e2"
+    },
+    {
+      "path": "cleanup-check.json",
+      "bytes": 347,
+      "sha256": "af434db552117bd5c49d4725916166c168e44a6271c91c081580adf914d271e4",
+      "originalSha256": "cbc86986838eec171ea7e07c6b1f91a9370e8323186ea345ae91648f44bbc106"
+    },
+    {
+      "path": "cleanup-check.ps1.txt",
+      "bytes": 1353,
+      "sha256": "fd0557de31498af485820904b5abc0004bec828787dedf201fc1650de09e14ce",
+      "originalSha256": "fd0557de31498af485820904b5abc0004bec828787dedf201fc1650de09e14ce"
+    },
+    {
+      "path": "diagnostic.config.ts.txt",
+      "bytes": 259,
+      "sha256": "09d2b940c332be34ddeb458cae18746a7b785ade74726776b3dbf2473df17188",
+      "originalSha256": "09d2b940c332be34ddeb458cae18746a7b785ade74726776b3dbf2473df17188"
+    },
+    {
+      "path": "docker-error-summary.txt",
+      "bytes": 599,
+      "sha256": "32cee63f625653e0c6724736b2fb84f8967bb6c7ed3e4a92a786cda4708da630",
+      "originalSha256": "033fa6cca371d4b78a128ab944007d6e03b428da829ef338183577ac0dbdb8fb"
+    },
+    {
+      "path": "docker-images-recovered.txt",
+      "bytes": 184,
+      "sha256": "796ae60fd6f8015b6da995972e38078c75bc382e8f4e041beaa985e4326d4377",
+      "originalSha256": "796ae60fd6f8015b6da995972e38078c75bc382e8f4e041beaa985e4326d4377"
+    },
+    {
+      "path": "docker-ready.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docker-recovery.txt",
+      "bytes": 83,
+      "sha256": "afa1af812ff2953387a595018745e61691b28de83c5503d5f0a88806ce167042",
+      "originalSha256": "22270c26cd2ab000f86e50e6f8f80608cf360a84553d364e426ddf0ed93ee075"
+    },
+    {
+      "path": "docker-restart-inventory.json",
+      "bytes": 1316,
+      "sha256": "8ac2a7e6dd8a6d3c9daf130f2786f6a5c0277197825b874037c67474e656c393",
+      "originalSha256": "8b9f016e03392d06631e1f0fc1638f7fbeda5fbe1e067a5db509be4bad7dc82f"
+    },
+    {
+      "path": "docker-runtime-preserved.json",
+      "bytes": 910,
+      "sha256": "a68b7380fc3d7eb3e3b2123ef47acac9d1e7e4e5ea49b2825e8df758ee072bb9",
+      "originalSha256": "5535546b437f79486335f47501c371104f10c98e3336b3b28cad74196e14800f"
+    },
+    {
+      "path": "docker-stop.txt",
+      "bytes": 35,
+      "sha256": "c31e0aaa2a273a83764a1cbdafab59d59204e9f50805534d87c1f585af469e6d",
+      "originalSha256": "908bbeedd4c4f67f1a70a423aa0e6ba48115305118e3f22bd3b79638dfd51aac"
+    },
+    {
+      "path": "docker-version-recovered.txt",
+      "bytes": 7,
+      "sha256": "4c8296012fba16be73c47f79811888dce53ee2c2e1d2a8055a78b6efef75be6d",
+      "originalSha256": "4c8296012fba16be73c47f79811888dce53ee2c2e1d2a8055a78b6efef75be6d"
+    },
+    {
+      "path": "e2e-old/.last-run.json",
+      "bytes": 97,
+      "sha256": "b529fe2c22bf509eb8502bf891312bf60106716b2f1a3ac5ca1e12a19c7440b3",
+      "originalSha256": "ddd504d8f35c8c3e5d688a8ba5e922b31bfcfcb9973efbb4edde6fa3f8c1f65b"
+    },
+    {
+      "path": "e2e-old/task-directory-checkpoints--FR-17-三步任务逐项批准拦截外部新增文件/external-change-blocked.png",
+      "bytes": 228668,
+      "sha256": "7954761e25e495b29809e4371a8d29232430c1ca5bed6d7090828e18b62dd44c"
+    },
+    {
+      "path": "e2e-old/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/error-context.md",
+      "bytes": 4609,
+      "sha256": "dd1ba134f2ed9fef474477ea62392b7122e8b378852e068edc9dc09c8f2ccc4a",
+      "originalSha256": "5f7eff02647bb7d63746e6c7f1e62d8e6acf4e317e6592c8976d958ddf79e119"
+    },
+    {
+      "path": "e2e-old/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/test-failed-1.png",
+      "bytes": 81784,
+      "sha256": "7207502bc635b2a91f60b76d6b2d0872bc95c7f0f12497c247b6e1546f727cae"
+    },
+    {
+      "path": "e2e-old/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/test-failed-2.png",
+      "bytes": 227684,
+      "sha256": "cdc27c4e66abf7d3d229052e5addc77c8076ef87616bc3b65bfcde23ea7f0ab1"
+    },
+    {
+      "path": "e2e-old/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/trace.zip",
+      "bytes": 310233,
+      "sha256": "6835cfeb7f3963836746c4b024c0708f43c4eb94bf3c054d3610b35a0529fc58"
+    },
+    {
+      "path": "e2e-old.txt",
+      "bytes": 4379,
+      "sha256": "1de1448f6be66d61cd4acbf72d7e01437829e48a687d4ac4ddb4a0baa538d294",
+      "originalSha256": "cfeb8cef51f024f86bde4cce4cda32b3d7d69d56fcff2ae3b9492bed828eeedc"
+    },
+    {
+      "path": "issues-final.json",
+      "bytes": 609,
+      "sha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10",
+      "originalSha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10"
+    },
+    {
+      "path": "issues.json",
+      "bytes": 609,
+      "sha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10",
+      "originalSha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10"
+    },
+    {
+      "path": "notification-diagnostic/.last-run.json",
+      "bytes": 146,
+      "sha256": "1f8624389ec57bf61e10621ab4ba9ca04d3116396d3775ee2e673d798abfa9bb",
+      "originalSha256": "0021b5f0d13f6a6a41c52a8fe5c2218f062badccd41da5bba6f3226f6b295f00"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/after.png",
+      "bytes": 202825,
+      "sha256": "4f4d5a16fbdf805d60090e898f0a9441e6d01287b130149262c1bedda335d9e0"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/before.png",
+      "bytes": 189168,
+      "sha256": "926faca841e5b1eb8a76cba6d669abede530ae8c12454aaff274734139c12d5c"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/error-context.md",
+      "bytes": 4429,
+      "sha256": "153b445a7d2e229ae05b26ea96066a8eed97e7461124f0ed0b3a4e59bbcb00ce",
+      "originalSha256": "af085ce840d24924b5deead49b71b00c845c093f40da261713e7288543116442"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/events.json",
+      "bytes": 3907,
+      "sha256": "d65e53e7214e16189d7333d501d5350dd908c5e12831c36072db9d67c07bb042",
+      "originalSha256": "46a7f5d38113a3b1bdc0fb813beabe84ef6cc78896c7d3bed1391c3278c3ac8d"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-1.png",
+      "bytes": 202825,
+      "sha256": "4f4d5a16fbdf805d60090e898f0a9441e6d01287b130149262c1bedda335d9e0"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-2.png",
+      "bytes": 57200,
+      "sha256": "84c730a7ca3285a8f92b560823322716d309e1126ef366e0b5dbd15731e4353c"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays/trace.zip",
+      "bytes": 260076,
+      "sha256": "6df779b999ca30e13b6f4f4d79249a7ca6fe4057031be2d201cd291f1e28bc43"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/after.png",
+      "bytes": 202825,
+      "sha256": "4f4d5a16fbdf805d60090e898f0a9441e6d01287b130149262c1bedda335d9e0"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/before.png",
+      "bytes": 189548,
+      "sha256": "1de584fd0611c6db3226f98c5e6c67d7a93c0dc4ebb316725f8da9e7572cbaec"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/error-context.md",
+      "bytes": 4434,
+      "sha256": "53b2bab290fc6e38efb5402a6dcc5cac1dd3d17ab60b8134a110bccdef8c2d6c",
+      "originalSha256": "87fdc05f51e4b970db02e35432d39db5ba6af1cdf284aec304d05a12020263c1"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/events.json",
+      "bytes": 4161,
+      "sha256": "719b55af67fe3b5feae3489be652097f7065c8395304d9880303de1b295bc2d5",
+      "originalSha256": "ebad6c49ef7d6b55e914a3384f8bd6f96ac45c10fb7c90db7168470c694570b7"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/test-failed-1.png",
+      "bytes": 202825,
+      "sha256": "4f4d5a16fbdf805d60090e898f0a9441e6d01287b130149262c1bedda335d9e0"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/test-failed-2.png",
+      "bytes": 57278,
+      "sha256": "615593daee9ec5c63755e0c78abfbd4eedcbb4c922e01ae00c61d605bd27d38e"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/trace.zip",
+      "bytes": 260201,
+      "sha256": "6966fe3865f1ee957839ec4962febdd97a13237ba4e2d05d5e9e8cf95c58adcf"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/after.png",
+      "bytes": 202825,
+      "sha256": "4f4d5a16fbdf805d60090e898f0a9441e6d01287b130149262c1bedda335d9e0"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/before.png",
+      "bytes": 189189,
+      "sha256": "b64be7a010c7b9c7d7ed84965f5f1ffc152a2182073b1818c57c0a10466bca25"
+    },
+    {
+      "path": "notification-diagnostic/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/events.json",
+      "bytes": 4136,
+      "sha256": "2926a045f16e3aa89671760266bb1ee8c1b9134b031a49d4140dff29e762fa1d",
+      "originalSha256": "317acb1c1095ea174b24c655fe7ed6014539ac60f68a98dfb7d5b4b26cc25919"
+    },
+    {
+      "path": "notification-diagnostic-clock/.last-run.json",
+      "bytes": 97,
+      "sha256": "058fce9924d04a505d31ef67f4efd39d15123fa5d86017ac25ea22f62488865d",
+      "originalSha256": "24119f7ff61e4c71b082edd5ef7ee1eb1de5cf51cb068356701da51dd58929f4"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/after.png",
+      "bytes": 202170,
+      "sha256": "30bc905f30d9c116908a327c7046500bb3fd1b04ec7b7a2c2c6a872223c7604b"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/before.png",
+      "bytes": 188603,
+      "sha256": "fdaeb158fbba1ca776f6ca603e60d859920b6a872825a8c2c18e50203a88e54d"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/error-context.md",
+      "bytes": 4891,
+      "sha256": "7db14bb4c0909a1c9d19fe2e536a957f7b3fd03d8944be31f52ce2bc2719c00c",
+      "originalSha256": "a4dd667187821a31f27b2fc517301a9f95091e265135e9ae865c4b594821c15c"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/events.json",
+      "bytes": 4635,
+      "sha256": "c202d87d81c340f8fa42166c80104b5003e057124d78a64392f2890ed7ac4b71",
+      "originalSha256": "c48d98f649b35996a1aca9653ae75817ee8784a46819c10954f3fc54a7ba2588"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-1.png",
+      "bytes": 202170,
+      "sha256": "30bc905f30d9c116908a327c7046500bb3fd1b04ec7b7a2c2c6a872223c7604b"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-2.png",
+      "bytes": 57136,
+      "sha256": "d6c2e64eee6f2c7d0fab7c82ec7e62c645b561c9774ea4ea1281039d00a47939"
+    },
+    {
+      "path": "notification-diagnostic-clock/notification-diagnostic-me-4ce21-thout-changing-timer-delays/trace.zip",
+      "bytes": 258711,
+      "sha256": "7cc829de486d1091996fb1f3d92f7fe605c530afa43b230eeb2503705c1226a8"
+    },
+    {
+      "path": "notification-diagnostic-clock.txt",
+      "bytes": 4363,
+      "sha256": "aa69c60c5cb95ca9c0f2ee4e724f67d36268ff1e5483e4fd3962ea082756d4ed",
+      "originalSha256": "96113c07be97b40811572a31470bbce38d2c9d90ce3967c6b0363a2561930ea0"
+    },
+    {
+      "path": "notification-diagnostic-poll/.last-run.json",
+      "bytes": 195,
+      "sha256": "4dc6dfe8f050b0b475546ee63f95453ae418b09a50368a34c8d2631c416c1edd",
+      "originalSha256": "5bfcd5af42055df511a0c900e6ce969ab3baa3d1865993153fe78cc598388ed8"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/after.png",
+      "bytes": 202810,
+      "sha256": "1a4e1511458a80981329020bdd82615e625eb4832a37aa43cfa422ab9277c948"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/before.png",
+      "bytes": 189300,
+      "sha256": "30899c45316c64ba65cd2702b6a7bf4e83c42329b54f40e097ff6e259d3cdf5a"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/error-context.md",
+      "bytes": 5041,
+      "sha256": "c5c329df21edba087e7fa3335f4398edaff8f280d72bf7480348674ee819b880",
+      "originalSha256": "30d5d1760cef8df5cd8b178ed1f19ff8ef0033b92d3ac31e4269301383a2c82e"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/events.json",
+      "bytes": 5980,
+      "sha256": "0dc2b25d7ea8cdff2532b3388b941ef40e7295ecedfc0b101016335db70b614b",
+      "originalSha256": "7531ad564bd258aa78659e588febff8e66ba271faf37bfef6614269665a5a4ba"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-1.png",
+      "bytes": 202810,
+      "sha256": "1a4e1511458a80981329020bdd82615e625eb4832a37aa43cfa422ab9277c948"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-2.png",
+      "bytes": 59714,
+      "sha256": "af4af77706825deffdecb95048dedd95c768f79b5de8841926901a4458a1586b"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays/trace.zip",
+      "bytes": 263244,
+      "sha256": "d700342db1b6d38f21aa2df0a33d3db2d0b7f509800c36e26b2d32f5dac94d9e"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/after.png",
+      "bytes": 202810,
+      "sha256": "1a4e1511458a80981329020bdd82615e625eb4832a37aa43cfa422ab9277c948"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/before.png",
+      "bytes": 189384,
+      "sha256": "2f961da788741547387a53e95e547a07b7d35695cb977f68ca482460cfa6a6d7"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/error-context.md",
+      "bytes": 5041,
+      "sha256": "d327c564196a8827d4aee72044164642ff95b5704c04318757b0ca87ceb78263",
+      "originalSha256": "13cd3836ed379fc9ea1e496ba3f492b3b136079f81ee34ae911adc7cafef8e0a"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/events.json",
+      "bytes": 6441,
+      "sha256": "9e1ae7808fe7129d03c952f3ed544bce22394e67c694717d40d3c941131639f3",
+      "originalSha256": "c3e9f62f08a03454bcb963cda87346c5edd3578a132514e6e574bb38e6e6236e"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/test-failed-1.png",
+      "bytes": 202810,
+      "sha256": "1a4e1511458a80981329020bdd82615e625eb4832a37aa43cfa422ab9277c948"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/test-failed-2.png",
+      "bytes": 57280,
+      "sha256": "12fe68434c32bf3dbcce9aef8a7b37db1cdcec1e17f6b9f49e22ccae2d557b32"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/trace.zip",
+      "bytes": 261001,
+      "sha256": "099b9c77567e5f8b93508b1339bad535160569ce550ee8bd29e2824a24afed8f"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/after.png",
+      "bytes": 202810,
+      "sha256": "1a4e1511458a80981329020bdd82615e625eb4832a37aa43cfa422ab9277c948"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/before.png",
+      "bytes": 189509,
+      "sha256": "42dff0959353548f8a1a5dca9441bf3fafaee5b8294c88928c45a3b37f4a0a0c"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/error-context.md",
+      "bytes": 5041,
+      "sha256": "d327c564196a8827d4aee72044164642ff95b5704c04318757b0ca87ceb78263",
+      "originalSha256": "13cd3836ed379fc9ea1e496ba3f492b3b136079f81ee34ae911adc7cafef8e0a"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/events.json",
+      "bytes": 6629,
+      "sha256": "711f4160df90aff97a13a425f954eb0fd05ab12be80dde4e80862f25745a6cfa",
+      "originalSha256": "54299d6314c6c93e35a359187297401d6a1d908c7487b7b4d2d793e8e85f06b6"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/test-failed-1.png",
+      "bytes": 202810,
+      "sha256": "1a4e1511458a80981329020bdd82615e625eb4832a37aa43cfa422ab9277c948"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/test-failed-2.png",
+      "bytes": 57167,
+      "sha256": "d2e555ce450e288d4fb9d7a0cd629c0d22a358b3ee440e6a4886e465b2e635bb"
+    },
+    {
+      "path": "notification-diagnostic-poll/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2/trace.zip",
+      "bytes": 260832,
+      "sha256": "1a87938cd387806c545c14d680b4d0ac55cce3cc2b9907d0990e6d3b3b777133"
+    },
+    {
+      "path": "notification-diagnostic-poll.txt",
+      "bytes": 11814,
+      "sha256": "5e046a1182916d50e6fcf9bedc77aca62bad5c72b1758d791cd18a0b1991c73e",
+      "originalSha256": "e0760783706e3ca02c988bfeabfe612f8127fbb8654ce8d9b673bb748efc72aa"
+    },
+    {
+      "path": "notification-diagnostic-v1.spec.ts.txt",
+      "bytes": 3184,
+      "sha256": "364c43e2d4afb546ebd3794470c51a08696b8b4188da71e8f246790347fbe523",
+      "originalSha256": "364c43e2d4afb546ebd3794470c51a08696b8b4188da71e8f246790347fbe523"
+    },
+    {
+      "path": "notification-diagnostic-v2.spec.ts.txt",
+      "bytes": 3688,
+      "sha256": "5ad30f6d3195f96a089c7eabff604ff0b52303a9360ec8976db49651005a9e02",
+      "originalSha256": "5ad30f6d3195f96a089c7eabff604ff0b52303a9360ec8976db49651005a9e02"
+    },
+    {
+      "path": "notification-diagnostic-v3.spec.ts.txt",
+      "bytes": 3964,
+      "sha256": "0b2a3c94d486a5b0dea0184bc63f173fb49b7a61b489a4bbeb674a48efb78a13",
+      "originalSha256": "0b2a3c94d486a5b0dea0184bc63f173fb49b7a61b489a4bbeb674a48efb78a13"
+    },
+    {
+      "path": "notification-diagnostic.spec.ts.txt",
+      "bytes": 4052,
+      "sha256": "232fefad146164aace562bee7e00381b6962256bb6856cbfc13dee2e47614571",
+      "originalSha256": "232fefad146164aace562bee7e00381b6962256bb6856cbfc13dee2e47614571"
+    },
+    {
+      "path": "notification-diagnostic.txt",
+      "bytes": 8520,
+      "sha256": "8573ff2a39e90d959d4684c6b299cf35b82e30f55c751c43169cc419673f39db",
+      "originalSha256": "e51f9c2c9e77396be2a9310833fa064418888107ab7fb581f953d1a4e8aeb6b6"
+    },
+    {
+      "path": "notification-harness.diff.txt",
+      "bytes": 2316,
+      "sha256": "eb3da027c9fa712a5f6bc92e4f3771c0b3ee426a6cb70d4fd34d7071dd1a9129",
+      "originalSha256": "ad0f2aadb3bd24e76c6dda8bf26696ab93284575c1c4db554e845241277f4661"
+    },
+    {
+      "path": "notification-no-speech/.last-run.json",
+      "bytes": 146,
+      "sha256": "1f8624389ec57bf61e10621ab4ba9ca04d3116396d3775ee2e673d798abfa9bb",
+      "originalSha256": "0021b5f0d13f6a6a41c52a8fe5c2218f062badccd41da5bba6f3226f6b295f00"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays/after.png",
+      "bytes": 455167,
+      "sha256": "48b264939f72ef794c57d7700149b282ba56556fa23f2e9ea959c28d3f85e62f"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays/error-context.md",
+      "bytes": 647,
+      "sha256": "5772b73968d4806606255433377d70027a375f5ef47f69da0c7d27a0ceac6031",
+      "originalSha256": "0e6260208b8b3eaf17ce8706b5eb13502fb020e2d3b8a8864e6001311410adfc"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays/events.json",
+      "bytes": 241,
+      "sha256": "2601e79220c707cb45d167f5383ce231057bcaf4082084647d4b9954efedfd65",
+      "originalSha256": "5edf3c85ec0eba1b5b3da3bba30116609c6d2d058eb0df1f8c30f9d88ba4a76b"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-1.png",
+      "bytes": 455167,
+      "sha256": "48b264939f72ef794c57d7700149b282ba56556fa23f2e9ea959c28d3f85e62f"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays/test-failed-2.png",
+      "bytes": 76267,
+      "sha256": "62cfad7a6ba0038d3e58c55f760d29007184d34dbbf06d86aceedafe62a89c1b"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays/trace.zip",
+      "bytes": 530670,
+      "sha256": "940fbe4007464da55116a28e6434071ff1d890b143bd30a46dcc293ff0a191be"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/after.png",
+      "bytes": 455167,
+      "sha256": "48b264939f72ef794c57d7700149b282ba56556fa23f2e9ea959c28d3f85e62f"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/error-context.md",
+      "bytes": 647,
+      "sha256": "5772b73968d4806606255433377d70027a375f5ef47f69da0c7d27a0ceac6031",
+      "originalSha256": "0e6260208b8b3eaf17ce8706b5eb13502fb020e2d3b8a8864e6001311410adfc"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/events.json",
+      "bytes": 253,
+      "sha256": "4b93f5a74dafeb00d393273a62716a53624ce811f2966e5ba3fd53ba1ff03f9b",
+      "originalSha256": "8c19f1c255e79e8e9f15fc2dfc06891d0ae0e548747e6616250052569bc53bce"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/test-failed-1.png",
+      "bytes": 455167,
+      "sha256": "48b264939f72ef794c57d7700149b282ba56556fa23f2e9ea959c28d3f85e62f"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/test-failed-2.png",
+      "bytes": 76146,
+      "sha256": "6dd4616514f673470bcd69621cf3436e426c578153afca528fc9c90ebd4c0346"
+    },
+    {
+      "path": "notification-no-speech/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/trace.zip",
+      "bytes": 530540,
+      "sha256": "c75ed0c102d14c39121462a5665afb694554e6c02a9e24f5447deef9017b1011"
+    },
+    {
+      "path": "notification-no-speech-corrected/.last-run.json",
+      "bytes": 46,
+      "sha256": "fff6299efb51ba9ef550e500ecc967e972c83e86be387042c360caea7fdbae29",
+      "originalSha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "notification-no-speech-corrected/notification-diagnostic-me-4ce21-thout-changing-timer-delays/after.png",
+      "bytes": 202594,
+      "sha256": "4f97424cdc660537e0c6d75886be1bc1c26be8641678388b7b207b1520a743d8"
+    },
+    {
+      "path": "notification-no-speech-corrected/notification-diagnostic-me-4ce21-thout-changing-timer-delays/before.png",
+      "bytes": 189400,
+      "sha256": "09d52164c32cd84c15ea39c81965f1f466f1d5e94c947173abfb80bd8c895c22"
+    },
+    {
+      "path": "notification-no-speech-corrected/notification-diagnostic-me-4ce21-thout-changing-timer-delays/events.json",
+      "bytes": 6401,
+      "sha256": "493a51e28daf4fe5c6f532acabcd180231a83f73140c6357eb32bd7f66a6be52",
+      "originalSha256": "f3ef5093c32ea8f17f62961d2f230ea60cc360e1908cc3ad22050509c633e761"
+    },
+    {
+      "path": "notification-no-speech-corrected/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/after.png",
+      "bytes": 202594,
+      "sha256": "4f97424cdc660537e0c6d75886be1bc1c26be8641678388b7b207b1520a743d8"
+    },
+    {
+      "path": "notification-no-speech-corrected/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/before.png",
+      "bytes": 187288,
+      "sha256": "3e9a4e32a74db793fe457ab237fd1a1d179161c1c525d6b652fd981ea795492f"
+    },
+    {
+      "path": "notification-no-speech-corrected/notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1/events.json",
+      "bytes": 6467,
+      "sha256": "653b0e544f4794b9ce3d0c8938288531dfdf3e36d7d480f14b65cc8ba0113b97",
+      "originalSha256": "a01bcd44be71e8912c66a2fb2753014391375c5b840c3112fbea8075c9967878"
+    },
+    {
+      "path": "notification-no-speech-corrected.txt",
+      "bytes": 697,
+      "sha256": "c2c62d09b1f2a09994290e721a95944410c3eb657da3271e5b37fae635b20526",
+      "originalSha256": "918e13e5e8d9abee2dbe6df508142eae9fb59d0012ee603d1abe5664d5cc0aa4"
+    },
+    {
+      "path": "notification-no-speech.txt",
+      "bytes": 7064,
+      "sha256": "f9336255525202b04a33d6869691e32db7ebca6c9ea85ca17922b4c3d8c5a23c",
+      "originalSha256": "cd1d893f0d5d619238263ec5fee0af9a869dd01eaf84e03e274f07f84106bd5e"
+    },
+    {
+      "path": "notification-observed/.last-run.json",
+      "bytes": 46,
+      "sha256": "fff6299efb51ba9ef550e500ecc967e972c83e86be387042c360caea7fdbae29",
+      "originalSha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "notification-observed/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 188683,
+      "sha256": "e8156b8494145b78ad3fd74e31a7b3e92040c0f65eb4723d8582617776f67f01"
+    },
+    {
+      "path": "notification-observed/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat1/actual-model-memory-notifications.png",
+      "bytes": 188502,
+      "sha256": "0d249f48a2c3da160861f5a6bf48547da36cfddec5ef7c82296b88ae9dc3b22f"
+    },
+    {
+      "path": "notification-observed/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2/actual-model-memory-notifications.png",
+      "bytes": 188614,
+      "sha256": "a994e8315f8b7fc18ee8e0cd4881f24e88125b842aab79e40f293b6132c8a78c"
+    },
+    {
+      "path": "notification-observed.txt",
+      "bytes": 965,
+      "sha256": "840e2b75816e04266c4fcfab89da8ab0cf5adcee8812af60922dbb42028a8a48",
+      "originalSha256": "74b91fd66cbf8c1b44ff9e599116a4b6b744d17d7939db566f475e45072b48a3"
+    },
+    {
+      "path": "notification-repeat/.last-run.json",
+      "bytes": 146,
+      "sha256": "fc0cea814e0b52690a6c1dccf9499f58d4c9bbd5b6e8bf4fcf94c26c52593684",
+      "originalSha256": "744b328bdbcd1ed59431f54ca04cb9365798e418bcb5fa0efeb953f761f9b02c"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 188599,
+      "sha256": "3e15182c13bde95ba47a092fb97f1d31188ea68cb881161513304ac8d332a9ee"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable/error-context.md",
+      "bytes": 7767,
+      "sha256": "c064ff25e07f735f48b74e7a86ab90f14c9420cc7127e4dc6ed05849546a6929",
+      "originalSha256": "1ca5ca3a5e3f26cf63a5870a2e08eba1c0a9fb216b9f3ddd9a5849f421c39738"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable/test-failed-1.png",
+      "bytes": 203357,
+      "sha256": "92e00baf6febc84e428409bf34b402e049d4592bcebd7d9e2fccdded14df657d"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable/test-failed-2.png",
+      "bytes": 56790,
+      "sha256": "1659e2a5855321e7bea3d09579927807a78524360909ce7a6d7040d1350d1d28"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable/trace.zip",
+      "bytes": 261699,
+      "sha256": "290762a0bbc6f2e2c7b337c0935ad369c91522e7769192c9b6c1684ddd0bd657"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat1/actual-model-memory-notifications.png",
+      "bytes": 188517,
+      "sha256": "dd2a333b8605a019e7077685cfbdce73f310d74fbf0741e1e128193312d780b2"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2/actual-model-memory-notifications.png",
+      "bytes": 188627,
+      "sha256": "58b689b4f0622d049041c3b36d60287c29d87c8623323dff7841facce77d4d2a"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2/error-context.md",
+      "bytes": 7767,
+      "sha256": "c064ff25e07f735f48b74e7a86ab90f14c9420cc7127e4dc6ed05849546a6929",
+      "originalSha256": "1ca5ca3a5e3f26cf63a5870a2e08eba1c0a9fb216b9f3ddd9a5849f421c39738"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2/test-failed-1.png",
+      "bytes": 203357,
+      "sha256": "92e00baf6febc84e428409bf34b402e049d4592bcebd7d9e2fccdded14df657d"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2/test-failed-2.png",
+      "bytes": 57134,
+      "sha256": "bc9bb4cc6786196ee4bad8647253710c88803018c8b8402397ff2e37fb6900fd"
+    },
+    {
+      "path": "notification-repeat/notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2/trace.zip",
+      "bytes": 262060,
+      "sha256": "df5093defda14fedce3d6abbfcefee124a2d672830053493d740e2249ffa9c6b"
+    },
+    {
+      "path": "notification-repeat.txt",
+      "bytes": 7945,
+      "sha256": "bc73739dd793fe30eb3cb46c987fddf5cb4bf0a7767bdc874ce8098e3993b9b1",
+      "originalSha256": "b145a0c61b89951574ca7698e043bb1e0f9944b701d448c838f08dca58a5e5f8"
+    },
+    {
+      "path": "notification-test.trace.txt",
+      "bytes": 22664,
+      "sha256": "c7c7e085637baac12723f3b7be7c2f0e867a01398ee8d907a130d12ab0e33034",
+      "originalSha256": "369444a44b90db39fdeb72c3aaad060fc8891ef05a058d6525a18d0b52979a07"
+    },
+    {
+      "path": "package-build.txt",
+      "bytes": 7257,
+      "sha256": "43eda9bc903440d37f2cf7daf1fffb31cd2f3e18c2517ec01e0b79d6a559e4da",
+      "originalSha256": "c68fccdbb02eb75ffdcb3193ac444d1ae005bb5a483ce252b0d08b556b46f0cd"
+    },
+    {
+      "path": "package-check-final.txt",
+      "bytes": 406,
+      "sha256": "82ccf63e297689c0882c47f18e6a3c33a4a022f4533e5de01aec28bb779bd16e",
+      "originalSha256": "82ccf63e297689c0882c47f18e6a3c33a4a022f4533e5de01aec28bb779bd16e"
+    },
+    {
+      "path": "package-check.txt",
+      "bytes": 406,
+      "sha256": "82ccf63e297689c0882c47f18e6a3c33a4a022f4533e5de01aec28bb779bd16e",
+      "originalSha256": "82ccf63e297689c0882c47f18e6a3c33a4a022f4533e5de01aec28bb779bd16e"
+    },
+    {
+      "path": "package-e2e/.last-run.json",
+      "bytes": 97,
+      "sha256": "1e8d84a49f934fe4bf29692bae381f1562dd041bd49181477e7ec8ead23016fc",
+      "originalSha256": "0c622cccd08d25cf1b7a0fca29cfb64c8eced504740496055b1d90fe0b3c69c1"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+      "bytes": 277998,
+      "sha256": "e1428ba7b6f09257b444fcf0dba10b7b44fe4a9be4a6681b9323ffd09f78544c"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+      "bytes": 146721,
+      "sha256": "a110354607dfd9148dcd224d84a81cf36697dbdf88cc154910bb443c09c70cde"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+      "bytes": 76162,
+      "sha256": "3af99b6926868dfe925327661801446a6e00f89402953d4652db9055f0f10137"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+      "bytes": 135234,
+      "sha256": "2ad761747bbc568cf75d934452aabd1bc1d520580da77f8c17e6b5a7dfa8186d"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+      "bytes": 455073,
+      "sha256": "7fade741add8ccc95e5106cd0d6803632ce29ff8519abca28e14d7b71c1d3258"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+      "bytes": 277327,
+      "sha256": "d29e6a114a631f4c8b9563a8caafe93d5120eba0b28019d533e62fa9bee89ebe"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+      "bytes": 14,
+      "sha256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08",
+      "originalSha256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+      "bytes": 83258,
+      "sha256": "59bb67cfd26ea8a3f14d1a98216b99dcf3e6b2ba8ca2c570e61d397277e43d37"
+    },
+    {
+      "path": "package-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+      "bytes": 76155,
+      "sha256": "6399e47a23e968e0ab5a7149f01995a851eece84b2375a290a20e586e58d667d"
+    },
+    {
+      "path": "package-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+      "bytes": 113357,
+      "sha256": "bdc40b518d77f4a3963cf4e261d8ec50bef4df1a35b2e8d3093b6b19308928d9"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-real-code-result.png",
+      "bytes": 216464,
+      "sha256": "4c110584489378377a2e4f32f8fd9fd2b51f1eda7d8e8c139ac42b2ff12b2f0b"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-stop-synchronized.png",
+      "bytes": 198461,
+      "sha256": "6cda17653aeb906dfae88cddf24953414a828fe147d9f23fd8a6e025060f7802"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/externally-started-visible.png",
+      "bytes": 185949,
+      "sha256": "ddc2f7126938ad1f1d018ba0fb262b2b65e627eaba2299ddda1742f4072e7bd2"
+    },
+    {
+      "path": "package-e2e/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+      "bytes": 184801,
+      "sha256": "7978c361f795809f14fa81d7115d833934b8e091d112237c691384ed4b2bacee"
+    },
+    {
+      "path": "package-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+      "bytes": 44,
+      "sha256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d",
+      "originalSha256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+      "bytes": 97,
+      "sha256": "23485436b0cbf473d3cda634b5f9338cdbfcdca7f8f60fb51e24c7ace14747a3",
+      "originalSha256": "1186288f1caae971e75e2be1eda4a0584f563fe37d6c1a820cdd8fc35cc789ba"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+      "bytes": 103072,
+      "sha256": "07c5965413e7dc5f977caa359ee5c6aa9864385d94a6e9abb639f36223baf124"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+      "bytes": 114393,
+      "sha256": "5d1edcddf89ff83c2e4217832c3d282808bf71aad12c9b89e8d044823a2bb6e4"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+      "bytes": 206,
+      "sha256": "4b9029c4ca0ebf6dc5ca5efabc7861037dc827e9b79477238b6baf2f94954faf",
+      "originalSha256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+      "bytes": 240603,
+      "sha256": "55c4e8e21fab6049ae04605f8e489e3dd4b64fc07dee588ffb921bd022725d9d"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+      "bytes": 69879,
+      "sha256": "fd916bf426d2eb351586c5b1407c197f2b1ea76d37a1aeaf34215d1f44cef91a"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+      "bytes": 57336,
+      "sha256": "dfb7646dd6a81cdfce5643122dfada3e952996754a6e318962e43c49593c9c38"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+      "bytes": 56907,
+      "sha256": "3a18dba0fa47a5949743b0d203b6cfae37cde8f011a7d05a99095007760ebc51"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+      "bytes": 222509,
+      "sha256": "c2ece4c19ef0cf64365a3c845be4d1d4a35375e20dab314f0827271df95a5304"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+      "bytes": 95903,
+      "sha256": "f3ad05eb5073b0b3ffb3356d1ef4879608ba8124df95aa6863bf256f476bc8b6"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+      "bytes": 56997,
+      "sha256": "84e0e83d1d4398dda218924c2e2ef22c17943d7c1367c4b3c4a3ef65305872bf"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+      "bytes": 56461,
+      "sha256": "7f3623f9429b31262d56df724640b271302494827a054a2c672b4dc381cb9309"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+      "bytes": 246448,
+      "sha256": "13e8e928306aade990499bf3676fdba08a9f8c570d9fbbb001bf909a449d0712"
+    },
+    {
+      "path": "package-e2e/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+      "bytes": 199772,
+      "sha256": "172225179d318a57506be341ef3b58b6334bb47ee9fb3ee2e89590efc2369a30"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories/retained-conversation-learns-after-clearing.png",
+      "bytes": 172599,
+      "sha256": "82e4b31975438ceb3c024bdf8cfebd7ad6b50c67628acce42bac507254791a6c"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-cleared-without-old-notices.png",
+      "bytes": 177183,
+      "sha256": "c916482fa47e517ffd7fa495f58db2b3b6fdc8af9ad5dff3c7ecd98533923c69"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-survives-history-only-clear.png",
+      "bytes": 184394,
+      "sha256": "ceb283a5df1fe51d8b983485fc9bbc3377417afc8fc11687fdc559ee1efdd866"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-set-0e113-ps-persisted-memory-visible/failed-clear-keeps-actual-memory.png",
+      "bytes": 180360,
+      "sha256": "c9422a61c244b791e85d82352b7b44385d05c125e4352032acdac0ff065a4a56"
+    },
+    {
+      "path": "package-e2e/memory-correction-source---0ca62-memory-in-its-actual-source/correction-source-cleared.png",
+      "bytes": 182198,
+      "sha256": "dc3363c87e032b397ad62c19f98e7a010ccdf65bc150aeccac0cec85a6bf096d"
+    },
+    {
+      "path": "package-e2e/memory-correction-source---ee9ba-memory-in-its-actual-source/original-source-cleared.png",
+      "bytes": 189635,
+      "sha256": "be9077f9182b9d787fb7049f533a27af39b9f487387c3b176644574187e65932"
+    },
+    {
+      "path": "package-e2e/memory-degraded-context--N-e95f6-cessful-empty-memory-search/persisted-recall-warning.png",
+      "bytes": 213598,
+      "sha256": "c17f16a9f08ad30a68088cfc1f71a81aa3f80c67ebab89203be890dca7d902f3"
+    },
+    {
+      "path": "package-e2e/memory-degraded-context--N-e95f6-cessful-empty-memory-search/preserved-memory-with-unavailable-index.png",
+      "bytes": 173145,
+      "sha256": "5abd3f717aabcd9fc355afda4e3b772335755457977fc8b5c5ff56e8e0ec2ad7"
+    },
+    {
+      "path": "package-e2e/model-lifecycle-an-old-fai-54644-r-actual-model-verification/verified-model-after-old-failure.png",
+      "bytes": 250411,
+      "sha256": "d9ecbc704186cb289a6bfd30fd9c90151e64ce9bfa212a838c5af63902f0af79"
+    },
+    {
+      "path": "package-e2e/model-lifecycle-removing-a-cbe61--answer-to-the-conversation/reply-delivered-after-model-removal.png",
+      "bytes": 213468,
+      "sha256": "2a595da5cb35ed551fdd688fc491b70f352232c237fe07c0675b80e60f86c081"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-offline-without-reload.png",
+      "bytes": 249152,
+      "sha256": "ea92263d2b40689839035bf632a9ada5ca0b7fa47db4b3e6113ee45c7c70eaf5"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-recovers-without-reload.png",
+      "bytes": 248674,
+      "sha256": "17fcd614483e5a8522b5be4b4e055bb70ff8f9ee0d120255cbae379aef8324ab"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/status-snapshots.json",
+      "bytes": 5014,
+      "sha256": "da3221c0b7a4715f2412f5b93a17415ab5348ce112fe3f5dd2ebc89b93d67a75",
+      "originalSha256": "1e5243a08fd0207ece57296238477f054a2367f2b36f82d334c277bcb1580511"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/verified-status-after-reload.png",
+      "bytes": 209949,
+      "sha256": "c441efe80fd19b65601eb1ebfaf6b109958bafa8b2b6ee06b7e2ee7fcc18e7e5"
+    },
+    {
+      "path": "package-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+      "bytes": 212786,
+      "sha256": "5463ba02cd7d0ea0de8e22ab1d257bb66a7a826b5e9b8a658e4a413840cbcc94"
+    },
+    {
+      "path": "package-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+      "bytes": 381762,
+      "sha256": "acaee741740d78e26885ba718269d457c9ac50bfd39e5dedb0715a9aa264be88"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 188221,
+      "sha256": "0bf5c6ed227dd5b88fb3235e4f2b41659ef3ba5de003a21c6dc95131bd499b09"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/error-context.md",
+      "bytes": 7767,
+      "sha256": "c064ff25e07f735f48b74e7a86ab90f14c9420cc7127e4dc6ed05849546a6929",
+      "originalSha256": "1ca5ca3a5e3f26cf63a5870a2e08eba1c0a9fb216b9f3ddd9a5849f421c39738"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/test-failed-1.png",
+      "bytes": 203031,
+      "sha256": "37d83d54c23a05f4386a8df4a87ded614471407c990fb190ebeaec0976d9721a"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/test-failed-2.png",
+      "bytes": 57298,
+      "sha256": "777b00d09362814ba973a4172f28795f9aa8c6f604fbc4540754b1580d8ce113"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/trace.zip",
+      "bytes": 262026,
+      "sha256": "9fda7b42f0a5411fec21536f86552f590850e1fc4c25cae2f43ae1d05d579945"
+    },
+    {
+      "path": "package-e2e/pet-history-sync--FR-02-bo-53c68-citly-opens-and-closes-chat/pet-menu-controls-chat.png",
+      "bytes": 60848,
+      "sha256": "baa45338bba8a8c17ec742291af311397d38f61c6cc0b784eb2c9458c04b3d39"
+    },
+    {
+      "path": "package-e2e/pet-history-sync--FR-15-de-86698-pet-chat-without-restarting/pet-history-cleared.png",
+      "bytes": 75597,
+      "sha256": "2d0f4e6a2daa597f9909ac43a16924b07793bddbc9e9ef43f9062a92fa02b3b6"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+      "bytes": 97472,
+      "sha256": "6908139160093ded6ba85cf4c6d15236d11a5e1f61f4f3034ecc6663ff755bf7"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+      "bytes": 95895,
+      "sha256": "5a4fc5096cbc7ed53c267f42ad70b68c44094338f6218c0d8469ae5d830cbf6a"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+      "bytes": 113262,
+      "sha256": "56fe2ecfb4bf905cffb6e36ef03fa57117e63fdc7512731b096e630b3297e4d7"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+      "bytes": 104480,
+      "sha256": "e5528364f88596a1845d4edf391cfbc0c45afc34b751ffc9fa4a4869716c83fe"
+    },
+    {
+      "path": "package-e2e/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/cancelled-after-late-plan.png",
+      "bytes": 216535,
+      "sha256": "cc9708ebef21ddb7658ac64cb131f511e16f8b7898c0c972ebed4b752d7cc3f7"
+    },
+    {
+      "path": "package-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+      "bytes": 250753,
+      "sha256": "f764fe31345971928ec4ef130a784036481e069a5a53cb7a85b9a076f35ff353"
+    },
+    {
+      "path": "package-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+      "bytes": 231781,
+      "sha256": "fde6537bb28245e12d9d904c82837e765efeb4c52e9a2792f3e966131b5018c8"
+    },
+    {
+      "path": "package-e2e/task-directory-checkpoints--FR-17-三步任务逐项批准拦截外部新增文件/external-change-blocked.png",
+      "bytes": 228047,
+      "sha256": "72971b8f2e53e846f6cda52b6acc7bc3103cfbfd1188bf781d914f7b7492b81b"
+    },
+    {
+      "path": "package-e2e/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/three-step-complete.png",
+      "bytes": 237117,
+      "sha256": "9202f4cb95bedcfd9aa421f63bdca53b9836063e4b6231f72a6974fb64279d0d"
+    },
+    {
+      "path": "package-e2e-exit.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "originalSha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "path": "package-e2e-final/.last-run.json",
+      "bytes": 195,
+      "sha256": "c4a8b890a6193655829b95bc4e2f74e63387b585e2df30e27dc93684eb7cebfa",
+      "originalSha256": "4c5823d10174267a1724720f65b13022d24b1bbeb6b4f73e180b4b2d1a05e84c"
+    },
+    {
+      "path": "package-e2e-final/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+      "bytes": 278571,
+      "sha256": "e14428be1c44844a785c7c17670848ae19965f3e4f5026acef986ed469610d56"
+    },
+    {
+      "path": "package-e2e-final/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+      "bytes": 146678,
+      "sha256": "259e8ad8a8ee358f84ea3171a1778fa6594774e7205dda3efa3e3aa04e46b578"
+    },
+    {
+      "path": "package-e2e-final/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+      "bytes": 76205,
+      "sha256": "f6c980f3736bed772fc05806e5863e45f4f88c81773a2c42dbc1edc9b9608618"
+    },
+    {
+      "path": "package-e2e-final/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+      "bytes": 135248,
+      "sha256": "765236a8eae5c333ccca167999f50559d80fdc57bb7a5bf42bcce15b08a4a8f8"
+    },
+    {
+      "path": "package-e2e-final/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+      "bytes": 455154,
+      "sha256": "2132483b34669094b3100d5da9a5a2accde120ee61f8c8291388d575073128b7"
+    },
+    {
+      "path": "package-e2e-final/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+      "bytes": 278747,
+      "sha256": "bc91c7bd0abd6fd6a8e54daa975be45db5ed398033eb33de789fc5498963c009"
+    },
+    {
+      "path": "package-e2e-final/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+      "bytes": 14,
+      "sha256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08",
+      "originalSha256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5"
+    },
+    {
+      "path": "package-e2e-final/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+      "bytes": 83410,
+      "sha256": "f2ed41a9c6f814330fc71ba1c7359343e04d0f10bd187e0d3eaf3be13ead0484"
+    },
+    {
+      "path": "package-e2e-final/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+      "bytes": 76078,
+      "sha256": "f80749313e61cab2e27edfd8ff19c9c714b79c44e21fdceed1c0171f035a0789"
+    },
+    {
+      "path": "package-e2e-final/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+      "bytes": 113128,
+      "sha256": "dd81a37bd3ef04a7971b1caf0e2abcdfda36361a058d3777178fabaa7ae2bc7a"
+    },
+    {
+      "path": "package-e2e-final/autonomy-external-status-a-3875b-real-isolated-work-and-stop/error-context.md",
+      "bytes": 432,
+      "sha256": "0c365dfbd250d527e3f52a2f9cf88d46beeee8c8d39542a76f68b8bcd0746b23",
+      "originalSha256": "ff82bb92f0b280e4cba22876157096b458678dc5340b3985bb13bc5118ff4551"
+    },
+    {
+      "path": "package-e2e-final/autonomy-external-status-a-3875b-real-isolated-work-and-stop/trace.zip",
+      "bytes": 7012,
+      "sha256": "feadb5eb36660a202724e01c563e8973fdb5e86291a8442cb34cd4ae1b916322"
+    },
+    {
+      "path": "package-e2e-final/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+      "bytes": 185284,
+      "sha256": "5fd11992d3e72afb646f5a65bf0c3fed6962345d1b6888d43bc1eeef93a315ee"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+      "bytes": 44,
+      "sha256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d",
+      "originalSha256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+      "bytes": 97,
+      "sha256": "6744ed6ee25b5a80bc7fa69e1383287389d1e204e8a61364bf332b920cac5113",
+      "originalSha256": "ab9b9544e9fca28418d1ca4b01f2c004f0fe7488f41701463574b75a9cb48529"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+      "bytes": 104043,
+      "sha256": "32568ce7a1acdd9a32752995f333f25e0410d0c6eade6a5921119cfb15b12e69"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+      "bytes": 115364,
+      "sha256": "74ed94fd688d24b67d3aa2c436002967431047b99fbec61e19c46db5a9541931"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+      "bytes": 206,
+      "sha256": "4b9029c4ca0ebf6dc5ca5efabc7861037dc827e9b79477238b6baf2f94954faf",
+      "originalSha256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+    },
+    {
+      "path": "package-e2e-final/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+      "bytes": 242560,
+      "sha256": "0c9828be832a4fe7f396f7f4e3c34213d1fbb8391bae6d55372a3a5fd26e1c1b"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-07b63--model-transport-and-Docker/error-context.md",
+      "bytes": 11009,
+      "sha256": "d5d2369d133646fe33ae0441be8d0506a1494fac5f3304a3257de14c66770260",
+      "originalSha256": "514b14012ec8d6afdf425dcff538537b062d97f4aa8436f88bf29f5f72c9ba92"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-07b63--model-transport-and-Docker/test-failed-1.png",
+      "bytes": 74573,
+      "sha256": "b5e2e657aaf713da50b45e5f62fab39793bf591d04a89182ee21a5e31d396671"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-07b63--model-transport-and-Docker/test-failed-2.png",
+      "bytes": 224380,
+      "sha256": "a9ac46cb3209e71aad896ae5249b9a6104e12c09e3d5a16edc5ae891228f86c7"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-07b63--model-transport-and-Docker/trace.zip",
+      "bytes": 302122,
+      "sha256": "1c99ce94b9a89d20ee5ac418fa854ba17d7d7aa024ef35061ffb52532c9d3a1d"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-7a832--model-transport-and-Docker/error-context.md",
+      "bytes": 11029,
+      "sha256": "08ce468666fcf64442aef8b04fc81d7b2c30e88a460eca5b54584bdb67dc04cb",
+      "originalSha256": "38b404da3eb21f9760968d950aad990c082f5c9f1db15050f24ee119a7fc9607"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-7a832--model-transport-and-Docker/test-failed-1.png",
+      "bytes": 225165,
+      "sha256": "e4b448c208c495fa238099931ff6ae4b3f343ed2b807c4087e9388803b319731"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-7a832--model-transport-and-Docker/test-failed-2.png",
+      "bytes": 74565,
+      "sha256": "92c0f5d36a0311e15c8937afeb40df381f46546307a688db3389922d56b0f98a"
+    },
+    {
+      "path": "package-e2e-final/isolated-creation-real-iso-7a832--model-transport-and-Docker/trace.zip",
+      "bytes": 303045,
+      "sha256": "e2360041db9ca56165e2caa516fd894f6a9e6b0182892cae822df2837b1a9712"
+    },
+    {
+      "path": "package-e2e-final/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+      "bytes": 200834,
+      "sha256": "e159670f88c8ed2fca889e29c2f89e222f45500d5b4b278cf0012e2ee9bcd529"
+    },
+    {
+      "path": "package-e2e-final/memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories/retained-conversation-learns-after-clearing.png",
+      "bytes": 173118,
+      "sha256": "9aa19c9c27ea61ab663ac72273819ed9415e086fef0b134897ec1217d75d0d96"
+    },
+    {
+      "path": "package-e2e-final/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-cleared-without-old-notices.png",
+      "bytes": 175052,
+      "sha256": "ad1e6f627f2b178af0d9a8f227b96df958da34d57dbb3a09687c537ad67f55cc"
+    },
+    {
+      "path": "package-e2e-final/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-survives-history-only-clear.png",
+      "bytes": 182530,
+      "sha256": "c4394da1425a5389a060da7f3173bd4e44dda81713638f04634d42476bd77980"
+    },
+    {
+      "path": "package-e2e-final/memory-clear-ui--FR-15-set-0e113-ps-persisted-memory-visible/failed-clear-keeps-actual-memory.png",
+      "bytes": 180858,
+      "sha256": "0621c0e107c51e3846d71afa2fe663d793916dd2b00652338ffd1355c0e271ad"
+    },
+    {
+      "path": "package-e2e-final/memory-correction-source---0ca62-memory-in-its-actual-source/correction-source-cleared.png",
+      "bytes": 182316,
+      "sha256": "02dfba5a42e1e3efeec17cda9f057ec5a9c6c3999f68645249a52900d7851172"
+    },
+    {
+      "path": "package-e2e-final/memory-correction-source---ee9ba-memory-in-its-actual-source/original-source-cleared.png",
+      "bytes": 190194,
+      "sha256": "a872e42a7bdac461c3898cccb20b58cf518fa955ca79eb362f70e36e7ffa4e15"
+    },
+    {
+      "path": "package-e2e-final/memory-degraded-context--N-e95f6-cessful-empty-memory-search/persisted-recall-warning.png",
+      "bytes": 213837,
+      "sha256": "c30e9f2f08e402711d5d561047beef194efd310f6117a468420254186b819c69"
+    },
+    {
+      "path": "package-e2e-final/memory-degraded-context--N-e95f6-cessful-empty-memory-search/preserved-memory-with-unavailable-index.png",
+      "bytes": 173292,
+      "sha256": "d1076238e3aa4e2deed295c07db6048c59ea73cf8089f9157a1d3985f851d49a"
+    },
+    {
+      "path": "package-e2e-final/model-lifecycle-an-old-fai-54644-r-actual-model-verification/verified-model-after-old-failure.png",
+      "bytes": 248299,
+      "sha256": "562205a514861bca003f66d7b94b8e39f516a05d48b2e7d3ff0e0ebeeca2d135"
+    },
+    {
+      "path": "package-e2e-final/model-lifecycle-removing-a-cbe61--answer-to-the-conversation/reply-delivered-after-model-removal.png",
+      "bytes": 213328,
+      "sha256": "040d8440dec03c3d52ee6465c6212115a510b72e9ea706f1d2e1678fa0de0b9c"
+    },
+    {
+      "path": "package-e2e-final/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-offline-without-reload.png",
+      "bytes": 249433,
+      "sha256": "7d9f1f9f142a3bffb784fbca5cc35f35609400ca4f5d9bf3b7969d7191db13f2"
+    },
+    {
+      "path": "package-e2e-final/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-recovers-without-reload.png",
+      "bytes": 249355,
+      "sha256": "4adcf022c6844f307da3dfb2a1e4ab9158b3e7ecc878b2cb14693c60f447bc49"
+    },
+    {
+      "path": "package-e2e-final/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/status-snapshots.json",
+      "bytes": 5014,
+      "sha256": "f0d1f5481aab2b7af5d79699bd2e1b9938b8ad85b1b49348fbf8ccd9dee68761",
+      "originalSha256": "412f7a9f9de6ac78d66e3e0297597e82c1c24aae2360cb3b9edac6310c929fb3"
+    },
+    {
+      "path": "package-e2e-final/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/verified-status-after-reload.png",
+      "bytes": 201350,
+      "sha256": "d4d7e7c62d95a2223b76e5258519b18023765a017922fa782450fe3b62facb42"
+    },
+    {
+      "path": "package-e2e-final/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+      "bytes": 212561,
+      "sha256": "22dbe53fd91d78ddaa18308fcba9e89ff52d62c051ae519d3a2728c5930f0b17"
+    },
+    {
+      "path": "package-e2e-final/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+      "bytes": 317391,
+      "sha256": "45050218dd457b1659cc702b0517417087d35667efc5722499bc272d11507e02"
+    },
+    {
+      "path": "package-e2e-final/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 188006,
+      "sha256": "3ef3dd7a44f3c03a5dd343406e40ea643def0600e34216b024d7cb25db4c314a"
+    },
+    {
+      "path": "package-e2e-final/pet-history-sync--FR-02-bo-53c68-citly-opens-and-closes-chat/pet-menu-controls-chat.png",
+      "bytes": 76930,
+      "sha256": "3dd5f63abd9c57f7fd68f33482d0852b09bb4f0d5b8e9116161515b6c38fb581"
+    },
+    {
+      "path": "package-e2e-final/pet-history-sync--FR-15-de-86698-pet-chat-without-restarting/pet-history-cleared.png",
+      "bytes": 97989,
+      "sha256": "1bbdaade0c99e6bb5ec16362d970f35c43b90159e46286b6880b664c29fa670d"
+    },
+    {
+      "path": "package-e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+      "bytes": 131903,
+      "sha256": "be75f8e0b4760b41eb9966cc1641c09ffe4c10115945933a792f0daeb71e285f"
+    },
+    {
+      "path": "package-e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+      "bytes": 125924,
+      "sha256": "bce7b7397f4f1f8b8eb1b13e8f004e53938d75bfa7817771d22941569bd54459"
+    },
+    {
+      "path": "package-e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+      "bytes": 153955,
+      "sha256": "a6b6ecc69a28dd61bbea4240600c05cd8ec719bf1dc015082ac1277dfac54962"
+    },
+    {
+      "path": "package-e2e-final/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+      "bytes": 144293,
+      "sha256": "fbab501847bd446d7896dd68901e0cacb30fa18c8caafe1554eefa9d373efa0c"
+    },
+    {
+      "path": "package-e2e-final/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/cancelled-after-late-plan.png",
+      "bytes": 216784,
+      "sha256": "4892e2c23f87ec22d38d053d280677a63460e4eb09a2a5357a0e622e0a1126fe"
+    },
+    {
+      "path": "package-e2e-final/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+      "bytes": 250936,
+      "sha256": "d8375f3d6be40c8e238cc7b1a9fe04e319d63ee2d2d05c47c488a632cd4916c7"
+    },
+    {
+      "path": "package-e2e-final/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+      "bytes": 232594,
+      "sha256": "217840514beb42d9af77dd9a56794bc5dca34595b9a43411beeafe06323747a8"
+    },
+    {
+      "path": "package-e2e-final/task-directory-checkpoints--FR-17-三步任务逐项批准拦截外部新增文件/external-change-blocked.png",
+      "bytes": 228396,
+      "sha256": "fef31d24dbd7efeb65c7ffaad9ac915b56963dbd0c9d5d689a7bf306123c64ce"
+    },
+    {
+      "path": "package-e2e-final/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/three-step-complete.png",
+      "bytes": 238023,
+      "sha256": "2e493fa5bc0bdec84d37a7b0f68fe7fcf49a84a7ed207f8e4e406ecc15e9a526"
+    },
+    {
+      "path": "package-e2e-final-summary.json",
+      "bytes": 786,
+      "sha256": "0b97f28a15dee23e2d4daa5a11bdbea847502ce10a08970b9fc823b6bcce6a77",
+      "originalSha256": "0b97f28a15dee23e2d4daa5a11bdbea847502ce10a08970b9fc823b6bcce6a77"
+    },
+    {
+      "path": "package-e2e-final.json",
+      "bytes": 56915,
+      "sha256": "f30c8b014aa78692c2d3057a1bff51d7f15c20e6f5e6c9234aab4dea6cae1785",
+      "originalSha256": "1238b0016075dc7cc69aab2e7a06d5f964876ece09188cd9e303d2aad144a97d"
+    },
+    {
+      "path": "package-e2e-final.txt",
+      "bytes": 14344,
+      "sha256": "13178f5544751a6521e4ad1fa3f2ebf4e776e970abd41f3b216065429f093bfe",
+      "originalSha256": "13732ac53b2396fe585aea9993b3b1e183789e441692b07e3a6904d228d1938f"
+    },
+    {
+      "path": "package-e2e-recovered/.last-run.json",
+      "bytes": 46,
+      "sha256": "fff6299efb51ba9ef550e500ecc967e972c83e86be387042c360caea7fdbae29",
+      "originalSha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "package-e2e-recovered/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+      "bytes": 278402,
+      "sha256": "63b86d0f47de05586134e50902f5047c96c12a9168ad4d8530209ddf81182fbf"
+    },
+    {
+      "path": "package-e2e-recovered/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+      "bytes": 146757,
+      "sha256": "1089a3f7b5b336d87884a7b44cb8f3f08c49344a1bc95f937d6418695a46d9ac"
+    },
+    {
+      "path": "package-e2e-recovered/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+      "bytes": 76182,
+      "sha256": "8a125ce7cad1302858a5523ce4a6d0765e9d7c6ecc6f8625070fad4fb0d3df31"
+    },
+    {
+      "path": "package-e2e-recovered/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+      "bytes": 135442,
+      "sha256": "df179ac65301c1f597b16ba8ca2a960bb14a425e0ee9c357b14d01d9667daee1"
+    },
+    {
+      "path": "package-e2e-recovered/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+      "bytes": 455196,
+      "sha256": "9340c7153c3615602af7a299e3d42a9f7eefc319f21a70ed014718b7ee366510"
+    },
+    {
+      "path": "package-e2e-recovered/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+      "bytes": 282773,
+      "sha256": "8a65a3a30945675d285ab2d0f6fed37a8ac36c3d565e65c41eafd77202e4695c"
+    },
+    {
+      "path": "package-e2e-recovered/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+      "bytes": 14,
+      "sha256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08",
+      "originalSha256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5"
+    },
+    {
+      "path": "package-e2e-recovered/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+      "bytes": 83792,
+      "sha256": "d53ffc27407e62d5b6232739771a8124b005fb1c0d5bf64295d207c1e62a8682"
+    },
+    {
+      "path": "package-e2e-recovered/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+      "bytes": 76132,
+      "sha256": "ab85347cd9111469aa0c3c1a22f6efc24e64332ebc43b73c3d4f6d66e9ad00f8"
+    },
+    {
+      "path": "package-e2e-recovered/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+      "bytes": 113250,
+      "sha256": "7b8e9930bfd39fd50f59304a457b52b553b13de479d4e21a93e069ef5721edb6"
+    },
+    {
+      "path": "package-e2e-recovered/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-real-code-result.png",
+      "bytes": 217005,
+      "sha256": "a9c312501c89578a57fb280be14535fb8a48ccdd532c641b2a910d8e5739b3ed"
+    },
+    {
+      "path": "package-e2e-recovered/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-stop-synchronized.png",
+      "bytes": 198796,
+      "sha256": "7e23b6cf8342ce90ef74266307c22d7d18d1a45960a21e6097283d95e47fadcf"
+    },
+    {
+      "path": "package-e2e-recovered/autonomy-external-status-a-3875b-real-isolated-work-and-stop/externally-started-visible.png",
+      "bytes": 186490,
+      "sha256": "00b796c780af21c100deedcd793ade9485b2750960ba41b0340f8a819ea0520b"
+    },
+    {
+      "path": "package-e2e-recovered/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+      "bytes": 185074,
+      "sha256": "2cc73bea7684458f59516be543a7e2465d775181948bfefc10ba83bc30c0b553"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+      "bytes": 44,
+      "sha256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d",
+      "originalSha256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+      "bytes": 97,
+      "sha256": "460f9c5feef8afdafad4878bb684e6b5e129739886057a470d3c22f968be9a4b",
+      "originalSha256": "af60c53a32c4c3bb60d3ee27fc43c6a1f615351d3404379775c3088d3aa85166"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+      "bytes": 105327,
+      "sha256": "89733bdcc921a4813f2655494c37eefa53df4fa5da4251b09a95a37afef49c0b"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+      "bytes": 114388,
+      "sha256": "da69fcf026ffacfa19773e0b79e3023cbe487b95de280ccca1286d5a0b097958"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+      "bytes": 206,
+      "sha256": "4b9029c4ca0ebf6dc5ca5efabc7861037dc827e9b79477238b6baf2f94954faf",
+      "originalSha256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+    },
+    {
+      "path": "package-e2e-recovered/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+      "bytes": 243133,
+      "sha256": "1bb16a49bce14e80d18b924d0f951a1d84e9261a3acef0aa79ece3c69eb1aee3"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+      "bytes": 72379,
+      "sha256": "2a39be29d3270b77f7e8dab3fe7f75166d081a88108c08678e38f66c9eb7944d"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+      "bytes": 76636,
+      "sha256": "723693c37f7c6fe488746e0600d72f7529cb63f98b73ed3947379f6476e6ad75"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+      "bytes": 73892,
+      "sha256": "7270bd7f378370d61b8606586e1bd96c80296423873e832194f27f9c6e391a09"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+      "bytes": 225264,
+      "sha256": "78b2fe3e89792b14eab64a05ce3be2932b1c9f83efee12ed343f03fe5b989a45"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+      "bytes": 95915,
+      "sha256": "9696c2ed75a84f7ceeaaf7937116782f8e9b8223b506f7ea275787609c22ae06"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+      "bytes": 76535,
+      "sha256": "3cf5517c3f337bfd74aed936e2055fffbb805278a58ff37c826e7af3530da565"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+      "bytes": 75084,
+      "sha256": "e476fd2151ac4ab78b8e280a299196f309fd0e37d0a7ce2c24638b2dc94073b3"
+    },
+    {
+      "path": "package-e2e-recovered/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+      "bytes": 246435,
+      "sha256": "5c4b0db4bc57d7b392a101688c776cee7979f7e24100efa374d873c3ca816f93"
+    },
+    {
+      "path": "package-e2e-recovered/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+      "bytes": 200015,
+      "sha256": "3285bf8f90553375e5fceaf8000a08e81ae903e21f2b3af5fce0c35458f4aca4"
+    },
+    {
+      "path": "package-e2e-recovered/memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories/retained-conversation-learns-after-clearing.png",
+      "bytes": 172805,
+      "sha256": "40ed63a546e1e9bd0dbf96ccb5657aa5b1a070767496a34fe54c231f8e082312"
+    },
+    {
+      "path": "package-e2e-recovered/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-cleared-without-old-notices.png",
+      "bytes": 174745,
+      "sha256": "08fb3a978b2bc9976ea08e5cd61f07f997795f5e1ee7f0290f211aef5fa2aedb"
+    },
+    {
+      "path": "package-e2e-recovered/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-survives-history-only-clear.png",
+      "bytes": 182114,
+      "sha256": "fa4ca97fc742f8918e545f64cbafa45ba7f50e01d0de827f41dc9faa0e7232f2"
+    },
+    {
+      "path": "package-e2e-recovered/memory-clear-ui--FR-15-set-0e113-ps-persisted-memory-visible/failed-clear-keeps-actual-memory.png",
+      "bytes": 180554,
+      "sha256": "95c5f3eca4890414e2f666b6fc59700c16c9d090ffdf43a7a064a03843a19e4b"
+    },
+    {
+      "path": "package-e2e-recovered/memory-correction-source---0ca62-memory-in-its-actual-source/correction-source-cleared.png",
+      "bytes": 181791,
+      "sha256": "6055e7ed18fa5d4d29019cd8627e961611d59361c53b487613507fb252efd2c1"
+    },
+    {
+      "path": "package-e2e-recovered/memory-correction-source---ee9ba-memory-in-its-actual-source/original-source-cleared.png",
+      "bytes": 192321,
+      "sha256": "f45686d40a35b463a8d17825d48cc240921c48772ae8ec825979330afd22adff"
+    },
+    {
+      "path": "package-e2e-recovered/memory-degraded-context--N-e95f6-cessful-empty-memory-search/persisted-recall-warning.png",
+      "bytes": 213815,
+      "sha256": "b1172d17c6e34ca85f979e2f5045cb500612ca5435b7da458b403dfdf3543e59"
+    },
+    {
+      "path": "package-e2e-recovered/memory-degraded-context--N-e95f6-cessful-empty-memory-search/preserved-memory-with-unavailable-index.png",
+      "bytes": 173029,
+      "sha256": "e1020983f899cb15576f3bcc385ab13b87a9697dab1f01a60aa239439c6a7a41"
+    },
+    {
+      "path": "package-e2e-recovered/model-lifecycle-an-old-fai-54644-r-actual-model-verification/verified-model-after-old-failure.png",
+      "bytes": 251261,
+      "sha256": "9f2bf3d7d7c276757ac37bead5af87866b799ebc69d55ff73452ff2bed266d76"
+    },
+    {
+      "path": "package-e2e-recovered/model-lifecycle-removing-a-cbe61--answer-to-the-conversation/reply-delivered-after-model-removal.png",
+      "bytes": 213625,
+      "sha256": "ffb7e90ab25a6f9bb081d5e2d91e0d9d93de40d841996a85dde06d1d70dfd1ae"
+    },
+    {
+      "path": "package-e2e-recovered/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-offline-without-reload.png",
+      "bytes": 249034,
+      "sha256": "3ff76c3bff2eff35ce8c8cb8e0a62a24798a55cdee6d2c25d0d2dd367c85788f"
+    },
+    {
+      "path": "package-e2e-recovered/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-recovers-without-reload.png",
+      "bytes": 249031,
+      "sha256": "f9358c762da1eb2d386d4f2a104ad8b0ccc47c1a8f55830eba755e1c275ae021"
+    },
+    {
+      "path": "package-e2e-recovered/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/status-snapshots.json",
+      "bytes": 5014,
+      "sha256": "ed9191fcb17e37123e8488dafe499ac30bd7428c43a7c69c16e9891b8237ffc6",
+      "originalSha256": "ad43329c777b4fa6babfcdf1345176532edc8cd263a4bec03893db510fe2510b"
+    },
+    {
+      "path": "package-e2e-recovered/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/verified-status-after-reload.png",
+      "bytes": 209367,
+      "sha256": "a64c8f2133e517195f29174ab7b400b37a5ebd47c42fc90bded934db0c939d62"
+    },
+    {
+      "path": "package-e2e-recovered/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+      "bytes": 213200,
+      "sha256": "364818412ac994d74c56716ae462ae1ac595d359235092c593971768ba46914a"
+    },
+    {
+      "path": "package-e2e-recovered/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+      "bytes": 390048,
+      "sha256": "987f9765c0cdee8f6feae55a6079e54f608c0c9257532ce054ae3e388b778f37"
+    },
+    {
+      "path": "package-e2e-recovered/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 188696,
+      "sha256": "c87c055b806b51386d764370f16b59d7af6e4bc5a4d3225c818e4c103df555a0"
+    },
+    {
+      "path": "package-e2e-recovered/pet-history-sync--FR-02-bo-53c68-citly-opens-and-closes-chat/pet-menu-controls-chat.png",
+      "bytes": 79332,
+      "sha256": "1618fdf5e3306d14796d2c185d63b808a75466c37e3c960ed338eb07ae45090b"
+    },
+    {
+      "path": "package-e2e-recovered/pet-history-sync--FR-15-de-86698-pet-chat-without-restarting/pet-history-cleared.png",
+      "bytes": 97787,
+      "sha256": "3f93211a30d0ddcf98a998f465a4c3b7dc83ee6ca7e4cdffb7c4765c36acc6b7"
+    },
+    {
+      "path": "package-e2e-recovered/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+      "bytes": 132060,
+      "sha256": "abf605ccc7f20eb821140de60908b0dd1e474950f8ae8b354eafa89e5471b823"
+    },
+    {
+      "path": "package-e2e-recovered/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+      "bytes": 124501,
+      "sha256": "198abf09e68361e5f4046fbe46e577564ab948c46af205c461f24f5c91eeb756"
+    },
+    {
+      "path": "package-e2e-recovered/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+      "bytes": 152920,
+      "sha256": "8db2527f2910a8ff904c1bbaa1b8dd5195737a386360a7e729b9c2b873dcff0e"
+    },
+    {
+      "path": "package-e2e-recovered/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+      "bytes": 141938,
+      "sha256": "a27fe42bf47c987ae83f882a906bc9be1cb4056bf1796a2e50df430ac99c4658"
+    },
+    {
+      "path": "package-e2e-recovered/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/cancelled-after-late-plan.png",
+      "bytes": 216943,
+      "sha256": "d9ca09225740d76fab22e8478786cb8da881bd249109c40d35d7b9db95590517"
+    },
+    {
+      "path": "package-e2e-recovered/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+      "bytes": 250510,
+      "sha256": "599d4c802d34fba2894320924a59bf68b34060a8d328ee039be75ce4d6b8bfac"
+    },
+    {
+      "path": "package-e2e-recovered/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+      "bytes": 233602,
+      "sha256": "3f76e344d967c7354f7fb416189ff4bcdfabfa5a937938d889f97b5a5463e394"
+    },
+    {
+      "path": "package-e2e-recovered/task-directory-checkpoints--FR-17-三步任务逐项批准拦截外部新增文件/external-change-blocked.png",
+      "bytes": 229136,
+      "sha256": "4108d6f2c0d046ec15f98cf3a2ba3ddba33c93ec8fb3c1e11f6557a6b4e34370"
+    },
+    {
+      "path": "package-e2e-recovered/task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成/three-step-complete.png",
+      "bytes": 237607,
+      "sha256": "1c0ec12ce7223572a8878d4964f2481e4094614129d1297b7960a40cd282b573"
+    },
+    {
+      "path": "package-e2e-recovered-exit.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "originalSha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "package-e2e-recovered-summary.json",
+      "bytes": 398,
+      "sha256": "87d2b981334017256237681ebf064cefd9e43ff3ef83e4dd4de79bbec6e5ef47",
+      "originalSha256": "87d2b981334017256237681ebf064cefd9e43ff3ef83e4dd4de79bbec6e5ef47"
+    },
+    {
+      "path": "package-e2e-recovered.json",
+      "bytes": 44621,
+      "sha256": "02634ee6810a1b06c2e6ac0148848065b5174f3f91ba7dc88f29fe44ad27f6ee",
+      "originalSha256": "6e0340525dc747c3793ed82f63b3871076a334fd91c97644f6f2752409118725"
+    },
+    {
+      "path": "package-e2e-recovered.txt",
+      "bytes": 5046,
+      "sha256": "a351a9186ee65ec4f363434bd3bbc2851d85321ba0e2c426ead5a1f5d477d3d8",
+      "originalSha256": "040c65e36e85e9869fd76235f4aa8e38fafd69f9f45bce724b9b403d33de88cc"
+    },
+    {
+      "path": "package-e2e.txt",
+      "bytes": 8645,
+      "sha256": "19b5d37d435debfc43ea6963bf28504f6b16d19e2633bb57a02040306cf2c89a",
+      "originalSha256": "981af574656e737bfa62a2b200104d0c4088385351b3b2f4024561c9b64ad889"
+    },
+    {
+      "path": "package-receipt-before-harness.json",
+      "bytes": 27053,
+      "sha256": "73a8617c043a2f5cc4a741ea727e1e27c42282c2d8a882870c4508120f535f2c",
+      "originalSha256": "73a8617c043a2f5cc4a741ea727e1e27c42282c2d8a882870c4508120f535f2c"
+    },
+    {
+      "path": "package-receipt.json",
+      "bytes": 27288,
+      "sha256": "cc240ead55dfb8191ad8bc30b7e1c1fb7b2442804dd2aac07f611b11e0f2d3fc",
+      "originalSha256": "cc240ead55dfb8191ad8bc30b7e1c1fb7b2442804dd2aac07f611b11e0f2d3fc"
+    },
+    {
+      "path": "package-receipt.mjs.txt",
+      "bytes": 3474,
+      "sha256": "158aacc72be97d647b9c651b2e1fd6030ca4a1d42c460ef73fe93a25eebf6b13",
+      "originalSha256": "c07da4b03776c5c89f60fedfd1b199efe8e7386e251a94d45fdeea43c41e0289"
+    },
+    {
+      "path": "progress.md",
+      "bytes": 2123,
+      "sha256": "8f36b8aa662b4796eeb912455da15010ffbd828818903aff289030b393e13b27",
+      "originalSha256": "bc80fb3539bc227a92e180f2d553e567652c1b6bed903ed00ef0570210ef2aa0"
+    },
+    {
+      "path": "raw-text-evidence.zip",
+      "bytes": 163043,
+      "sha256": "bbd9ec450f1bad247bdda5026847341fe47eb4b7313f1bbf970a9ea717bc0884"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4309,
+      "sha256": "ea96051053254ab00fd712aa6a3254736beff5a9cc948ac03a169bf458e99e98",
+      "originalSha256": "ea96051053254ab00fd712aa6a3254736beff5a9cc948ac03a169bf458e99e98"
+    },
+    {
+      "path": "recover-docker-runtime.ps1.txt",
+      "bytes": 2279,
+      "sha256": "57eb1dbd7c49c4ebb1c8a26b3e0008a75440856d44c201b5df49919515e5ed8b",
+      "originalSha256": "57eb1dbd7c49c4ebb1c8a26b3e0008a75440856d44c201b5df49919515e5ed8b"
+    },
+    {
+      "path": "remote-before.txt",
+      "bytes": 57,
+      "sha256": "648c59083c995b1e4f51fe0ff7b82b28f45d3e7b5d15d5ae045db9a8ef85bace",
+      "originalSha256": "648c59083c995b1e4f51fe0ff7b82b28f45d3e7b5d15d5ae045db9a8ef85bace"
+    },
+    {
+      "path": "remote-final-before.txt",
+      "bytes": 57,
+      "sha256": "648c59083c995b1e4f51fe0ff7b82b28f45d3e7b5d15d5ae045db9a8ef85bace",
+      "originalSha256": "648c59083c995b1e4f51fe0ff7b82b28f45d3e7b5d15d5ae045db9a8ef85bace"
+    },
+    {
+      "path": "review-fix-commit.txt",
+      "bytes": 155,
+      "sha256": "09e874ddcebe41ac28f88bd9a5d2f0cd765de1428f3d5beaf8c2a3c37060c8ec",
+      "originalSha256": "09e874ddcebe41ac28f88bd9a5d2f0cd765de1428f3d5beaf8c2a3c37060c8ec"
+    },
+    {
+      "path": "review-fix.diff.txt",
+      "bytes": 8462,
+      "sha256": "18ea7b7fc467ef597d16556bacb75848d8b553c2e2073aca154c8ba9027e164d",
+      "originalSha256": "2fccc6794961ef0a8f1643d81416e5acb7ac908c7edbb2192f2245e7266a0cca"
+    },
+    {
+      "path": "review-green.txt",
+      "bytes": 1244,
+      "sha256": "2f3a8bc933e376a5d8383a30ccc8f9a6d7128772a6af732dda91578dfd1bb975",
+      "originalSha256": "c2eeddc74f03c93f7b78e4b3270c88290caf2ec7de2b1ef76d60b976e7791a3f"
+    },
+    {
+      "path": "review-red-service.txt",
+      "bytes": 3772,
+      "sha256": "ae82323098d34d7ee3f52956c8e144547cfb7c869127ab52e0c13cc1e05e2695",
+      "originalSha256": "05d92e2c2ed8414780da465f7daf604fb1a15b8e78616a3fc86f25f9da5b3673"
+    },
+    {
+      "path": "review-red.txt",
+      "bytes": 2758,
+      "sha256": "9d7be04285e1d0bce759e93120963798cadfe56f44ccc71e77bf576879cb6585",
+      "originalSha256": "af4a7fca4c9d04a9adba914b6ff57e11f7cca0c96342889b3379be806515181a"
+    },
+    {
+      "path": "review.txt",
+      "bytes": 994,
+      "sha256": "650af69aa239c3b53b1344b3dbbc6facd551f06cd8c2d268dee1d7afeb958211",
+      "originalSha256": "5ac56af5d6b6b250902bec4755dd4839e1afa0171a83ce465085d34389424a26"
+    },
+    {
+      "path": "reviewed-diff.txt",
+      "bytes": 36190,
+      "sha256": "03eca3eadd40cc16251af0976e9226f97f888eab52f8e010591c05a1912d873a",
+      "originalSha256": "03eca3eadd40cc16251af0976e9226f97f888eab52f8e010591c05a1912d873a"
+    },
+    {
+      "path": "source-commit.txt",
+      "bytes": 506,
+      "sha256": "e41c3b92fa58ead4777ee0f3ba202d296656ffd37631d724f6124da68d47c6b3",
+      "originalSha256": "e41c3b92fa58ead4777ee0f3ba202d296656ffd37631d724f6124da68d47c6b3"
+    },
+    {
+      "path": "summarize-report.mjs.txt",
+      "bytes": 936,
+      "sha256": "9a2b66514da9c3122c07044dfb7fd42eadca772c486c95e8603ae11087d95ece",
+      "originalSha256": "9a2b66514da9c3122c07044dfb7fd42eadca772c486c95e8603ae11087d95ece"
+    },
+    {
+      "path": "task-done.txt",
+      "bytes": 208,
+      "sha256": "5e29e8de1452e892072f0c71ddfdf5da16821eefbd89bcd77a652800f64facf0",
+      "originalSha256": "b110856ebc5ffc588005cc428616c88c7dc08068b0908e2c46fedfccc1231ebb"
+    },
+    {
+      "path": "unit-green.txt",
+      "bytes": 1244,
+      "sha256": "adb8eec07a6cda4fa0b7aaeea82432c6ba9dbf774e4ca78b36ea4582f97e4cb4",
+      "originalSha256": "0d0a9020fb596a55ddb2a8a50d480ac4f3f74e0814681ccf0cee216bccbd4595"
+    },
+    {
+      "path": "unit-red-corrected.txt",
+      "bytes": 5655,
+      "sha256": "609f0f01acfb1afb5760d4c0f257f60925da81e76ac7dd526a088fb0e11c0731",
+      "originalSha256": "bc61448754c86853d76b951cc93cedc74d07844bdae71fcc97addd343c85cfd4"
+    },
+    {
+      "path": "unit-red.txt",
+      "bytes": 5538,
+      "sha256": "d23e367f44c8a658a40f8ed94487214acc93e514c25dc873795a2cf99fffebf8",
+      "originalSha256": "0456fbb5a50bf64b8ce360dc45fe97ecd5356843240ed6153d2525ec2e2827fd"
+    },
+    {
+      "path": "verify-after-harness-final.txt",
+      "bytes": 1397,
+      "sha256": "8e0a0b67c456940b7b42412eec6aa3834b9b0049e5d05b8b0e1939cb1a19f3f0",
+      "originalSha256": "2571dc3dd227013bc6f4df33d3b25658047a551b161b44faaced0d439ff784c1"
+    },
+    {
+      "path": "verify-after-harness.txt",
+      "bytes": 435,
+      "sha256": "13c4d12164375f9488ebddd57aba3f11a3e98acb16d408bd9ae711762cb3e97e",
+      "originalSha256": "5c9b3e250b4e1f2a417f9df63178ed492ce9566ed72e4ffb2c9904e15248a9ee"
+    },
+    {
+      "path": "verify-committed.mjs.txt",
+      "bytes": 1319,
+      "sha256": "b99154ea817cb2e5967cb6e918ecec2bd365a13d59034575b2275581b045f1bb",
+      "originalSha256": "5533f04afcd112125b0406c29a99a4a861596d21473f8f3374ad8ceca4b4dd13"
+    },
+    {
+      "path": "verify-exit.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "originalSha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "verify-final.txt",
+      "bytes": 3204,
+      "sha256": "f091946c6e26b27923bf4a017658fc2bf37de63111f7cec1e7991ab58e869a90",
+      "originalSha256": "9916c22acaefad2aef1d427cd4b8322e729f7c8723fcf8ccfae12a3bfaae1110"
+    },
+    {
+      "path": "verify-initial.txt",
+      "bytes": 3204,
+      "sha256": "8b705e404159362fd53348abace359870cbbbfb74f0847c51cc3d1f6c2b94bea",
+      "originalSha256": "b96c1c759a9529cf2b3f9b20bc32a1e4bedf50f55975f7ea57f2e5f458db0b7e"
+    },
+    {
+      "path": "verify-pre-review.txt",
+      "bytes": 3202,
+      "sha256": "ba46454741d72b1eb5cc7c72ea6e60eebdd5b4ca9d54fc6fd041aac7b1750d0f",
+      "originalSha256": "ba46454741d72b1eb5cc7c72ea6e60eebdd5b4ca9d54fc6fd041aac7b1750d0f"
+    },
+    {
+      "path": "verify-reconnected.txt",
+      "bytes": 3204,
+      "sha256": "6e351cc891c724ebdb6ed6a135d06b6145b85410ca42acd9be01e381e12db3b2",
+      "originalSha256": "8ec627a6b704bab5e559fa76a09ee4649da6a96489494291b29716f192fc58b5"
+    },
+    {
+      "path": "zip-evidence.ps1.txt",
+      "bytes": 966,
+      "sha256": "ccb9a8fb0c0cd0f43d458a59c42da43ca1847e7e0812a87e9936c9ab3e9cd542",
+      "originalSha256": "23a8629cad0e1d341f4efe673764ad3e39763369760197188218beda61cd276e"
+    }
+  ]
+}

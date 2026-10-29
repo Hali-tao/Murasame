@@ -1,0 +1,129 @@
+
+Running 3 tests using 1 worker
+
+(node:62292) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (14.2s)
+(node:66504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (17.5s)
+(node:65332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays (17.6s)
+
+
+  1) previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 2
+
+    Call Log:
+    - Timeout 8000ms exceeded while waiting on the predicate
+
+      46 |       hostEvents.push({ phase: 'poll', host: { wall: Date.now(), perf: performance.now() }, page: sample })
+      47 |       return sample.count
+    > 48 |     }, { timeout: 8000 }).toBe(0)
+         |                           ^
+      49 |   } finally {
+      50 |     hostEvents.push({ phase: 'after', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+      51 |     const events = await page.evaluate(() => (window as unknown as { notificationEvents: unknown[] }).notificationEvents)
+        at E:\Desktop\软件工程\murasame\previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:48:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+    Call Log:
+    - Timeout 8000ms exceeded while waiting on the predicate
+
+      46 |       hostEvents.push({ phase: 'poll', host: { wall: Date.now(), perf: performance.now() }, page: sample })
+      47 |       return sample.count
+    > 48 |     }, { timeout: 8000 }).toBe(0)
+         |                           ^
+      49 |   } finally {
+      50 |     hostEvents.push({ phase: 'after', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+      51 |     const events = await page.evaluate(() => (window as unknown as { notificationEvents: unknown[] }).notificationEvents)
+        at E:\Desktop\软件工程\murasame\previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:48:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+    Call Log:
+    - Timeout 8000ms exceeded while waiting on the predicate
+
+      46 |       hostEvents.push({ phase: 'poll', host: { wall: Date.now(), perf: performance.now() }, page: sample })
+      47 |       return sample.count
+    > 48 |     }, { timeout: 8000 }).toBe(0)
+         |                           ^
+      49 |   } finally {
+      50 |     hostEvents.push({ phase: 'after', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+      51 |     const events = await page.evaluate(() => (window as unknown as { notificationEvents: unknown[] }).notificationEvents)
+        at E:\Desktop\软件工程\murasame\previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:48:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-diagnostic-poll\notification-diagnostic-me-4ce21-thout-changing-timer-delays-repeat2\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays
+    previews\directory-checkpoints-2026-10-30\notification-diagnostic.spec.ts:5:5 › measure routine toast lifetime without changing timer delays

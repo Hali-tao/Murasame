@@ -1,0 +1,56 @@
+import { test, expect } from '@playwright/test'
+import { writeFileSync } from 'node:fs'
+import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from '../../tests/e2e/helpers'
+
+test('measure routine toast lifetime without changing timer delays', async () => {
+  const server = await startModelServer()
+  const app = await launchApp()
+  const page = await findMainPage(app)
+  const hostEvents: unknown[] = []
+  try {
+    await page.evaluate(() => {
+      const diagnostic = window as unknown as { notificationEvents: unknown[] }
+      diagnostic.notificationEvents = []
+      const log = (kind: string, detail: unknown) => diagnostic.notificationEvents.push({ kind, detail, time: performance.now(), wall: Date.now(), visible: document.visibilityState, focus: document.hasFocus() })
+      const original = window.setTimeout.bind(window)
+      window.setTimeout = ((callback: TimerHandler, delay?: number, ...args: unknown[]) => {
+        if (delay !== 5000 || typeof callback !== 'function') return original(callback, delay, ...args)
+        const start = performance.now()
+        log('schedule', { delay, stack: new Error().stack })
+        return original(() => { log('fired', { elapsed: performance.now() - start }); callback(...args) }, delay)
+      }) as typeof window.setTimeout
+      let last = ''
+      new MutationObserver(() => {
+        const text = Array.from(document.querySelectorAll('.toast')).map(el => el.textContent).join('|')
+        if (text !== last) { last = text; log('toasts', text) }
+      }).observe(document.body, { childList: true, subtree: true, characterData: true })
+      new PerformanceObserver(list => { for (const item of list.getEntries()) log('longtask', { start: item.startTime, duration: item.duration }) }).observe({ entryTypes: ['longtask'] })
+      document.addEventListener('visibilitychange', () => log('visibility', null))
+    })
+    await configureTestModel(page, server.url, '独立计时诊断')
+    await page.getByTestId('nav-memory').click()
+    await page.getByTestId('add-memory').click()
+    await page.getByTestId('memory-category').fill('偏好')
+    await page.getByTestId('memory-text').fill('独立界面测试：回答时优先说明结果。')
+    await page.getByRole('button', { name: '添加记忆', exact: true }).click()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await page.getByTestId('nav-chat').click()
+    await page.getByLabel('新建会话', { exact: true }).click()
+    await page.getByTestId('chat-input').fill('确认通知不会挡住发送按钮')
+    await page.screenshot({ path: test.info().outputPath('before.png') })
+    await page.getByTestId('chat-send').click()
+    await expect(page.locator('.message-row.assistant').last()).toContainText('真实流式回复')
+    hostEvents.push({ phase: 'before', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+    await expect.poll(async () => {
+      const sample = await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length }))
+      hostEvents.push({ phase: 'poll', host: { wall: Date.now(), perf: performance.now() }, page: sample })
+      return sample.count
+    }, { timeout: 8000 }).toBe(0)
+  } finally {
+    hostEvents.push({ phase: 'after', host: { wall: Date.now(), perf: performance.now() }, page: await page.evaluate(() => ({ wall: Date.now(), perf: performance.now(), count: document.querySelectorAll('.toast').length })) })
+    const events = await page.evaluate(() => (window as unknown as { notificationEvents: unknown[] }).notificationEvents)
+    writeFileSync(test.info().outputPath('events.json'), JSON.stringify({ hostEvents, events }, null, 2))
+    await page.screenshot({ path: test.info().outputPath('after.png') })
+    await closeApp(app); await server.close()
+  }
+})

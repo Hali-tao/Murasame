@@ -1,0 +1,28 @@
+$ErrorActionPreference = 'Stop'
+$dockerProcesses = @(Get-CimInstance Win32_Process | Where-Object { $_.Name -in @('Docker Desktop.exe', 'com.docker.backend.exe') })
+if ($dockerProcesses.Count) { throw 'Docker must be fully stopped before renaming runtime directories.' }
+$runtimeParent = [System.IO.Path]::GetFullPath($env:LOCALAPPDATA)
+$targets = @(
+  @{ relative = 'Docker/run'; names = @('dockerInference', 'userAnalyticsOtlpHttp.sock') },
+  @{ relative = 'docker-secrets-engine'; names = @('engine.sock') }
+)
+$actions = @()
+foreach ($target in $targets) {
+  $source = [System.IO.Path]::GetFullPath((Join-Path $runtimeParent $target.relative))
+  $expected = Join-Path $runtimeParent $target.relative
+  if ($source -ne [System.IO.Path]::GetFullPath($expected) -or -not $source.StartsWith($runtimeParent + '\', [System.StringComparison]::OrdinalIgnoreCase)) { throw 'Invalid source path' }
+  $directory = Get-Item -LiteralPath $source -Force
+  if (-not $directory.PSIsContainer -or ($directory.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { throw 'Expected a real runtime directory' }
+  $entries = @(Get-ChildItem -LiteralPath $source -Force)
+  if (@($entries | Where-Object { $_.PSIsContainer -or $_.Name -notin $target.names -or $_.Length -ne 0 }).Count) { throw 'Unexpected runtime contents; preserve for inspection' }
+  $destination = $source + '.murasame-preserved-20261030-0210'
+  if ([System.IO.Path]::GetDirectoryName($destination) -ne [System.IO.Path]::GetDirectoryName($source) -or (Test-Path -LiteralPath $destination)) { throw 'Invalid or existing destination' }
+  $actions += @{ source = $source; destination = $destination; entries = @($entries | Select-Object Name,Length,Attributes,LastWriteTime) }
+}
+$actions | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath 'previews/directory-checkpoints-2026-10-30/docker-runtime-preserved.json' -Encoding utf8
+foreach ($action in $actions) {
+  Rename-Item -LiteralPath $action.source -NewName ([System.IO.Path]::GetFileName($action.destination))
+  New-Item -ItemType Directory -Path $action.source | Out-Null
+}
+Write-Output 'Preserved the two zero-byte socket directories; no persistent Docker data changed.'
+Start-Process -FilePath 'C:/Program Files/Docker/Docker/Docker Desktop.exe' -WindowStyle Hidden

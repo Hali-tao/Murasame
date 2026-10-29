@@ -1,0 +1,57 @@
+[
+  {
+    "ProcessId": 12656,
+    "Name": "wslservice.exe",
+    "CreationDate": "2026-10-29T16:27:44.131808+08:00"
+  },
+  {
+    "ProcessId": 38208,
+    "Name": "com.docker.backend.exe",
+    "CreationDate": "2026-10-30T02:02:15.518111+08:00"
+  },
+  {
+    "ProcessId": 71864,
+    "Name": "com.docker.backend.exe",
+    "CreationDate": "2026-10-30T02:02:15.743191+08:00"
+  },
+  {
+    "ProcessId": 17612,
+    "Name": "Docker Desktop.exe",
+    "CreationDate": "2026-10-30T02:02:27.054008+08:00"
+  },
+  {
+    "ProcessId": 37892,
+    "Name": "Docker Desktop.exe",
+    "CreationDate": "2026-10-30T02:02:28.110004+08:00"
+  },
+  {
+    "ProcessId": 70340,
+    "Name": "Docker Desktop.exe",
+    "CreationDate": "2026-10-30T02:02:28.224331+08:00"
+  },
+  {
+    "ProcessId": 39556,
+    "Name": "Docker Desktop.exe",
+    "CreationDate": "2026-10-30T02:02:28.425585+08:00"
+  },
+  {
+    "ProcessId": 65120,
+    "Name": "docker.exe",
+    "CreationDate": "2026-10-30T02:05:04.859677+08:00"
+  },
+  {
+    "ProcessId": 60024,
+    "Name": "vmmemWSL",
+    "CreationDate": "2026-10-30T02:05:33.030468+08:00"
+  },
+  {
+    "ProcessId": 49956,
+    "Name": "wslrelay.exe",
+    "CreationDate": "2026-10-30T02:05:35.202719+08:00"
+  },
+  {
+    "ProcessId": 54984,
+    "Name": "docker.exe",
+    "CreationDate": "2026-10-30T02:06:25.97067+08:00"
+  }
+]

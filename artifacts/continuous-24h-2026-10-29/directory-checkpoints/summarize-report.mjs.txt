@@ -1,0 +1,9 @@
+import { readFileSync, writeFileSync } from 'node:fs'
+const filename = process.argv[2]
+const report = JSON.parse(readFileSync(filename, 'utf8'))
+const tests = suite => [...(suite.specs ?? []).flatMap(spec => spec.tests.map(test => ({ title: spec.title, ...test }))), ...(suite.suites ?? []).flatMap(tests)]
+const entries = report.suites.flatMap(tests)
+const expiry = entries.flatMap(test => test.results.flatMap(result => (result.attachments ?? []).filter(attachment => attachment.name === 'actual-toast-expiry').map(attachment => ({ title: test.title, ...JSON.parse(Buffer.from(attachment.body, 'base64').toString('utf8')) }))))
+const summary = { stats: report.stats, failures: entries.filter(test => test.status !== 'expected').map(test => ({ title: test.title, status: test.status })), expiry }
+writeFileSync(filename.replace(/\.json$/, '-summary.json'), JSON.stringify(summary, null, 2) + '\n')
+console.log(JSON.stringify(summary))

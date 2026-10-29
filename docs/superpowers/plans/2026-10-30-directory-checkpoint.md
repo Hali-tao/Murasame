@@ -25,11 +25,11 @@
 
 **Interfaces:** `expectedDirectoryListing(root: string, directory: string, observed: string, effects: readonly FileEffect[]): string | undefined`返回可独立对照的排序JSON，仅接受当前哈希匹配的文件新增；executor筛选当前图中的兼容已完成后续检查点。独立核验可接受可选目录预期，其他路径不变。
 
-- [ ] 编写真实执行器/SQLite测试，先证明连续三次批准、重启恢复、嵌套/workspace/乱序时旧代码失败；检查反例保持停止、无重放、原回执不变。
-- [ ] 新增旧包真实IPC/页面三次批准场景及外部新增反例，保存失败证据。
-- [ ] 实施目录预期计算、依赖筛选和恢复Critic证据；运行定向测试，期望全部通过。
-- [ ] 完整`npm run verify`通过后本地提交；一次新上下文只读审阅，阻塞项RED→GREEN修正。
-- [ ] 串行独立打包、资源核对及最终包完整Playwright，0失败0跳过；目视实际截图。
+- [x] 编写真实执行器/SQLite测试，先证明连续三次批准、重启恢复、嵌套/workspace/乱序时旧代码失败；检查反例保持停止、无重放、原回执不变。
+- [x] 新增旧包真实IPC/页面三次批准场景及外部新增反例，保存失败证据。
+- [x] 实施目录预期计算、依赖筛选和恢复Critic证据；运行定向测试，期望全部通过。
+- [x] 完整`npm run verify`通过后本地提交；一次新上下文只读审阅，阻塞项RED→GREEN修正。
+- [x] 串行独立打包、资源核对及最终包完整Playwright，0失败0跳过；目视实际截图。
 - [ ] 归档失败/通过证据和限制，普通推送并核对远端SHA。
 
 源码任务完成门为`npm run verify`；发布另须最终包与归档门完成。执行者在当前已授权分支完成，不重复创建自动任务或角色稿。

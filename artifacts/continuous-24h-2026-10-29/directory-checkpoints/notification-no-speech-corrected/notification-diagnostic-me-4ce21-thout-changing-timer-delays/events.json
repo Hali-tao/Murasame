@@ -1,0 +1,238 @@
+{
+  "hostEvents": [
+    {
+      "phase": "before",
+      "host": {
+        "wall": 1793296046147,
+        "perf": 6108.0193
+      },
+      "page": {
+        "wall": 1793296046150,
+        "perf": 4070.2999999970198,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296046157,
+        "perf": 6118.7231
+      },
+      "page": {
+        "wall": 1793296046156,
+        "perf": 4076.5,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296046272,
+        "perf": 6232.9585
+      },
+      "page": {
+        "wall": 1793296046270,
+        "perf": 4190.39999999851,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296046534,
+        "perf": 6494.9918
+      },
+      "page": {
+        "wall": 1793296046532,
+        "perf": 4452.39999999851,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296047046,
+        "perf": 7007.3906
+      },
+      "page": {
+        "wall": 1793296047045,
+        "perf": 4965.29999999702,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296048082,
+        "perf": 8043.7092
+      },
+      "page": {
+        "wall": 1793296048069,
+        "perf": 5990.0999999940395,
+        "count": 2
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296049098,
+        "perf": 9058.8382
+      },
+      "page": {
+        "wall": 1793296049095,
+        "perf": 7015.79999999702,
+        "count": 1
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296050108,
+        "perf": 10068.8856
+      },
+      "page": {
+        "wall": 1793296050106,
+        "perf": 8026.79999999702,
+        "count": 1
+      }
+    },
+    {
+      "phase": "poll",
+      "host": {
+        "wall": 1793296051117,
+        "perf": 11078.3448
+      },
+      "page": {
+        "wall": 1793296051116,
+        "perf": 9036.69999999553,
+        "count": 0
+      }
+    },
+    {
+      "phase": "after",
+      "host": {
+        "wall": 1793296051118,
+        "perf": 11079.5294
+      },
+      "page": {
+        "wall": 1793296051121,
+        "perf": 9041.59999999404,
+        "count": 0
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4108:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async addModel (murasame://app/assets/index-DAM2MErD.js:13692:8)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+      },
+      "time": 1123.7999999970198,
+      "wall": 1793296043203,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "已添加新的模型配置",
+      "time": 1124.5,
+      "wall": 1793296043204,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4086:38\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async verifyAndUse (murasame://app/assets/index-DAM2MErD.js:13721:18)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+      },
+      "time": 1982.1999999955297,
+      "wall": 1793296044062,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "独立计时诊断 连接验证成功 · 26 ms",
+      "time": 1982.5,
+      "wall": 1793296044062,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4162:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async verifyAndUse (murasame://app/assets/index-DAM2MErD.js:13734:8)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+      },
+      "time": 1998,
+      "wall": 1793296044077,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "独立计时诊断 已验证并设为当前服务 · 26 ms",
+      "time": 1998.0999999940395,
+      "wall": 1793296044078,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "schedule",
+      "detail": {
+        "delay": 5000,
+        "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:3968:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async submit (murasame://app/assets/index-DAM2MErD.js:11161:76)"
+      },
+      "time": 3140,
+      "wall": 1793296045219,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "独立计时诊断 已验证并设为当前服务 · 26 ms|已添加记忆条目",
+      "time": 3143.7999999970198,
+      "wall": 1793296045223,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "fired",
+      "detail": {
+        "elapsed": 5015
+      },
+      "time": 7012.89999999851,
+      "wall": 1793296049092,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "已添加记忆条目",
+      "time": 7013.5,
+      "wall": 1793296049093,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "fired",
+      "detail": {
+        "elapsed": 5006.70000000298
+      },
+      "time": 8146.5,
+      "wall": 1793296050226,
+      "visible": "visible",
+      "focus": true
+    },
+    {
+      "kind": "toasts",
+      "detail": "",
+      "time": 8146.69999999553,
+      "wall": 1793296050226,
+      "visible": "visible",
+      "focus": true
+    }
+  ]
+}

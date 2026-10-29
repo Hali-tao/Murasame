@@ -1,0 +1,14 @@
+{
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-30-directory-checkpoints\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292514466,
+    "sha256": "655f6d7140eadf66529649293765fdb9e59e889b79936f51877db047a6b1e939"
+  },
+  "applicationFiles": 109,
+  "changedProgramFiles": [
+    "out/main/index.js"
+  ],
+  "models": 18,
+  "isolation": 6,
+  "previousInstallers": 16
+}

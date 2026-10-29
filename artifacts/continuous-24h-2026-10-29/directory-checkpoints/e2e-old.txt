@@ -1,0 +1,51 @@
+
+Running 2 tests using 1 worker
+
+(node:65552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\task-directory-checkpoints.spec.ts:11:51 › [FR-17] 三步任务逐项批准接受本任务新增文件并完成 (11.0s)
+(node:61908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\e2e\task-directory-checkpoints.spec.ts:11:51 › [FR-17] 三步任务逐项批准拦截外部新增文件 (5.7s)
+
+
+  1) tests\e2e\task-directory-checkpoints.spec.ts:11:51 › [FR-17] 三步任务逐项批准接受本任务新增文件并完成 ─────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "已完成"
+    Received: "失败"
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      40 |     if (externalAddition) writeFileSync(join(root, 'external.txt'), 'user-added synthetic file')
+      41 |     await approveOnce(page)
+    > 42 |     await expect.poll(async () => (await task()).status).toBe(externalAddition ? '失败' : '已完成')
+         |                                                          ^
+      43 |     await expect(page.locator('.task-detail-titleline .pill')).toHaveText(externalAddition ? '失败' : '已完成')
+      44 |     await page.screenshot({ path: test.info().outputPath(externalAddition ? 'external-change-blocked.png' : 'three-step-complete.png') })
+      45 |     expect(await workerCount()).toBe(externalAddition ? 2 : 3)
+        at E:\Desktop\软件工程\murasame\tests\e2e\task-directory-checkpoints.spec.ts:42:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\e2e-old\task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\e2e-old\task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\e2e-old\task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\e2e-old\task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\e2e-old\task-directory-checkpoints--FR-17-三步任务逐项批准接受本任务新增文件并完成\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\task-directory-checkpoints.spec.ts:11:51 › [FR-17] 三步任务逐项批准接受本任务新增文件并完成 ──────────────
+  1 passed (17.7s)

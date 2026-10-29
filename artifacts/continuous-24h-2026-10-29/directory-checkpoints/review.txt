@@ -1,0 +1,6 @@
+Fresh read-only review /root/directory_checkpoint_review, gpt-6-astra.
+Range5cc5c282ea1b65e9bd63bf75d4b16d45a24a2c34..66225ba2f1dde03669dc249375181055ce1c59df.
+Important P2: addition whitelist checked the output checkpoint but not the full prerequisite chain. After a source/read step or sibling prerequisite changed, old a.txt could make the directory checkpoint pass and be adopted into the new plan.
+Assessment With fixes. Critical none; Minor none; Declined to judge empty. Reviewer did not edit files, run checks or build packages.
+Author accepted. Added4 behavioral cases, including actual TaskService+SQLite replan;3failed/1alreadyPassed before fix. Required every transitive predecessor to have a compatible successful completed checkpoint. Targeted4files54passed after fix. Full regression pending. No re-review requested under the one-pass review workflow.
+Final whole verification:70files901tests passed, types/lint/trace74 passed. Fix committed locally; final package gate pending.

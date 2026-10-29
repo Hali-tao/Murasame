@@ -1,0 +1,69 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:59780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/task-directory-checkpoints.test.ts (25 tests | 3 failed | 21 skipped) 381ms
+   ❯ resuming directory observations after verified task additions (25)
+     × does not adopt an old output after its intermediate source-path changes 104ms
+     × does not use a compatible path through the graph to hide a changed sibling prerequisite 88ms
+     × keeps a real service replan blocked when the source behind a completed output changes 118ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > does not adopt an old output after its intermediate source-path changes
+AssertionError: expected '等待批准' to be '失败' // Object.is equality
+
+Expected: "失败"
+Received: "等待批准"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:134:27
+    132|     else f.plan.steps[1].dependsOn = []
+    133|     const result = await f.run()
+    134|     expect(result.status).toBe('失败')
+       |                           ^
+    135|     expect(result.calls.filter(call => call.agentRole === 'Worker')).t…
+    136|     expect(existsSync(f.b)).toBe(false); expect(readFileSync(f.a, 'utf…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > does not use a compatible path through the graph to hide a changed sibling prerequisite
+AssertionError: expected '等待批准' to be '失败' // Object.is equality
+
+Expected: "失败"
+Received: "等待批准"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:146:27
+    144|     f.plan.steps[1].args!.path = 'new.txt'
+    145|     const result = await f.run()
+    146|     expect(result.status).toBe('失败')
+       |                           ^
+    147|     expect(result.calls.filter(call => call.agentRole === 'Worker')).t…
+    148|     expect(existsSync(f.b)).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/task-directory-checkpoints.test.ts > resuming directory observations after verified task additions > keeps a real service replan blocked when the source behind a completed output changes
+AssertionError: expected '等待批准' to be '失败' // Object.is equality
+
+Expected: "失败"
+Received: "等待批准"
+
+ ❯ tests/unit/task-directory-checkpoints.test.ts:164:37
+    162|       f.plan.steps[1].args!.path = 'new.txt'
+    163|       const continued = await service.continueTask(made.data.id, '改用新的…
+    164|       expect(continued.data.status).toBe('失败'); expect(continued.data.…
+       |                                     ^
+    165|       expect(continued.data.toolCalls.filter(call => call.agentRole ==…
+    166|       expect(readFileSync(f.a, 'utf8')).toBe('first result'); expect(e…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed | 21 skipped (25)
+   Start at  01:21:21
+   Duration  983ms (tests 68%, import 19%, transform 12%, worker 1%)

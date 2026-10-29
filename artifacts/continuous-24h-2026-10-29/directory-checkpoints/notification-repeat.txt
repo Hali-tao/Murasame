@@ -1,0 +1,108 @@
+
+Running 3 tests using 1 worker
+
+(node:56812) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (17.0s)
+(node:56720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (11.3s)
+(node:67344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (17.7s)
+
+
+  1) tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.toast')
+    Expected: 0
+    Received: 1
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.toast') with timeout 8000ms
+      - waiting for locator('.toast')
+        10 × locator resolved to 2 elements
+           - unexpected value "2"
+        2 × locator resolved to 1 element
+          - unexpected value "1"
+
+
+      35 |     await page.getByTestId('chat-send').click()
+      36 |     await expect(page.locator('.message-row.assistant').last()).toContainText('真实流式回复')
+    > 37 |     await expect(page.locator('.toast')).toHaveCount(0, { timeout: 8000 })
+         |                                          ^
+      38 |   } finally { await closeApp(app); await server.close() }
+      39 | })
+      40 |
+        at E:\Desktop\软件工程\murasame\tests\e2e\notifications.spec.ts:37:42
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.toast')
+    Expected: 0
+    Received: 1
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.toast') with timeout 8000ms
+      - waiting for locator('.toast')
+        10 × locator resolved to 2 elements
+           - unexpected value "2"
+        2 × locator resolved to 1 element
+          - unexpected value "1"
+
+
+      35 |     await page.getByTestId('chat-send').click()
+      36 |     await expect(page.locator('.message-row.assistant').last()).toContainText('真实流式回复')
+    > 37 |     await expect(page.locator('.toast')).toHaveCount(0, { timeout: 8000 })
+         |                                          ^
+      38 |   } finally { await closeApp(app); await server.close() }
+      39 | })
+      40 |
+        at E:\Desktop\软件工程\murasame\tests\e2e\notifications.spec.ts:37:42
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\directory-checkpoints-2026-10-30\notification-repeat\notifications-model-setup--4a65f-ve-the-chat-composer-usable-repeat2\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable
+    tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable
+  1 passed (48.1s)

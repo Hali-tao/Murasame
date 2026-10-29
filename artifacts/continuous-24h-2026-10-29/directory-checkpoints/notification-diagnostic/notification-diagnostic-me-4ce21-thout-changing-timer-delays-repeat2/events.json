@@ -1,0 +1,125 @@
+[
+  {
+    "kind": "schedule",
+    "detail": {
+      "delay": 5000,
+      "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4108:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async addModel (murasame://app/assets/index-DAM2MErD.js:13692:8)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+    },
+    "time": 1150,
+    "wall": 1793295639403,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "toasts",
+    "detail": "已添加新的模型配置",
+    "time": 1150.9000000022352,
+    "wall": 1793295639404,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "longtask",
+    "detail": {
+      "start": 972.6999999992549,
+      "duration": 170
+    },
+    "time": 1162.300000000745,
+    "wall": 1793295639415,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "schedule",
+    "detail": {
+      "delay": 5000,
+      "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4086:38\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async verifyAndUse (murasame://app/assets/index-DAM2MErD.js:13721:18)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+    },
+    "time": 2008.1000000014901,
+    "wall": 1793295640261,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "toasts",
+    "detail": "独立计时诊断 连接验证成功 · 37 ms",
+    "time": 2008.4000000022352,
+    "wall": 1793295640261,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "schedule",
+    "detail": {
+      "delay": 5000,
+      "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:4162:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async verifyAndUse (murasame://app/assets/index-DAM2MErD.js:13734:8)\n    at async runFormAction (murasame://app/assets/index-DAM2MErD.js:13763:4)"
+    },
+    "time": 2028.699999999255,
+    "wall": 1793295640282,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "toasts",
+    "detail": "独立计时诊断 已验证并设为当前服务 · 37 ms",
+    "time": 2028.9000000022352,
+    "wall": 1793295640282,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "schedule",
+    "detail": {
+      "delay": 5000,
+      "stack": "Error\n    at window.setTimeout (eval at evaluate (:370:30), <anonymous>:18:18)\n    at Object.notify (murasame://app/assets/index-DAM2MErD.js:3885:55)\n    at murasame://app/assets/index-DAM2MErD.js:3968:11\n    at async busyRun (murasame://app/assets/index-DAM2MErD.js:3694:11)\n    at async submit (murasame://app/assets/index-DAM2MErD.js:11161:76)"
+    },
+    "time": 3020.300000000745,
+    "wall": 1793295641273,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "toasts",
+    "detail": "独立计时诊断 已验证并设为当前服务 · 37 ms|已添加记忆条目",
+    "time": 3023.60000000149,
+    "wall": 1793295641276,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "fired",
+    "detail": {
+      "elapsed": 5008.10000000149
+    },
+    "time": 7036.60000000149,
+    "wall": 1793295645290,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "toasts",
+    "detail": "已添加记忆条目",
+    "time": 7037,
+    "wall": 1793295645290,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "fired",
+    "detail": {
+      "elapsed": 5006.39999999851
+    },
+    "time": 8026.5,
+    "wall": 1793295646279,
+    "visible": "visible",
+    "focus": true
+  },
+  {
+    "kind": "toasts",
+    "detail": "",
+    "time": 8026.800000000745,
+    "wall": 1793295646280,
+    "visible": "visible",
+    "focus": true
+  }
+]
