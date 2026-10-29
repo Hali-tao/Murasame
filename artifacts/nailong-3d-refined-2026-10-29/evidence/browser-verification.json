@@ -1,0 +1,52 @@
+{
+  "browser": "Existing Microsoft Edge; headless isolated context",
+  "images": [
+    {
+      "src": "../nailong-3d-2026-10-29/reference.png",
+      "loaded": true,
+      "width": 474,
+      "height": 474
+    },
+    {
+      "src": "../nailong-3d-2026-10-29/renders/v3-reference-angle.png",
+      "loaded": true,
+      "width": 1000,
+      "height": 1100
+    },
+    {
+      "src": "renders/r3-reference-angle.png",
+      "loaded": true,
+      "width": 1000,
+      "height": 1100
+    },
+    {
+      "src": "renders/r3-front.png",
+      "loaded": true,
+      "width": 1000,
+      "height": 1100
+    },
+    {
+      "src": "renders/r3-reference-angle.png",
+      "loaded": true,
+      "width": 1000,
+      "height": 1100
+    },
+    {
+      "src": "renders/r3-side.png",
+      "loaded": true,
+      "width": 1000,
+      "height": 1100
+    },
+    {
+      "src": "renders/r3-back.png",
+      "loaded": true,
+      "width": 1000,
+      "height": 1100
+    }
+  ],
+  "missing_local_links": [],
+  "page_errors": [],
+  "desktop_horizontal_overflow": false,
+  "mobile_horizontal_overflow": false,
+  "passed": true
+}

@@ -1,0 +1,4 @@
+# Earlier editable iterations stay local; retain their images and reports.
+nailong-reference-r1.blend
+nailong-reference-r2.blend
+*.blend1

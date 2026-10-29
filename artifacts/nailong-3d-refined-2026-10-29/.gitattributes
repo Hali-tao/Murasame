@@ -1,0 +1,4 @@
+* -text whitespace=cr-at-eol
+evidence/*.txt -diff
+build-*.py -diff
+verify-r3.py -diff

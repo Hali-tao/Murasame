@@ -1,0 +1,12 @@
+ZE_LOADER_DEBUG_TRACE:Using Loader Library Path: 
+ZE_LOADER_DEBUG_TRACE:0 Drivers Discovered
+Blender 4.5.15 LTS (hash 5afeabba6097 built 2026-10-22 01:35:27)
+Traceback (most recent call last):
+  File "E:\Desktop\软件工程\murasame\scripts\character\build_nailong_reference.py", line 327, in <module>
+    assert len(seen) == len(body.data.vertices), 'Disconnected skin'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Disconnected skin
+
+Error: script failed, file: 'scripts/character/build_nailong_reference.py', exiting.
+
+Blender quit

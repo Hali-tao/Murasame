@@ -1,0 +1,79 @@
+{
+  "version": "r3",
+  "blender": "4.5.15 LTS",
+  "reopened": true,
+  "blend_sha256": "b5c24ee120edef72738ee01e722334823dc0493b34d3a05b27dacbce84fdca4d",
+  "body_vertices": 357942,
+  "body_faces": 357735,
+  "connected_components": 1,
+  "non_manifold_edges": 0,
+  "signed_volume": 4.145902794920821,
+  "finite_coordinates": true,
+  "armatures": 0,
+  "actions": 0,
+  "camera_count": 4,
+  "images": {
+    "front": {
+      "width": 1000,
+      "height": 1100,
+      "yellow_body_bounds": [
+        202,
+        101,
+        789,
+        1010
+      ]
+    },
+    "reference-angle": {
+      "width": 1000,
+      "height": 1100,
+      "yellow_body_bounds": [
+        181,
+        115,
+        788,
+        1017
+      ]
+    },
+    "side": {
+      "width": 1000,
+      "height": 1100,
+      "yellow_body_bounds": [
+        268,
+        91,
+        760,
+        1010
+      ]
+    },
+    "back": {
+      "width": 1000,
+      "height": 1100,
+      "yellow_body_bounds": [
+        210,
+        91,
+        797,
+        1010
+      ]
+    },
+    "original": {
+      "width": 474,
+      "height": 474,
+      "yellow_body_bounds": [
+        102,
+        64,
+        370,
+        440
+      ]
+    },
+    "previous-v3": {
+      "width": 1000,
+      "height": 1100,
+      "yellow_body_bounds": [
+        224,
+        135,
+        786,
+        998
+      ]
+    }
+  },
+  "reopened_render": "renders/r3-reopened.png",
+  "likeness": "Unapproved; geometry and image-layout checks are not visual acceptance"
+}

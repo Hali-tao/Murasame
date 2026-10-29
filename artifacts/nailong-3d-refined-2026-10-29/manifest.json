@@ -1,0 +1,201 @@
+{
+  "created_at": "2026-10-29T14:11:41.9645085+08:00",
+  "stage": "Reference-led static r3 revision; appearance unapproved; no rig or production integration",
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 86,
+      "sha256": "54a8f4e48686e461dbe4c93aaf02f9de251371765adb5e728e94943d54946f81"
+    },
+    {
+      "file": ".gitignore",
+      "bytes": 138,
+      "sha256": "56cf5cc1587dda09145d3e13053ff98448b5d701da097e3d9f7adf85fb62d6d9"
+    },
+    {
+      "file": "build-r1.py",
+      "bytes": 20594,
+      "sha256": "fab91bec3922f9e4b27603a0c8980812e7d5836668d278b158762301753ae981"
+    },
+    {
+      "file": "build-r2.py",
+      "bytes": 21418,
+      "sha256": "db4e8241638b6c9cdedaaae59892edc689925ec1097c5d1d1642505e59007071"
+    },
+    {
+      "file": "build-r3.py",
+      "bytes": 21608,
+      "sha256": "adb392e2698224345a41eb58c28c15e57d928e266a558b27bf6aadd0be3d5dd3"
+    },
+    {
+      "file": "create-comparison.cjs",
+      "bytes": 7060,
+      "sha256": "982f5ea7323374285fc7911257136abc4bae4b72d9ab3cd2c554d229c5980706"
+    },
+    {
+      "file": "evidence/browser-verification.json",
+      "bytes": 1102,
+      "sha256": "7c4f72140c62ca44f4f9c995165a2d2f388d22363ba67a624b34cbf840845b4d"
+    },
+    {
+      "file": "evidence/build-r1-cleanup.txt",
+      "bytes": 32573,
+      "sha256": "2323db3102a5dc9a9123fab14c5d0f1ba0f460af50db92dd3b873c5c441d85ad"
+    },
+    {
+      "file": "evidence/build-r1-diagnostic.txt",
+      "bytes": 786,
+      "sha256": "d8db60c48af7af9893ff136eef565a473b3573a5b1710b4a1e2048e9db4f6b3c"
+    },
+    {
+      "file": "evidence/build-r1.txt",
+      "bytes": 566,
+      "sha256": "83054798804837ca3585a25b6951f5216870584a0e058021360783aed0a613bf"
+    },
+    {
+      "file": "evidence/build-r2-connected.txt",
+      "bytes": 38166,
+      "sha256": "b53a820d68af91a4191947df158c158142cabbd307203b032666179ff5bee222"
+    },
+    {
+      "file": "evidence/build-r2.txt",
+      "bytes": 785,
+      "sha256": "346c48a1e63a320772c20c79210f50b6901871a52ba7831938b6e533a0ebc91e"
+    },
+    {
+      "file": "evidence/build-r3.txt",
+      "bytes": 36945,
+      "sha256": "5c096bd72c76997f0802907712fb86fe86c824ef67f3f069abc3e2bd416c71e2"
+    },
+    {
+      "file": "evidence/comparison-desktop.png",
+      "bytes": 550570,
+      "sha256": "612f3fb97eb3afce9ae29cc2c2c2cd25c597cf2ade6e5c84d563353b884d199e"
+    },
+    {
+      "file": "evidence/comparison-mobile.png",
+      "bytes": 369332,
+      "sha256": "9fb6761e57161a7b05ea79bd67a1da3e0921d6352b76bbd058412641468397cb"
+    },
+    {
+      "file": "evidence/execution-record.md",
+      "bytes": 6325,
+      "sha256": "f2e83c79eae1c5db93f2e160ed49f1f19f86ababcdef70955f4588eac4b82827"
+    },
+    {
+      "file": "evidence/reopen-r3.txt",
+      "bytes": 8759,
+      "sha256": "544add67a182195bd8d7523a3b5a83e888725c1bf6accf55b9c911cc7e295462"
+    },
+    {
+      "file": "index.html",
+      "bytes": 6798,
+      "sha256": "ecde220c33008fe7d883682354c0524d68aadeab1e7c005336acfae0dfdc1d97"
+    },
+    {
+      "file": "nailong-reference-r3.blend",
+      "bytes": 34291645,
+      "sha256": "b5c24ee120edef72738ee01e722334823dc0493b34d3a05b27dacbce84fdca4d"
+    },
+    {
+      "file": "README.md",
+      "bytes": 3956,
+      "sha256": "ce18cce371161da7697db0b48cee6a493fc78949ed2a8bb4a4020597ab387abb"
+    },
+    {
+      "file": "renders/r1-back.png",
+      "bytes": 712669,
+      "sha256": "f27b5b1eb09c10a913abbc9aba7fb3477644e6c3cac739e1eb3327477f82ef74"
+    },
+    {
+      "file": "renders/r1-front.png",
+      "bytes": 718818,
+      "sha256": "6ff469bf02b46681290bed2f4c6627b338fae6e796d1bb8e1541627f9506816b"
+    },
+    {
+      "file": "renders/r1-reference-angle.png",
+      "bytes": 747049,
+      "sha256": "6b90e1c18d1a259ed89bf1a19866df545c3f4d44998dc9a5abfb9723ec4f50f8"
+    },
+    {
+      "file": "renders/r1-side.png",
+      "bytes": 652719,
+      "sha256": "8fde87fd002679dfff21c3e0741dd6526bf9d1d2c1cf0e97588a266f4d9b4a85"
+    },
+    {
+      "file": "renders/r2-back.png",
+      "bytes": 815224,
+      "sha256": "3a571278ee01aaefb11a3c9e38a4c005e57a21db378c4b74ecbe00e495b1791e"
+    },
+    {
+      "file": "renders/r2-front.png",
+      "bytes": 830133,
+      "sha256": "6dd12d59293af4ca9a297bffbe6719daf880e55fd6651d770dc7d79ebfef9d42"
+    },
+    {
+      "file": "renders/r2-reference-angle.png",
+      "bytes": 835987,
+      "sha256": "6155d2b14423d0f4bee46b12d14aa009b8e720484f01bea82a081c97e92ab4c0"
+    },
+    {
+      "file": "renders/r2-side.png",
+      "bytes": 757582,
+      "sha256": "592bf95f1ecaf79c49a3a7d1aef2646d3fbe83be7124adaf4bf43a275c4155af"
+    },
+    {
+      "file": "renders/r3-back.png",
+      "bytes": 812297,
+      "sha256": "6ca814379430054439fde998cd4b478c4ad7346fa1c087676ca2dfc45a4c9857"
+    },
+    {
+      "file": "renders/r3-front.png",
+      "bytes": 825637,
+      "sha256": "5d44fec18a4e1159d89916c78637a0295d947ad18f703dad0d48ed4c1a174537"
+    },
+    {
+      "file": "renders/r3-reference-angle.png",
+      "bytes": 833247,
+      "sha256": "6950db95daec3ba10e02ab14582a6c58a1e2293923246d740ca9a120e6962356"
+    },
+    {
+      "file": "renders/r3-reopened.png",
+      "bytes": 833117,
+      "sha256": "6f3e09e24f77e9c3d45a7a05084c2ad74ceeaee892742e48cd617211d11ec10f"
+    },
+    {
+      "file": "renders/r3-side.png",
+      "bytes": 758516,
+      "sha256": "0812b7385047d9a0a789527f77454cd9a13ca1b71bcf4e0860cd6399ad2df471"
+    },
+    {
+      "file": "reopen-report-r3.json",
+      "bytes": 1558,
+      "sha256": "cc4077cb72cabeeff7ac8b9dca54d15c9e99b79b027ecf32ffcd0611ed77ea71"
+    },
+    {
+      "file": "scene-report-r1.json",
+      "bytes": 705,
+      "sha256": "f13552e9ff8f265dcee098194a5e8a44b16fa7b2a6702bc64023f517226b9917"
+    },
+    {
+      "file": "scene-report-r2.json",
+      "bytes": 705,
+      "sha256": "c0b8fbe7b59ad9e117db1bf39afa21b9dca7fc7c3d01f340f87faf34045906d9"
+    },
+    {
+      "file": "scene-report-r3.json",
+      "bytes": 705,
+      "sha256": "4b1c01fcea7d905cf9334e608ec17fcf2a83576dbadfb9f747e0f328ac98a46f"
+    },
+    {
+      "file": "verify-page.cjs",
+      "bytes": 2289,
+      "sha256": "253a3430b42d0f95f8f81c4da5c908bc543291314d6aa0fbfddb6195413b1749"
+    },
+    {
+      "file": "verify-r3.py",
+      "bytes": 3656,
+      "sha256": "ff4d176a0ae1866c74e9d1a06b02306a0405d72cc162b0603757cb815d6619ff"
+    }
+  ]
+}
