@@ -1,0 +1,950 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/autonomy-page-status.test.ts (6 tests | 5 failed) 389ms
+   ❯ autonomy page follows service state (6)
+     × updates an already open idle page when another entry starts, progresses and stops 79ms
+     × does not restore a running snapshot older than a stop event 44ms
+     × serializes health reads even while a response is slow, then unsubscribes on unmount 30ms
+     × does not resurrect work when a start response arrives after the user stopped it 65ms
+     × preserves the last known activity on a health failure and recovers without an unhandled rejection 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/autonomy-page-status.test.ts > autonomy page follows service state > updates an already open idle page when another entry starts, progresses and stops
+Error: expect(element).toBeEnabled()
+
+Received element is not enabled:
+  <button
+  class="btn btn-secondary"
+  data-testid="autonomy-stop"
+  disabled=""
+  type="button"
+/>
+ ❯ tests/unit/autonomy-page-status.test.ts:42:49
+     40|     expect(screen.getByTestId('autonomy-stop')).toBeDisabled()
+     41|     await emit({ ...active, busy: true, creation: { phase: 'reviewing'…
+     42|     expect(screen.getByTestId('autonomy-stop')).toBeEnabled()
+       |                                                 ^
+     43|     expect(screen.getByRole('combobox')).toHaveValue('写代码')
+     44|     expect(screen.getByRole('status')).toHaveTextContent('独立审阅正在检查产物')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/autonomy-page-status.test.ts > autonomy page follows service state > does not restore a running snapshot older than a stop event
+TestingLibraryElementError: Unable to find an element with the text: 独立测试：已停止. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page autonomy-page"
+    >
+      <div
+        class="permission-banner"
+      >
+        <div
+          class="permission-icon"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-box"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
+            />
+            <path
+              d="m3.3 7 8.7 5 8.7-5"
+            />
+            <path
+              d="M12 22V12"
+            />
+          </svg>
+        </div>
+        <div>
+          <strong>
+            隔离环境就绪
+          </strong>
+          <span>
+            独立测试环境就绪
+          </span>
+        </div>
+      </div>
+      <div
+        class="autonomy-columns"
+      >
+        <section
+          class="card"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                这次活动
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                这次活动还在。离开这个页面不会停止，回来直接继续，不用重新开始。
+              </p>
+            </div>
+            <div
+              class="card-head-aside"
+            >
+              <span
+                class="pill pill-green is-pulsing"
+              >
+                活动进行中
+              </span>
+            </div>
+          </div>
+          <div
+            class="autonomy-status"
+          >
+            <p>
+              独立测试：真实运行态
+            </p>
+          </div>
+          <div
+            class="autonomy-form"
+          >
+            <label
+              class="field"
+            >
+              <span
+                class="field-label"
+              >
+                活动类型
+              </span>
+              <select
+                class="select"
+                disabled=""
+              >
+                <option
+                  value="浏览网页"
+                >
+                  浏览网页
+                </option>
+                <option
+                  value="看视频"
+                >
+                  看视频
+                </option>
+                <option
+                  value="办公"
+                >
+                  办公文档
+                </option>
+                <option
+                  value="写代码"
+                >
+                  Python编程
+                </option>
+              </select>
+              <span
+                class="field-hint"
+              >
+                生成自包含Python脚本，在隔离区运行、核对输出并独立审阅，完成后可导出。
+              </span>
+            </label>
+          </div>
+          <div
+            class="autonomy-toggles"
+          >
+            <div
+              class="toggle-row"
+            >
+              <div>
+                <div
+                  class="toggle-title"
+                >
+                  允许隔离桌面联网
+                </div>
+                <div
+                  class="toggle-description"
+                >
+                  关掉之后，隔离桌面连不上外网。
+                </div>
+              </div>
+              <button
+                aria-checked="false"
+                aria-label="允许隔离桌面联网"
+                class="switch"
+                data-disabled=""
+                data-state="unchecked"
+                disabled=""
+                role="switch"
+                type="button"
+                value="on"
+              >
+                <span
+                  class="switch-thumb"
+                  data-disabled=""
+                  data-state="unchecked"
+                />
+              </button>
+            </div>
+            <div
+              class="toggle-row"
+            >
+              <div>
+                <div
+                  class="toggle-title"
+                >
+                  我确认只在隔离桌面里活动
+                </div>
+                <div
+                  class="toggle-description"
+                >
+                  活动最多10分钟。停止或到期会清理隔离文件，请先导出需要保留的产物。
+                </div>
+              </div>
+              <button
+                aria-checked="true"
+                aria-label="我确认只在隔离桌面里活动"
+                class="switch"
+                data-disabled=""
+                data-state="checked"
+                disabled=""
+                role="switch"
+                type="button"
+                value="on"
+              >
+                <span
+                  class="switch-thumb"
+                  data-disabled=""
+                  data-state="checked"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="editor-actions"
+          >
+            <button
+              class="btn btn-secondary"
+              data-testid="autonomy-stop"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-square"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="18"
+                  rx="2"
+                  width="18"
+                  x="3"
+                  y="3"
+                />
+              </svg>
+              停止活动
+            </button>
+            <button
+              class="btn btn-primary"
+              data-testid="autonomy-start"
+              disabled=""
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-play"
+                fill="none"
+                height="15"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+                />
+              </svg>
+              开始活动
+            </button>
+          </div>
+        </section>
+        <section
+          class="card"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                在隔离桌面里做什么
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                活动还在，直接在这里继续。不用先停止再开始。
+              </p>
+            </div>
+          </div>
+          <div
+            class="autonomy-form"
+          >
+            <label
+              class="field"
+            >
+              <span
+                class="field-label"
+              >
+                创作目标
+              </span>
+              <textarea
+                class="textarea"
+                maxlength="2000"
+                placeholder="例如：计算1到100的平方和并打印结果"
+                rows="4"
+              />
+              <span
+                class="field-hint"
+              >
+                先生成，再真实执行和独立审阅，最多修订一次。Python仅使用标准库、不能启动子进程；这不是通用项目开发入口。
+              </span>
+              <button
+                class="btn btn-primary"
+                data-testid="autonomy-create"
+                disabled=""
+                type="button"
+              >
+                开始创作
+              </button>
+            </label>
+            <button
+              class="btn btn-secondary full-width"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-eye"
+                fill="none"
+                height="15"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                />
+              </svg>
+              让模型看一眼桌面
+            </button>
+            <p
+              class="fineprint"
+            >
+              此按钮会发送截图，需先在设置中允许；下方实时画面仅在本机查看。
+            </p>
+            <p
+              class="fineprint"
+            />
+          </div>
+        </section>
+      </div>
+      <section
+        class="card"
+      >
+        <div
+          class="card-head"
+        >
+          <div>
+            <h2
+              class="card-title"
+            >
+              隔离桌面画面
+            </h2>
+            <p
+              class="card-subtitle"
+            >
+              离线实时画面，每5秒更新；这里仅查看，创作通过上方目标执行。
+            </p>
+          </div>
+        </div>
+        <img
+          alt="离线隔离桌面实时画面"
+          class="autonomy-view"
+          src="data:image/png;base64,independent-frame"
+          style="object-fit: contain;"
+        />
+      </section>
+      <section
+        class="card"
+      >
+        <div
+          class="card-head"
+        >
+          <div>
+            <h2
+              class="card-title"
+            >
+              活动记录
+            </h2>
+            <p
+              class="card-subtitle"
+            >
+              网页里的文字只当作看到的内容，不会当成指令执行
+            </p>
+          </div>
+        </div>
+        <div
+          class="empty-state"
+        >
+          <div
+            class="empty-symbol"
+          >
+            雨
+          </div>
+          <strong>
+            还没有记录
+          </strong>
+          <p>
+            它每看一眼、每动一下，都会在这里留下一条，并注明有没有用新画面核验过。
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/unit/autonomy-page-status.test.ts:58:19
+     56|     await emit(stopped)
+     57|     await act(async () => { pending.resolve(active) })
+     58|     expect(screen.getByText(stopped.reason)).toBeVisible()
+       |                   ^
+     59|     expect(screen.getByTestId('autonomy-stop')).toBeDisabled()
+     60|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/autonomy-page-status.test.ts > autonomy page follows service state > serializes health reads even while a response is slow, then unsubscribes on unmount
+AssertionError: expected 4 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 4
+
+ ❯ tests/unit/autonomy-page-status.test.ts:84:18
+     82|     })
+     83|     await advance(20_000)
+     84|     expect(peak).toBe(1)
+       |                  ^
+     85|     view.unmount()
+     86|     await act(async () => { pending.resolve(active) })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/autonomy-page-status.test.ts > autonomy page follows service state > does not resurrect work when a start response arrives after the user stopped it
+TestingLibraryElementError: Unable to find an element with the text: 独立测试：已停止. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page autonomy-page"
+    >
+      <div
+        class="permission-banner"
+      >
+        <div
+          class="permission-icon"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-box"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
+            />
+            <path
+              d="m3.3 7 8.7 5 8.7-5"
+            />
+            <path
+              d="M12 22V12"
+            />
+          </svg>
+        </div>
+        <div>
+          <strong>
+            隔离环境就绪
+          </strong>
+          <span>
+            独立测试环境就绪
+          </span>
+        </div>
+      </div>
+      <div
+        class="autonomy-columns"
+      >
+        <section
+          class="card"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                这次活动
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                这次活动还在。离开这个页面不会停止，回来直接继续，不用重新开始。
+              </p>
+            </div>
+            <div
+              class="card-head-aside"
+            >
+              <span
+                class="pill pill-green is-pulsing"
+              >
+                活动进行中
+              </span>
+            </div>
+          </div>
+          <div
+            class="autonomy-status"
+          >
+            <p>
+              独立测试：真实运行态
+            </p>
+          </div>
+          <div
+            class="autonomy-form"
+          >
+            <label
+              class="field"
+            >
+              <span
+                class="field-label"
+              >
+                活动类型
+              </span>
+              <select
+                class="select"
+                disabled=""
+              >
+                <option
+                  value="浏览网页"
+                >
+                  浏览网页
+                </option>
+                <option
+                  value="看视频"
+                >
+                  看视频
+                </option>
+                <option
+                  value="办公"
+                >
+                  办公文档
+                </option>
+                <option
+                  value="写代码"
+                >
+                  Python编程
+                </option>
+              </select>
+              <span
+                class="field-hint"
+              >
+                生成自包含Python脚本，在隔离区运行、核对输出并独立审阅，完成后可导出。
+              </span>
+            </label>
+          </div>
+          <div
+            class="autonomy-toggles"
+          >
+            <div
+              class="toggle-row"
+            >
+              <div>
+                <div
+                  class="toggle-title"
+                >
+                  允许隔离桌面联网
+                </div>
+                <div
+                  class="toggle-description"
+                >
+                  关掉之后，隔离桌面连不上外网。
+                </div>
+              </div>
+              <button
+                aria-checked="false"
+                aria-label="允许隔离桌面联网"
+                class="switch"
+                data-disabled=""
+                data-state="unchecked"
+                disabled=""
+                role="switch"
+                type="button"
+                value="on"
+              >
+                <span
+                  class="switch-thumb"
+                  data-disabled=""
+                  data-state="unchecked"
+                />
+              </button>
+            </div>
+            <div
+              class="toggle-row"
+            >
+              <div>
+                <div
+                  class="toggle-title"
+                >
+                  我确认只在隔离桌面里活动
+                </div>
+                <div
+                  class="toggle-description"
+                >
+                  活动最多10分钟。停止或到期会清理隔离文件，请先导出需要保留的产物。
+                </div>
+              </div>
+              <button
+                aria-checked="true"
+                aria-label="我确认只在隔离桌面里活动"
+                class="switch"
+                data-disabled=""
+                data-state="checked"
+                disabled=""
+                role="switch"
+                type="button"
+                value="on"
+              >
+                <span
+                  class="switch-thumb"
+                  data-disabled=""
+                  data-state="checked"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="editor-actions"
+          >
+            <button
+              class="btn btn-secondary"
+              data-testid="autonomy-stop"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-square"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="18"
+                  rx="2"
+                  width="18"
+                  x="3"
+                  y="3"
+                />
+              </svg>
+              停止活动
+            </button>
+            <button
+              class="btn btn-primary"
+              data-testid="autonomy-start"
+              disabled=""
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-play"
+                fill="none"
+                height="15"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+                />
+              </svg>
+              开始活动
+            </button>
+          </div>
+        </section>
+        <section
+          class="card"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                在隔离桌面里做什么
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                活动还在，直接在这里继续。不用先停止再开始。
+              </p>
+            </div>
+          </div>
+          <div
+            class="autonomy-form"
+          >
+            <label
+              class="field"
+            >
+              <span
+                class="field-label"
+              >
+                创作目标
+              </span>
+              <textarea
+                class="textarea"
+                maxlength="2000"
+                placeholder="例如：计算1到100的平方和并打印结果"
+                rows="4"
+              />
+              <span
+                class="field-hint"
+              >
+                先生成，再真实执行和独立审阅，最多修订一次。Python仅使用标准库、不能启动子进程；这不是通用项目开发入口。
+              </span>
+              <button
+                class="btn btn-primary"
+                data-testid="autonomy-create"
+                disabled=""
+                type="button"
+              >
+                开始创作
+              </button>
+            </label>
+            <button
+              class="btn btn-secondary full-width"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-eye"
+                fill="none"
+                height="15"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                />
+              </svg>
+              让模型看一眼桌面
+            </button>
+            <p
+              class="fineprint"
+            >
+              此按钮会发送截图，需先在设置中允许；下方实时画面仅在本机查看。
+            </p>
+            <p
+              class="fineprint"
+            />
+          </div>
+        </section>
+      </div>
+      <section
+        class="card"
+      >
+        <div
+          class="card-head"
+        >
+          <div>
+            <h2
+              class="card-title"
+            >
+              隔离桌面画面
+            </h2>
+            <p
+              class="card-subtitle"
+            >
+              离线实时画面，每5秒更新；这里仅查看，创作通过上方目标执行。
+            </p>
+          </div>
+        </div>
+        <img
+          alt="离线隔离桌面实时画面"
+          class="autonomy-view"
+          src="data:image/png;base64,independent-frame"
+          style="object-fit: contain;"
+        />
+      </section>
+      <section
+        class="card"
+      >
+        <div
+          class="card-head"
+        >
+          <div>
+            <h2
+              class="card-title"
+            >
+              活动记录
+            </h2>
+            <p
+              class="card-subtitle"
+            >
+              网页里的文字只当作看到的内容，不会当成指令执行
+            </p>
+          </div>
+        </div>
+        <div
+          class="empty-state"
+        >
+          <div
+            class="empty-symbol"
+          >
+            雨
+          </div>
+          <strong>
+            还没有记录
+          </strong>
+          <p>
+            它每看一眼、每动一下，都会在这里留下一条，并注明有没有用新画面核验过。
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/unit/autonomy-page-status.test.ts:103:19
+    101|     expect(screen.getByText(stopped.reason)).toBeVisible()
+    102|     await act(async () => { pending.resolve({ ok: true, data: active }…
+    103|     expect(screen.getByText(stopped.reason)).toBeVisible()
+       |                   ^
+    104|     expect(screen.getByTestId('autonomy-stop')).toBeDisabled()
+    105|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/autonomy-page-status.test.ts > autonomy page follows service state > preserves the last known activity on a health failure and recovers without an unhandled rejection
+Error: expect(element).toBeDisabled()
+
+Received element is not disabled:
+  <button
+  class="btn btn-secondary"
+  data-testid="autonomy-stop"
+  type="button"
+/>
+ ❯ tests/unit/autonomy-page-status.test.ts:114:49
+    112|     expect(screen.getByTestId('autonomy-stop')).toBeEnabled()
+    113|     await emit(stopped)
+    114|     expect(screen.getByTestId('autonomy-stop')).toBeDisabled()
+       |                                                 ^
+    115|   })
+    116| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: independent transport outage
+ ❯ tests/unit/autonomy-page-status.test.ts:110:49
+    108|     current = active
+    109|     await mount()
+    110|     vi.mocked(api.status).mockRejectedValueOnce(new Error('independent…
+       |                                                 ^
+    111|     await advance(6000)
+    112|     expect(screen.getByTestId('autonomy-stop')).toBeEnabled()
+ ❯ node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+
+This error originated in "tests/unit/autonomy-page-status.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "preserves the last known activity on a health failure and recovers without an unhandled rejection". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+     Errors  1 error
+   Start at  10:34:41
+   Duration  2.65s (environment 60%, import 19%, tests 17%, transform 4%)

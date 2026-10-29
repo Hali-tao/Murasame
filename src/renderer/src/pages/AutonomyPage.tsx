@@ -1,9 +1,10 @@
 import { Box, Eye, Globe, MonitorPlay, Play, Square, Wand2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Card, CardHead, EmptyState, Spinner, ToggleRow } from '../components/ui'
 import { StatusPill } from '../components/StatusPill'
 import type { ActivityStatus } from '../../../shared/types'
 import type { CreationProgress } from '../../../shared/isolated-creation'
+import { followAutonomyStatus } from '../lib/autonomy-status'
 
 type ActivityResult = { ok: true; data: ActivityStatus } | { ok: false; error: string }
 type Activity = '浏览网页' | '看视频' | '办公' | '写代码'
@@ -47,8 +48,33 @@ export function AutonomyPage(): React.JSX.Element {
   const [busy, setBusy] = useState('')
   const [creation, setCreation] = useState<CreationProgress>()
   const [allowNetwork, setAllowNetwork] = useState(true)
+  const [activityId, setActivityId] = useState<string>()
+  const [phase, setPhase] = useState<ActivityStatus['phase']>('idle')
+  const [statusError, setStatusError] = useState('')
+  const previousStatus = useRef<ActivityStatus | null>(null)
+  const mounted = useRef(false)
+  const operation = useRef(0)
+  const draftEdits = useRef({ activity: false, goal: false, network: false })
 
-  const apply = (status: ActivityStatus): void => {
+  const apply = useCallback((status: ActivityStatus): void => {
+    const previous = previousStatus.current
+    const changedActivity = status.activityId !== previous?.activityId
+    const restoreActivity = previous !== null || status.running || status.canStop || status.busy
+    const becameTerminal = previous && ['running', 'stopping'].includes(previous.phase ?? '')
+      && ['idle', 'stopped', 'failed'].includes(status.phase ?? '')
+    const stopping = status.phase === 'stopping' && previous?.phase !== 'stopping'
+    // Preparation itself publishes an intermediate idle state before returning
+    // a startup error. Only explicit stopping or an ended active run cancels
+    // the local operation; otherwise its useful failure message must survive.
+    if (stopping || becameTerminal || (changedActivity && previous?.running)) {
+      operation.current++
+      setBusy(''); setBuildLine(''); setNotice('')
+    }
+    previousStatus.current = status
+    setStatusError('')
+    setActivityId(status.activityId)
+    setPhase(status.phase)
+    if (changedActivity) { setFrame(''); setNotice('') }
     setReason(status.reason)
     setViewUrl(status.viewUrl)
     setNotes(status.notes)
@@ -57,34 +83,39 @@ export function AutonomyPage(): React.JSX.Element {
     setCanStop(status.canStop ?? status.running)
     setServerBusy(status.busy ?? false)
     setCreation(status.creation)
-    if (status.kind && status.kind !== 'manual') setActivity(({ browse: '浏览网页', video: '看视频', office: '办公', code: '写代码' } as const)[status.kind])
-    if (status.goal) setGoal(status.goal)
-    if (status.allowNetwork !== undefined) setAllowNetwork(status.allowNetwork)
+    // Repeated health snapshots must not overwrite a draft the user is editing.
+    // A new activity or an actual server-side field change still restores it.
+    if (status.kind && status.kind !== 'manual' && (changedActivity || status.kind !== previous?.kind) && (restoreActivity || !draftEdits.current.activity)) setActivity(({ browse: '浏览网页', video: '看视频', office: '办公', code: '写代码' } as const)[status.kind])
+    if (status.goal !== undefined && (changedActivity || status.goal !== previous?.goal)
+      && (restoreActivity || !draftEdits.current.goal) && (status.goal || !draftEdits.current.goal)) {
+      setGoal(status.goal)
+      draftEdits.current.goal = false
+    }
+    if (status.allowNetwork !== undefined && (changedActivity || status.allowNetwork !== previous?.allowNetwork) && (restoreActivity || !draftEdits.current.network)) setAllowNetwork(status.allowNetwork)
     if (status.running) setConfirmed(true)
-  }
+  }, [])
 
   useEffect(() => {
+    operation.current++
+    mounted.current = true
     let cancelled = false
-    window.murasame.autonomy.status().then((status) => {
-      if (!cancelled) apply(status)
+    const unfollow = followAutonomyStatus(window.murasame.autonomy, status => {
+      if (status) apply(status)
+      else setStatusError('暂时无法读取活动状态，保留上次记录；正在重新连接，仍可尝试停止。')
     })
     void window.murasame.autonomy.environment().then((status) => {
       if (!cancelled) setEnvironment(status)
+    }).catch(() => {
+      if (!cancelled) setEnvironment(previous => ({ ...previous, detail: '暂时无法确认环境状态，开始时会重新检查。' }))
     })
     const off = window.murasame.autonomy.onBuildProgress(setBuildLine)
     return () => {
       cancelled = true
+      mounted.current = false
+      unfollow()
       off()
     }
-  }, [])
-
-  useEffect(() => {
-    if (!running && !canStop && !serverBusy) return
-    const timer = window.setInterval(() => {
-      void window.murasame.autonomy.status().then(apply)
-    }, 5000)
-    return () => window.clearInterval(timer)
-  }, [running, canStop, serverBusy])
+  }, [apply])
 
   useEffect(() => {
     if (!running || allowNetwork) return
@@ -99,72 +130,60 @@ export function AutonomyPage(): React.JSX.Element {
     }
     void refresh()
     return () => { cancelled = true; window.clearTimeout(timer) }
-  }, [running, allowNetwork])
+  }, [running, allowNetwork, activityId])
 
   const run = async (label: string, action: () => Promise<ActivityResult>): Promise<void> => {
+    const currentOperation = ++operation.current
     setBusy(label)
     setNotice('')
     try {
       const result = await action()
-      if (result.ok) apply(result.data)
-      else { apply(await window.murasame.autonomy.status()); setNotice(result.error) }
+      // The event/serial-health channel owns activity state. A command response
+      // may describe an older run (for example a start that resolves after stop).
+      if (mounted.current && currentOperation === operation.current && !result.ok) setNotice(result.error)
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : '操作失败，请重试')
+      if (mounted.current && currentOperation === operation.current) setNotice(error instanceof Error ? error.message : '操作失败，请重试')
     } finally {
-      setBusy('')
+      if (mounted.current && currentOperation === operation.current) { setBusy(''); setBuildLine('') }
     }
   }
 
   const start = async (): Promise<void> => {
-    setBusy('正在准备隔离环境')
-    setNotice(''); setFrame('')
+    setFrame('')
     setBuildLine('')
-    try {
-      const kind = ({ 浏览网页: 'browse', 看视频: 'video', 办公: 'office', 写代码: 'code' } as const)[activity]
+    const kind = ({ 浏览网页: 'browse', 看视频: 'video', 办公: 'office', 写代码: 'code' } as const)[activity]
+    await run('正在准备隔离环境', async () => {
+      const currentOperation = operation.current
       const result = await window.murasame.autonomy.start({ confirmed, allowNetwork, kind })
-      if (!result.ok) {
-        setRunning(false)
-        setNotice(result.error)
-        setViewUrl('')
-        return
+      if (result.ok && mounted.current && currentOperation === operation.current) {
+        // Environment refresh is supplementary; it must not delay or overwrite
+        // activity state arriving through the status subscription.
+        void window.murasame.autonomy.environment().then(value => {
+          if (mounted.current && currentOperation === operation.current) setEnvironment(value)
+        }).catch(() => {})
       }
-      setEnvironment(await window.murasame.autonomy.environment())
-      apply(result.data)
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : '活动启动失败')
-    } finally {
-      setBusy('')
-      setBuildLine('')
-    }
+      return result
+    })
   }
 
-  const stop = async (): Promise<void> => {
-    setBusy('正在停止')
-    setNotice('')
-    try {
-      const result = await window.murasame.autonomy.stop()
-      if (!result.ok) { apply(await window.murasame.autonomy.status()); setNotice(result.error); return }
-      apply(result.data)
-    } catch (error) { setNotice(error instanceof Error ? error.message : '未确认活动退出，请重试停止')
-    } finally {
-      setBusy('')
-    }
-  }
+  const stop = (): Promise<void> => run('正在停止', () => window.murasame.autonomy.stop())
 
   const ready = environment.docker && environment.image
   const creating = activity === '办公' || activity === '写代码'
   const watching = activity === '看视频'
-  const blocked = busy !== '' || serverBusy || Boolean(running && creation && !['ready', 'failed'].includes(creation.phase))
+  const lifecycleBusy = phase === 'preparing' || phase === 'stopping' || (!running && canStop)
+  const blocked = busy !== '' || serverBusy || lifecycleBusy || Boolean(statusError) || Boolean(running && creation && !['ready', 'failed'].includes(creation.phase))
   const artifact = creation?.artifact
   const exportArtifact = async (): Promise<void> => {
     if (!artifact) return
+    const currentOperation = ++operation.current
     setBusy('正在导出核验产物')
     setNotice('')
     try {
       const result = await window.murasame.autonomy.exportArtifact(artifact.id)
-      setNotice(result.ok ? `已保存到 ${result.data.path}` : result.error)
-    } catch (error) { setNotice(error instanceof Error ? error.message : '导出失败') }
-    finally { setBusy(''); setServerBusy(false) }
+      if (mounted.current && currentOperation === operation.current) setNotice(result.ok ? `已保存到 ${result.data.path}` : result.error)
+    } catch (error) { if (mounted.current && currentOperation === operation.current) setNotice(error instanceof Error ? error.message : '导出失败') }
+    finally { if (mounted.current && currentOperation === operation.current) setBusy('') }
   }
 
   return (
@@ -186,12 +205,16 @@ export function AutonomyPage(): React.JSX.Element {
           />
           <div className="autonomy-status">
             {blocked ? <Spinner size={14} /> : null}
-            <p>{blocked ? (buildLine || (busy ? `${busy}…` : creation?.message || reason)) : notice || reason}</p>
+            <div>
+              <p>{blocked ? (buildLine || (busy ? `${busy}…` : lifecycleBusy ? reason : creation?.message || reason)) : reason}</p>
+              {notice ? <p role="status">{notice}</p> : null}
+            </div>
           </div>
+          {statusError ? <p className="inline-note amber-note" role="alert">{statusError}</p> : null}
           <div className="autonomy-form">
             <label className="field">
               <span className="field-label">活动类型</span>
-              <select className="select" value={activity} onChange={(event) => setActivity(event.target.value as Activity)} disabled={running || blocked}>
+              <select className="select" value={activity} onChange={(event) => { draftEdits.current.activity = true; setActivity(event.target.value as Activity) }} disabled={running || blocked}>
                 <option value="浏览网页">浏览网页</option>
                 <option value="看视频">看视频</option>
                 <option value="办公">办公文档</option>
@@ -205,22 +228,22 @@ export function AutonomyPage(): React.JSX.Element {
               title="允许隔离桌面联网"
               description="关掉之后，隔离桌面连不上外网。"
               checked={allowNetwork}
-              onCheckedChange={setAllowNetwork}
-              disabled={running}
+              onCheckedChange={value => { draftEdits.current.network = true; setAllowNetwork(value) }}
+              disabled={running || blocked}
             />
             <ToggleRow
               title="我确认只在隔离桌面里活动"
               description={running ? '活动最多10分钟。停止或到期会清理隔离文件，请先导出需要保留的产物。' : '不会读取宿主文件。创作目标会发送给默认文字模型；隔离桌面联网另行控制。'}
               checked={confirmed}
               onCheckedChange={setConfirmed}
-              disabled={running}
+              disabled={running || blocked}
             />
           </div>
           {!allowNetwork && !creating ? (
             <div className="inline-note amber-note">{activity}需要网络，这次不能开始。要么打开联网，要么换个活动类型。</div>
           ) : null}
           <div className="editor-actions">
-            <Button onClick={() => void stop()} disabled={!canStop && !running && !blocked} icon={<Square size={14} />} data-testid="autonomy-stop">停止活动</Button>
+            <Button onClick={() => void stop()} disabled={busy === '正在停止' || phase === 'stopping' || (!canStop && !running && !blocked)} icon={<Square size={14} />} data-testid="autonomy-stop">停止活动</Button>
             <Button
               variant="primary"
               onClick={() => void start()}
@@ -253,7 +276,7 @@ export function AutonomyPage(): React.JSX.Element {
               <span className="field-hint">只打开 http 或 https 开头的地址。</span>
             </label> : <label className="field">
               <span className="field-label">创作目标</span>
-              <textarea className="textarea" value={goal} maxLength={2000} rows={4} onChange={(event) => setGoal(event.target.value)} placeholder={activity === '办公' ? '例如：写一份三天的复习安排，包含每天目标和验收方法' : '例如：计算1到100的平方和并打印结果'} disabled={blocked || Boolean(artifact)} />
+              <textarea className="textarea" value={goal} maxLength={2000} rows={4} onChange={(event) => { draftEdits.current.goal = true; setGoal(event.target.value) }} placeholder={activity === '办公' ? '例如：写一份三天的复习安排，包含每天目标和验收方法' : '例如：计算1到100的平方和并打印结果'} disabled={blocked || Boolean(artifact)} />
               <span className="field-hint">先生成，再真实执行和独立审阅，最多修订一次。Python仅使用标准库、不能启动子进程；这不是通用项目开发入口。</span>
               <Button variant="primary" onClick={() => void run('正在创作和审阅', () => window.murasame.autonomy.create(activity === '办公' ? 'office' : 'code', goal))} disabled={!running || !goal.trim() || blocked || Boolean(artifact)} data-testid="autonomy-create">开始创作</Button>
               {creation ? <p role="status">{creation.message}</p> : null}
@@ -263,7 +286,7 @@ export function AutonomyPage(): React.JSX.Element {
               <label className="field">
                 <span className="field-label">让它自己找什么</span>
                 <div className="inline-add">
-                  <input className="input" value={goal} onChange={(event) => setGoal(event.target.value)} placeholder="例如：看看这页讲了什么" />
+                  <input className="input" value={goal} onChange={(event) => { draftEdits.current.goal = true; setGoal(event.target.value) }} placeholder="例如：看看这页讲了什么" />
                   <Button
                     onClick={() => void run('正在隔离桌面里自己逛', () => window.murasame.autonomy.browse(goal))}
                     disabled={!running || !goal.trim() || blocked}

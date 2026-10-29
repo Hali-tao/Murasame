@@ -1,0 +1,34 @@
+
+> murasame-desktop@0.9.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 114 modules transformed.
+rendering chunks...
+out/main/prober-nqM_y6yB.js    5.06 kB
+out/main/index.js            458.05 kB
+
+[INEFFECTIVE_DYNAMIC_IMPORT] src/main/logger.ts is dynamically imported by src/main/core/murasame-core.ts but also statically imported by src/main/core/murasame-core.ts, src/main/index.ts, src/main/ipc.ts, src/main/model/registry.ts, src/main/tray.ts, ..., dynamic import will not move module into another chunk.
+
+✓ built in 375ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 3 modules transformed.
+rendering chunks...
+out/preload/index.js  12.08 kB
+
+✓ built in 12ms
+vite v8.3.4 building client environment for production...
+transforming...
+<script src="./live2d/core/live2dcubismcore.min.js"> in "/pet.html" can't be bundled without type="module" attribute
+✓ 2136 modules transformed.
+rendering chunks...
+out/renderer/pet.html                        0.93 kB
+out/renderer/index.html                      0.94 kB
+out/renderer/assets/styles-l6VZLfJN.css     85.41 kB
+out/renderer/assets/index-VPwxsSQP.js      573.60 kB
+out/renderer/assets/styles-DbKW49SK.js     591.97 kB
+out/renderer/assets/pet-kR4SQyH5.js      1,520.49 kB
+
+✓ built in 779ms

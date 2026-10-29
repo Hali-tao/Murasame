@@ -1,0 +1,5 @@
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+tests/unit/autonomy-page-status.test.ts(26,22): error TS7006: Parameter 'listener' implicitly has an 'any' type.

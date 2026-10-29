@@ -1,0 +1,54 @@
+
+> murasame-desktop@0.9.0 verify
+> npm run typecheck && npm run lint && npm test && npm run trace
+
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+
+> murasame-desktop@0.9.0 lint
+> eslint .
+
+
+> murasame-desktop@0.9.0 test
+> vitest run
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:85636) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86404) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:66440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87276) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:81260) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69456) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  63 passed (63)
+      Tests  757 passed (757)
+   Start at  10:51:09
+   Duration  18.98s (tests 58%, environment 28%, import 12%, transform 1%, worker 1%)
+
+    Isolate  63 workers spawned · ~503ms startup each (spawn + environment, per file)
+             at least ~7.41s faster with isolate: false — reuses workers across files instead of one per file
+
+
+> murasame-desktop@0.9.0 trace
+> node scripts/traceability.mjs
+
+trace: 74/74 covered, missing 0

@@ -1,0 +1,34 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/autonomy-page-status.test.ts (8 tests | 1 failed) 427ms
+   ❯ autonomy page follows service state (8)
+     × keeps edits made before a late initial stopped snapshot arrives 45ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/autonomy-page-status.test.ts > autonomy page follows service state > keeps edits made before a late initial stopped snapshot arrives
+Error: expect(element).toHaveValue(办公)
+
+Expected the element to have value:
+  办公
+Received:
+  写代码
+ ❯ tests/unit/autonomy-page-status.test.ts:81:42
+     79|     fireEvent.change(screen.getByRole('textbox', { name: /创作目标/ }), { …
+     80|     await act(async () => { pending.resolve({ ...stopped, goal: '旧目标' …
+     81|     expect(screen.getByRole('combobox')).toHaveValue('办公')
+       |                                          ^
+     82|     expect(screen.getByRole('textbox', { name: /创作目标/ })).toHaveValue(…
+     83|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  10:38:05
+   Duration  2.05s (environment 56%, tests 22%, import 18%, transform 3%)
