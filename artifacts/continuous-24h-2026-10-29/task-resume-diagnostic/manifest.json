@@ -1,0 +1,21 @@
+{
+  "baseline": "81b2b387e30fc0125a63a25ab79a64a6e8a2878a",
+  "classification": "confirmed unresolved diagnostic, no production modification",
+  "files": [
+    {
+      "path": "probe-output.txt",
+      "sha256": "184b9d3b4f1d2f225733d87e3e26c501ed89d23753f0fbaff760f50fcb81bd8e",
+      "bytes": 133
+    },
+    {
+      "path": "probe.mjs.txt",
+      "sha256": "4a358ed4dbcd1f714050535fd8096aa4966256c1891cd94d60df32a48d659fb5",
+      "bytes": 2831
+    },
+    {
+      "path": "report.json",
+      "sha256": "4938a27e96c49752d3d6c112a2d8a2f6371dde855f36e93c2912a91a94a10c97",
+      "bytes": 6895
+    }
+  ]
+}

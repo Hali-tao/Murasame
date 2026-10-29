@@ -1,0 +1,235 @@
+{
+  "at": "2026-10-29T16:28:57.237Z",
+  "baseline": "81b2b387e30fc0125a63a25ab79a64a6e8a2878a",
+  "syntheticOnly": true,
+  "networkRequests": 0,
+  "productionChanged": false,
+  "root": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI",
+  "plan": {
+    "tool": "filesystem",
+    "root": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI",
+    "question": "",
+    "steps": [
+      {
+        "id": "inspect",
+        "title": "Read directory",
+        "detail": "",
+        "expected": "",
+        "args": {
+          "action": "list"
+        }
+      },
+      {
+        "id": "write-a",
+        "dependsOn": [
+          "inspect"
+        ],
+        "title": "Create a",
+        "detail": "",
+        "expected": "",
+        "args": {
+          "action": "write",
+          "path": "a.txt",
+          "content": "first result"
+        }
+      },
+      {
+        "id": "write-b",
+        "dependsOn": [
+          "write-a"
+        ],
+        "title": "Create b",
+        "detail": "",
+        "expected": "",
+        "args": {
+          "action": "write",
+          "path": "b.txt",
+          "content": "second result"
+        }
+      }
+    ]
+  },
+  "runs": [
+    {
+      "approval": 1,
+      "status": "等待批准",
+      "result": "已尝试的调用与已完成成果保留，下一项操作需要新的批准。",
+      "steps": [
+        {
+          "id": "inspect",
+          "title": "Read directory",
+          "detail": "Read directory：[\"input.txt\"]",
+          "state": "完成",
+          "tone": "green"
+        },
+        {
+          "id": "write-a",
+          "title": "Create a",
+          "detail": "",
+          "state": "等待批准",
+          "tone": "amber"
+        },
+        {
+          "id": "write-b",
+          "title": "Create b",
+          "detail": "",
+          "state": "待执行",
+          "tone": "blue"
+        }
+      ],
+      "workers": [
+        "inspect"
+      ],
+      "files": [
+        "input.txt"
+      ]
+    },
+    {
+      "approval": 2,
+      "status": "等待批准",
+      "result": "已尝试的调用与已完成成果保留，下一项操作需要新的批准。",
+      "steps": [
+        {
+          "id": "inspect",
+          "title": "Read directory",
+          "detail": "Read directory：恢复后独立复核通过，未重复执行",
+          "state": "完成",
+          "tone": "green"
+        },
+        {
+          "id": "write-a",
+          "title": "Create a",
+          "detail": "Create a：E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI\\a.txt",
+          "state": "完成",
+          "tone": "green"
+        },
+        {
+          "id": "write-b",
+          "title": "Create b",
+          "detail": "",
+          "state": "等待批准",
+          "tone": "amber"
+        }
+      ],
+      "workers": [
+        "write-a"
+      ],
+      "files": [
+        "a.txt",
+        "input.txt"
+      ]
+    },
+    {
+      "approval": 3,
+      "status": "失败",
+      "result": "步骤 inspect 的已完成结果发生变化；未重新执行或覆盖。",
+      "steps": [
+        {
+          "id": "inspect",
+          "title": "Read directory",
+          "detail": "",
+          "state": "待执行",
+          "tone": "blue"
+        },
+        {
+          "id": "write-a",
+          "title": "Create a",
+          "detail": "",
+          "state": "待执行",
+          "tone": "blue"
+        },
+        {
+          "id": "write-b",
+          "title": "Create b",
+          "detail": "",
+          "state": "待执行",
+          "tone": "blue"
+        }
+      ],
+      "workers": [],
+      "files": [
+        "a.txt",
+        "input.txt"
+      ]
+    }
+  ],
+  "checkpoints": [
+    {
+      "stepId": "inspect",
+      "planHash": "9406b28b3c3bda23fa6f1818a06b729e653d63166fa7d2d834ff8114ae27e58b",
+      "stepHash": "84809b794c52aa2fb5fa34e8b1f56e6d63e53b9367a53fd3b215b75940022fa6",
+      "traceId": "ed92b8d4-1fe2-4663-a51b-0db9a9b5b1dc",
+      "completed": true,
+      "outcomeKnown": true,
+      "output": {
+        "run": {
+          "status": "ok",
+          "raw": "[\"input.txt\"]",
+          "evidence": {
+            "target": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI",
+            "expected": "可读取目录",
+            "actual": "1 项",
+            "matched": true,
+            "kind": "fs-stat"
+          }
+        },
+        "invocation": {
+          "action": "list"
+        },
+        "effects": [],
+        "artifacts": []
+      },
+      "evidence": [
+        {
+          "target": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI",
+          "expected": "独立只读观察与执行返回一致",
+          "actual": "[\"input.txt\"]",
+          "matched": true,
+          "kind": "fs-stat"
+        }
+      ]
+    },
+    {
+      "stepId": "write-a",
+      "planHash": "9406b28b3c3bda23fa6f1818a06b729e653d63166fa7d2d834ff8114ae27e58b",
+      "stepHash": "5a2aeb789087ee33de0cc835c927a0ef086b393f82bf3eda479f05d61caac9f8",
+      "traceId": "69a2f2a1-20bf-4ceb-bda3-985a00544e73",
+      "completed": true,
+      "outcomeKnown": true,
+      "output": {
+        "run": {
+          "status": "ok",
+          "raw": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI\\a.txt",
+          "evidence": {
+            "target": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI\\a.txt",
+            "expected": "写入",
+            "actual": "",
+            "matched": false,
+            "kind": "fs-stat"
+          }
+        },
+        "effects": [
+          {
+            "source": "",
+            "destination": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI\\a.txt",
+            "hash": "806c734071d8d93082a1c57c50a035b259a773aa27eece51f3c34321698f167e",
+            "status": "moved"
+          }
+        ],
+        "artifacts": [
+          "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI\\a.txt"
+        ]
+      },
+      "evidence": [
+        {
+          "target": "E:\\Desktop\\软件工程\\murasame\\previews\\task-resume-probe-2026-10-30\\synthetic-9YC6RI\\a.txt",
+          "expected": "sha256=806c734071d8d93082a1c57c50a035b259a773aa27eece51f3c34321698f167e;源不存在",
+          "actual": "sha256=806c734071d8d93082a1c57c50a035b259a773aa27eece51f3c34321698f167e;源不存在",
+          "matched": true,
+          "kind": "fs-hash"
+        }
+      ]
+    }
+  ],
+  "finding": "Confirmed unresolved: an earlier directory observation is treated as an unchanged final output even after this task itself added a verified file. Third explicit approval fails without replay or data loss."
+}

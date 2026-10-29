@@ -1,0 +1,33 @@
+import { build } from 'esbuild'
+import { createRequire } from 'node:module'
+import { mkdirSync, mkdtempSync, writeFileSync, readFileSync, readdirSync } from 'node:fs'
+import { resolve, join } from 'node:path'
+import assert from 'node:assert/strict'
+const base = resolve('previews/task-resume-probe-2026-10-30')
+mkdirSync(base, { recursive: true })
+await build({ entryPoints: ['src/main/agent/executor.ts'], outfile: join(base, 'executor.cjs'), bundle: true, platform: 'node', format: 'cjs', packages: 'external' })
+const { executeGoal } = createRequire(import.meta.url)(join(base, 'executor.cjs'))
+const root = mkdtempSync(join(base, 'synthetic-'))
+writeFileSync(join(root, 'input.txt'), 'synthetic source')
+const plan = { tool: 'filesystem', root, question: '', steps: [
+  { id: 'inspect', title: 'Read directory', detail: '', expected: '', args: { action: 'list' } },
+  { id: 'write-a', dependsOn: ['inspect'], title: 'Create a', detail: '', expected: '', args: { action: 'write', path: 'a.txt', content: 'first result' } },
+  { id: 'write-b', dependsOn: ['write-a'], title: 'Create b', detail: '', expected: '', args: { action: 'write', path: 'b.txt', content: 'second result' } }
+] }
+const checkpoints = []
+const runs = []
+for (let approval = 1; approval <= 3; approval++) {
+  const result = await executeGoal({ goal: 'Inspect then create two files', root, plan, approved: true, cancelled: false, approvalScope: 'once', checkpoints: [...checkpoints], onCheckpoint: checkpoint => {
+    const prior = checkpoints.findIndex(item => item.stepId === checkpoint.stepId)
+    if (prior >= 0) checkpoints[prior] = checkpoint; else checkpoints.push(checkpoint)
+  } })
+  runs.push({ approval, status: result.status, result: result.result, steps: result.steps, workers: result.calls.filter(call => call.agentRole === 'Worker').map(call => call.stepId), files: readdirSync(root) })
+}
+assert.equal(runs[0].status, '等待批准'); assert.equal(runs[1].status, '等待批准')
+assert.equal(runs[2].status, '失败'); assert.match(runs[2].result, /inspect.*发生变化/)
+assert.equal(readFileSync(join(root, 'a.txt'), 'utf8'), 'first result')
+assert.equal(runs[2].files.includes('b.txt'), false)
+const report = { at: new Date().toISOString(), baseline: '81b2b387e30fc0125a63a25ab79a64a6e8a2878a', syntheticOnly: true, networkRequests: 0, productionChanged: false, root, plan, runs, checkpoints,
+  finding: 'Confirmed unresolved: an earlier directory observation is treated as an unchanged final output even after this task itself added a verified file. Third explicit approval fails without replay or data loss.' }
+writeFileSync(join(base, 'report.json'), JSON.stringify(report, null, 2) + '\n')
+console.log(JSON.stringify({ reproduced: true, productionChanged: false, statuses: runs.map(run => run.status), finalFiles: runs.at(-1).files }))
