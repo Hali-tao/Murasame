@@ -1,0 +1,448 @@
+{
+  "archivedAt": "2026-10-29T14:08:40.343Z",
+  "baseline": "c8590aa8529d8e24023264c1218df694ab7b4ea7",
+  "sourceFiles": [
+    {
+      "path": "src/main/core/services/memory-service.ts",
+      "sha256": "33675cd5cc10881bb139a94767fe0968175e9899f2662dbbcab216095c052dfa",
+      "textLfSha256": "926d3fe51c6a09f143380dac53d0a130be5516b4bbe15046ce2545d59f9b5ce3"
+    },
+    {
+      "path": "src/main/core/services/conversation-service.ts",
+      "sha256": "bfd24726ec5438e94ce8866d4b287dfe7a38ca37ba99003d09716e2ff5b732b4",
+      "textLfSha256": "fa18b3c70ae462b75e0a985b4b1d9dd55038fc4b165f366871319b39fd4fabaf"
+    },
+    {
+      "path": "tests/unit/conversation-memory-maturity.test.ts",
+      "sha256": "f4b507dc4d9a9ceb2c069bed87d2242ba503612873aacd71f790794aebb23599",
+      "textLfSha256": "f4b507dc4d9a9ceb2c069bed87d2242ba503612873aacd71f790794aebb23599"
+    },
+    {
+      "path": "tests/e2e/memory-degraded-context.spec.ts",
+      "sha256": "308b04eaf77bce71b08af2a4a18cb0bfb171541b1acc25c09e45f6876e1bef92",
+      "textLfSha256": "308b04eaf77bce71b08af2a4a18cb0bfb171541b1acc25c09e45f6876e1bef92"
+    },
+    {
+      "path": "tests/e2e/local-memory.spec.ts",
+      "sha256": "2eef98f646aafcd9258e07f25514f766ed66beddc302d939c06765109cc5c1fe",
+      "textLfSha256": "2eef98f646aafcd9258e07f25514f766ed66beddc302d939c06765109cc5c1fe"
+    },
+    {
+      "path": "build/installer.nsh",
+      "sha256": "47e27a6e3f65e7a7f5d2252b9a04fa0caa7a9387afb15b4b8310a22a8aecc2f2",
+      "textLfSha256": "47e27a6e3f65e7a7f5d2252b9a04fa0caa7a9387afb15b4b8310a22a8aecc2f2"
+    }
+  ],
+  "files": [
+    {
+      "path": "archive-evidence.mjs.txt",
+      "bytes": 2369,
+      "sha256": "ed86b83dfa7b91aaea94c1efd91ba948eec7e308071ff0c36705675c982b998b",
+      "originalSha256": "ed86b83dfa7b91aaea94c1efd91ba948eec7e308071ff0c36705675c982b998b"
+    },
+    {
+      "path": "cleanup-check.json",
+      "bytes": 105,
+      "sha256": "752f1097b95ca615f9a98d57726bc358728ad3f896defe3f2828109fdd1e6237",
+      "originalSha256": "8623083149619623afd119d43c4c6429d58ce54e26ef63920067be84f4adf189"
+    },
+    {
+      "path": "github-issues.json",
+      "bytes": 609,
+      "sha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10",
+      "originalSha256": "a53a974fbe74ada9fc2762c014a342228e10dae356dd1dd46c2c578235fcba13"
+    },
+    {
+      "path": "green-unit.txt",
+      "bytes": 895,
+      "sha256": "56fcd0a1556cfd39b52849442bd9f0123ebefb14a661d6c83f70c7b00f6019bd",
+      "originalSha256": "f1cdc6929aa9e2e687954b128781506ba7bae2f3d6597b07fdfad01fc1162508"
+    },
+    {
+      "path": "old-package/.last-run.json",
+      "bytes": 97,
+      "sha256": "42a7dc772fc936224fee6a9beafb0c7055b0350da4621e9c3d580d1b21e4e34f",
+      "originalSha256": "d79a4d5e8b30c7bb2ed3552777a855726ad32f7962ed92616a67dc28871c18a5"
+    },
+    {
+      "path": "old-package/memory-degraded-context--N-e95f6-cessful-empty-memory-search/error-context.md",
+      "bytes": 4723,
+      "sha256": "94132e3f154e5eaeb32aa4d6b1f0563661925fb1cf0a373dd608baf9f06730e6",
+      "originalSha256": "a16dc5724f7afd23434f09fa65b0ba5e79084c792b8f73b9d55005c6c2942bb3"
+    },
+    {
+      "path": "old-package/memory-degraded-context--N-e95f6-cessful-empty-memory-search/test-failed-1.png",
+      "bytes": 95118,
+      "sha256": "1d25789a52f392489e0c78c3e5168cfe7b19d7f0228b52d64755db7daaa688fe"
+    },
+    {
+      "path": "old-package/memory-degraded-context--N-e95f6-cessful-empty-memory-search/test-failed-2.png",
+      "bytes": 207365,
+      "sha256": "488e70e45c6bdb6185d887e40b4cd8946e8dc8eeabf98f0c8db62b65edf45ea5"
+    },
+    {
+      "path": "old-package/memory-degraded-context--N-e95f6-cessful-empty-memory-search/trace.zip",
+      "bytes": 304816,
+      "sha256": "abca2724866d1b73443836f03f5f6fdb7b46bf1e80de0ef602da2708c83919a3"
+    },
+    {
+      "path": "package-build.txt",
+      "bytes": 7278,
+      "sha256": "eb664a267fa5e2a3e16fd0fe74fc3b31ddc3ed5fa3bea41afcc55a0241824da4",
+      "originalSha256": "b3d256a4b433d671d8303ccc4a7b467e6d6bee5d19cbe0a3df2b0f7acd220ede"
+    },
+    {
+      "path": "package-e2e/.last-run.json",
+      "bytes": 46,
+      "sha256": "fff6299efb51ba9ef550e500ecc967e972c83e86be387042c360caea7fdbae29",
+      "originalSha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+      "bytes": 278478,
+      "sha256": "ccafd43906498c8a5a2ee1c2e358b256676428fdbe4a286a5522c837f90e232a"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+      "bytes": 146825,
+      "sha256": "65dc206590bb5927479fba4044714f1e0df27cccba9d516679391bded46d96f1"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+      "bytes": 76275,
+      "sha256": "5b0a17ae616bfda3bc19f7b99133e3b25b066d3ebcee692897a347623fae667d"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+      "bytes": 135259,
+      "sha256": "d984371b381cf6f194bb7f6651710c08e447f87950c618333df3af68f741be0b"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+      "bytes": 454810,
+      "sha256": "b5da9a3a81e496a3532331cf364039b814f595b9cf2ff682553429c94583b276"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+      "bytes": 282057,
+      "sha256": "c5be5ea2dbb359cff78c642def30c4f4b87180a8836e76d6f9759618ed20951c"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+      "bytes": 14,
+      "sha256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08",
+      "originalSha256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+      "bytes": 83758,
+      "sha256": "21eac95c7a9f4f5ec89d861945a3b0d0eec942295644aeceb7025a09b4dab819"
+    },
+    {
+      "path": "package-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+      "bytes": 76174,
+      "sha256": "6fa28edb6a15dec2cf0fc30bfa5858171caba3d3b9fdfd7dab7531d5772cafe9"
+    },
+    {
+      "path": "package-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+      "bytes": 113367,
+      "sha256": "068723a2349e8b42f219fe76b36fe8b8f4ab0cd4bb0ea78836ccd8ca3778458f"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-real-code-result.png",
+      "bytes": 217214,
+      "sha256": "8fef3e88ab961b9cceb83b91459da926352d9ddbb2023837d28ea4eebbe8aaed"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-stop-synchronized.png",
+      "bytes": 199013,
+      "sha256": "e51969f3a8c80d43fec0e15da5b95975db8d65a8f55ce78d21c1785d4173f4c1"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/externally-started-visible.png",
+      "bytes": 186717,
+      "sha256": "55f559314edf0090dfb662ab98021b5445e2f163b4710afa7ef9932e22506e98"
+    },
+    {
+      "path": "package-e2e/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+      "bytes": 185178,
+      "sha256": "e0c7cfc0f457f47cbebe74e1522c15ec159d800f6dbf52824b58d6ed61bdc952"
+    },
+    {
+      "path": "package-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+      "bytes": 44,
+      "sha256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d",
+      "originalSha256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+      "bytes": 97,
+      "sha256": "86e8abef64d57b351189817f88a8afd843fbfb3b32d90f64711160d9cd2fb4f3",
+      "originalSha256": "4d75fa5dd56c4e2c7971ea1ff98b4d48e04700f0a8663497a22a70de2ab65aa8"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+      "bytes": 103863,
+      "sha256": "34a9da113e787633ecefffab3f6b6648894d1ddfe121b480390edb16b6ed9fd5"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+      "bytes": 115170,
+      "sha256": "7c225e8ce703d8932c73729e1e884306c65b55fd0d2c896f6c2865b59f945a57"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+      "bytes": 206,
+      "sha256": "4b9029c4ca0ebf6dc5ca5efabc7861037dc827e9b79477238b6baf2f94954faf",
+      "originalSha256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+      "bytes": 243044,
+      "sha256": "03b086b31446dba3f38bb0a700b3118d015e0c5152dac5812c0ef293b23d61e5"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+      "bytes": 73637,
+      "sha256": "eb3acbe9ab0e0c7ea0ae23e10c522fbd089f29fde4fcb47097c2a38c166bdc26"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+      "bytes": 76561,
+      "sha256": "5e6eae6556e4b3f23cb49cc950a9f0aa9dac9bd62cad06f3196950c06331854c"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+      "bytes": 73628,
+      "sha256": "46247986adac025a045ba2b3679224b91f71956def48510b1ee649bf0fb378be"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+      "bytes": 226667,
+      "sha256": "8b59c9c87e6eb1aab8a9ced857f787c13b3677dce11e8d380e48a2556d40a333"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+      "bytes": 95901,
+      "sha256": "ba257a5245079b54844c7740c48e04d19567ae47868c3582050a017a5387cbc5"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+      "bytes": 75069,
+      "sha256": "b5d314561d600ee3f5b6ca1332cc1f35c1eed8d11053c493073bda8153fdc2d3"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+      "bytes": 74440,
+      "sha256": "1e45195d688d8d729ce6eab521ebd09bef1fd65c3792bc858ea091fe30d7fbe5"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+      "bytes": 248970,
+      "sha256": "3a98eccf2570f76210b171f4548b15f69941ffd0c0fed2cf36746518a582b57d"
+    },
+    {
+      "path": "package-e2e/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+      "bytes": 194680,
+      "sha256": "027756e15760608f2fcb7e02679238ea31ea23225576ba075d4e0875bdfad628"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories/retained-conversation-learns-after-clearing.png",
+      "bytes": 173010,
+      "sha256": "9279ec2e84b6ae0303c8d1009e798c2667872dd7797e2ed35efe72c3da9ad6b7"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-cleared-without-old-notices.png",
+      "bytes": 177736,
+      "sha256": "b47218e50c7f5299533ec57ae53bb1bbc46f0c08bdc6cd173070f6d6541f641e"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-survives-history-only-clear.png",
+      "bytes": 184622,
+      "sha256": "eae8d170ead4afae696948c429cdcfa544785896a7c3a82cd6320e6a9224e45c"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-set-0e113-ps-persisted-memory-visible/failed-clear-keeps-actual-memory.png",
+      "bytes": 180961,
+      "sha256": "0358ecbb4173da9ccdb815a392c79b4ebe493bc31235316f08f974ce2b2eb6e2"
+    },
+    {
+      "path": "package-e2e/memory-correction-source---0ca62-memory-in-its-actual-source/correction-source-cleared.png",
+      "bytes": 183464,
+      "sha256": "a1b6d26d89418a3c1fbac3b42608c1f158b6e37a9ad0dbdd3af4b01fa2b3d637"
+    },
+    {
+      "path": "package-e2e/memory-correction-source---ee9ba-memory-in-its-actual-source/original-source-cleared.png",
+      "bytes": 189589,
+      "sha256": "776284217a41a1f4b3d9dae6aaab0efa77a2529ea5268ec70cafa053301b2756"
+    },
+    {
+      "path": "package-e2e/memory-degraded-context--N-e95f6-cessful-empty-memory-search/preserved-memory-with-unavailable-index.png",
+      "bytes": 189581,
+      "sha256": "f9dbd8212ed088087b569e135b1e3b1209fc098bc8fb9608f4e77178ba327994"
+    },
+    {
+      "path": "package-e2e/model-lifecycle-an-old-fai-54644-r-actual-model-verification/verified-model-after-old-failure.png",
+      "bytes": 249115,
+      "sha256": "efa4a34276eaa55c21bd553544d432075fdebafba909e2b161d96b496eecb682"
+    },
+    {
+      "path": "package-e2e/model-lifecycle-removing-a-cbe61--answer-to-the-conversation/reply-delivered-after-model-removal.png",
+      "bytes": 211033,
+      "sha256": "e3779fe7950826ae6a7a204e490da44ce792af0f0427bf258f43d1b962c0846c"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-offline-without-reload.png",
+      "bytes": 251967,
+      "sha256": "ca8c79b9c9786923a1f217ea9623657f76015a0e049d23fad8c2fea750fc65b7"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-recovers-without-reload.png",
+      "bytes": 249037,
+      "sha256": "4a26de99022777426ec3df7190bad2862a9ea246ccdcd4779ddf2e282867d8a4"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/status-snapshots.json",
+      "bytes": 5014,
+      "sha256": "b6ace006217fc5d3ed6c49cfcc592b6f1e2aaa3c3406dd566b2c3f653fd8b5c8",
+      "originalSha256": "009af6446f0de4296bf5a1cda7b6efd76b5e5b39e51c9812e23b22e3e41a47c1"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/verified-status-after-reload.png",
+      "bytes": 202720,
+      "sha256": "fe406356f403a237e4da62f26eb852328aad21a824f5ab2c94b89b65a787c3c3"
+    },
+    {
+      "path": "package-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+      "bytes": 204268,
+      "sha256": "88e205e10213c874b2d1d8e590519b35bcc250bad98b2d1f7ab44ca4bd309b66"
+    },
+    {
+      "path": "package-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+      "bytes": 381383,
+      "sha256": "a28d42fa0b7247d746ab2df744db9114a0d67071bbcdd3b0a91cc756a7b56c2c"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 183874,
+      "sha256": "74f1fa0f2644c5d74d911d6397d54936c9aaa4d23fba0eac64efcc86d8c7ee52"
+    },
+    {
+      "path": "package-e2e/pet-history-sync--FR-02-bo-53c68-citly-opens-and-closes-chat/pet-menu-controls-chat.png",
+      "bytes": 80383,
+      "sha256": "5b03af096ff372d9b2e5b61bffb695288f5d7fc2caefa23b7b7d9c93b60533f3"
+    },
+    {
+      "path": "package-e2e/pet-history-sync--FR-15-de-86698-pet-chat-without-restarting/pet-history-cleared.png",
+      "bytes": 97756,
+      "sha256": "d627dab8ffd59fadd31d966bcb4e6b10af1c962b395626c2bef8031b5578b67f"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+      "bytes": 131891,
+      "sha256": "553e51a8f4661cef4d6cda7e927bb785cfed89b53370d85f4dc3b6ac144453b7"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+      "bytes": 123834,
+      "sha256": "72f840af7b8be64442b7b482912e8046d1f1539569b2cbad1a23dc7611ecf570"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+      "bytes": 152405,
+      "sha256": "349ff4cc666b6c1f890d6a6b94f4a81056fa0b56b9cb7e92bf7669d739a843b2"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+      "bytes": 141857,
+      "sha256": "92492a94fc599250a319dc14448e85926974ebf7bb5f0debf4497a082d5f89f1"
+    },
+    {
+      "path": "package-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+      "bytes": 249229,
+      "sha256": "0bd687690c398dd877bef46e8a883453e21eebe3b5d3806f6fa7ab3e184315e4"
+    },
+    {
+      "path": "package-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+      "bytes": 234708,
+      "sha256": "f589e28fced2b2608c456c61ed0d63659330e17b8ba4c0cbbe29c9830fa1ba59"
+    },
+    {
+      "path": "package-e2e.txt",
+      "bytes": 4621,
+      "sha256": "242bad47ae65c86716c7829ed9088078d47063decfa4e61501c690367265ff09",
+      "originalSha256": "fd0f361e7179b39d350a3ee9622af961457b0a224a874d3b8141d30ad896e809"
+    },
+    {
+      "path": "package-receipt-check.txt",
+      "bytes": 408,
+      "sha256": "0dbedd414f034c85bcd5b1131e35909898fa8c1246c62205a54885272da24ea7",
+      "originalSha256": "f25d529d2d2947b50b9fe58fa44fb8c0b7fc35c8a6d17bbc6ca012bf3f2aba1f"
+    },
+    {
+      "path": "package-receipt.json",
+      "bytes": 26010,
+      "sha256": "177afa043b6c1a31bd7311908e5f34b025aaa2206c89baf52b4a28c27abaa655",
+      "originalSha256": "177afa043b6c1a31bd7311908e5f34b025aaa2206c89baf52b4a28c27abaa655"
+    },
+    {
+      "path": "package-receipt.mjs.txt",
+      "bytes": 3414,
+      "sha256": "a9db7c14139dda4fdf8058f9984296f7a44e7883e150aded375760524da5b369",
+      "originalSha256": "a9db7c14139dda4fdf8058f9984296f7a44e7883e150aded375760524da5b369"
+    },
+    {
+      "path": "raw-text-evidence.zip",
+      "bytes": 29895,
+      "sha256": "84f141e11baabe9bf9a40cea6746f626862313757da359ce9897fdf7847a6540"
+    },
+    {
+      "path": "red-package.txt",
+      "bytes": 4532,
+      "sha256": "434287847acad42852eab75d38c226c2209e705950c6699bf78ff76580566665",
+      "originalSha256": "81386b08cf53e5adbd345c8047e12085ad2c45487445444268ac042be350af8a"
+    },
+    {
+      "path": "red-unit.txt",
+      "bytes": 5684,
+      "sha256": "01c2468e6c7759b51ba34c5eb48546591f2d8f97c45e554a5b125dd9ad564fac",
+      "originalSha256": "946c8746a6a82cdea4df48dff2568889c5f11d9eaa5ceea70cc65a8152986fbe"
+    },
+    {
+      "path": "review.md",
+      "bytes": 987,
+      "sha256": "141337225a61d764cd7ba74311fe4aad9b864f31a25298fcf1f49f64256b3ec3",
+      "originalSha256": "141337225a61d764cd7ba74311fe4aad9b864f31a25298fcf1f49f64256b3ec3"
+    },
+    {
+      "path": "verify-committed.mjs.txt",
+      "bytes": 1323,
+      "sha256": "b5893ad7494e4b4d1df015af3db762d0cbf86dbddaae9976bc06c7ae96a10e19",
+      "originalSha256": "b5893ad7494e4b4d1df015af3db762d0cbf86dbddaae9976bc06c7ae96a10e19"
+    },
+    {
+      "path": "verify-final.txt",
+      "bytes": 2866,
+      "sha256": "34d6fa68b9b36fcc96670b0fa3081c9f55509d5c0a57a983055005722600a5d5",
+      "originalSha256": "234e5b0748518a58265fb5cdc3d6112c6f76f67f14864c1a9f45106116451f23"
+    },
+    {
+      "path": "zip-evidence.ps1.txt",
+      "bytes": 961,
+      "sha256": "a94cb89364c7c26c6440ebf7454382197ff25740330241f8b517a2d6cbb907c5",
+      "originalSha256": "a94cb89364c7c26c6440ebf7454382197ff25740330241f8b517a2d6cbb907c5"
+    }
+  ]
+}

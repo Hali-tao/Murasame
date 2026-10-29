@@ -101,7 +101,7 @@ export class MemoryService {
       id: fact.id, text: fact.text, category: fact.category, vector: fact.vector ?? null
     })), queryVector)
     if (queryVector && this.storageReady) this.startIndex(generation)
-    return { text: result.injected.map((item) => item.text).join('\n'), ids: result.ids, degraded: result.degraded || active.some((fact) => !fact.vector) }
+    return { text: result.injected.map((item) => item.text).join('\n'), ids: result.ids, degraded: !this.storageReady || result.degraded || active.some((fact) => !fact.vector) }
   }
 
   private publishIndex(state: MemoryIndexStatus['state'], message: string): void {

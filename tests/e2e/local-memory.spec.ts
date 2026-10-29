@@ -37,6 +37,8 @@ test('[FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对�
     await page.getByTestId('chat-input').fill('推荐个菜')
     await page.getByTestId('chat-send').click()
     await expect.poll(() => requests.some(messages => messages.some(message => message.role === 'system' && String(message.content).includes('可参考的长期记忆：\n我不吃辣，喜欢清淡的菜。'))), { timeout: 20_000 }).toBe(true)
+    const chatRequest = requests.find(messages => messages.some(message => message.role === 'user' && message.content === '推荐个菜'))
+    expect(chatRequest?.filter(message => message.role === 'system').map(message => String(message.content)).join('\n')).not.toContain('检索不完整或暂不可用')
     const reply = page.locator('.message-row.assistant').last()
     await expect(reply).toContainText('真实流式回复')
     await reply.scrollIntoViewIfNeeded()

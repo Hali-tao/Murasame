@@ -509,6 +509,64 @@ describe('bounded background memory indexing', () => {
 })
 
 describe('conversation reliability at memory boundaries', () => {
+  it('[NFR-U03] failed local query embeddings reach the model as incomplete recall, not an empty successful search', async () => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.add('user', '喜欢白茶')
+    embedding.mockResolvedValue(null)
+    let request = ''
+    const service = new ConversationService(db, models, { chat: async (_model, _turns, _delta, system) => {
+      request = system ?? ''; return '可以先继续当前话题。'
+    } }, { memoryEnabled: () => true, recall: query => memory.recall(query) })
+    const result = await service.send(service.create().id, '我之前喜欢喝什么')
+    expect(result.ok).toBe(true)
+    expect(request).toContain('本轮长期记忆检索不完整或暂不可用')
+    expect(request).toContain('不得把未检出当作用户从未说过或没有这项偏好')
+    expect(service.list()[0].recalledMemoryIds).toEqual([])
+    expect(new MemoryService(db).list().map(fact => fact.text)).toEqual(['喜欢白茶'])
+  })
+
+  it('[FR-14] incomplete indexing preserves valid recalled facts and their IDs while warning about missing context', async () => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.add('user', '喜欢白茶')
+    const teaId = memory.active()[0].id
+    embedding.mockResolvedValue(null)
+    await memory.add('user', '项目白桦')
+    embedding.mockImplementation(async text => text === '项目白桦' ? null : vector())
+    let request = ''
+    const service = new ConversationService(db, models, { chat: async (_model, _turns, _delta, system) => {
+      request = system ?? ''; return '可以参考已找到的偏好。'
+    } }, { memoryEnabled: () => true, recall: query => memory.recall(query) })
+    const result = await service.send(service.create().id, '喝什么')
+    expect(result.ok).toBe(true)
+    expect(request).toContain('本轮长期记忆检索不完整或暂不可用')
+    expect(request).toContain('可参考的长期记忆：\n喜欢白茶')
+    expect(service.list()[0].recalledMemoryIds).toEqual([teaId])
+  })
+
+  it('[NFR-R02] failed storage loading cannot be reported as a healthy empty recall', async () => {
+    const db = database(); const original = new MemoryService(db)
+    await original.add('user', '保留的独立偏好')
+    const faulty: SqliteDatabase = { ...db, prepare: sql => {
+      if (sql.includes('FROM memories')) throw new Error('synthetic read failure')
+      return db.prepare(sql)
+    } }
+    const memory = new MemoryService(faulty)
+    expect(memory.indexStatus().state).toBe('failed')
+    expect(await memory.recall('我的偏好')).toMatchObject({ degraded: true, ids: [], text: '' })
+    expect(original.list().map(fact => fact.text)).toEqual(['保留的独立偏好'])
+  })
+
+  it('[NFR-U03] a healthy empty recall is not presented as a local-memory outage', async () => {
+    const memory = new MemoryService(database())
+    let request = ''
+    const service = new ConversationService(database(), models, { chat: async (_model, _turns, _delta, system) => {
+      request = system ?? ''; return '继续。'
+    } }, { memoryEnabled: () => true, recall: query => memory.recall(query) })
+    expect((await service.send(service.create().id, '解释一下这句话')).ok).toBe(true)
+    expect(request).not.toContain('检索不完整或暂不可用')
+    expect(request).not.toContain('本轮长期记忆检索暂不可用')
+  })
+
   it('[UC-05] multi-turn correction reaches the actual model request with only current relevant memory IDs', async () => {
     const db = database(); const memory = new MemoryService(db)
     const teaVector = [0, 1, ...Array<number>(510).fill(0)]

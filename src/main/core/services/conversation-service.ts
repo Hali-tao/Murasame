@@ -46,9 +46,15 @@ interface ModelAccess {
   markVerified(id: string, latencyMs: number, expected?: ResolvedModel): void
 }
 
+interface RecalledContext {
+  text: string
+  ids: string[]
+  degraded?: boolean
+}
+
 export interface ConversationContext {
   character?: () => { name: string; style: string; example: string }
-  recall?: (query: string) => { text: string; ids: string[] } | Promise<{ text: string; ids: string[] }>
+  recall?: (query: string) => RecalledContext | Promise<RecalledContext>
   memoryEnabled?: () => boolean
   relationship?: () => { stage: string; tone?: string; joke?: string }
   onRecall?: (conversationId: string, detail: { turnId: string; ids: string[] }) => void
@@ -180,7 +186,7 @@ export class ConversationService {
     const relationship = this.context.relationship?.()
     const prompt = composePrompt(character, relationship?.stage)
     const memoryEnabled = this.context.memoryEnabled?.() ?? false
-    let recalled = { text: '', ids: [] as string[] }
+    let recalled: RecalledContext = { text: '', ids: [] }
     let recallUnavailable = false
     if (memoryEnabled && this.context.recall) {
       try { recalled = await this.context.recall(text) } catch {
@@ -190,7 +196,11 @@ export class ConversationService {
     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
     const earlier = compacted.summary ? `\n更早的对话记录摘录（保留来源角色；更正以较新的用户陈述为准，助手陈述不等于用户事实）：\n${compacted.summary}` : ''
     const voice = relationship ? `\n关系表达：${relationship.tone ?? ''} ${relationship.joke ?? ''}` : ''
-    const memoryStatus = recallUnavailable ? '\n本轮长期记忆检索暂不可用；只能依据当前对话作答，不得声称已查到或不存在历史记忆。' : ''
+    const memoryStatus = recallUnavailable
+      ? '\n本轮长期记忆检索暂不可用；只能依据当前对话作答，不得声称已查到或不存在历史记忆。'
+      : recalled.degraded
+        ? '\n本轮长期记忆检索不完整或暂不可用；若提供了已检出的记忆，可继续参考，但可能遗漏其他相关记录。不得把未检出当作用户从未说过或没有这项偏好；缺少关键背景时应说明本轮无法确认，并向用户核实。'
+        : ''
     const system = `${prompt.text}${voice}\n按用户需要给出完整、清楚的回答，详细说明和代码会保存在控制台。桌宠另行显示一句短话。不要自称人工智能或助手，不要声称已经操作了文件、命令或网页。${earlier}${memoryStatus}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
 
     onStart?.()

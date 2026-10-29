@@ -1,0 +1,16 @@
+$ErrorActionPreference = 'Stop'
+$evidenceRoot = (Resolve-Path 'previews/memory-degraded-context-2026-10-29').Path
+$archivePath = Join-Path $evidenceRoot 'raw-text-evidence.zip'
+if (Test-Path -LiteralPath $archivePath) { throw 'Preserve existing raw archive.' }
+Add-Type -AssemblyName System.IO.Compression
+$files = Get-ChildItem -LiteralPath $evidenceRoot -File -Recurse | Where-Object {
+  $_.Extension -in @('.txt', '.md', '.json', '.mjs', '.ps1', '.log') -and $_.FullName -notlike '*\.playwright-artifacts*'
+}
+$archive = [System.IO.Compression.ZipFile]::Open($archivePath, [System.IO.Compression.ZipArchiveMode]::Create)
+try {
+  foreach ($file in $files) {
+    $entry = [System.IO.Path]::GetRelativePath($evidenceRoot, $file.FullName).Replace('\', '/')
+    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $file.FullName, $entry) | Out-Null
+  }
+} finally { $archive.Dispose() }
+Write-Output "Raw text files preserved: $($files.Count)"

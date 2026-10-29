@@ -1,0 +1,16 @@
+import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { readFileSync, writeFileSync } from 'node:fs'
+import assert from 'node:assert/strict'
+const root = 'artifacts/continuous-24h-2026-10-29/memory-degraded-context'
+const revision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
+const gitFile = path => execFileSync('git', ['show', `${revision}:${path}`], { maxBuffer: 128 * 1024 * 1024 })
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const manifest = JSON.parse(gitFile(`${root}/manifest.json`).toString())
+for (const file of manifest.files) assert.equal(hash(gitFile(`${root}/${file.path}`)), file.sha256, file.path)
+for (const file of manifest.sourceFiles) assert.equal(hash(gitFile(file.path).toString().replaceAll('\r\n', '\n')), file.textLfSha256, file.path)
+const receipt = JSON.parse(readFileSync(`${root}/package-receipt.json`, 'utf8'))
+assert.equal(hash(readFileSync(receipt.installer.path)), receipt.installer.sha256)
+const result = { revision, files: manifest.files.length, sourceFiles: manifest.sourceFiles.length, mismatches: 0, installerMatches: true }
+writeFileSync('previews/memory-degraded-context-2026-10-29/committed-hashes.json', JSON.stringify(result, null, 2) + '\n')
+console.log(JSON.stringify(result))

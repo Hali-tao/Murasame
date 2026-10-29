@@ -205,7 +205,7 @@
 | NFR-R03 | tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/task-model-binding.test.ts |
 | NFR-U01 | tests/unit/p0-finish.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-U02 | tests/unit/p4-p6.test.ts |
-| NFR-U03 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
+| NFR-U03 | tests/e2e/memory-degraded-context.spec.ts<br>tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-C01 | tests/unit/embedding-runtime.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-C02 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/embedding-runtime.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-M01 | tests/unit/errors.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
