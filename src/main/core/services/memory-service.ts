@@ -328,7 +328,10 @@ export class MemoryService {
         // A natural correction expires its old version; only an explicit deletion
         // must prevent that fact from ever being extracted again (D-04 / D-21).
         if (proposal.action === 'DELETE' && target) suppressed.add(target.normalizedKey)
-        next = next.map((fact) => beforeIds.has(fact.id) ? fact : { ...fact, source: target?.source ?? source, vector: proposal.vector })
+        // A new fact version belongs to the conversation that supplied it.
+        // Unscoped legacy extraction has no new provenance to replace a known one.
+        const factSource = source === '长期记忆' ? target?.source ?? source : source
+        next = next.map((fact) => beforeIds.has(fact.id) ? fact : { ...fact, source: factSource, vector: proposal.vector })
       }
       if (next === this.facts) return { status: 'unchanged' }
       return this.commit(next, suppressed) ? { status: 'saved' } : { status: 'failed', reason: '记忆保存失败' }

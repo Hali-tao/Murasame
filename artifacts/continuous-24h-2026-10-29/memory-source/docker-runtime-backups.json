@@ -1,0 +1,10 @@
+[
+  {
+    "backup": "C:\\Users\\LENOVO\\AppData\\Local\\Docker\\run.murasame-backup-20261029-1743",
+    "source": "C:\\Users\\LENOVO\\AppData\\Local\\Docker\\run"
+  },
+  {
+    "backup": "C:\\Users\\LENOVO\\AppData\\Local\\docker-secrets-engine.murasame-backup-20261029-1743",
+    "source": "C:\\Users\\LENOVO\\AppData\\Local\\docker-secrets-engine"
+  }
+]

@@ -182,6 +182,35 @@ describe('memory maturity across turns and restarts', () => {
     expect(new MemoryService(db).active().map(({ id, text, source }) => ({ id, text, source }))).toEqual([{ id: validId, text: '住在杭州', source: 'source-new' }])
   })
 
+  it.each(['original', 'correction'] as const)('[FR-15] clearing the %s conversation respects where a corrected fact was learned', async (removed) => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.ingestProposed('最近喜欢绿茶', async () => [proposal('喜欢绿茶')], 'original-chat')
+    await memory.ingestProposed('更正，现在喜欢白茶', async () => [
+      { action: 'UPDATE', category: 'user', text: '喜欢白茶', replaces: '喜欢绿茶' }
+    ], 'correction-chat')
+
+    const reopened = new MemoryService(db)
+    expect((await reopened.clearSource(`${removed}-chat`)).ok).toBe(true)
+    const afterRestart = new MemoryService(db)
+    if (removed === 'original') {
+      expect(afterRestart.list().map(({ text, source }) => ({ text, source })))
+        .toEqual([{ text: '喜欢白茶', source: 'correction-chat' }])
+      expect((await afterRestart.recall('喜欢喝什么茶')).text).toContain('喜欢白茶')
+    } else {
+      expect(afterRestart.list()).toEqual([])
+      expect((await afterRestart.recall('喜欢喝什么茶')).ids).toEqual([])
+    }
+  })
+
+  it('[FR-14] a correction without a named conversation retains its known provenance', async () => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.ingestProposed('喜欢绿茶', async () => [proposal('喜欢绿茶')], 'original-chat')
+    await memory.ingestProposed('改为白茶', async () => [
+      { action: 'UPDATE', category: 'user', text: '喜欢白茶', replaces: '喜欢绿茶' }
+    ])
+    expect(new MemoryService(db).active()[0]).toMatchObject({ text: '喜欢白茶', source: 'original-chat' })
+  })
+
   it.each(['{broken', '{}', 'null', '[1,2]', '["1"]', '[1e999]'])('[NFR-R02] isolates malformed vector payload %s from valid text', async (payload) => {
     const db = database(); const memory = new MemoryService(db)
     await memory.add('user', '喜欢白茶')

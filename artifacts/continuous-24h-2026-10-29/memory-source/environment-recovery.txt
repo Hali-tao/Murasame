@@ -1,0 +1,10 @@
+2026-10-29, actual local Docker startup recovery before package E2E.
+Initial docker ps: Linux engine named pipe absent; no Docker processes existed before the test startup.
+Started the installed Docker Desktop CLI in a hidden process. Backend failed at its existing Docker/run/dockerInference endpoint: Windows error 1920 (The file cannot be accessed by the system). The endpoint was a zero-byte ReparsePoint dated 2026-10-28. Individual Rename-Item and read-only fsutil query failed with the same error.
+Stopped only Docker processes created by this startup, verifying executable paths and creation times. Did not stop unrelated WSL sessions or delete any images, containers, volumes, VM disks, settings, or user data.
+Inspected the two runtime directories: Docker/run contained dockerInference and userAnalyticsOtlpHttp.sock; docker-secrets-engine contained engine.sock. All were zero-byte reparse endpoints, no data files/subdirectories.
+Validated absolute source/backup paths under the intended LocalAppData runtime locations, renamed both directories to .murasame-backup-20261029-1743 and recreated empty runtime directories. Backups remain. No factory reset, endpoint deletion, or Docker update.
+Started the same installed Docker with System32 and Windows PowerShell on its child PATH. Actual docker version returned server 28.5.1; package E2E was then launched with real isolation enabled.
+The observed endpoint failure matches reports in Docker's issue tracker. These are user reports, not a claim of an official supported fix:
+https://github.com/docker/desktop-feedback/issues/554
+Recovery and error evidence are environment maintenance, not a newly implemented Murasame feature.

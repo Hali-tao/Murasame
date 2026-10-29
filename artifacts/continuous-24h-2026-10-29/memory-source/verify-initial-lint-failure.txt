@@ -1,0 +1,47 @@
+
+> murasame-desktop@0.9.0 verify
+> npm run typecheck && npm run lint && npm test && npm run trace
+
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+
+> murasame-desktop@0.9.0 lint
+> eslint .
+
+
+E:\Desktop\软件工程\murasame\artifacts\nailong-3d-refined-2026-10-29\create-comparison-r3.cjs
+   1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:12  error  'require' is not defined                 no-undef
+   2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:14  error  'require' is not defined                 no-undef
+  28:1   error  'console' is not defined                 no-undef
+
+E:\Desktop\软件工程\murasame\artifacts\nailong-3d-refined-2026-10-29\create-comparison.cjs
+   1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:12  error  'require' is not defined                 no-undef
+   2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:14  error  'require' is not defined                 no-undef
+  28:1   error  'console' is not defined                 no-undef
+
+E:\Desktop\软件工程\murasame\artifacts\nailong-3d-refined-2026-10-29\verify-page.cjs
+   1:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:22  error  'require' is not defined                 no-undef
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:12  error  'require' is not defined                 no-undef
+   3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14  error  'require' is not defined                 no-undef
+   4:42  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:42  error  'require' is not defined                 no-undef
+   5:13  error  '__dirname' is not defined               no-undef
+  20:55  error  'document' is not defined                no-undef
+  20:94  error  'innerWidth' is not defined              no-undef
+  24:54  error  'document' is not defined                no-undef
+  24:93  error  'innerWidth' is not defined              no-undef
+  33:5   error  'console' is not defined                 no-undef
+  34:25  error  'process' is not defined                 no-undef
+  37:23  error  'console' is not defined                 no-undef
+  37:45  error  'process' is not defined                 no-undef
+
+✖ 27 problems (27 errors, 0 warnings)

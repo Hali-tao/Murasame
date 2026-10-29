@@ -1,0 +1,9 @@
+Fresh-context read-only review: /root/memory_correction_source_review
+Scope: memory-service source attribution, new unit/E2E tests, scoped ESLint environments and docs/26. Baseline e008fb2.
+Result: Critical 0, Important 0, Minor 0. No edits or rerun claimed by reviewer.
+New fact versions belong to the current named conversation. The generic legacy default retains known provenance. Duplicate UPDATE does not create a new version; manual edits and late/deleted-source extraction guards are unchanged.
+Reviewer inspected actual RED assertions: two unit cases and both actual old-package UI cases fail at the intended behavior checks.
+Boundary: page.reload() is a renderer reload, not an application process restart. The unit tests recreate the real memory service against the persisted SQLite database. Full new-package acceptance was still pending at review time.
+Ruling: no guessed migration of already-misattributed historical user data. Only subsequent extraction/correction behavior is repaired. Existing manual edit and duplicate provenance rules remain.
+Ruling: add the Node environment for archived CJS tools and browser globals only to the actual page-check script, retaining lint coverage. The initial full verify failure is preserved separately.
+Character assets were outside this review; no likeness approval or native-model integration claim.

@@ -1,0 +1,71 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:49676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/conversation-memory-maturity.test.ts (43 tests | 2 failed | 41 skipped) 327ms
+   ❯ memory maturity across turns and restarts (29)
+     × [FR-15] clearing the original conversation respects where a corrected fact was learned 182ms
+     × [FR-15] clearing the correction conversation respects where a corrected fact was learned 143ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [FR-15] clearing the original conversation respects where a corrected fact was learned
+AssertionError: expected [] to deeply equal [ { text: '喜欢白茶', …(1) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "source": "correction-chat",
+-     "text": "喜欢白茶",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:197:10
+    195|     if (removed === 'original') {
+    196|       expect(afterRestart.list().map(({ text, source }) => ({ text, so…
+    197|         .toEqual([{ text: '喜欢白茶', source: 'correction-chat' }])
+       |          ^
+    198|       expect((await afterRestart.recall('喜欢喝什么茶')).text).toContain('喜欢…
+    199|     } else {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [FR-15] clearing the correction conversation respects where a corrected fact was learned
+AssertionError: expected [ { …(5) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "category": "偏好",
++     "id": "mem-a7226065-e8b8-4acb-b102-b1aabfc5c1ec",
++     "source": "original-chat",
++     "text": "喜欢白茶",
++     "updated": "有效",
++   },
++ ]
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:200:35
+    198|       expect((await afterRestart.recall('喜欢喝什么茶')).text).toContain('喜欢…
+    199|     } else {
+    200|       expect(afterRestart.list()).toEqual([])
+       |                                   ^
+    201|       expect((await afterRestart.recall('喜欢喝什么茶')).ids).toEqual([])
+    202|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 41 skipped (43)
+   Start at  17:21:55
+   Duration  3.66s (import 63%, transform 25%, tests 11%, worker 1%)
