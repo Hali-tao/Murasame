@@ -83,6 +83,7 @@ export class TaskService {
   private isolatedRunner?: IsolatedRunner
   private readonly executionGuards = new Map<string, () => string | null>()
   private readonly pending = new Map<string, Promise<void>>()
+  private readonly continuations = new Map<string, symbol>()
 
   constructor(private readonly db?: SqliteDatabase) {
     this.db?.exec('CREATE TABLE IF NOT EXISTS task_execution_plans(task_id TEXT PRIMARY KEY, plan_json TEXT NOT NULL)')
@@ -152,8 +153,8 @@ export class TaskService {
 
   setSummaryGenerator(generator: SummaryGenerator): void { this.summaryGenerator = generator }
 
-  private groundedOptions(id: string): GroundedExecutionOptions {
-    if (!this.getPlan(id)?.workflow) return {}
+  private groundedOptions(id: string, plan = this.getPlan(id)): GroundedExecutionOptions {
+    if (!plan?.workflow) return {}
     return { summaryGenerator: this.summaryGenerator, summaryModel: this.boundModel(id), groundedCheckpoint: this.groundedCheckpoint(id),
       onGroundedCheckpoint: checkpoint => { this.db?.prepare('INSERT INTO task_grounded_checkpoints(task_id, checkpoint_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET checkpoint_json = excluded.checkpoint_json').run(id, JSON.stringify(checkpoint)) } }
   }
@@ -163,8 +164,8 @@ export class TaskService {
     return row ? JSON.parse(row.checkpoint_json) as GroundedCheckpoint : undefined
   }
 
-  private groundedModelGuard(id: string): string | null {
-    if (!this.getPlan(id)?.workflow || !this.modelResolver) return null
+  private groundedModelGuard(id: string, plan = this.getPlan(id)): string | null {
+    if (!plan?.workflow || !this.modelResolver) return null
     const row = this.db?.prepare('SELECT snapshot_json FROM task_model_snapshots WHERE task_id = ?').get(id) as { snapshot_json: string } | undefined
     if (!row) return '摘要任务缺少原模型绑定证据，需重新确认'
     const snapshot = JSON.parse(row.snapshot_json) as StoredTaskModelSnapshot
@@ -464,6 +465,7 @@ export class TaskService {
   }
 
   cancel(id: string): Promise<Result<Task>> {
+    this.continuations.delete(id)
     const control = this.running.get(id)
     if (control) {
       control.stop = true
@@ -545,6 +547,10 @@ export class TaskService {
 
   private savePlan(id: string, plan: TaskPlan, approvedRoot?: string): void {
     const root = approvedRoot ?? this.read(id).scope
+    this.storePlan(id, this.preparePlan(plan, root))
+  }
+
+  private preparePlan(plan: TaskPlan, root: string): TaskPlan {
     plan = structuredClone(plan)
     for (const step of plan.steps) {
       const tool = step.tool ?? plan.tool
@@ -561,8 +567,12 @@ export class TaskService {
       if (check?.kind === 'file-content' && output.expectedContent === undefined) output.expectedContent = check.value
       if (check?.kind === 'file-hash' && output.expectedHash === undefined) output.expectedHash = check.value
     }
-    this.plans.set(id, structuredClone(plan))
+    return plan
+  }
+
+  private storePlan(id: string, plan: TaskPlan): void {
     this.db?.prepare('INSERT INTO task_execution_plans(task_id, plan_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET plan_json = excluded.plan_json').run(id, JSON.stringify(plan))
+    this.plans.set(id, structuredClone(plan))
   }
   private getPlan(id: string): TaskPlan | undefined {
     const current = this.plans.get(id); if (current) return current
@@ -579,6 +589,15 @@ export class TaskService {
   async continueTask(id: string, answer: string): Promise<Result<Task>> {
     const current = this.read(id)
     if (!['待确认', '已中断', '失败', '部分完成', '已取消'].includes(current.status)) return fail('当前任务不在可补充或恢复的状态')
+    const request = Symbol(id)
+    this.continuations.set(id, request)
+    const isCurrent = (): boolean => this.continuations.get(id) === request
+    try { return await this.continueCurrentTask(id, answer, isCurrent) }
+    finally { if (isCurrent()) this.continuations.delete(id) }
+  }
+
+  private async continueCurrentTask(id: string, answer: string, isCurrent: () => boolean): Promise<Result<Task>> {
+    const current = this.read(id)
     const checkpoints = this.checkpoints(id)
     const grounded = Boolean(this.getPlan(id)?.workflow)
     const resumeRequested = /^\s*(继续|恢复|resume|continue)\s*$/i.test(answer)
@@ -608,6 +627,7 @@ export class TaskService {
     const goal = resumeRequested ? current.title : `${current.title}\n用户补充：${answer}`
     let plan: TaskPlan | null
     try { plan = resume ? this.getPlan(id) ?? null : await this.plan(goal, this.boundModel(id)) ?? localRulePlan(goal) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
+    if (!isCurrent()) return fail('本次补充已取消或被新的要求替代，未改变任务。')
     let root: string | null
     try {
       // Preserve the stored spelling on resume: existing checkpoint hashes include that exact scope.
@@ -616,12 +636,18 @@ export class TaskService {
       if (root && !resume && plan?.tool !== 'browser') root = confirmedDirectory(root)
     } catch (error) { return fail(error instanceof Error ? error.message : '目录无法核对') }
     if (!root && (plan?.tool ?? chooseTool(goal)) !== 'browser') return fail('仍缺少明确授权目录')
-    if (plan && !resume) this.savePlan(id, plan, root ?? '')
+    try { if (plan && !resume) plan = this.preparePlan(plan, root ?? '') } catch (error) { return fail(error instanceof Error ? error.message : '计划范围无法核对，原计划已保留') }
     let preview: GoalOutcome
+    let preparedCheckpoint: GroundedCheckpoint | undefined
     try {
-      const blocked = this.groundedModelGuard(id); if (blocked) return fail(blocked)
-      preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan, taskId: id, checkpoints, ...this.groundedOptions(id) })
+      const blocked = this.groundedModelGuard(id, plan ?? undefined); if (blocked) return fail(blocked)
+      preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan, taskId: id, checkpoints, ...this.groundedOptions(id, plan ?? undefined), onGroundedCheckpoint: checkpoint => { preparedCheckpoint = checkpoint } })
     } catch (error) { return fail(error instanceof Error ? error.message : '摘要恢复失败，未自动重放') }
+    if (!isCurrent()) return fail('本次补充已取消或被新的要求替代，未改变任务。')
+    // No await between the ownership check and publication: obsolete previews cannot
+    // replace the plan, checkpoints, task state, or emitted result.
+    if (plan && !resume) this.storePlan(id, plan)
+    if (preparedCheckpoint) this.db?.prepare('INSERT INTO task_grounded_checkpoints(task_id, checkpoint_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET checkpoint_json = excluded.checkpoint_json').run(id, JSON.stringify(preparedCheckpoint))
     this.db?.prepare('UPDATE tasks SET title = ?, scope = ?, status = ?, updated_at = ? WHERE id = ?').run(goal, root ?? '', preview.status, new Date().toISOString(), id)
     this.saveOutcome(id, preview); return ok(this.emit(id))
   }
