@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-29T03:17:51.445Z",
+  "files": [
+    {
+      "path": "native-core-compatible.txt",
+      "bytes": 345,
+      "sha256": "c56ae787f2838a392c1c959d54e6798e120c2902ce7afb2dbc33357003c0c872",
+      "originalSha256": "c93b2799d3b141f1e03218d076ebbd1fc0c5c67f74246b5a1ca2170c5de40867",
+      "textLfSha256": "c56ae787f2838a392c1c959d54e6798e120c2902ce7afb2dbc33357003c0c872"
+    },
+    {
+      "path": "native-core-incompatible-control.txt",
+      "bytes": 602,
+      "sha256": "0ab1ab9c50d08cdf39f74fbcf10caf29c2d6dc8326ac5505abd0d8bcc5d9ce46",
+      "originalSha256": "c4b81f3d796d1531c374d96406dcb7a1be7c9206beeb2cc70e7f3a1d01bb2552",
+      "textLfSha256": "0ab1ab9c50d08cdf39f74fbcf10caf29c2d6dc8326ac5505abd0d8bcc5d9ce46"
+    },
+    {
+      "path": "native-core-incompatible.txt",
+      "bytes": 485,
+      "sha256": "00db0831dadf84323eccd106ff553cb090f414e08d44cd7b15a5c505d82213dd",
+      "originalSha256": "b6a7978cefe025117ba5281ab0e84397a9b64076fa75c31292b9fcb502e443f9",
+      "textLfSha256": "00db0831dadf84323eccd106ff553cb090f414e08d44cd7b15a5c505d82213dd"
+    },
+    {
+      "path": "native-core-probe.json",
+      "bytes": 15756,
+      "sha256": "16070a24cf708bcf54a42084ea053f88796293e0e8ba65b76725371ecfba81f5",
+      "originalSha256": "16070a24cf708bcf54a42084ea053f88796293e0e8ba65b76725371ecfba81f5",
+      "textLfSha256": "16070a24cf708bcf54a42084ea053f88796293e0e8ba65b76725371ecfba81f5"
+    },
+    {
+      "path": "native-core-probe.mjs.txt",
+      "bytes": 4582,
+      "sha256": "472a29cbf404f36dd574c3901d72a573793502476cc0213f0192e7d9c62470a6",
+      "originalSha256": "472a29cbf404f36dd574c3901d72a573793502476cc0213f0192e7d9c62470a6",
+      "textLfSha256": "472a29cbf404f36dd574c3901d72a573793502476cc0213f0192e7d9c62470a6"
+    },
+    {
+      "path": "raw-text-evidence.zip",
+      "bytes": 4817,
+      "sha256": "ce5486b1fd2dd7a13c45a29faf37e40127705aacdb2ecaeed83709ad98f2afda"
+    }
+  ]
+}

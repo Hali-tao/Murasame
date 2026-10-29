@@ -1,0 +1,18 @@
+Live2D Cubism SDK Core Version 5.1.0
+Positive control: existing application model loads and updates in the same Core
+Live2D Cubism SDK Core Version 5.1.0
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: New exported moc3 must load in the application bundled Cubism Core
+    at file:///E:/Desktop/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/murasame/previews/continuous-24h-2026-10-29/native-core-probe.mjs:24:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: null,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.19.0

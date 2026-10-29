@@ -1,0 +1,114 @@
+{
+  "status": "USER-PAUSED",
+  "date": "2026-10-29",
+  "algorithm": "SHA-256",
+  "scope": "All preserved native-rig files except manifest.json itself",
+  "files": [
+    {
+      "path": "cubism-breath-0.png",
+      "bytes": 173754,
+      "sha256": "4531228f0b5937a56012993cdb90ecb6e9ebaaac8fc39842abba60c9e7f0d3d1"
+    },
+    {
+      "path": "cubism-breath-1.png",
+      "bytes": 173117,
+      "sha256": "5c2b41c0f81ab8d8ecd1907393b7359dcb6971aadee2fb2ff64591adf71986a4"
+    },
+    {
+      "path": "cubism-breath-keyforms.png",
+      "bytes": 162539,
+      "sha256": "b55d00d6b67c89480922f7aaaeb639ed078935976fc5126fbee159a84293163c"
+    },
+    {
+      "path": "cubism-reopened-breath-1.png",
+      "bytes": 174769,
+      "sha256": "f9ab4dec2f568db468dcae7dbdc341ecda6e94b923f1bb64242a58e419082d7c"
+    },
+    {
+      "path": "cubism-sdk50-export-settings.png",
+      "bytes": 195128,
+      "sha256": "de76a0f148f01ff8eebba167edad5218e9b5d4e624435e73132a5e93a442b1d6"
+    },
+    {
+      "path": "cubism-texture-atlas.png",
+      "bytes": 142689,
+      "sha256": "277bbeaa9c47e3bcdb7ddadc9f4499281443d8f9ada6ed822e032e17d4ef5a52"
+    },
+    {
+      "path": "nailong-continuity-v1.cmo3",
+      "bytes": 1768207,
+      "sha256": "f0bcf5e0492d47a754df4d0434b76236a9cad1cf7b6eec51df2cb978961d4d37"
+    },
+    {
+      "path": "nailong-continuity-v1.psd",
+      "bytes": 2205451,
+      "sha256": "47c63eadf7c0ad902d775444689e06ad1743544792ed7f106b5d6ea702406cc4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5832,
+      "sha256": "f33c1c57bd512c752fefce29914a52d49769a2c83c0ec65f295c24fbef0d1b97",
+      "textLfSha256": "f33c1c57bd512c752fefce29914a52d49769a2c83c0ec65f295c24fbef0d1b97"
+    },
+    {
+      "path": "runtime-sdk53/nailong-continuity-v1.1024/texture_00.png",
+      "bytes": 671643,
+      "sha256": "ea186ff7c59c96406d188963aa6f91c87dd5a581d34d83add7f135a2b5a052d1"
+    },
+    {
+      "path": "runtime-sdk53/nailong-continuity-v1.cdi3.json",
+      "bytes": 2198,
+      "sha256": "8869283efc9f60d57a1e2faccf8c8a8fb91db5ef1981e0bf80410d09f5298c64",
+      "textLfSha256": "8869283efc9f60d57a1e2faccf8c8a8fb91db5ef1981e0bf80410d09f5298c64"
+    },
+    {
+      "path": "runtime-sdk53/nailong-continuity-v1.moc3",
+      "bytes": 55168,
+      "sha256": "cbdbdcd52c17748146d92e8fc661071a6211aac241f60935af591aa032cd2c16"
+    },
+    {
+      "path": "runtime-sdk53/nailong-continuity-v1.model3.json",
+      "bytes": 200,
+      "sha256": "f06d1ec715021894599b7cc7a801624b8bdfbea69c15176372bb5854c0eab46f",
+      "textLfSha256": "f06d1ec715021894599b7cc7a801624b8bdfbea69c15176372bb5854c0eab46f"
+    },
+    {
+      "path": "runtime/nailong-continuity-v1.1024/texture_00.png",
+      "bytes": 671643,
+      "sha256": "ea186ff7c59c96406d188963aa6f91c87dd5a581d34d83add7f135a2b5a052d1"
+    },
+    {
+      "path": "runtime/nailong-continuity-v1.cdi3.json",
+      "bytes": 2198,
+      "sha256": "8869283efc9f60d57a1e2faccf8c8a8fb91db5ef1981e0bf80410d09f5298c64",
+      "textLfSha256": "8869283efc9f60d57a1e2faccf8c8a8fb91db5ef1981e0bf80410d09f5298c64"
+    },
+    {
+      "path": "runtime/nailong-continuity-v1.moc3",
+      "bytes": 51264,
+      "sha256": "e92e4f88fa470456caf11f5f39292c9bc49f5fe38127bae97445b2f6d83f1f34"
+    },
+    {
+      "path": "runtime/nailong-continuity-v1.model3.json",
+      "bytes": 200,
+      "sha256": "f06d1ec715021894599b7cc7a801624b8bdfbea69c15176372bb5854c0eab46f",
+      "textLfSha256": "f06d1ec715021894599b7cc7a801624b8bdfbea69c15176372bb5854c0eab46f"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 3186,
+      "sha256": "0f75062d52758d79347d07ba5e71c0b8a863db78909b09307039f93431ca3017",
+      "textLfSha256": "d70ec0ea035033678d2c7467ba6d8009449b78fda848b31b1408f02daa187433"
+    },
+    {
+      "path": "viewer-loaded-sdk50.png",
+      "bytes": 47028,
+      "sha256": "eb0f75d46e2ca2112f6a519ec068ff44ab42dcb5ac7189d1e851ca6d04571709"
+    },
+    {
+      "path": "viewer-parambreath.png",
+      "bytes": 64226,
+      "sha256": "823718b912af0e6aa50ca6a085a71c872383657444247b5f151b1679125e2b8e"
+    }
+  ]
+}

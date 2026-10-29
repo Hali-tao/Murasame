@@ -1,0 +1,92 @@
+{
+  "status": "USER-PAUSED",
+  "designApproved": false,
+  "date": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "reason": "User requested software first; character appearance to be discussed together later. No further character work authorized in this run.",
+  "scope": "Historical record of first shared-breath binding on a copy of the old prototype; no additional model validation after pause.",
+  "originals": [
+    {
+      "path": "../../nailong-new-character-2026-10-28/nailong-layered.psd",
+      "sha256Before": "47c63eadf7c0ad902d775444689e06ad1743544792ed7f106b5d6ea702406cc4",
+      "sha256After": "47c63eadf7c0ad902d775444689e06ad1743544792ed7f106b5d6ea702406cc4",
+      "unchanged": true
+    },
+    {
+      "path": "../../nailong-new-character-2026-10-28/nailong-layered.cmo3",
+      "sha256Before": "da7e8d810453072419173abc48c803c3d2d1c6cce3cada9953211324d2db2a1c",
+      "sha256After": "da7e8d810453072419173abc48c803c3d2d1c6cce3cada9953211324d2db2a1c",
+      "unchanged": true
+    }
+  ],
+  "source": {
+    "path": "nailong-continuity-v1.cmo3",
+    "sha256": "f0bcf5e0492d47a754df4d0434b76236a9cad1cf7b6eec51df2cb978961d4d37",
+    "editor": "Cubism Editor 5.3.04",
+    "licenseWindow": "Trial, 41 days remaining",
+    "permanentProConfirmed": false,
+    "savedClosedAndReopenedBeforePause": true,
+    "psdArtModified": false
+  },
+  "binding": {
+    "deformer": "BodyContinuity_Breath",
+    "id": "Warp",
+    "type": "Warp",
+    "parent": "[Root]",
+    "conversionDivisions": [
+      5,
+      5
+    ],
+    "bezierDivisions": [
+      2,
+      2
+    ],
+    "parameter": "ParamBreath",
+    "range": [
+      0,
+      1
+    ],
+    "keyforms": [
+      0,
+      1
+    ],
+    "visibleChildren": 10,
+    "hiddenAlternativesUnchanged": 6,
+    "exportedParameterCount": 27,
+    "effectiveParameters": [
+      "ParamBreath"
+    ],
+    "motionFilesCreated": 0
+  },
+  "runtime": {
+    "compatibleTarget": "SDK 5.0 / Cubism 5.0",
+    "path": "runtime/nailong-continuity-v1.model3.json",
+    "mocSha256": "e92e4f88fa470456caf11f5f39292c9bc49f5fe38127bae97445b2f6d83f1f34",
+    "preservedIncompatibleTarget": "SDK 5.3",
+    "preservedPath": "runtime-sdk53/nailong-continuity-v1.model3.json",
+    "incompatibleMocSha256": "cbdbdcd52c17748146d92e8fc661071a6211aac241f60935af591aa032cd2c16"
+  },
+  "existingVerification": {
+    "bundledCore": "5.1.0",
+    "sdk53LoadSucceeded": false,
+    "sdk50LoadUpdateSucceeded": true,
+    "positiveControlExistingModelSucceeded": true,
+    "changedDrawablesAtBreath1": 10,
+    "maxCoordinateDelta": 0.010049015283584595,
+    "roundTripDelta": 0,
+    "viewer": "Cubism Viewer (for OW) 5.3.04",
+    "viewerLoadedTexturedModel": true,
+    "independentCoreEvidence": "../native-core/",
+    "productionIntegrated": false,
+    "naturalnessAccepted": false,
+    "completeCharacter": false
+  },
+  "remaining": [
+    "Appearance not approved by user",
+    "Head/neck and limb seams remain",
+    "Hidden replacements not bound or exported",
+    "Only shared breath affects model",
+    "No production integration",
+    "Further design requires discussion with user"
+  ]
+}

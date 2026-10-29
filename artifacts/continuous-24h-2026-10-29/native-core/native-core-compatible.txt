@@ -1,0 +1,4 @@
+Live2D Cubism SDK Core Version 5.1.0
+Positive control: existing application model loads and updates in the same Core
+Live2D Cubism SDK Core Version 5.1.0
+{"coreVersion":83951616,"drawableCount":10,"maxDelta":0.010049015283584595,"affectedAtOne":10,"returnDelta":0,"moc3Sha256":"e92e4f88fa470456caf11f5f39292c9bc49f5fe38127bae97445b2f6d83f1f34"}

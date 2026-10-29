@@ -1,0 +1,68 @@
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import vm from 'node:vm'
+import assert from 'node:assert/strict'
+
+const input = process.argv[2] ?? 'artifacts/continuous-24h-2026-10-29/native-rig/runtime/nailong-continuity-v1.moc3'
+const source = readFileSync(input)
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const context = vm.createContext({ console, setTimeout, clearTimeout, TextDecoder, performance, atob })
+const coreBytes = readFileSync('src/renderer/public/live2d/core/live2dcubismcore.min.js')
+vm.runInContext(coreBytes.toString('utf8'), context)
+await new Promise(resolve => setTimeout(resolve, 100))
+const core = context.Live2DCubismCore
+const controlBytes = readFileSync('src/renderer/public/live2d/naiwa/奶蛙.moc3')
+const controlMoc = core.Moc.fromArrayBuffer(controlBytes.buffer.slice(controlBytes.byteOffset, controlBytes.byteOffset + controlBytes.byteLength))
+assert.ok(controlMoc, 'The same ready runtime must load the existing application model as a positive control')
+const controlModel = core.Model.fromMoc(controlMoc)
+assert.ok(controlModel)
+controlModel.update()
+console.log('Positive control: existing application model loads and updates in the same Core')
+controlModel.release()
+controlMoc._release()
+const moc = core.Moc.fromArrayBuffer(source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength))
+assert.ok(moc, 'New exported moc3 must load in the application bundled Cubism Core')
+const model = core.Model.fromMoc(moc)
+assert.ok(model)
+const params = model.parameters
+const breathIndex = params.ids.indexOf('ParamBreath')
+assert.ok(breathIndex >= 0)
+params.values.set(params.defaultValues)
+params.values[breathIndex] = 0
+model.update()
+const base = model.drawables.vertexPositions.map(points => Array.from(points))
+const baseOpacities = Array.from(model.drawables.opacities)
+const samples = []
+for (const value of [0, .25, .5, .75, 1, .75, .5, .25, 0]) {
+  params.values[breathIndex] = value
+  model.update()
+  const drawables = model.drawables.vertexPositions.map((points, i) => {
+    assert.ok(Array.from(points).every(Number.isFinite))
+    let delta = 0
+    for (let k = 0; k < points.length; k++) delta = Math.max(delta, Math.abs(points[k] - base[i][k]))
+    return { id: model.drawables.ids[i], maxCoordinateDelta: delta, opacity: model.drawables.opacities[i] }
+  })
+  samples.push({ value, maxCoordinateDelta: Math.max(...drawables.map(item => item.maxCoordinateDelta)), changedDrawables: drawables.filter(item => item.maxCoordinateDelta > 1e-6) })
+}
+assert.ok(samples[4].maxCoordinateDelta > 1e-6, 'ParamBreath must deform actual exported geometry')
+assert.ok(samples.at(-1).maxCoordinateDelta < 1e-6, 'Return to the initial parameter must restore geometry')
+const parameterEffects = params.ids.map((id, index) => {
+  let maxCoordinateDelta = 0, maxOpacityDelta = 0
+  for (const value of [params.minimumValues[index], params.maximumValues[index]]) {
+    params.values.set(params.defaultValues)
+    params.values[index] = value
+    model.update()
+    model.drawables.vertexPositions.forEach((points, i) => {
+      for (let k = 0; k < points.length; k++) maxCoordinateDelta = Math.max(maxCoordinateDelta, Math.abs(points[k] - base[i][k]))
+      maxOpacityDelta = Math.max(maxOpacityDelta, Math.abs(model.drawables.opacities[i] - baseOpacities[i]))
+    })
+  }
+  return { id, maxCoordinateDelta, maxOpacityDelta }
+})
+assert.equal(hash(readFileSync(input)), hash(source), 'Export must not change during the check')
+const result = { checkedAt: new Date().toISOString(), kind: 'actual bundled Core load and parameter geometry check; no renderer or visual-quality acceptance', positiveControl: { loadedAndUpdated: true, sha256: hash(controlBytes) }, moc3Sha256: hash(source), coreSha256: hash(coreBytes), coreVersion: core.Version.csmGetVersion(), parameters: params.ids.map((id, i) => ({ id, min: params.minimumValues[i], max: params.maximumValues[i], default: params.defaultValues[i] })), drawableCount: model.drawables.ids.length, parameterEffects, samples }
+mkdirSync('previews/continuous-24h-2026-10-29', { recursive: true })
+writeFileSync('previews/continuous-24h-2026-10-29/native-core-probe.json', JSON.stringify(result, null, 2) + '\n')
+console.log(JSON.stringify({ coreVersion: result.coreVersion, drawableCount: result.drawableCount, maxDelta: samples[4].maxCoordinateDelta, affectedAtOne: samples[4].changedDrawables.length, returnDelta: samples.at(-1).maxCoordinateDelta, moc3Sha256: result.moc3Sha256 }))
+model.release()
+moc._release()
