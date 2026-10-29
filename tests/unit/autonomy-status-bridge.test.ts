@@ -51,7 +51,7 @@ function deferred<T>() { let resolve!: (value: T) => void; return { promise: new
 beforeEach(async () => {
   vi.resetModules(); bridge.api = null; bridge.handlers.clear(); bridge.listeners.clear()
   service = new AutonomyService((_command, args) => args[0] === 'image' ? '3' : args[0] === 'run' ? 'bridge-fixture' : args[0] === 'inspect' ? 'true' : args.includes('/opt/murasame/creation-runner.py') ? JSON.stringify(evidence) : '', async () => {})
-  const core = { autonomy: service, memory: { subscribe() {}, subscribeIndex() {} }, tasks: { onChange() {} } } as unknown as MurasameCore
+  const core = { autonomy: service, subscribeModels() {}, memory: { subscribe() {}, subscribeIndex() {} }, tasks: { onChange() {} } } as unknown as MurasameCore
   const { registerIpcHandlers } = await import('../../src/main/ipc')
   registerIpcHandlers(core)
   await import('../../src/preload/index')

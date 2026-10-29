@@ -58,6 +58,7 @@ function publicProfile(model: StoredModel): ModelProfile {
 const DEMO_SEED_IDS = ['openai-main', 'claude-long', 'qwen-local']
 
 export class ModelRegistry {
+  private readonly listeners = new Set<(models: ModelProfile[]) => void>()
   private readonly verificationVersions = new Map<string, number>()
   private readonly connectionEpochs = new Map<string, number>()
   private readonly statusSnapshots = new WeakMap<ResolvedModel, { id: string; epoch: number }>()
@@ -79,11 +80,25 @@ export class ModelRegistry {
     const kept = models.filter((model) => !(DEMO_SEED_IDS.includes(model.id) && !model.encryptedKey))
     if (kept.length === models.length) return
     if (kept.length > 0 && !kept.some((model) => model.default)) kept[0].default = true
-    this.store.set('models', kept)
+    this.writeModels(kept)
   }
 
   list(): ModelProfile[] {
     return this.store.get('models').map(publicProfile)
+  }
+
+  subscribe(listener: (models: ModelProfile[]) => void): () => void {
+    this.listeners.add(listener)
+    return () => { this.listeners.delete(listener) }
+  }
+
+  private writeModels(models: StoredModel[], committed?: () => void): void {
+    this.store.set('models', models)
+    committed?.()
+    const snapshot = models.map(publicProfile)
+    for (const listener of this.listeners) {
+      try { listener(structuredClone(snapshot)) } catch { /* Observers cannot undo a saved configuration. */ }
+    }
   }
 
   remove(id: string): ModelProfile[] {
@@ -93,8 +108,7 @@ export class ModelRegistry {
     const kept = models.filter((item) => item.id !== id)
     // 删掉当前服务后，把第一条顶上，避免没有可用配置却仍显示有。
     if (target.default && kept.length > 0) kept[0].default = true
-    this.store.set('models', kept)
-    this.invalidateConnectionStatus(id)
+    this.writeModels(kept, () => this.invalidateConnectionStatus(id))
     return kept.map(publicProfile)
   }
 
@@ -134,7 +148,7 @@ export class ModelRegistry {
     const existing = this.store.get('models')
     // 第一条配置直接设为当前服务，省去用户再点一次。
     if (existing.length === 0) model.default = true
-    this.store.set('models', [...existing, model])
+    this.writeModels([...existing, model])
     return publicProfile(model)
   }
 
@@ -145,11 +159,12 @@ export class ModelRegistry {
     const next = this.withInput(models[index], input)
     const updated = [...models]
     updated[index] = next
-    this.store.set('models', updated)
-    this.nextVerificationVersion(id)
     const previous = models[index]
-    if (previous.provider !== next.provider || previous.endpoint !== next.endpoint
-      || previous.model !== next.model || Boolean(input.key.trim())) this.invalidateConnectionStatus(id)
+    this.writeModels(updated, () => {
+      this.nextVerificationVersion(id)
+      if (previous.provider !== next.provider || previous.endpoint !== next.endpoint
+        || previous.model !== next.model || Boolean(input.key.trim())) this.invalidateConnectionStatus(id)
+    })
     return publicProfile(next)
   }
 
@@ -174,11 +189,12 @@ export class ModelRegistry {
           status: '在线', tone: 'green', latency: `${latencyMs} ms`
         }
         models[index] = next
-        this.store.set('models', models)
-        this.nextVerificationVersion(id)
         // This explicit verification is newer evidence than in-flight chats,
         // even if the user verified exactly the same connection again.
-        this.invalidateConnectionStatus(id)
+        this.writeModels(models, () => {
+          this.nextVerificationVersion(id)
+          this.invalidateConnectionStatus(id)
+        })
         return publicProfile(next)
       }
     }
@@ -232,7 +248,7 @@ export class ModelRegistry {
       target.probeNote = [target.probeNote, '探测结果已超过有效期，建议重新验证'].filter(Boolean).join('；')
     }
     const updated = models.map((model) => ({ ...model, default: model.id === id }))
-    this.store.set('models', updated)
+    this.writeModels(updated)
     return updated.map(publicProfile)
   }
 
@@ -242,7 +258,7 @@ export class ModelRegistry {
     if (index < 0) throw new Error('模型配置不存在')
     const updated = [...models]
     updated[index] = { ...updated[index], capabilities, probeNote: note }
-    this.store.set('models', updated)
+    this.writeModels(updated)
     return publicProfile(updated[index])
   }
 
@@ -273,7 +289,7 @@ export class ModelRegistry {
     if (index < 0) throw new Error('模型配置不存在')
     const updated = [...models]
     updated[index] = { ...updated[index], status, tone, latency }
-    this.store.set('models', updated)
+    this.writeModels(updated)
     return publicProfile(updated[index])
   }
 

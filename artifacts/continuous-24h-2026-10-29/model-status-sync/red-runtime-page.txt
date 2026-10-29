@@ -1,0 +1,32 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/model-form-lifecycle.test.ts (18 tests | 1 failed) 679ms
+   × shows a runtime outage without reusing the previous successful probe as its cause 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/model-form-lifecycle.test.ts > shows a runtime outage without reusing the previous successful probe as its cause
+AssertionError: expected '原服务本次未通过test-model · 127.0.0.1:9999密钥…' to contain '离线'
+
+Expected: "离线"
+Received: "原服务本次未通过test-model · 127.0.0.1:9999密钥已保存未在使用"
+
+ ❯ tests/unit/model-form-lifecycle.test.ts:225:56
+    223|   await mount()
+    224|   await act(async () => { useAppStore.setState({ data: { ...initialBoo…
+    225|   expect(screen.getByTestId('model-item').textContent).toContain('离线')
+       |                                                        ^
+    226|   expect(screen.getByTestId('model-item').textContent).toContain('当前配置…
+    227|   expect(document.querySelector('.current-service-banner')?.textConten…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed (18)
+   Start at  18:53:16
+   Duration  2.00s (environment 44%, tests 36%, import 16%, transform 3%)

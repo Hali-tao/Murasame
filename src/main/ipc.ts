@@ -178,6 +178,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   core.onScreenAnalysis = analysis => broadcast(IPC.core.screenUpdated, analysis)
   core.onConversationUpdate = conversation => broadcast(IPC.core.conversationUpdated, conversation)
   core.memory.subscribe(() => broadcast(IPC.core.memoriesUpdated, core.memory.list()))
+  core.subscribeModels(models => broadcast(IPC.core.modelsUpdated, models))
   core.memory.subscribeIndex(status => broadcast(IPC.core.memoryIndexStatus, status))
   core.onMemoryExtractionStatus = status => broadcast(IPC.core.memoryExtractionStatus, status)
 

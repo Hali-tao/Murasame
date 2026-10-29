@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:48892) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\model-status-sync.spec.ts:5:5 › [FR-25] verified service status survives a completed chat and renderer reload (4.3s)
+
+  1 passed (4.9s)

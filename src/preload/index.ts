@@ -179,6 +179,7 @@ const api: MurasameApi = {
   events: {
     onScreenUpdated: listener => subscribe(IPC.core.screenUpdated, listener),
     onMemoriesUpdated: (listener) => subscribe(IPC.core.memoriesUpdated, listener),
+    onModelsUpdated: (listener) => subscribe(IPC.core.modelsUpdated, listener),
     onMemoryExtractionStatus: (listener) => subscribe(IPC.core.memoryExtractionStatus, listener),
     onMemoryIndexStatus: (listener) => subscribe(IPC.core.memoryIndexStatus, listener),
     onMessageDelta: (listener: (payload: ChatDelta) => void): (() => void) =>

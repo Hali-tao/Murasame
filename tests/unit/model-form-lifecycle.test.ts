@@ -216,3 +216,33 @@ it('does not describe a creation failure as a failed connection check', async ()
   expect(document.querySelector('.use-result strong')?.textContent).toContain('本次操作未完成')
   expect(document.querySelector('.use-result')?.textContent).not.toContain('验证未通过')
 })
+
+it('shows a runtime outage without reusing the previous successful probe as its cause', async () => {
+  const model: ModelProfile = { ...existing, capabilities: [{ id: 'text.chat', status: 'verified', detail: '连接测试返回了内容', probedAt: '2026-10-29T00:00:00.000Z' }] }
+  useAppStore.setState({ data: { ...initialBootstrap(), models: [model] }, selectedModelId: model.id })
+  await mount()
+  await act(async () => { useAppStore.setState({ data: { ...initialBootstrap(), models: [{ ...model, status: '离线', tone: 'red' }] } }) })
+  expect(screen.getByTestId('model-item').textContent).toContain('离线')
+  expect(screen.getByTestId('model-item').textContent).toContain('当前配置')
+  expect(document.querySelector('.current-service-banner')?.textContent).toContain('当前服务离线')
+  expect(document.querySelector('.use-result')?.textContent).toContain('最近请求未成功')
+  expect(document.querySelector('.use-result')?.textContent).not.toContain('验证未通过')
+  expect(document.querySelector('.use-result')?.textContent).not.toContain('连接测试返回了内容')
+  await act(async () => { useAppStore.setState({ data: { ...initialBootstrap(), models: [model] } }) })
+  expect(document.querySelector('.current-service-banner')?.textContent).toContain('正在使用')
+  expect(document.querySelector('.use-result')?.textContent).not.toContain('最近请求未成功')
+})
+
+it('preserves edited fields and selection while an incoming status snapshot goes offline and recovers', async () => {
+  useAppStore.setState({ data: { ...initialBootstrap(), models: [existing] }, selectedModelId: existing.id })
+  await mount()
+  fireEvent.change(screen.getByTestId('model-config-name'), { target: { value: '保留的编辑名称' } })
+  fireEvent.change(screen.getByTestId('model-key'), { target: { value: 'unsaved-test-key' } })
+  for (const status of ['离线', '在线'] as const) {
+    await act(async () => { useAppStore.setState({ data: { ...initialBootstrap(), models: [{ ...existing, status, tone: status === '离线' ? 'red' : 'green' }] } }) })
+    expect((screen.getByTestId('model-config-name') as HTMLInputElement).value).toBe('保留的编辑名称')
+    expect((screen.getByTestId('model-key') as HTMLInputElement).value).toBe('unsaved-test-key')
+    expect(useAppStore.getState().selectedModelId).toBe(existing.id)
+    expect(screen.getByTestId('set-default-model').matches(':disabled')).toBe(true)
+  }
+})

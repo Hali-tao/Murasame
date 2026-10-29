@@ -169,7 +169,7 @@
 | FR-22 | tests/unit/p1-p3.test.ts |
 | FR-23 | tests/unit/p1-p3.test.ts |
 | FR-24 | tests/unit/p0-finish.test.ts<br>tests/unit/p7-p8.test.ts |
-| FR-25 | tests/unit/gateway-contract.test.ts<br>tests/unit/model-maturity-regression.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/task-model-binding.test.ts |
+| FR-25 | tests/e2e/model-status-sync.spec.ts<br>tests/unit/gateway-contract.test.ts<br>tests/unit/model-maturity-regression.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/task-model-binding.test.ts |
 | FR-26 | tests/unit/p7-p8.test.ts |
 | FR-27 | tests/e2e/recording-hidden.spec.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/recording-hidden-regression.test.ts<br>tests/unit/window-hidden-event.test.ts |
 | FR-28 | tests/unit/autonomy-lifecycle-regression.test.ts<br>tests/unit/autonomy-status-bridge.test.ts<br>tests/unit/autonomy-status-events.test.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/p4-p6.test.ts |

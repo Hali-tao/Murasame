@@ -1,0 +1,161 @@
+[
+  {
+    "stage": "verified",
+    "models": [
+      {
+        "id": "model-1793270918564-6vxi0",
+        "name": "端到端测试服务",
+        "provider": "OpenAI Compatible",
+        "endpoint": "http://127.0.0.1:62296/v1",
+        "key": "",
+        "hasKey": true,
+        "model": "test-model",
+        "caps": [],
+        "capabilities": [
+          {
+            "id": "text.chat",
+            "status": "verified",
+            "detail": "连接测试返回了内容",
+            "probedAt": "2026-10-29T10:48:38.726Z"
+          },
+          {
+            "id": "text.stream",
+            "status": "verified",
+            "detail": "这是来自测试模型的真实流式回复。",
+            "probedAt": "2026-10-29T10:48:39.023Z"
+          },
+          {
+            "id": "vision.image-input",
+            "status": "unsupported",
+            "detail": "这是来自测试模型的真实流式回复。",
+            "probedAt": "2026-10-29T10:48:39.317Z"
+          },
+          {
+            "id": "tools.function-calling",
+            "status": "unknown",
+            "detail": "模型没有返回可解析的工具参数",
+            "probedAt": "2026-10-29T10:48:39.318Z"
+          },
+          {
+            "id": "output.json-schema",
+            "status": "unsupported",
+            "detail": "模型没有返回可解析的工具参数。已重试 2 次，未使用不完整结果。",
+            "probedAt": "2026-10-29T10:48:39.322Z"
+          }
+        ],
+        "probeNote": "",
+        "status": "在线",
+        "tone": "green",
+        "default": true,
+        "latency": "21 ms"
+      }
+    ],
+    "label": "模型服务在线"
+  },
+  {
+    "stage": "after-chat",
+    "models": [
+      {
+        "id": "model-1793270918564-6vxi0",
+        "name": "端到端测试服务",
+        "provider": "OpenAI Compatible",
+        "endpoint": "http://127.0.0.1:62296/v1",
+        "key": "",
+        "hasKey": true,
+        "model": "test-model",
+        "caps": [],
+        "capabilities": [
+          {
+            "id": "text.chat",
+            "status": "verified",
+            "detail": "连接测试返回了内容",
+            "probedAt": "2026-10-29T10:48:38.726Z"
+          },
+          {
+            "id": "text.stream",
+            "status": "verified",
+            "detail": "这是来自测试模型的真实流式回复。",
+            "probedAt": "2026-10-29T10:48:39.023Z"
+          },
+          {
+            "id": "vision.image-input",
+            "status": "unsupported",
+            "detail": "这是来自测试模型的真实流式回复。",
+            "probedAt": "2026-10-29T10:48:39.317Z"
+          },
+          {
+            "id": "tools.function-calling",
+            "status": "unknown",
+            "detail": "模型没有返回可解析的工具参数",
+            "probedAt": "2026-10-29T10:48:39.318Z"
+          },
+          {
+            "id": "output.json-schema",
+            "status": "unsupported",
+            "detail": "模型没有返回可解析的工具参数。已重试 2 次，未使用不完整结果。",
+            "probedAt": "2026-10-29T10:48:39.322Z"
+          }
+        ],
+        "probeNote": "",
+        "status": "在线",
+        "tone": "green",
+        "default": true,
+        "latency": "314 ms"
+      }
+    ],
+    "label": "模型服务在线"
+  },
+  {
+    "stage": "reloaded",
+    "models": [
+      {
+        "id": "model-1793270918564-6vxi0",
+        "name": "端到端测试服务",
+        "provider": "OpenAI Compatible",
+        "endpoint": "http://127.0.0.1:62296/v1",
+        "key": "",
+        "hasKey": true,
+        "model": "test-model",
+        "caps": [],
+        "capabilities": [
+          {
+            "id": "text.chat",
+            "status": "verified",
+            "detail": "连接测试返回了内容",
+            "probedAt": "2026-10-29T10:48:38.726Z"
+          },
+          {
+            "id": "text.stream",
+            "status": "verified",
+            "detail": "这是来自测试模型的真实流式回复。",
+            "probedAt": "2026-10-29T10:48:39.023Z"
+          },
+          {
+            "id": "vision.image-input",
+            "status": "unsupported",
+            "detail": "这是来自测试模型的真实流式回复。",
+            "probedAt": "2026-10-29T10:48:39.317Z"
+          },
+          {
+            "id": "tools.function-calling",
+            "status": "unknown",
+            "detail": "模型没有返回可解析的工具参数",
+            "probedAt": "2026-10-29T10:48:39.318Z"
+          },
+          {
+            "id": "output.json-schema",
+            "status": "unsupported",
+            "detail": "模型没有返回可解析的工具参数。已重试 2 次，未使用不完整结果。",
+            "probedAt": "2026-10-29T10:48:39.322Z"
+          }
+        ],
+        "probeNote": "",
+        "status": "在线",
+        "tone": "green",
+        "default": true,
+        "latency": "314 ms"
+      }
+    ],
+    "label": "模型服务在线"
+  }
+]

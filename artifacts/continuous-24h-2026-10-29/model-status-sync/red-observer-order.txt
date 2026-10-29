@@ -1,0 +1,38 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/model-maturity-regression.test.ts (27 tests | 1 failed) 288ms
+   ❯ [FR-25] published model snapshots (3)
+     × commits connection guards before notifying listeners of a newer verification 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/model-maturity-regression.test.ts > [FR-25] published model snapshots > commits connection guards before notifying listeners of a newer verification
+AssertionError: expected [ '在线', '离线' ] to deeply equal [ '在线' ]
+
+- Expected
++ Received
+
+  [
+    "在线",
++   "离线",
+  ]
+
+ ❯ tests/unit/model-maturity-regression.test.ts:60:20
+     58|     })
+     59|     registry.prepareVerification(old.id).commit(old.capabilities, 7, '…
+     60|     expect(events).toEqual(['在线'])
+       |                    ^
+     61|     expect(registry.list()[0].status).toBe('在线')
+     62|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 26 passed (27)
+   Start at  18:42:15
+   Duration  846ms (tests 58%, import 24%, transform 18%, worker 1%)

@@ -65,6 +65,9 @@ interface AppStore {
 }
 
 let initialized = false
+let modelEventVersion = 0
+let latestModelSnapshot: ModelProfile[] | undefined
+let unsubscribeModels: (() => void) | undefined
 let toastCounter = 0
 const toastId = (): string => `toast-${Date.now()}-${toastCounter++}`
 const toastTimers = new Map<string, ReturnType<typeof setTimeout>>()
@@ -143,13 +146,22 @@ export const useAppStore = create<AppStore>((set, get) => {
         return
       }
       try {
+        unsubscribeModels = window.murasame.events.onModelsUpdated?.(models => {
+          modelEventVersion++
+          latestModelSnapshot = models
+          set(state => ({
+            data: state.data ? { ...state.data, models } : null,
+            selectedModelId: models.some(model => model.id === state.selectedModelId) ? state.selectedModelId
+              : models.find(model => model.default)?.id ?? models[0]?.id ?? null
+          }))
+        })
         const [bootstrap, info, settings] = await Promise.all([
           window.murasame.core.getBootstrap(),
           window.murasame.app.getInfo(),
           window.murasame.settings.get()
         ])
         if (!bootstrap.ok) throw new Error(bootstrap.error)
-        const data: BootstrapData = { ...bootstrap.data, settings }
+        const data: BootstrapData = { ...bootstrap.data, settings, models: latestModelSnapshot ?? bootstrap.data.models }
         set({
           data,
           info,
@@ -218,6 +230,8 @@ export const useAppStore = create<AppStore>((set, get) => {
           })
         })
       } catch (error) {
+        unsubscribeModels?.()
+        unsubscribeModels = undefined
         set({
           loading: false,
           startupError: error instanceof Error ? error.message : '应用初始化失败'
@@ -457,11 +471,12 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     async verifyModel(id, input) {
       return busyRun('model:verify', async () => {
+        const version = modelEventVersion
         const result = await window.murasame.core.verifyModel(id, input)
         const model = unwrap(result, get().notify)
         if (!model) return null
         const data = get().data
-        if (data) {
+        if (data && version === modelEventVersion) {
           set({
             data: {
               ...data,
@@ -480,15 +495,18 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     async createModel() {
       return busyRun('model:create', async () => {
+        const version = modelEventVersion
         const result = await window.murasame.core.createModel()
         const model = unwrap(result, get().notify)
         if (!model) return null
         const data = get().data
-        if (data) {
+        if (data && version === modelEventVersion) {
           set({
             data: { ...data, models: [...data.models, model] },
             selectedModelId: model.id
           })
+        } else if (data?.models.some(item => item.id === model.id)) {
+          set({ selectedModelId: model.id })
         }
         get().notify('已添加新的模型配置', 'blue', { group: `model:${model.id}` })
         return model
@@ -497,11 +515,12 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     async saveModel(id, input) {
       return busyRun('model:save', async () => {
+        const version = modelEventVersion
         const result = await window.murasame.core.saveModel(id, input)
         const model = unwrap(result, get().notify)
         if (!model) return null
         const data = get().data
-        if (data) {
+        if (data && version === modelEventVersion) {
           set({
             data: {
               ...data,
@@ -516,11 +535,12 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     async deleteModel(id) {
       return busyRun('model:delete', async () => {
+        const version = modelEventVersion
         const result = await window.murasame.core.deleteModel(id)
         const models = unwrap(result, get().notify)
         if (!models) return false
         const data = get().data
-        if (data) set({ data: { ...data, models }, selectedModelId: models[0]?.id ?? null })
+        if (data && version === modelEventVersion) set({ data: { ...data, models }, selectedModelId: models[0]?.id ?? null })
         get().notify('配置已删除')
         return true
       })
@@ -528,13 +548,15 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     async setDefaultModel(id) {
       return busyRun('model:default', async () => {
+        const version = modelEventVersion
         const result = await window.murasame.core.setDefaultModel(id)
         if (!result.ok) {
           get().notify(result.error, 'red')
           return false
         }
         const data = get().data
-        if (data) set({ data: { ...data, models: result.data }, selectedModelId: id })
+        if (data && version === modelEventVersion) set({ data: { ...data, models: result.data }, selectedModelId: id })
+        else if (data?.models.some(item => item.id === id)) set({ selectedModelId: id })
         const model = result.data.find((item) => item.id === id)
         const resultMessage = model?.status === '在线'
           ? `${model.name} 已验证并设为当前服务 · ${model.latency}`
@@ -574,6 +596,10 @@ export const useAppStore = create<AppStore>((set, get) => {
 
 export function resetStoreForTests(): void {
   initialized = false
+  unsubscribeModels?.()
+  unsubscribeModels = undefined
+  latestModelSnapshot = undefined
+  modelEventVersion = 0
   for (const id of toastTimers.keys()) clearToastTimer(id)
   useAppStore.setState({
     data: null,

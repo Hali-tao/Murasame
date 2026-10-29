@@ -244,17 +244,20 @@ export function ModelsPage(): React.JSX.Element {
     }
   }
 
-  const chatDetail = selected?.capabilities.find((item) => item.id === 'text.chat')?.detail ?? ''
+  // Persisted capabilities describe the last probe, not the cause of a later request failure.
   const staleFailure = !dirty && selected?.status === '离线'
-    ? friendlyFailure(chatDetail || '上次验证没有通过', draft.model.trim())
+    ? '最近请求未成功。请查看对话或任务中的错误提示，检查网络与服务后重试，也可以点「再测一次」。'
     : ''
   const shownFailure = localFailure || staleFailure
-  const verificationFailure = !localFailure || failureContext !== 'operation'
+  const verificationFailure = Boolean(localFailure) && failureContext !== 'operation'
   const failedVerificationModelId = shownFailure && verificationFailure
     ? localFailure && failureContext === 'current' ? defaultModel?.id : selected?.id
     : undefined
   const failedCurrentVerification = Boolean(defaultModel && failedVerificationModelId === defaultModel.id)
-  const failureTitle = !verificationFailure
+  const currentOffline = defaultModel?.status === '离线'
+  const failureTitle = !localFailure && staleFailure
+    ? '服务离线，配置已保留'
+    : !verificationFailure
     ? '本次操作未完成'
     : failedCurrentVerification
       ? '本次验证未通过，当前配置已保留'
@@ -276,17 +279,19 @@ export function ModelsPage(): React.JSX.Element {
       <div className={`current-service-banner${using && !failedCurrentVerification ? ' ready' : ' pending'}`}>
         <div className="current-service-icon">{using && !failedCurrentVerification ? <CheckCircle2 size={18} /> : <PlugZap size={18} />}</div>
         <div>
-          <span>{failedCurrentVerification ? '当前配置已保留' : using ? '正在使用' : '还不能聊天'}</span>
+          <span>{failedCurrentVerification ? '当前配置已保留' : currentOffline ? '当前服务离线' : using ? '正在使用' : '还不能聊天'}</span>
           <strong data-testid="current-service-name">{defaultModel?.name ?? '未选择默认模型'}</strong>
           <p>
             {failedCurrentVerification
               ? `${defaultModel?.model} · 本次验证未通过，连接状态待确认。检查后可以再测一次。`
+              : currentOffline
+              ? `${defaultModel?.model} · 最近请求未成功，配置已保留。检查网络与服务后，可以重试对话或再测一次。`
               : using
               ? `${defaultModel?.model} · 验证成功 · 响应 ${defaultModel?.latency}。左侧「交流」会走这个服务。`
               : '选运营商，贴上 API Key，点「验证并开始使用」。这里变成绿色，才算开始用。'}
           </p>
         </div>
-        {failedCurrentVerification ? <Pill tone="amber">连接待确认</Pill> : <StatusPill status={using ? 'in-use' : 'not-started'} />}
+        {failedCurrentVerification ? <Pill tone="amber">连接待确认</Pill> : currentOffline ? <Pill tone="red">离线</Pill> : <StatusPill status={using ? 'in-use' : 'not-started'} />}
         <Button size="sm" disabled={!defaultModel || verifying} onClick={() => void runFormAction('正在重新测试当前服务…', recheckCurrent)}>
           再测一次
         </Button>
@@ -296,7 +301,7 @@ export function ModelsPage(): React.JSX.Element {
         <Card className="model-list-card">
           <CardHead
             title="已保存的配置"
-            subtitle="只有「正在使用」的那条会接到对话"
+            subtitle="对话使用当前服务配置；服务离线后可检查并重试"
             aside={<Button size="sm" onClick={() => void runFormAction('正在添加配置…', addModel)} disabled={Boolean(busy['model:create'])} icon={<Plus size={15} />} aria-label="添加模型配置" data-testid="add-model" />}
           />
           <div className="model-list">
@@ -315,7 +320,7 @@ export function ModelsPage(): React.JSX.Element {
                 <p>{model.model || '未填模型'} · {hostOf(model.endpoint)}</p>
                 <div className="model-list-foot">
                   <span>{model.hasKey ? '密钥已保存' : '未配置密钥'}</span>
-                  {model.default ? <StatusPill status={model.status === '在线' ? 'in-use' : 'not-in-use'} /> : null}
+                  {model.default ? model.status === '在线' ? <StatusPill status="in-use" /> : <Pill tone="amber">当前配置</Pill> : null}
                 </div>
               </button>
             ))}

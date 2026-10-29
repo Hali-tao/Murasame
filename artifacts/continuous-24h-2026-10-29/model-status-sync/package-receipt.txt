@@ -1,0 +1,42 @@
+{
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-model-status-sync-final\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292512317,
+    "sha256": "0e4fb2f3a68e84c40aceaa3871087bb5280f19851e55c25e1d9b6660acf9847c"
+  },
+  "codeFiles": 109,
+  "models": 18,
+  "isolation": 6,
+  "previousInstallers": [
+    {
+      "path": "release/continuous-2026-10-29-model-status-sync/Murasame-Setup-0.9.0.exe",
+      "sha256": "07c99b31d53e15f936b36d77547149f0951e778011ce63598f5de7f12a3c35b7",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-memory-clear-ui-final/Murasame-Setup-0.9.0.exe",
+      "sha256": "3af372833652bd76ddeefcb8bc2d93eba83af450410fd086c51de506b43b7eac",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-memory-source/Murasame-Setup-0.9.0.exe",
+      "sha256": "b68e342f0861f541164d7f50d1788f8a5e8bf9c833b292abf57f3d9d828d320b",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-model-lifecycle/Murasame-Setup-0.9.0.exe",
+      "sha256": "3d03081adfdda0b0930380da869ae372e10eb25a2b41e00015ac4c59b18bef69",
+      "unchanged": true
+    },
+    {
+      "path": "release/overnight-2026-10-29-sixth-delivery/Murasame-Setup-0.9.0.exe",
+      "sha256": "4cf9487c442b62ca24c562610e15387d37b843cf0a93caa1dd0214effb8fd6bd",
+      "unchanged": true
+    },
+    {
+      "path": "release/continuous-2026-10-29-autonomy-sync/Murasame-Setup-0.9.0.exe",
+      "sha256": "7b5d5c4fd3704140a7c6a5f0f005bf747eac60e5901b9b3dd3861ebdf2f2337c",
+      "unchanged": true
+    }
+  ]
+}

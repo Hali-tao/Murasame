@@ -14,6 +14,7 @@ export function TopBar(): React.JSX.Element {
   const notify = useAppStore((state) => state.notify)
   const current = pageMeta.find((item) => item.to === location.pathname) ?? pageMeta[0]
   const defaultModel = models.find((model) => model.default)
+  const serviceLabel = !defaultModel ? '未配置' : defaultModel.status === '未验证' ? '待验证' : defaultModel.status
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000)
@@ -43,9 +44,9 @@ export function TopBar(): React.JSX.Element {
       </div>
       <div className="topbar-actions">
         <span className="topbar-time">{clockLabel(now)} · {dateLabel(now)}</span>
-        <Pill tone={defaultModel?.status === '在线' ? 'green' : 'amber'} className="service-pill">
+        <Pill tone={defaultModel?.status === '在线' ? 'green' : defaultModel?.status === '离线' ? 'red' : 'amber'} className="service-pill">
           <i className="tiny-dot" />
-          模型服务{defaultModel?.status === '在线' ? '在线' : '待验证'}
+          模型服务{serviceLabel}
         </Pill>
         <IconButton label={petVisible ? '隐藏桌宠' : '显示桌宠'} onClick={() => void togglePet()}>
           {petVisible ? <Eye size={17} /> : <EyeOff size={17} />}

@@ -451,6 +451,7 @@ export interface MurasameApi {
     onScreenUpdated(listener: (analysis: ScreenAnalysis) => void): () => void
     onTaskUpdated(listener: (task: Task) => void): () => void
     onMemoriesUpdated(listener: (memories: MemoryEntry[]) => void): () => void
+    onModelsUpdated(listener: (models: ModelProfile[]) => void): () => void
     onMemoryExtractionStatus(listener: (status: MemoryExtractionStatus) => void): () => void
     onMemoryIndexStatus(listener: (status: MemoryIndexStatus) => void): () => void
     onActiveConversation(listener: (payload: { id: string }) => void): () => void

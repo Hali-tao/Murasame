@@ -1,0 +1,9 @@
+
+> murasame-desktop@0.9.0 verify
+> npm run typecheck && npm run lint && npm test && npm run trace
+
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+tests/unit/model-form-lifecycle.test.ts(221,61): error TS2741: Property 'probedAt' is missing in type '{ id: "text.chat"; status: "verified"; detail: string; }' but required in type 'ModelCapability'.

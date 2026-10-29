@@ -1,0 +1,84 @@
+
+Running 29 tests using 1 worker
+
+(node:58540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\app.spec.ts:6:5 › first launch leads through model verification to a real first conversation (4.6s)
+  ok  2 tests\e2e\app.spec.ts:26:5 › console starts and all ten pages are reachable (7.2s)
+  ok  3 tests\e2e\app.spec.ts:98:5 › pet window is created and can be hidden or restored through IPC (3.5s)
+  ok  4 tests\e2e\app.spec.ts:159:5 › character page switches between the three bundled pet presets (4.8s)
+  ok  5 tests\e2e\autonomy-external-status.spec.ts:4:5 › an already open autonomy page follows externally started real isolated work and stop (23.4s)
+  ok  6 tests\e2e\flows.spec.ts:17:5 › history clearing, memory editing and model switching are end-to-end usable (5.7s)
+  ok  7 tests\e2e\flows.spec.ts:74:5 › a second launch exits and the existing instance remains available (5.5s)
+  ok  8 tests\e2e\flows.spec.ts:101:5 › the console hides to the tray and can be restored (2.7s)
+  ok  9 tests\e2e\grounded-summary.spec.ts:54:5 › real source is sent only after A; reviewed exact draft is saved only after B (4.8s)
+  ok 10 tests\e2e\grounded-summary.spec.ts:100:5 › a slow real summary permits chat, survives hiding, and cancellation discards late output (6.4s)
+  ok 11 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › office through actual UI, IPC, model transport and Docker (42.5s)
+  ok 12 tests\e2e\isolated-creation.spec.ts:11:55 › real isolated creation › code through actual UI, IPC, model transport and Docker (41.0s)
+  ok 13 tests\e2e\local-memory.spec.ts:7:5 › [FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对话请求 (5.3s)
+  ok 14 tests\e2e\memory-clear-ui.spec.ts:21:5 › [FR-15] memory source opens its history and scoped clearing leaves no stale extraction notice (5.9s)
+  ok 15 tests\e2e\memory-clear-ui.spec.ts:71:5 › [FR-15] settings reports real IPC clear failures and keeps persisted memory visible (3.4s)
+  ok 16 tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories (6.1s)
+  ok 17 tests\e2e\memory-correction-source.spec.ts:14:7 › [FR-15] clearing the original conversation keeps corrected memory in its actual source (5.8s)
+  ok 18 tests\e2e\memory-correction-source.spec.ts:14:7 › [FR-15] clearing the correction conversation keeps corrected memory in its actual source (5.8s)
+  ok 19 tests\e2e\model-lifecycle.spec.ts:55:5 › an old failed chat cannot invalidate a newer actual model verification (5.6s)
+  ok 20 tests\e2e\model-lifecycle.spec.ts:92:5 › removing a model during a real pending request still delivers its complete answer to the conversation (4.5s)
+  ok 21 tests\e2e\model-status-sync.spec.ts:6:5 › [FR-25] verified service status survives a completed chat and renderer reload (4.8s)
+  x  22 tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading (9.5s)
+(node:50808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 23 tests\e2e\notifications.spec.ts:5:5 › model setup has one complete result and notifications leave the chat composer usable (12.1s)
+  ok 24 tests\e2e\notifications.spec.ts:41:5 › distinct errors remain scrollable and keyboard dismissible after routine notices expire (10.1s)
+  ok 25 tests\e2e\pet-work.spec.ts:20:5 › real pet follows current work, keeps a native loop and stops without celebrating stale output (16.4s)
+  ok 26 tests\e2e\recording-hidden.spec.ts:61:5 › [FR-27] native tray and pet hiding end recording tracks without submitting voice (3.3s)
+  ok 27 tests\e2e\recording-hidden.spec.ts:108:5 › [FR-27] a transcription returning through IPC after native hide cannot change the draft (2.9s)
+  ok 28 tests\e2e\task-directory.spec.ts:18:5 › [FR-16] 新任务选择目录经真实 IPC 审批后整理文件，取消选择保留先前范围 (5.2s)
+  ok 29 tests\e2e\task-directory.spec.ts:56:5 › [FR-18] 模型建议目录保持待确认，实际选择后才进入敏感操作审批 (4.8s)
+
+
+  1) tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('model-item')
+    Expected substring: "离线"
+    Received string:    "端到端测试服务本次未通过test-model · 127.0.0.1:64331密钥已保存未在使用"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByTestId('model-item') with timeout 5000ms
+      - waiting for getByTestId('model-item')
+        14 × locator resolved to <button type="button" data-testid="model-item" class="model-list-item active">…</button>
+           - unexpected value "端到端测试服务本次未通过test-model · 127.0.0.1:64331密钥已保存未在使用"
+
+
+      65 |     await expect(page.locator('.service-pill')).toHaveText('模型服务离线')
+      66 |     await page.getByTestId('nav-models').click()
+    > 67 |     await expect(page.getByTestId('model-item')).toContainText('离线')
+         |                                                  ^
+      68 |     fail = false
+      69 |     await page.getByTestId('nav-chat').click()
+      70 |     await page.getByTestId('chat-input').fill('你好，请再解释一下变量')
+        at E:\Desktop\软件工程\murasame\tests\e2e\model-status-sync.spec.ts:67:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\model-status-sync-2026-10-29\package-e2e\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\model-status-sync-2026-10-29\package-e2e\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\model-status-sync-2026-10-29\package-e2e\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\model-status-sync-2026-10-29\package-e2e\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\model-status-sync-2026-10-29\package-e2e\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading
+  28 passed (4.4m)

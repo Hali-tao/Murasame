@@ -1,0 +1,53 @@
+
+Running 1 test using 1 worker
+
+(node:53924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading (8.6s)
+
+
+  1) tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('.service-pill')
+    Expected: "模型服务离线"
+    Received: "模型服务在线"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" locator('.service-pill') with timeout 5000ms
+      - waiting for locator('.service-pill')
+        14 × locator resolved to <span class="pill pill-green service-pill">…</span>
+           - unexpected value "模型服务在线"
+
+
+      63 |     if (!offline.ok) throw new Error(offline.error)
+      64 |     expect(offline.data.models.find(model => model.default)?.status).toBe('离线')
+    > 65 |     await expect(page.locator('.service-pill')).toHaveText('模型服务离线')
+         |                                                 ^
+      66 |     await page.getByTestId('nav-models').click()
+      67 |     await expect(page.getByTestId('model-item')).toContainText('离线')
+      68 |     fail = false
+        at E:\Desktop\软件工程\murasame\tests\e2e\model-status-sync.spec.ts:65:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\model-status-sync-2026-10-29\failure-old-package\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\model-status-sync-2026-10-29\failure-old-package\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\model-status-sync-2026-10-29\failure-old-package\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\model-status-sync-2026-10-29\failure-old-package\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\model-status-sync-2026-10-29\failure-old-package\model-status-sync--FR-25-r-c4b97-t-service-without-reloading\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\model-status-sync.spec.ts:36:5 › [FR-25] real chat failure and recovery update the current service without reloading

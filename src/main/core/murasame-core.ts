@@ -422,6 +422,10 @@ export class MurasameCore implements CoreApi {
     }
   }
 
+  subscribeModels(listener: (models: ModelProfile[]) => void): () => void {
+    return this.modelService.subscribe(listener)
+  }
+
   async createConversation(): Promise<Result<Conversation>> {
     const conversation = this.conversations.create()
     rememberActiveConversation(conversation.id)

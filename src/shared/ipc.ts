@@ -57,6 +57,7 @@ export const IPC = {
     taskUpdated: 'core:task-updated',
     screenUpdated: 'core:screen-updated',
     memoriesUpdated: 'core:memories-updated',
+    modelsUpdated: 'core:models-updated',
     memoryExtractionStatus: 'core:memory-extraction-status',
     memoryIndexStatus: 'core:memory-index-status',
     activeChanged: 'core:active-changed',

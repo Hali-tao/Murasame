@@ -48,6 +48,51 @@ function probeResponse(init?: RequestInit): Response {
 beforeEach(() => { storage.models = []; storage.failNextWrite = false; storage.encryptionAvailable = true })
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 
+describe('[FR-25] published model snapshots', () => {
+  it('commits connection guards before notifying listeners of a newer verification', () => {
+    const registry = new ModelRegistry(); const old = available(registry)
+    const events: string[] = []
+    registry.subscribe(models => {
+      events.push(models[0].status)
+      if (models[0].status === '在线') registry.markOffline(old.id, old)
+    })
+    registry.prepareVerification(old.id).commit(old.capabilities, 7, '')
+    expect(events).toEqual(['在线'])
+    expect(registry.list()[0].status).toBe('在线')
+  })
+
+  it('publishes successful changes without credentials and keeps observer snapshots independent', () => {
+    const registry = new ModelRegistry(); const model = available(registry)
+    const snapshots: unknown[] = []
+    registry.subscribe(models => { models[0].name = 'observer mutation'; models[0].capabilities[0].detail = 'observer mutation' })
+    const unsubscribe = registry.subscribe(models => snapshots.push(models))
+    registry.markOffline(model.id, model)
+    expect(snapshots).toHaveLength(1)
+    expect(snapshots[0]).toEqual(registry.list())
+    expect(JSON.stringify(snapshots)).not.toMatch(/old-credential|encryptedKey|apiKey|observer mutation/)
+    registry.markVerified(model.id, 25, model)
+    expect(snapshots).toHaveLength(2)
+    expect(registry.list()[0].status).toBe('在线')
+    unsubscribe(); registry.remove(model.id)
+    expect(snapshots).toHaveLength(2)
+  })
+
+  it('does not publish failed saves or rejected late statuses, and observer errors do not undo writes', () => {
+    const registry = new ModelRegistry(); const model = available(registry)
+    const observer = vi.fn()
+    registry.subscribe(() => { throw new Error('broken renderer') })
+    registry.subscribe(observer)
+    storage.failNextWrite = true
+    expect(() => registry.markOffline(model.id, model)).toThrow('配置写入失败')
+    expect(observer).not.toHaveBeenCalled()
+    registry.prepareVerification(model.id).commit(model.capabilities, 17, '')
+    expect(observer).toHaveBeenCalledTimes(1)
+    expect(registry.markOffline(model.id, model)).toBeNull()
+    expect(observer).toHaveBeenCalledTimes(1)
+    expect(registry.list()[0].status).toBe('在线')
+  })
+})
+
 describe('[UC-08] 验证失败保留原有模型配置', () => {
   it('[FR-25] 新密钥认证失败后旧配置仍能完成对话', async () => {
     const registry = new ModelRegistry(); const old = available(registry)

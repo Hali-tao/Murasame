@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-29T19:00:43.2258385+08:00",
+  "testApplicationProcesses": [],
+  "remainingTestProfiles": [],
+  "runningDockerContainers": [
+    "5b6d534fdb9c casmi-cfmid-pilot-f19c-0f5c7b98e073ef36b070",
+    "41934f2dd3a8 casmi-cfmid-pilot-f19c-8381be94273a19032862"
+  ],
+  "runningMurasameContainers": []
+}

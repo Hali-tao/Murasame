@@ -21,6 +21,10 @@ export class ModelService {
     return this.models.list()
   }
 
+  subscribe(listener: (models: ModelProfile[]) => void): () => void {
+    return this.models.subscribe(listener)
+  }
+
   bindCreationAgents(): CreationAgents {
     const current = this.models.getDefault()
     if (!current || !['text.chat', 'tools.function-calling'].every(id => current.capabilities.some(capability => capability.id === id && capability.status === 'verified'))) throw new Error('隔离创作需要已验证文字和工具调用能力的默认模型')

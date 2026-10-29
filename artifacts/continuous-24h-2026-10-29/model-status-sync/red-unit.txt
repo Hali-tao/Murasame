@@ -1,0 +1,175 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/model-maturity-regression.test.ts (26 tests | 2 failed) 276ms
+   ❯ [FR-25] published model snapshots (2)
+     × publishes successful changes without credentials and keeps observer snapshots independent 7ms
+     × does not publish failed saves or rejected late statuses, and observer errors do not undo writes 1ms
+ ❯ tests/unit/model-status-sync.test.ts (10 tests | 8 failed) 65ms
+   × keeps a model update received while the initial snapshot is delayed 5ms
+   × does not overwrite a newer model event with a delayed verify response 3ms
+   × does not overwrite a newer model event with a delayed save response 1ms
+   × does not overwrite a newer model event with a delayed create response 1ms
+   × does not overwrite a newer model event with a delayed delete response 1ms
+   × does not overwrite a newer model event with a delayed default response 1ms
+   × displays the distinct service state 离线 4ms
+   × displays the distinct service state none 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/model-maturity-regression.test.ts > [FR-25] published model snapshots > publishes successful changes without credentials and keeps observer snapshots independent
+TypeError: registry.subscribe is not a function
+ ❯ tests/unit/model-maturity-regression.test.ts:55:14
+     53|     const registry = new ModelRegistry(); const model = available(regi…
+     54|     const snapshots: unknown[] = []
+     55|     registry.subscribe(models => { models[0].name = 'observer mutation…
+       |              ^
+     56|     const unsubscribe = registry.subscribe(models => snapshots.push(mo…
+     57|     registry.markOffline(model.id, model)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/unit/model-maturity-regression.test.ts > [FR-25] published model snapshots > does not publish failed saves or rejected late statuses, and observer errors do not undo writes
+TypeError: registry.subscribe is not a function
+ ❯ tests/unit/model-maturity-regression.test.ts:71:14
+     69|     const registry = new ModelRegistry(); const model = available(regi…
+     70|     const observer = vi.fn()
+     71|     registry.subscribe(() => { throw new Error('broken renderer') })
+       |              ^
+     72|     registry.subscribe(observer)
+     73|     storage.failNextWrite = true
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/unit/model-status-sync.test.ts > keeps a model update received while the initial snapshot is delayed
+AssertionError: expected '在线' to be '离线' // Object.is equality
+
+Expected: "离线"
+Received: "在线"
+
+ ❯ tests/unit/model-status-sync.test.ts:38:57
+     36|   pending.resolve({ ok: true, data: { ...initialBootstrap(), models: […
+     37|   await loading
+     38|   expect(useAppStore.getState().data?.models[0].status).toBe('离线')
+       |                                                         ^
+     39| })
+     40|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/unit/model-status-sync.test.ts > does not overwrite a newer model event with a delayed verify response
+ FAIL  tests/unit/model-status-sync.test.ts > does not overwrite a newer model event with a delayed save response
+ FAIL  tests/unit/model-status-sync.test.ts > does not overwrite a newer model event with a delayed delete response
+ FAIL  tests/unit/model-status-sync.test.ts > does not overwrite a newer model event with a delayed default response
+AssertionError: expected [ { id: 'a', name: '原服务', …(12) } ] to deeply equal [ { id: 'b', name: '新的当前服务', …(12) } ]
+
+- Expected
++ Received
+
+@@ -3,16 +3,16 @@
+      "capabilities": [],
+      "caps": [],
+      "default": true,
+      "endpoint": "http://127.0.0.1:9999/v1",
+      "hasKey": true,
+-     "id": "b",
++     "id": "a",
+      "key": "",
+      "latency": "10 ms",
+      "model": "test-model",
+-     "name": "新的当前服务",
++     "name": "原服务",
+      "probeNote": "",
+      "provider": "OpenAI Compatible",
+-     "status": "离线",
+-     "tone": "red",
++     "status": "在线",
++     "tone": "green",
+    },
+  ]
+
+ ❯ tests/unit/model-status-sync.test.ts:54:47
+     52|   pending.resolve({ ok: true, data: (action === 'delete' || action ===…
+     53|   await call
+     54|   expect(useAppStore.getState().data?.models).toEqual(latest)
+       |                                               ^
+     55|   expect(useAppStore.getState().selectedModelId).toBe('b')
+     56| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  tests/unit/model-status-sync.test.ts > does not overwrite a newer model event with a delayed create response
+AssertionError: expected [ …(2) ] to deeply equal [ { id: 'b', name: '新的当前服务', …(12) } ]
+
+- Expected
++ Received
+
+@@ -3,16 +3,32 @@
+      "capabilities": [],
+      "caps": [],
+      "default": true,
+      "endpoint": "http://127.0.0.1:9999/v1",
+      "hasKey": true,
+-     "id": "b",
++     "id": "a",
+      "key": "",
+      "latency": "10 ms",
+      "model": "test-model",
+-     "name": "新的当前服务",
++     "name": "原服务",
+      "probeNote": "",
+      "provider": "OpenAI Compatible",
+-     "status": "离线",
+-     "tone": "red",
++     "status": "在线",
++     "tone": "green",
++   },
++   {
++     "capabilities": [],
++     "caps": [],
++     "default": true,
++     "endpoint": "http://127.0.0.1:9999/v1",
++     "hasKey": true,
++     "id": "a",
++     "key": "",
++     "latency": "10 ms",
++     "model": "test-model",
++     "name": "原服务",
++     "probeNote": "",
++     "provider": "OpenAI Compatible",
++     "status": "在线",
++     "tone": "green",
+    },
+  ]
+
+ ❯ tests/unit/model-status-sync.test.ts:54:47
+     52|   pending.resolve({ ok: true, data: (action === 'delete' || action ===…
+     53|   await call
+     54|   expect(useAppStore.getState().data?.models).toEqual(latest)
+       |                                               ^
+     55|   expect(useAppStore.getState().selectedModelId).toBe('b')
+     56| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  tests/unit/model-status-sync.test.ts > displays the distinct service state 离线
+ FAIL  tests/unit/model-status-sync.test.ts > displays the distinct service state none
+AssertionError: expected null not to be null
+ ❯ tests/unit/model-status-sync.test.ts:64:41
+     62|   useAppStore.setState(state => ({ data: { ...state.data!, models: sta…
+     63|   await act(async () => { render(createElement(MemoryRouter, null, cre…
+     64|   expect(screen.queryByText(label)).not.toBeNull()
+       |                                         ^
+     65| })
+     66|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  10 failed | 26 passed (36)
+   Start at  18:39:52
+   Duration  1.56s (environment 50%, import 25%, tests 18%, transform 7%)
