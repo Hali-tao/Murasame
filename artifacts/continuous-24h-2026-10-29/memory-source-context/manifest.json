@@ -83,6 +83,34 @@
       "path": "replay/report.json",
       "bytes": 656570,
       "sha256": "42de67aaadd3a271dc8d5157e3d7e21497fd9aacade72b02cf2979adb4b3c99a"
+    },
+    {
+      "path": "local-drift/unexpected-test-drift.patch.txt",
+      "bytes": 858,
+      "sha256": "58f10d55078f58c8de8dd220373ee1f8e3cd67c6d21489a9950d21fc49d031e4"
+    },
+    {
+      "path": "local-drift/drift-typecheck.txt",
+      "bytes": 105,
+      "sha256": "04d3dfdcb5c62c1aad518f03b190f508907e4d036ce28997559e74b5c0f29dc6"
+    },
+    {
+      "path": "local-drift/drift-typecheck-fixed.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "local-drift/drift-regression-fixed.txt",
+      "bytes": 727,
+      "sha256": "92ecb4ef2e3221a465952d5017564500923cd1e05125c220a1162ccb9d1faad6",
+      "originalSha256": "3e51379080b635dd0ec01aeb47fb4ffc77fd7765d06008e1b1e0d45d6abc9b9c",
+      "originalArchive": "local-drift/raw-regression.zip"
+    },
+    {
+      "path": "local-drift/raw-regression.zip",
+      "bytes": 664,
+      "sha256": "fdffb3b61af4291261e975bd6be70b52e823e4b441f5a353188d76e9f0f598e6"
     }
-  ]
+  ],
+  "supplementedAt": "2026-10-29T15:38:30.921Z"
 }

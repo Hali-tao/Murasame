@@ -1,0 +1,13 @@
+diff --git a/tests/unit/conversation-memory-maturity.test.ts b/tests/unit/conversation-memory-maturity.test.ts
+index 643ee79..94b55c1 100644
+--- a/tests/unit/conversation-memory-maturity.test.ts
++++ b/tests/unit/conversation-memory-maturity.test.ts
+@@ -524,7 +524,7 @@ describe('conversation reliability at memory boundaries', () => {
+     const chat = service.create()
+     const sending = service.send(chat.id, '我之前的偏好')
+     await started.promise
+-    if (change === 'clear') await memory.clear()
++    if (change === 'clear') await memory.clear('all')
+     else if (change === 'disable-extraction') memory.configure({ recallEnabled: true, extractionEnabled: false })
+     else memory.configure({ recallEnabled: false, extractionEnabled: false })
+     if (change === 'off-on') memory.configure({ recallEnabled: true, extractionEnabled: true })
