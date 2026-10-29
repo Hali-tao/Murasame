@@ -1,0 +1,56 @@
+
+Running 3 tests using 1 worker
+
+(node:59364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\memory-clear-ui.spec.ts:21:5 › [FR-15] memory source opens its history and scoped clearing leaves no stale extraction notice (5.6s)
+  ok 2 tests\e2e\memory-clear-ui.spec.ts:71:5 › [FR-15] settings reports real IPC clear failures and keeps persisted memory visible (3.6s)
+  x  3 tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories (13.1s)
+
+
+  1) tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.message-row.assistant')
+    Expected: 2
+    Received: 3
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.message-row.assistant') with timeout 5000ms
+      - waiting for locator('.message-row.assistant')
+        8 × locator resolved to 3 elements
+          - unexpected value "3"
+
+
+      135 |     await page.getByTestId('chat-input').fill('我现在正在开发白桦项目')
+      136 |     await page.getByTestId('chat-send').click()
+    > 137 |     await expect(page.locator('.message-row.assistant')).toHaveCount(2)
+          |                                                          ^
+      138 |     await page.getByTestId('nav-memory').click()
+      139 |     await expect(page.getByTestId('memory-card')).toContainText('正在开发白桦项目', { timeout: 20_000 })
+      140 |     const result = await page.evaluate(() => window.murasame.core.getBootstrap())
+        at E:\Desktop\软件工程\murasame\tests\e2e\memory-clear-ui.spec.ts:137:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\memory-clear-experience-2026-10-29\intermediate-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\memory-clear-experience-2026-10-29\intermediate-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\memory-clear-experience-2026-10-29\intermediate-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\memory-clear-experience-2026-10-29\intermediate-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\memory-clear-experience-2026-10-29\intermediate-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories
+  2 passed (23.0s)

@@ -1,0 +1,39 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/core-memory-status-regression.test.ts (9 tests | 1 failed) 1582ms
+   ❯ core memory extraction status propagation (9)
+     × does not disable future memory extraction when deleting history fails 1032ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/core-memory-status-regression.test.ts > core memory extraction status propagation > does not disable future memory extraction when deleting history fails
+AssertionError: expected [ 'processing', 'skipped' ] to deeply equal [ 'processing', 'saved' ]
+
+- Expected
++ Received
+
+  [
+    "processing",
+-   "saved",
++   "skipped",
+  ]
+
+ ❯ tests/unit/core-memory-status-regression.test.ts:29:45
+     27|     vi.spyOn(ModelGateway.prototype, 'callStructured').mockResolvedVal…
+     28|     await core.sendMessage(chat.data.id, '继续当前会话')
+     29|     await vi.waitFor(() => expect(statuses).toEqual(['processing', 'sa…
+       |                                             ^
+     30|   })
+     31|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  18:20:53
+   Duration  2.16s (tests 85%, transform 7%, import 7%)

@@ -37,6 +37,7 @@ export class MemoryService {
   private suppressed = new Set<string>()
   private generation = 0
   private deletedSources = new Set<string>()
+  private readonly sourceVersions = new Map<string, number>()
   private listeners = new Set<() => void>()
   private recallOn = true
   private extractionOn = true
@@ -280,11 +281,12 @@ export class MemoryService {
     source = '长期记忆'
   ): Promise<MemoryExtractionOutcome> {
     const generation = this.generation
+    const sourceVersion = this.sourceVersions.get(source) ?? 0
     // Named sources are conversation timelines. Keep their judgments in turn order,
     // while independent sources and legacy unscoped work can still run concurrently.
-    if (source === '长期记忆') return this.applyProposed(text, propose, source, generation)
+    if (source === '长期记忆') return this.applyProposed(text, propose, source, generation, sourceVersion)
     const previous = this.extractionQueues.get(source) ?? Promise.resolve()
-    const run = previous.then(() => this.applyProposed(text, propose, source, generation))
+    const run = previous.then(() => this.applyProposed(text, propose, source, generation, sourceVersion))
     const settled = run.then(() => undefined, () => undefined)
     this.extractionQueues.set(source, settled)
     try { return await run } finally {
@@ -296,10 +298,11 @@ export class MemoryService {
     text: string,
     propose: (text: string, known: string[]) => Promise<ProposedMemory[]>,
     source: string,
-    generation: number
+    generation: number,
+    sourceVersion: number
   ): Promise<MemoryExtractionOutcome> {
     if (!this.extractionOn || this.deletedSources.has(source)) return { status: 'skipped', reason: '记忆提取已停用或来源已删除' }
-    if (generation !== this.generation) return { status: 'skipped', reason: '数据已清除或提取已停用' }
+    if (generation !== this.generation || sourceVersion !== (this.sourceVersions.get(source) ?? 0)) return { status: 'skipped', reason: '数据已清除或提取已停用' }
     const snapshot = this.active()
     try {
       const proposals = await propose(text, snapshot.map((fact) => fact.text))
@@ -308,7 +311,8 @@ export class MemoryService {
         ['ADD', 'UPDATE', 'DELETE'].includes(proposal.action)
         && Boolean(labels[proposal.category]) && proposal.text?.trim() && safeCandidate(proposal.text)
       )).map(async (proposal) => ({ ...proposal, text: proposal.text.trim(), vector: proposal.action === 'DELETE' ? null : await embedLocally(proposal.text, this.userDataDir) })))
-      if (!this.extractionOn || generation !== this.generation || this.deletedSources.has(source)) return { status: 'skipped', reason: '数据已清除、停用或来源已删除' }
+      if (!this.extractionOn || generation !== this.generation || this.deletedSources.has(source)
+        || sourceVersion !== (this.sourceVersions.get(source) ?? 0)) return { status: 'skipped', reason: '数据已清除、停用或来源已删除' }
       let next = this.facts
       const now = new Date().toISOString()
       const suppressed = new Set(this.suppressed)
@@ -341,7 +345,6 @@ export class MemoryService {
   }
 
   async clearSource(source: string): Promise<Result<MemoryEntry[]>> {
-    this.invalidateSource(source)
     const now = new Date().toISOString()
     const suppressed = new Set(this.suppressed)
     const next = this.facts.map((fact) => {
@@ -349,7 +352,13 @@ export class MemoryService {
       suppressed.add(fact.normalizedKey)
       return { ...fact, validUntil: now, updatedAt: now }
     })
-    return this.commit(next, suppressed) ? ok(this.list()) : fail('保存失败，修改未完成')
+    // Clearing memories keeps the conversation usable. Cancel only work queued
+    // before this clear; permanent source invalidation belongs to history deletion.
+    const version = this.sourceVersions.get(source) ?? 0
+    this.sourceVersions.set(source, version + 1)
+    if (this.commit(next, suppressed)) return ok(this.list())
+    this.sourceVersions.set(source, version)
+    return fail('保存失败，修改未完成')
   }
 
   private commit(next: MemoryFact[], suppressed = this.suppressed): boolean {

@@ -1,0 +1,52 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:59036) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/conversation-memory-maturity.test.ts (46 tests | 2 failed) 6719ms
+   ❯ memory maturity across turns and restarts (32)
+     × [FR-15] clearing a source cancels older queued extraction but accepts future new facts without reviving deleted facts 127ms
+     × [NFR-R02] a failed source clear preserves facts and does not disable pending or later extraction 129ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [FR-15] clearing a source cancels older queued extraction but accepts future new facts without reviving deleted facts
+AssertionError: expected 'skipped' to be 'saved' // Object.is equality
+
+Expected: "saved"
+Received: "skipped"
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:73:35
+     71|     expect((await queued).status).toBe('skipped')
+     72|     expect(queuedJudge).not.toHaveBeenCalled()
+     73|     expect((await future).status).toBe('saved')
+       |                                   ^
+     74|     expect(new MemoryService(db).list().map(fact => fact.text)).toEqua…
+     75|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > memory maturity across turns and restarts > [NFR-R02] a failed source clear preserves facts and does not disable pending or later extraction
+AssertionError: expected 'skipped' to be 'saved' // Object.is equality
+
+Expected: "saved"
+Received: "skipped"
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:89:32
+     87|     db.exec('DROP TRIGGER block_clear')
+     88|     pending.release([proposal('喜欢白茶')])
+     89|     expect((await old).status).toBe('saved')
+       |                                ^
+     90|     expect((await memory.ingestProposed('下一轮', async () => [proposal('…
+     91|     expect(new MemoryService(db).list().map(fact => fact.text).sort())…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 44 passed (46)
+   Start at  18:20:05
+   Duration  7.23s (tests 97%, import 2%, transform 1%)

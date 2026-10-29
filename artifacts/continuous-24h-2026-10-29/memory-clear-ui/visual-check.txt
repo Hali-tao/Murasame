@@ -1,0 +1,7 @@
+Final packaged app screenshots inspected directly on 2026-10-29.
+memory-survives-history-only-clear.png: one white-tea memory remains, readable deleted-source label, no stale extraction result card.
+memory-cleared-without-old-notices.png: zero memories, empty state and successful scoped-clear notice; no stale saved notice.
+failed-clear-keeps-actual-memory.png: actual retained memory remains visible and red notice names both controlled memory/cache failures. No real disk failure claim.
+retained-conversation-learns-after-clearing.png: only new project memory remains after old tea memory was suppressed; source title is a readable history link. Screenshot follows renderer reload, not process restart.
+No visible overlap or clipped source/action text in these desktop screenshots. Narrow viewport and long-title matrix were not manually tested in this pass.
+The last screenshot shows a pending-verification header after renderer reload despite prior successful form verification. This is an observation to investigate separately, not attributed to the memory fix or counted as resolved.

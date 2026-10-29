@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "path": "release/continuous-2026-10-29-memory-clear-ui/Murasame-Setup-0.9.0.exe",
+      "sha256": "1da6b22beb73fd510a892abe747343ba7427bfadfa45947e667b80f079c85457",
+      "bytes": 292510787
+    },
+    {
+      "path": "release/continuous-2026-10-29-memory-clear-ui/win-unpacked/resources/app.asar",
+      "sha256": "12d670a910e645d2920b97f9e8d670eeeca8bea14c302f8ab9de5c3aed709faf",
+      "bytes": 178931265
+    }
+  ],
+  "at": "2026-10-29T10:22:44.4866344Z",
+  "purpose": "Intermediate UI build; source reuse defect still present; not final delivery"
+}

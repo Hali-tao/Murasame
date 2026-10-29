@@ -1,5 +1,6 @@
 import { Plus, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import type { MemoryEntry, MemoryExtractionStatus } from '@shared/types'
 import { MemoryEditDialog } from '../components/dialogs'
 import { Button, Card, ConfirmDialog, EmptyState, Pill, StatTile, ToggleSwitch } from '../components/ui'
@@ -8,9 +9,10 @@ import { useAppStore } from '../store'
 export function MemoryPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const extractions = useAppStore((state) => state.memoryExtractions)
+  const selectConversation = useAppStore((state) => state.selectConversation)
   const index = data.memoryIndex
   const latestExtractions = Object.values(extractions).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 3)
-  const extractionLabels: Record<MemoryExtractionStatus['status'], string> = { processing: '正在提取', saved: '已保存新记忆', unchanged: '没有新的长期信息', skipped: '提取已暂停', failed: '提取失败' }
+  const extractionLabels: Record<MemoryExtractionStatus['status'], string> = { processing: '正在提取', saved: '已保存新记忆', unchanged: '没有新的长期信息', skipped: '提取已暂停', failed: '提取失败', cleared: '已清除提取提示' }
   const updateSettings = useAppStore((state) => state.updateSettings)
   const deleteMemory = useAppStore((state) => state.deleteMemory)
   const clearMemories = useAppStore((state) => state.clearMemories)
@@ -25,8 +27,10 @@ export function MemoryPage(): React.JSX.Element {
   const [busyClear, setBusyClear] = useState(false)
 
   const categories = ['全部类别', ...Array.from(new Set(data.memories.map((memory) => memory.category)))]
+  const sources = new Map(data.conversations.map(conversation => [conversation.id, conversation.title.trim() || '未命名会话']))
+  const sourceLabel = (source: string): string => sources.get(source) ?? (source.startsWith('chat-') ? '来源会话已删除' : source || '长期记忆')
   const filtered = data.memories.filter((memory) => {
-    const matchSearch = `${memory.category}${memory.text}${memory.source}`.toLowerCase().includes(search.trim().toLowerCase())
+    const matchSearch = `${memory.category}${memory.text}${memory.source}${sourceLabel(memory.source)}`.toLowerCase().includes(search.trim().toLowerCase())
     const matchCategory = category === '全部类别' || memory.category === category
     return matchSearch && matchCategory
   })
@@ -140,7 +144,9 @@ export function MemoryPage(): React.JSX.Element {
             </div>
             <p>{memory.text}</p>
             <div className="memory-card-foot">
-              <span>{memory.source}</span>
+              {sources.has(memory.source)
+                ? <Link className="memory-source-link" to="/history" onClick={() => selectConversation(memory.source)} aria-label={`查看来源：${sourceLabel(memory.source)}`}>来自：{sourceLabel(memory.source)}</Link>
+                : <span className="memory-source-label">{sourceLabel(memory.source)}</span>}
               <div>
                 <button type="button" onClick={() => openEdit(memory)}>编辑</button>
                 <button type="button" className="danger-link" onClick={() => setDeleteTarget(memory)}>删除</button>

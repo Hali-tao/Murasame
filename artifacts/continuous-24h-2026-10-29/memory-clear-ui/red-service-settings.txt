@@ -1,0 +1,125 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+ ❯ tests/unit/core-memory-status-regression.test.ts (5 tests | 3 failed) 349ms
+   ❯ core memory extraction status propagation (5)
+     × withdraws a cleared extraction and ignores its late failure, then accepts a new turn 30ms
+     × withdraws the selected conversation result after clearing history 63ms
+     × withdraws the selected conversation result after clearing memory 62ms
+ ❯ tests/unit/settings-clear-results.test.ts (3 tests | 3 failed) 404ms
+   × [FR-15] retains actual memory and reports failure when settings memory clearing fails 234ms
+   × [FR-15] keeps failed histories and the selected survivor after partial clearing 81ms
+   × [FR-15] actually clears only the selected cache range even when no conversation exists 89ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/core-memory-status-regression.test.ts > core memory extraction status propagation > withdraws a cleared extraction and ignores its late failure, then accepts a new turn
+AssertionError: expected [ 'processing', 'failed' ] to deeply equal [ 'processing', 'cleared' ]
+
+- Expected
++ Received
+
+  [
+    "processing",
+-   "cleared",
++   "failed",
+  ]
+
+ ❯ tests/unit/core-memory-status-regression.test.ts:40:22
+     38|     rejectOld(new Error('旧请求迟到的失败'))
+     39|     await ingest.mock.results[0].value
+     40|     expect(statuses).toEqual(['processing', 'cleared'])
+       |                      ^
+     41|     await core.sendMessage(chat.data.id, '新轮次')
+     42|     await vi.waitFor(() => expect(statuses).toEqual(['processing', 'cl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/core-memory-status-regression.test.ts > core memory extraction status propagation > withdraws the selected conversation result after clearing history
+ FAIL  tests/unit/core-memory-status-regression.test.ts > core memory extraction status propagation > withdraws the selected conversation result after clearing memory
+AssertionError: expected [ 'processing', 'unchanged' ] to deeply equal [ Array(3) ]
+
+- Expected
++ Received
+
+  [
+    "processing",
+    "unchanged",
+-   "cleared",
+  ]
+
+ ❯ tests/unit/core-memory-status-regression.test.ts:71:22
+     69|     await vi.waitFor(() => expect(statuses).toEqual(['processing', 'un…
+     70|     expect((await core.deleteConversation(chat.data.id, [scope])).ok).…
+     71|     expect(statuses).toEqual(['processing', 'unchanged', 'cleared'])
+       |                      ^
+     72|   })
+     73|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/settings-clear-results.test.ts > [FR-15] retains actual memory and reports failure when settings memory clearing fails
+AssertionError: expected [] to deeply equal [ '保留白茶' ]
+
+- Expected
++ Received
+
+- [
+-   "保留白茶",
+- ]
++ []
+
+ ❯ tests/unit/settings-clear-results.test.ts:43:72
+     41| it('[FR-15] retains actual memory and reports failure when settings me…
+     42|   await clear(['memory'])
+     43|   expect(useAppStore.getState().data?.memories.map(item => item.text))…
+       |                                                                        ^
+     44|   expect(useAppStore.getState().toasts.some(toast => toast.tone === 'r…
+     45|   expect(useAppStore.getState().toasts.some(toast => toast.message ===…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/settings-clear-results.test.ts > [FR-15] keeps failed histories and the selected survivor after partial clearing
+AssertionError: expected [] to deeply equal [ 'b' ]
+
+- Expected
++ Received
+
+- [
+-   "b",
+- ]
++ []
+
+ ❯ tests/unit/settings-clear-results.test.ts:54:75
+     52|     ? { ok: true, data: [survivor] } : { ok: false, error: '受控历史写入失败' …
+     53|   await clear(['history'])
+     54|   expect(useAppStore.getState().data?.conversations.map(item => item.i…
+       |                                                                           ^
+     55|   expect(useAppStore.getState().selectedConversationId).toBe('b')
+     56|   expect(useAppStore.getState().data?.memories).toHaveLength(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/settings-clear-results.test.ts > [FR-15] actually clears only the selected cache range even when no conversation exists
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'none', [ 'cache' ] ]
+
+Number of calls: 0
+
+ ❯ tests/unit/settings-clear-results.test.ts:63:39
+     61|   useAppStore.setState(state => ({ data: { ...state.data!, conversatio…
+     62|   await clear(['cache'])
+     63|   expect(api.core.deleteConversation).toHaveBeenCalledWith('none', ['c…
+       |                                       ^
+     64|   expect(api.core.clearMemories).not.toHaveBeenCalled()
+     65|   expect(api.app.clearLogs).not.toHaveBeenCalled()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 2 passed (8)
+   Start at  18:01:45
+   Duration  1.84s (environment 38%, tests 32%, import 20%, transform 9%)

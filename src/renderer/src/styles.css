@@ -649,6 +649,9 @@ a:focus-visible {
 .memory-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 9px; border-top: 1px solid var(--line-soft); }
 .memory-card-foot > span { color: var(--muted); font-size: 9.5px; }
 .memory-card-foot > div { display: flex; gap: 10px; }
+.memory-card-foot .memory-source-link, .memory-card-foot .memory-source-label { min-width: 0; overflow-wrap: anywhere; font-size: 11px; line-height: 1.5; }
+.memory-card-foot .memory-source-link { color: var(--coral); text-underline-offset: 3px; }
+.memory-card-foot > div { flex-shrink: 0; }
 .memory-card-foot button { padding: 0; cursor: pointer; color: #6f7179; background: transparent; border: 0; font-size: 9.5px; }
 .memory-card-foot button:hover { color: var(--coral); }
 .memory-card-foot .danger-link:hover { color: var(--red); }

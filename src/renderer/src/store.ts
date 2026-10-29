@@ -196,7 +196,12 @@ export const useAppStore = create<AppStore>((set, get) => {
           if (current) set({ data: { ...current, memoryIndex } })
         })
         window.murasame.events.onMemoryExtractionStatus?.((status) => {
-          set((state) => ({ memoryExtractions: { ...state.memoryExtractions, [status.conversationId]: status } }))
+          set((state) => {
+            const memoryExtractions = { ...state.memoryExtractions }
+            if (status.status === 'cleared') delete memoryExtractions[status.conversationId]
+            else memoryExtractions[status.conversationId] = status
+            return { memoryExtractions }
+          })
         })
         window.murasame.events.onActiveConversation(({ id }) => {
           set({ selectedConversationId: id })

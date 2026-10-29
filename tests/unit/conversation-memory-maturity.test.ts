@@ -55,6 +55,42 @@ afterEach(() => {
 })
 
 describe('memory maturity across turns and restarts', () => {
+  it('[FR-15] clearing a source cancels older queued extraction but accepts future new facts without reviving deleted facts', async () => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.ingestProposed('旧偏好', async () => [proposal('喜欢绿茶')], 'source-chat')
+    const pending = deferred<ProposedMemory[]>()
+    const started = deferred<void>()
+    const old = memory.ingestProposed('清除前的消息', () => { started.release(); return pending.promise }, 'source-chat')
+    await started.promise
+    const queuedJudge = vi.fn(async () => [proposal('旧排队项目')])
+    const queued = memory.ingestProposed('旧排队消息', queuedJudge, 'source-chat')
+    expect((await memory.clearSource('source-chat')).ok).toBe(true)
+    const future = memory.ingestProposed('清除后的新消息', async () => [proposal('喜欢绿茶'), proposal('项目白桦')], 'source-chat')
+    pending.release([proposal('不应回来的迟到事实')])
+    expect((await old).status).toBe('skipped')
+    expect((await queued).status).toBe('skipped')
+    expect(queuedJudge).not.toHaveBeenCalled()
+    expect((await future).status).toBe('saved')
+    expect(new MemoryService(db).list().map(fact => fact.text)).toEqual(['项目白桦'])
+  })
+
+  it('[NFR-R02] a failed source clear preserves facts and does not disable pending or later extraction', async () => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.ingestProposed('旧偏好', async () => [proposal('喜欢绿茶')], 'source-chat')
+    const pending = deferred<ProposedMemory[]>()
+    const started = deferred<void>()
+    const old = memory.ingestProposed('等待中的消息', () => { started.release(); return pending.promise }, 'source-chat')
+    await started.promise
+    db.exec("CREATE TRIGGER block_clear BEFORE DELETE ON memories BEGIN SELECT RAISE(ABORT, 'synthetic write failure'); END")
+    expect((await memory.clearSource('source-chat')).ok).toBe(false)
+    expect(new MemoryService(db).list().map(fact => fact.text)).toEqual(['喜欢绿茶'])
+    db.exec('DROP TRIGGER block_clear')
+    pending.release([proposal('喜欢白茶')])
+    expect((await old).status).toBe('saved')
+    expect((await memory.ingestProposed('下一轮', async () => [proposal('项目白桦')], 'source-chat')).status).toBe('saved')
+    expect(new MemoryService(db).list().map(fact => fact.text).sort()).toEqual(['喜欢白茶', '喜欢绿茶', '项目白桦'])
+  })
+
   it('[NFR-P02] a gated background fact embedding does not hold the current chat response', async () => {
     const db = database(); const memory = new MemoryService(db)
     embedding.mockResolvedValueOnce(null)

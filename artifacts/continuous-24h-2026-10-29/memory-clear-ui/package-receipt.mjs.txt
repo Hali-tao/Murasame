@@ -1,0 +1,38 @@
+import { createHash } from 'node:crypto'
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
+import { extractFile } from '@electron/asar'
+import assert from 'node:assert/strict'
+const root = process.cwd(), output = resolve('release/continuous-2026-10-29-memory-clear-ui-final')
+const resources = join(output, 'win-unpacked/resources'), archive = join(resources, 'app.asar')
+const hash = bytes => createHash('sha256').update(bytes).digest('hex')
+const walk = dir => readdirSync(dir, { withFileTypes: true }).flatMap(item => item.isDirectory() ? walk(join(dir, item.name)) : [join(dir, item.name)])
+const code = ['main', 'preload', 'renderer'].flatMap(folder => walk(join(root, 'out', folder))).map(file => {
+  const path = relative(root, file), actual = hash(extractFile(archive, path))
+  assert.equal(actual, hash(readFileSync(file)), path)
+  return { path: path.replaceAll('\\', '/'), sha256: actual }
+})
+const compareTree = (source, target) => walk(source).filter(file => !relative(source, file).startsWith('.')).map(file => {
+  const path = relative(source, file), actual = hash(readFileSync(join(target, path)))
+  assert.equal(actual, hash(readFileSync(file)), path)
+  return { path: path.replaceAll('\\', '/'), sha256: actual }
+})
+const models = compareTree(join(root, 'build/bundled-models'), join(resources, 'models')); assert.equal(models.length, 18)
+const isolation = compareTree(join(root, 'isolation'), join(resources, 'isolation'))
+const currentInstaller = join(output, 'Murasame-Setup-0.9.0.exe')
+const previousInstallers = [
+  ['release/continuous-2026-10-29-memory-source/Murasame-Setup-0.9.0.exe', 'b68e342f0861f541164d7f50d1788f8a5e8bf9c833b292abf57f3d9d828d320b'],
+  ['release/continuous-2026-10-29-model-lifecycle/Murasame-Setup-0.9.0.exe', '3d03081adfdda0b0930380da869ae372e10eb25a2b41e00015ac4c59b18bef69'],
+  ['release/overnight-2026-10-29-sixth-delivery/Murasame-Setup-0.9.0.exe', '4cf9487c442b62ca24c562610e15387d37b843cf0a93caa1dd0214effb8fd6bd'],
+  ['release/continuous-2026-10-29-autonomy-sync/Murasame-Setup-0.9.0.exe', '7b5d5c4fd3704140a7c6a5f0f005bf747eac60e5901b9b3dd3861ebdf2f2337c']
+].map(([path, sha256]) => { assert.equal(hash(readFileSync(path)), sha256); return { path, sha256, unchanged: true } })
+const sourceFiles = ['src/main/core/services/memory-service.ts', 'tests/unit/conversation-memory-maturity.test.ts', 'src/main/core/murasame-core.ts', 'src/shared/types.ts', 'src/renderer/src/store.ts', 'src/renderer/src/pages/SettingsPage.tsx', 'src/renderer/src/pages/MemoryPage.tsx', 'src/renderer/src/styles.css', 'tests/unit/settings-clear-results.test.ts', 'tests/unit/core-memory-status-regression.test.ts', 'tests/unit/chat-conversation-regression.test.ts', 'tests/e2e/memory-clear-ui.spec.ts']
+const receipt = {
+  at: new Date().toISOString(), baseline: '689013eb1d12078a5881166400c6700c42b81d8e', output,
+  asarSha256: hash(readFileSync(archive)),
+  installer: { path: currentInstaller, bytes: statSync(currentInstaller).size, sha256: hash(readFileSync(currentInstaller)) },
+  previousInstallers, code, models, isolation,
+  sourceFiles: sourceFiles.map(path => ({ path, sha256: hash(readFileSync(path)), textLfSha256: hash(readFileSync(path, 'utf8').replaceAll('\r\n', '\n')) }))
+}
+writeFileSync('previews/memory-clear-experience-2026-10-29/package-receipt.json', JSON.stringify(receipt, null, 2) + '\n')
+console.log(JSON.stringify({ installer: receipt.installer, codeFiles: code.length, models: models.length, isolation: isolation.length, previousInstallers }, null, 2))

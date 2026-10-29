@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createElement } from 'react'
 import { cleanup, fireEvent, render, screen, act } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { MemoryPage } from '../../src/renderer/src/pages/MemoryPage'
 import { ChatPage } from '../../src/renderer/src/pages/ChatPage'
 import * as audio from '../../src/renderer/src/lib/audio'
@@ -46,7 +46,7 @@ afterEach(() => { cleanup(); vi.restoreAllMocks() })
 
 describe('conversation UI isolation', () => {
   it('[D-17] 展示后台记忆整理的实际进度与失败，保持已有记忆可查看', () => {
-    render(createElement(MemoryPage))
+    render(createElement(MemoryRouter, null, createElement(MemoryPage)))
     const previous = useAppStore.getState().data!.memories
     act(() => emit('index', { state: 'rebuilding', completed: 3, total: 10, message: '正在后台整理记忆，对话可以继续。' }))
     const progress = screen.getByRole('progressbar', { name: '记忆整理进度' })
@@ -114,6 +114,40 @@ describe('conversation UI isolation', () => {
 
 
 describe('visible memory extraction lifecycle', () => {
+  it('withdraws cleared notices while retaining other conversations and permits a new extraction', () => {
+    render(createElement(MemoryRouter, null, createElement(MemoryPage)))
+    const publish = (conversationId: string, status: string) => act(() => emit('extraction', { conversationId, status, updatedAt: '2026-10-29T10:00:00Z' }))
+    publish('a', 'saved'); publish('b', 'failed')
+    publish('a', 'cleared')
+    expect(screen.queryByText('已保存新记忆')).toBeNull()
+    expect(useAppStore.getState().memoryExtractions.a).toBeUndefined()
+    expect(screen.getByText('提取失败')).toBeTruthy()
+    publish('a', 'processing')
+    expect(screen.getByText('正在提取')).toBeTruthy()
+  })
+
+  it('shows a readable source title, searches it and opens the correct history', () => {
+    act(() => emit('memories', [{ id: 'source-memory', text: '喜欢白茶', category: '偏好', source: 'b', updated: '有效' }]))
+    render(createElement(MemoryRouter, null, createElement(Routes, null,
+      createElement(Route, { path: '/', element: createElement(MemoryPage) }),
+      createElement(Route, { path: '/history', element: createElement('h1', null, '历史位置') })
+    )))
+    fireEvent.change(screen.getByRole('textbox', { name: '搜索记忆' }), { target: { value: '会话b' } })
+    expect(screen.getByText('喜欢白茶')).toBeTruthy()
+    fireEvent.click(screen.getByRole('link', { name: '查看来源：会话b' }))
+    expect(screen.getByText('历史位置')).toBeTruthy()
+    expect(useAppStore.getState().selectedConversationId).toBe('b')
+  })
+
+  it('preserves memory with deleted history and hides its internal source id', () => {
+    act(() => emit('memories', [{ id: 'orphan', text: '历史删除后仍保留的白茶', category: '偏好', source: 'chat-removed-fixture', updated: '有效' }]))
+    render(createElement(MemoryRouter, null, createElement(MemoryPage)))
+    expect(screen.getByText('历史删除后仍保留的白茶')).toBeTruthy()
+    expect(screen.getByText('来源会话已删除')).toBeTruthy()
+    expect(screen.queryByText('chat-removed-fixture')).toBeNull()
+    expect(screen.queryByRole('link', { name: /查看来源/ })).toBeNull()
+  })
+
   it('shows processing, saved, empty, skipped and failed outcomes without discarding existing memory', () => {
     render(createElement(MemoryRouter, null, createElement(MemoryPage)))
     const publish = (status: string, reason?: string) => act(() => emit('extraction', { conversationId: 'a', status, reason, updatedAt: '2026-10-28T10:00:00Z' }))

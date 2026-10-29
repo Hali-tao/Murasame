@@ -1,0 +1,27 @@
+
+> murasame-desktop@0.9.0 verify
+> npm run typecheck && npm run lint && npm test && npm run trace
+
+
+> murasame-desktop@0.9.0 typecheck
+> tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+
+tests/unit/settings-clear-results.test.ts(51,3): error TS2322: Type 'Mock<(id: any) => Promise<{ ok: boolean; data: Conversation[]; error?: undefined; } | { ok: boolean; error: string; data?: undefined; }>>' is not assignable to type '(id: string, scopes: DeleteScope[]) => Promise<Result<Conversation[]>>'.
+  Type 'Promise<{ ok: boolean; data: Conversation[]; error?: undefined; } | { ok: boolean; error: string; data?: undefined; }>' is not assignable to type 'Promise<Result<Conversation[]>>'.
+    Type '{ ok: boolean; data: Conversation[]; error?: undefined; } | { ok: boolean; error: string; data?: undefined; }' is not assignable to type 'Result<Conversation[]>'.
+      Type '{ ok: boolean; data: Conversation[]; error?: undefined; }' is not assignable to type 'Result<Conversation[]>'.
+        Type '{ ok: boolean; data: Conversation[]; error?: undefined; }' is not assignable to type '{ ok: true; data: Conversation[]; }'.
+          Types of property 'ok' are incompatible.
+            Type 'boolean' is not assignable to type 'true'.
+tests/unit/settings-clear-results.test.ts(72,3): error TS2322: Type 'Mock<() => Promise<{ ok: boolean; data: never[]; }>>' is not assignable to type '() => Promise<Result<MemoryEntry[]>>'.
+  Type 'Promise<{ ok: boolean; data: never[]; }>' is not assignable to type 'Promise<Result<MemoryEntry[]>>'.
+    Type '{ ok: boolean; data: never[]; }' is not assignable to type 'Result<MemoryEntry[]>'.
+      Type '{ ok: boolean; data: never[]; }' is not assignable to type '{ ok: true; data: MemoryEntry[]; }'.
+        Types of property 'ok' are incompatible.
+          Type 'boolean' is not assignable to type 'true'.
+tests/unit/settings-clear-results.test.ts(84,3): error TS2322: Type 'Mock<(id: any) => Promise<{ ok: boolean; data: Conversation[]; }>>' is not assignable to type '(id: string, scopes: DeleteScope[]) => Promise<Result<Conversation[]>>'.
+  Type 'Promise<{ ok: boolean; data: Conversation[]; }>' is not assignable to type 'Promise<Result<Conversation[]>>'.
+    Type '{ ok: boolean; data: Conversation[]; }' is not assignable to type 'Result<Conversation[]>'.
+      Type '{ ok: boolean; data: Conversation[]; }' is not assignable to type '{ ok: true; data: Conversation[]; }'.
+        Types of property 'ok' are incompatible.
+          Type 'boolean' is not assignable to type 'true'.

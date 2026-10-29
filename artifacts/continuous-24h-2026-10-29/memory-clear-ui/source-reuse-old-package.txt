@@ -1,0 +1,51 @@
+
+Running 1 test using 1 worker
+
+(node:54964) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories (25.3s)
+
+
+  1) tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('memory-card')
+    Expected substring: "正在开发白桦项目"
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('memory-card') with timeout 20000ms
+      - waiting for getByTestId('memory-card')
+
+
+      137 |     await expect(page.locator('.message-row.assistant').filter({ hasText: '真实流式回复' })).toHaveCount(2)
+      138 |     await page.getByTestId('nav-memory').click()
+    > 139 |     await expect(page.getByTestId('memory-card')).toContainText('正在开发白桦项目', { timeout: 20_000 })
+          |                                                   ^
+      140 |     const result = await page.evaluate(() => window.murasame.core.getBootstrap())
+      141 |     if (!result.ok) throw new Error(result.error)
+      142 |     expect(result.data.memories.map(item => item.text)).toEqual(['正在开发白桦项目'])
+        at E:\Desktop\软件工程\murasame\tests\e2e\memory-clear-ui.spec.ts:139:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\memory-clear-experience-2026-10-29\source-reuse-old-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\memory-clear-experience-2026-10-29\source-reuse-old-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\memory-clear-experience-2026-10-29\source-reuse-old-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\memory-clear-experience-2026-10-29\source-reuse-old-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\memory-clear-experience-2026-10-29\source-reuse-old-package\memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\memory-clear-ui.spec.ts:111:5 › [FR-15] a retained conversation can learn new facts after clearing only its memories

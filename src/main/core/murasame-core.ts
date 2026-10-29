@@ -85,6 +85,30 @@ export class MurasameCore implements CoreApi {
   onMemoryExtractionStatus?: (status: MemoryExtractionStatus) => void
   private screenJob: Promise<Result<ScreenAnalysis>> | null = null
   private presentationVersion = 0
+  private memoryStatusVersion = 0
+  private readonly memoryStatusRuns = new Map<string, { version: number; processing: boolean }>()
+
+  private emitMemoryStatus(conversationId: string, status: MemoryExtractionStatus['status'], reason?: string): void {
+    try { this.onMemoryExtractionStatus?.({ conversationId, status, reason, updatedAt: new Date().toISOString() }) }
+    catch (error) { log.warn('记忆状态未送达，数据操作结果保持', error) }
+  }
+
+  private beginMemoryStatus(conversationId: string): (status: MemoryExtractionStatus['status'], reason?: string) => void {
+    const run = { version: ++this.memoryStatusVersion, processing: true }
+    this.memoryStatusRuns.set(conversationId, run)
+    return (status, reason) => {
+      if (this.memoryStatusRuns.get(conversationId) !== run) return
+      run.processing = status === 'processing'
+      this.emitMemoryStatus(conversationId, status, reason)
+    }
+  }
+
+  private clearMemoryStatus(conversationId: string, version: number | undefined, completedOnly = false): void {
+    const current = this.memoryStatusRuns.get(conversationId)
+    if (!current || current.version !== version || (completedOnly && current.processing)) return
+    this.memoryStatusRuns.delete(conversationId)
+    this.emitMemoryStatus(conversationId, 'cleared')
+  }
   invalidatePresentation(): number { return ++this.presentationVersion }
   setLocked(locked: boolean): void { this.locked = locked; if (locked) this.cancelSensitiveRequests() }
   cancelSensitiveRequests(): void { for (const controller of this.imageRequests) controller.abort(new Error('隐私设置变化，已停止本次图像请求')) }
@@ -250,9 +274,7 @@ export class MurasameCore implements CoreApi {
         }
         const settings = getSettings()
         bridge.core?.syncMemoryPolicy()
-        const publishStatus = (status: MemoryExtractionStatus['status'], reason?: string): void => {
-          bridge.core?.onMemoryExtractionStatus?.({ conversationId, status, reason, updatedAt: new Date().toISOString() })
-        }
+        const publishStatus = bridge.core?.beginMemoryStatus(conversationId) ?? (() => undefined)
         if (!settings.memoryEnabled || !settings.memoryAutoExtract || !characterService.load().memory) {
           publishStatus('skipped', '自动提取已暂停，现有记忆未更改')
           return
@@ -424,18 +446,23 @@ export class MurasameCore implements CoreApi {
 
   async deleteConversation(id: string, scopes: DeleteScope[]): Promise<Result<Conversation[]>> {
     const succeeded = new Set<string>()
+    const statusVersion = this.memoryStatusRuns.get(id)?.version
     if (scopes.includes('history')) {
-      this.memory.invalidateSource(id)
       try {
         this.conversations.deleteHistory(id)
+        this.memory.invalidateSource(id)
         succeeded.add('history')
+        this.clearMemoryStatus(id, statusVersion)
       } catch {
         // 保留失败范围，下面的报告不会把它算作成功。
       }
     }
     if (scopes.includes('memory')) {
       const cleared = await this.memory.clearSource(id)
-      if (cleared.ok) succeeded.add('memory')
+      if (cleared.ok) {
+        succeeded.add('memory')
+        this.clearMemoryStatus(id, statusVersion)
+      }
     }
     if (scopes.includes('cache')) {
       try {
@@ -463,16 +490,27 @@ export class MurasameCore implements CoreApi {
     return this.memory.add(category, text)
   }
 
-  updateMemory(id: string, category: string, text: string): Promise<Result<MemoryEntry>> {
-    return this.memory.update(id, category, text)
+  async updateMemory(id: string, category: string, text: string): Promise<Result<MemoryEntry>> {
+    const source = this.memory.list().find(item => item.id === id)?.source
+    const version = source ? this.memoryStatusRuns.get(source)?.version : undefined
+    const result = await this.memory.update(id, category, text)
+    if (result.ok && source) this.clearMemoryStatus(source, version, true)
+    return result
   }
 
-  deleteMemory(id: string): Promise<Result<string>> {
-    return this.memory.delete(id)
+  async deleteMemory(id: string): Promise<Result<string>> {
+    const source = this.memory.list().find(item => item.id === id)?.source
+    const version = source ? this.memoryStatusRuns.get(source)?.version : undefined
+    const result = await this.memory.delete(id)
+    if (result.ok && source) this.clearMemoryStatus(source, version, true)
+    return result
   }
 
-  clearMemories(): Promise<Result<MemoryEntry[]>> {
-    return this.memory.clear()
+  async clearMemories(): Promise<Result<MemoryEntry[]>> {
+    const previous = new Map(this.memoryStatusRuns)
+    const result = await this.memory.clear()
+    if (result.ok) for (const [id, run] of previous) this.clearMemoryStatus(id, run.version)
+    return result
   }
 
   createTask(title: string, root?: string): Promise<Result<Task>> {

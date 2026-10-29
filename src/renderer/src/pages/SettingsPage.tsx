@@ -54,32 +54,40 @@ export function SettingsPage(): React.JSX.Element {
 
   const clearData = async (scopes: DeleteScope[]): Promise<void> => {
     setBusyClear(true)
+    const failures: string[] = []
+    let completed = 0
+    const run = async (label: string, action: () => Promise<void>): Promise<void> => {
+      try { await action(); completed++ }
+      catch (error) { failures.push(`${label}：${error instanceof Error ? error.message : '操作失败，请重试'}`) }
+    }
+    // Only histories selected when clearing starts are in this operation.
+    const histories = useAppStore.getState().data?.conversations ?? []
     try {
-      if (scopes.includes('logs')) await window.murasame.app.clearLogs()
-      if (scopes.includes('memory')) await window.murasame.core.clearMemories()
-      let conversations = data.conversations
-      if (scopes.includes('history') && conversations.length) {
-        const last = await window.murasame.core.deleteConversation(conversations[0].id, ['history'])
-        if (last.ok) conversations = last.data
-        for (const conversation of data.conversations.slice(1)) {
-          await window.murasame.core.deleteConversation(conversation.id, ['history'])
+      if (scopes.includes('logs')) await run('运行日志', () => window.murasame.app.clearLogs())
+      if (scopes.includes('memory')) await run('长期记忆', async () => {
+        const result = await window.murasame.core.clearMemories()
+        if (!result.ok) throw new Error(result.error)
+        useAppStore.setState(state => ({ data: state.data ? { ...state.data, memories: result.data } : null }))
+      })
+      if (scopes.includes('cache')) await run('本地缓存', async () => {
+        const result = await window.murasame.core.deleteConversation('none', ['cache'])
+        if (!result.ok) throw new Error(result.error)
+      })
+      if (scopes.includes('history')) {
+        for (const conversation of histories) {
+          await run(`对话历史「${conversation.title}」`, async () => {
+            const result = await window.murasame.core.deleteConversation(conversation.id, ['history'])
+            if (!result.ok) throw new Error(result.error)
+            useAppStore.setState(state => ({
+              data: state.data ? { ...state.data, conversations: result.data } : null,
+              selectedConversationId: result.data.some(item => item.id === state.selectedConversationId)
+                ? state.selectedConversationId : result.data[0]?.id ?? null
+            }))
+          })
         }
-        conversations = []
       }
-      useAppStore.setState((state) => ({
-        data: state.data
-          ? {
-              ...state.data,
-              conversations,
-              memories: scopes.includes('memory') ? [] : state.data.memories
-            }
-          : null,
-        selectedConversationId: scopes.includes('history') ? null : state.selectedConversationId
-      }))
-      notify('已按所选范围清除本地数据')
-      setClearOpen(false)
-    } catch {
-      notify('清除未完成，请检查本地文件权限', 'red')
+      if (failures.length) notify(`${completed ? '部分内容已清除。' : ''}清除未完成：${failures.join('；')}`, 'red')
+      else { notify('已按所选范围清除本地数据'); setClearOpen(false) }
     } finally {
       setBusyClear(false)
     }

@@ -43,7 +43,7 @@ export interface Conversation {
 
 export interface MemoryExtractionStatus {
   conversationId: string
-  status: 'processing' | 'saved' | 'unchanged' | 'skipped' | 'failed'
+  status: 'processing' | 'saved' | 'unchanged' | 'skipped' | 'failed' | 'cleared'
   reason?: string
   updatedAt: string
 }
