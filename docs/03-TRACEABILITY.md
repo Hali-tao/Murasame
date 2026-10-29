@@ -161,7 +161,7 @@
 | FR-14 | tests/e2e/local-memory.spec.ts<br>tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/embedding-runtime.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-15 | tests/e2e/memory-clear-ui.spec.ts<br>tests/e2e/memory-correction-source.spec.ts<br>tests/e2e/pet-history-sync.spec.ts<br>tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/settings-clear-results.test.ts |
 | FR-16 | tests/e2e/task-directory.spec.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-directory.test.ts<br>tests/unit/task-store-events.test.ts<br>tests/unit/task-system-folders.test.ts |
-| FR-17 | tests/unit/grounded-summary.test.ts<br>tests/unit/grounded-task-service.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-17 | tests/e2e/task-directory-checkpoints.spec.ts<br>tests/unit/grounded-summary.test.ts<br>tests/unit/grounded-task-service.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-18 | tests/e2e/task-directory.spec.ts<br>tests/unit/grounded-approval.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-directory.test.ts<br>tests/unit/task-system-folders.test.ts |
 | FR-19 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-20 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |

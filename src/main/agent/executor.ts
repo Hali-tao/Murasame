@@ -91,6 +91,8 @@ export async function executeGoal(input: GroundedExecutionOptions & { goal: stri
     const node = graph.find(entry => entry.id === checkpoint.stepId)
     return node && checkpoint.completed && checkpoint.outcomeKnown && checkpoint.output.run.status === 'ok' && matchesCheckpoint(checkpoint, node)
   })
+  const completedIds = new Set(completed.map(checkpoint => checkpoint.stepId))
+  const compatibleChain = (id: string): boolean => completedIds.has(id) && graph.find(node => node.id === id)!.dependsOn.every(compatibleChain)
   for (const checkpoint of input.checkpoints ?? []) {
     const node = graph.find((entry) => entry.id === checkpoint.stepId)
     if (!node) { artifacts.push(...checkpoint.output.artifacts); continue }
@@ -100,7 +102,7 @@ export async function executeGoal(input: GroundedExecutionOptions & { goal: stri
     if (checkpoint.completed) {
       const ticket: WorkerTicket = { id: randomUUID(), stepId: node.id, root: input.root ? resolveInside(input.root, node.step.workspace ?? '.') : null, allowedTools: [node.step.tool ?? tool], limits: { timeoutMs: node.step.limits?.timeoutMs ?? 8000, maxSteps: 1 } }
       const directoryExpected = input.root && ticket.root && ticket.allowedTools[0] === 'filesystem' && node.step.args?.action === 'list'
-        ? expectedDirectoryListing(input.root, resolveInside(ticket.root, node.step.args.path ?? '.'), checkpoint.output.run.raw, completed.filter(item => follows(item.stepId, node.id)).flatMap(item => item.output.effects)) : undefined
+        ? expectedDirectoryListing(input.root, resolveInside(ticket.root, node.step.args.path ?? '.'), checkpoint.output.run.raw, completed.filter(item => compatibleChain(item.stepId) && follows(item.stepId, node.id)).flatMap(item => item.output.effects)) : undefined
       const checked = await independentlyVerify(ticket, node.step, checkpoint.output, input, directoryExpected)
       const verified = checked.length > 0 && checked.every(item => item.matched)
       record({ agentRole: 'Critic', toolId: 'critic', declared: `恢复前独立核对 ${node.id}，不重复执行`, executionStatus: verified ? 'ok' : 'error', raw: JSON.stringify(checked), evidence: checked, verdict: verified ? 'confirmed' : 'refuted', stepId: node.id, traceId: ticket.id, phase: 'result', args: { restoredCheckpoint: checkpoint.traceId, readOnly: true } })

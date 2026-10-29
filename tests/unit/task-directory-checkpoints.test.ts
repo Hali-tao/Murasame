@@ -123,6 +123,50 @@ describe('resuming directory observations after verified task additions', () => 
     expect(result.status).toBe('失败'); expect(existsSync(f.b)).toBe(false)
   })
 
+  it.each(['source-path', 'dependency-edge'] as const)('does not adopt an old output after its intermediate %s changes', async change => {
+    const f = fixture(); writeFileSync(join(f.root, 'new.txt'), 'new source already present')
+    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: ['inspect'], title: '读取依据', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
+    f.plan.steps[2].dependsOn = ['source']
+    await pause(f, 3)
+    if (change === 'source-path') f.plan.steps[1].args!.path = 'new.txt'
+    else f.plan.steps[1].dependsOn = []
+    const result = await f.run()
+    expect(result.status).toBe('失败')
+    expect(result.calls.filter(call => call.agentRole === 'Worker')).toHaveLength(0)
+    expect(existsSync(f.b)).toBe(false); expect(readFileSync(f.a, 'utf8')).toBe('first result')
+  })
+
+  it('does not use a compatible path through the graph to hide a changed sibling prerequisite', async () => {
+    const f = fixture(); writeFileSync(join(f.root, 'new.txt'), 'new source already present')
+    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: [], title: '独立来源', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
+    f.plan.steps[2].dependsOn = ['inspect', 'source']
+    await pause(f, 3)
+    f.plan.steps[1].args!.path = 'new.txt'
+    const result = await f.run()
+    expect(result.status).toBe('失败')
+    expect(result.calls.filter(call => call.agentRole === 'Worker')).toHaveLength(0)
+    expect(existsSync(f.b)).toBe(false)
+  })
+
+  it('keeps a real service replan blocked when the source behind a completed output changes', async () => {
+    const f = fixture(); writeFileSync(join(f.root, 'new.txt'), 'new source already present')
+    f.plan.steps.splice(1, 0, { id: 'source', dependsOn: ['inspect'], title: '读取依据', detail: '', expected: '', args: { action: 'read', path: 'input.txt' } })
+    f.plan.steps[2].dependsOn = ['source']
+    const db = new DatabaseSync(':memory:')
+    db.exec(readFileSync('src/main/data/migrations/001_init.sql', 'utf8')); db.exec(readFileSync('src/main/data/migrations/003_trace.sql', 'utf8'))
+    try {
+      const service = new TaskService(db as unknown as SqliteDatabase); service.setPlanner(async () => f.plan)
+      const made = await service.create('创建两个文件', f.root); if (!made.ok) throw new Error(made.error)
+      for (let i = 0; i < 3; i++) { await service.approve(made.data.id, 'once'); await service.settled(made.data.id) }
+      await service.deny(made.data.id)
+      f.plan.steps[1].args!.path = 'new.txt'
+      const continued = await service.continueTask(made.data.id, '改用新的来源'); if (!continued.ok) throw new Error(continued.error)
+      expect(continued.data.status).toBe('失败'); expect(continued.data.approval).toBeNull()
+      expect(continued.data.toolCalls.filter(call => call.agentRole === 'Worker' && (call.declared.args as { phase?: string }).phase === 'result')).toHaveLength(3)
+      expect(readFileSync(f.a, 'utf8')).toBe('first result'); expect(existsSync(f.b)).toBe(false)
+    } finally { db.close() }
+  })
+
   it('restores from persisted SQLite checkpoints after service recreation and executes each worker only once', async () => {
     const f = fixture(); const db = new DatabaseSync(':memory:')
     db.exec(readFileSync('src/main/data/migrations/001_init.sql', 'utf8')); db.exec(readFileSync('src/main/data/migrations/003_trace.sql', 'utf8'))
