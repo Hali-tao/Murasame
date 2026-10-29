@@ -450,8 +450,8 @@
     },
     {
       "path": "docker-after-tests.json",
-      "bytes": 165,
-      "sha256": "4863e80dbd79f0289100331a8d857594499db97375d54fe3758636c52f61964b"
+      "bytes": 159,
+      "sha256": "151bafa616c3a8a6e373afbc933f61eb24599eecb2ef0139a8b94057cbf44664"
     }
   ]
 }
