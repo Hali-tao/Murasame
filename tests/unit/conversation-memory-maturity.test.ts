@@ -510,6 +510,35 @@ describe('bounded background memory indexing', () => {
 
 describe('conversation reliability at memory boundaries', () => {
   it.each([
+    ['disable-recall', 'disabled'], ['disable-extraction', 'limited'], ['clear', 'limited'], ['off-on', 'limited']
+  ] as const)('[NFR-U03] %s during actual embedding cannot be recorded as a completed empty search', async (change, expectedStatus) => {
+    const db = database(); const memory = new MemoryService(db)
+    await memory.add('user', '喜欢白茶')
+    const pending = deferred<number[]>()
+    const started = deferred<void>()
+    embedding.mockImplementationOnce(() => { started.release(); return pending.promise })
+    let request = ''
+    const service = new ConversationService(db, models, { chat: async (_model, _turns, _delta, system) => {
+      request = system ?? ''; return '继续当前话题'
+    } }, { memoryEnabled: () => memory.recallEnabled, recall: query => memory.recall(query) })
+    const chat = service.create()
+    const sending = service.send(chat.id, '我之前的偏好')
+    await started.promise
+    if (change === 'clear') await memory.clear()
+    else if (change === 'disable-extraction') memory.configure({ recallEnabled: true, extractionEnabled: false })
+    else memory.configure({ recallEnabled: false, extractionEnabled: false })
+    if (change === 'off-on') memory.configure({ recallEnabled: true, extractionEnabled: true })
+    pending.release(vector())
+    expect((await sending).ok).toBe(true)
+    const saved = new ConversationService(db, models).list()[0]
+    expect(saved.memoryRecallStatus).toBe(expectedStatus)
+    expect(saved.recalledMemoryIds).toEqual([])
+    expect(request).not.toContain('可参考的长期记忆：')
+    if (expectedStatus === 'limited') expect(request).toContain('本轮长期记忆检索不完整或暂不可用')
+    else expect(request).not.toContain('检索不完整或暂不可用')
+  })
+
+  it.each([
     { kind: 'complete', enabled: true, recall: () => ({ text: '', ids: [] }) },
     { kind: 'limited', enabled: true, recall: () => ({ text: '喜欢白茶', ids: ['fact'], degraded: true }) },
     { kind: 'unavailable', enabled: true, recall: () => { throw new Error('synthetic recall failure') } },

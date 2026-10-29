@@ -1,0 +1,51 @@
+
+Running 1 test using 1 worker
+
+(node:61636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\memory-degraded-context.spec.ts:7:5 › [NFR-U03] unusable local model does not silently become a successful empty memory search (11.3s)
+
+
+  1) tests\e2e\memory-degraded-context.spec.ts:7:5 › [NFR-U03] unusable local model does not silently become a successful empty memory search
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('memory-recall-status')
+    Expected substring: "记忆检索受限"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('memory-recall-status') with timeout 5000ms
+      - waiting for getByTestId('memory-recall-status')
+
+
+      41 |     expect(system).toContain('不得把未检出当作用户从未说过或没有这项偏好')
+      42 |     expect(system).not.toContain('可参考的长期记忆：')
+    > 43 |     await expect(page.getByTestId('memory-recall-status')).toContainText('记忆检索受限')
+         |                                                            ^
+      44 |     await page.reload()
+      45 |     await expect(page.getByTestId('memory-recall-status')).toContainText('记忆检索受限')
+      46 |     await page.getByLabel('新建会话', { exact: true }).click()
+        at E:\Desktop\软件工程\murasame\tests\e2e\memory-degraded-context.spec.ts:43:60
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\memory-recall-ui-2026-10-29\old-package-e2e\memory-degraded-context--N-e95f6-cessful-empty-memory-search\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\memory-recall-ui-2026-10-29\old-package-e2e\memory-degraded-context--N-e95f6-cessful-empty-memory-search\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\memory-recall-ui-2026-10-29\old-package-e2e\memory-degraded-context--N-e95f6-cessful-empty-memory-search\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\memory-recall-ui-2026-10-29\old-package-e2e\memory-degraded-context--N-e95f6-cessful-empty-memory-search\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\memory-recall-ui-2026-10-29\old-package-e2e\memory-degraded-context--N-e95f6-cessful-empty-memory-search\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\memory-degraded-context.spec.ts:7:5 › [NFR-U03] unusable local model does not silently become a successful empty memory search

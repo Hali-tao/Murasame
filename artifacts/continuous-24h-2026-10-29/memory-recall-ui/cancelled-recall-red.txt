@@ -1,0 +1,56 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:49628) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/conversation-memory-maturity.test.ts (63 tests | 4 failed | 59 skipped) 735ms
+   ❯ conversation reliability at memory boundaries (21)
+     × [NFR-U03] disable-recall during actual embedding cannot be recorded as a completed empty search 221ms
+     × [NFR-U03] disable-extraction during actual embedding cannot be recorded as a completed empty search 170ms
+     × [NFR-U03] clear during actual embedding cannot be recorded as a completed empty search 165ms
+     × [NFR-U03] off-on during actual embedding cannot be recorded as a completed empty search 177ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] disable-recall during actual embedding cannot be recorded as a completed empty search
+AssertionError: expected 'complete' to be 'disabled' // Object.is equality
+
+Expected: "disabled"
+Received: "complete"
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:534:38
+    532|     expect((await sending).ok).toBe(true)
+    533|     const saved = new ConversationService(db, models).list()[0]
+    534|     expect(saved.memoryRecallStatus).toBe(expectedStatus)
+       |                                      ^
+    535|     expect(saved.recalledMemoryIds).toEqual([])
+    536|     expect(request).not.toContain('可参考的长期记忆：')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] disable-extraction during actual embedding cannot be recorded as a completed empty search
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] clear during actual embedding cannot be recorded as a completed empty search
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] off-on during actual embedding cannot be recorded as a completed empty search
+AssertionError: expected 'complete' to be 'limited' // Object.is equality
+
+Expected: "limited"
+Received: "complete"
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:534:38
+    532|     expect((await sending).ok).toBe(true)
+    533|     const saved = new ConversationService(db, models).list()[0]
+    534|     expect(saved.memoryRecallStatus).toBe(expectedStatus)
+       |                                      ^
+    535|     expect(saved.recalledMemoryIds).toEqual([])
+    536|     expect(request).not.toContain('可参考的长期记忆：')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 59 skipped (63)
+   Start at  22:53:16
+   Duration  3.39s (import 46%, transform 27%, tests 26%, worker 1%)

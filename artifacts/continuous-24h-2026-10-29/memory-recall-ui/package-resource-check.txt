@@ -1,0 +1,14 @@
+{
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-recall-status-verified\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292512070,
+    "sha256": "4eb667971f5f19e6eaf51dc958d1880dfc82bfd67df6dbec87daac15016d07b5"
+  },
+  "applicationFiles": 109,
+  "changedProgramFiles": [
+    "out/main/index.js"
+  ],
+  "models": 18,
+  "isolation": 6,
+  "previousInstallers": 14
+}

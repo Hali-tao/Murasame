@@ -6,6 +6,8 @@ directories:
   buildResources: build
 files:
   - out/**/*
+  # 原生验证程序会在检查时重建，且不属于产品运行资源。
+  - '!out/electron-tests/**/*'
   - package.json
   # 这几个包自带全平台二进制，Windows 安装包只需要 win32-x64 那一份。
   - '!node_modules/onnxruntime-node/bin/napi-v3/{darwin,linux}/**'

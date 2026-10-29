@@ -91,11 +91,12 @@ export class MemoryService {
   history(): MemoryEntry[] { return this.facts.map(toEntry) }
   active(): MemoryFact[] { return structuredClone(activeMemories(this.facts)) }
 
-  async recall(query: string): Promise<{ text: string; ids: string[]; degraded: boolean }> {
-    if (!this.recallOn) return { text: '', ids: [], degraded: false }
+  async recall(query: string): Promise<{ text: string; ids: string[]; degraded: boolean; skipped?: 'disabled' | 'changed' }> {
+    if (!this.recallOn) return { text: '', ids: [], degraded: false, skipped: 'disabled' }
     const generation = this.generation
     const queryVector = await embedLocally(query, this.userDataDir)
-    if (!this.recallOn || generation !== this.generation) return { text: '', ids: [], degraded: false }
+    if (!this.recallOn) return { text: '', ids: [], degraded: false, skipped: 'disabled' }
+    if (generation !== this.generation) return { text: '', ids: [], degraded: true, skipped: 'changed' }
     const active = this.active()
     const result = recallMemories(query, active.map((fact) => ({
       id: fact.id, text: fact.text, category: fact.category, vector: fact.vector ?? null

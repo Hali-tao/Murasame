@@ -1,0 +1,639 @@
+# Review package: f528a4d460218ae73797e25a6c97e4f8ebacd0e3..HEAD
+
+## Commits
+ccf965c Show persisted memory recall status for completed conversations
+
+## Files changed
+ docs/32-MEMORY-RECALL-UI.md                        | 19 +++++++
+ .../plans/2026-10-29-memory-recall-ui.md           | 35 +++++++++++++
+ .../specs/2026-10-29-memory-recall-ui-design.md    | 15 ++++++
+ src/main/core/services/conversation-service.ts     | 23 +++++----
+ src/renderer/src/components/MemoryRecallStatus.tsx | 27 ++++++++++
+ src/renderer/src/pages/ChatPage.tsx                |  4 +-
+ src/renderer/src/styles.css                        |  2 +
+ src/shared/types.ts                                |  3 ++
+ tests/e2e/local-memory.spec.ts                     |  1 +
+ tests/e2e/memory-degraded-context.spec.ts          |  8 +++
+ tests/unit/chat-conversation-regression.test.ts    | 41 +++++++++++++++
+ tests/unit/conversation-memory-maturity.test.ts    | 60 ++++++++++++++++++++++
+ 12 files changed, 228 insertions(+), 10 deletions(-)
+
+## Diff
+diff --git a/docs/32-MEMORY-RECALL-UI.md b/docs/32-MEMORY-RECALL-UI.md
+new file mode 100644
+index 0000000..5d66f9d
+--- /dev/null
++++ b/docs/32-MEMORY-RECALL-UI.md
+@@ -0,0 +1,19 @@
++# 对话中的记忆检索状态（2026-10-29）
++
++基线 `f528a4d`，接续docs/31已明确留下的页面缺口。用户授权自主完善软件；角色制作暂停，不调整外观、动作或生产模型。
++
++## 已复现与修改
++
++旧版虽向对话模型说明检索受限，页面仍只显示“本轮未注入长期记忆”，用户无法分辨故障与正常未找到。新增18项状态/持久化/界面检查在旧源码上失败，63项已有检查通过；前次实际安装包在独立损坏模型流程中也因找不到检索状态提示失败。
++
++本轮沿用每次已完成回复的提示记录保存实际状态，不增加数据库表或依赖。聊天上下文展示正常已使用、正常未找到、检索受限、暂不可用、当次关闭记忆、任务/工具未检索、历史未知及新会话无记录。提示与所属会话保存，当前设置不会改写历史结果；尚未完成或失败的请求不覆盖上次已完成记录。部分召回保留实际条目，已删除条目仍沿用既有说明。旧记录未保存状态时不推断为正常。
++
++这是检索状态的透明化，不是新的记忆算法，也不代表模型一定遵守提示或全部回复质量提高。docs/22的两项语义漏召回、真实外部模型质量、多文件任务和完整安装链仍未验收。
++
++## 验证
++
++3文件119项定向检查通过，完整68文件864项、类型检查、ESLint及74项追踪映射通过。SQLite测试覆盖状态随回复重新读取、旧/未知字段、空模型回复与写入回滚保留先前状态；页面测试覆盖当前设置变化、等待中的请求、后台另一会话完成、删除条目、折叠与会话切换。追踪映射不是全部SRS验收。
++
++首个独立候选包完整32项端到端通过、0跳过、4.5分钟，包括正常BGE与损坏模型、刷新和会话切换。截图目视发现新提示的左边距和字号不一致，增加局部样式修正；首包、原截图与日志保留，新目录重新打包后再验证，不能将首包证据冒充最终包结果。
++
++最终包完整端到端、截图、独立审阅、资源指纹与推送回执待本轮实际验证后补入。
+diff --git a/docs/superpowers/plans/2026-10-29-memory-recall-ui.md b/docs/superpowers/plans/2026-10-29-memory-recall-ui.md
+new file mode 100644
+index 0000000..83626ee
+--- /dev/null
++++ b/docs/superpowers/plans/2026-10-29-memory-recall-ui.md
+@@ -0,0 +1,35 @@
++# Memory Recall UI Implementation Plan
++
++> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
++
++**Goal:** 对话上下文展示并持久保存最近已完成回复的实际记忆检索状态。
++**Architecture:** 在原prompt调用JSON内保存枚举，经Conversation既有更新路径显示，旧记录保留unknown。
++**Tech Stack:** TypeScript、React、Electron、SQLite、Vitest、Playwright；不加依赖。
++**Spec:** docs/superpowers/specs/2026-10-29-memory-recall-ui-design.md
++
++## Global Constraints
++
++用户授权自主决定软件细节，原需求不简化；使用独立测试资料；角色制作暂停；不修改/关闭同事issue；仅通过检查后普通推送GitHub；不覆盖先前安装包。
++
++## Review Focus
++
++- 缺字段/未知状态的旧记录不得显示成完整检索。
++- 请求失败或存储回滚不得覆盖上次已完成回复的状态。
++- 正在发送与后台其他会话回复不得污染当前上下文。
++- 已更正/删除记忆可隐藏条目，但不能抹掉历史检索受限的事实。
++- 禁用记忆和工具分派不得被误报为模型故障；切换设置不篡改过去状态。
++
++### Task 1: Persist and display per-reply recall status
++
++**Files:** 修改src/shared/types.ts、src/main/core/services/conversation-service.ts、src/renderer/src/pages/ChatPage.tsx和styles.css；新增src/renderer/src/components/MemoryRecallStatus.tsx；测试沿用conversation-memory-maturity、chat-conversation-regression、memory-degraded-context、local-memory。
++
++**Interfaces:** `MemoryRecallStatus = 'complete' | 'limited' | 'unavailable' | 'disabled' | 'not-used' | 'unknown'`；`Conversation.memoryRecallStatus?: MemoryRecallStatus`；`recordRecall(..., status: MemoryRecallStatus)`；`getRecall`增status字段；UI组件接收status、recorded、count。不新增IPC事件。
++
++- [x] 写失败测试：成功/部分/异常/禁用/分派状态经过新service读取一致；旧/未知字段为unknown；失败模型请求和失败写入保留上一记录。UI以testid `memory-recall-status`区分状态，切换/删除/折叠正确。损坏模型E2E增加受限提示、刷新、新会话及返回原会话检查。
++- [x] 运行定向Vitest及旧包E2E，期望新增状态断言失败，保存原始证据。
++- [x] 实施上述接口和组件；在消息/提示记录同一事务内保存状态，缺少callback视作unavailable，现有正常及异常提示逻辑保持。
++- [x] 定向测试通过；全仓`npm run verify`，期望0失败，旧追踪映射不是SRS全验收。
++- [ ] 独立新目录打包，完整Playwright新包回归，期望全部通过无跳过；核对源资源、旧包哈希和真实截图。
++- [ ] 一次新上下文独立审阅，处理阻塞项；归档证据与交付说明，只提交通过的代码并普通推送GitHub。
++
++整个任务测试命令：`npm run verify`。原生桌面模型和三维工程不属于本计划。源代码、测试和验收报告为单个可独立审阅增量；不在未验证中途推送。
+diff --git a/docs/superpowers/specs/2026-10-29-memory-recall-ui-design.md b/docs/superpowers/specs/2026-10-29-memory-recall-ui-design.md
+new file mode 100644
+index 0000000..c681838
+--- /dev/null
++++ b/docs/superpowers/specs/2026-10-29-memory-recall-ui-design.md
+@@ -0,0 +1,15 @@
++# 对话记忆检索状态设计
++
++依据用户的软件自主迭代授权及docs/31已记录缺口，由实施者决定此小型增量；没有请求或声称用户逐字批准此设计。角色制作继续暂停。
++
++目标：用户无需依赖模型措辞，便能判断最近一次已完成回复的记忆检索是否完整。保持现有上下文面板和召回ID，关联会话与回复，刷新/重新读取后保留。正在发送的回复、失败请求不能替换上次成功记录。
++
++方案：沿用已持久化的prompt调用记录，在同一JSON参数中增加状态；现有Conversation更新通道带到UI，不新增全局toast或数据库表。全局告警容易串会话，纯页面临时状态会在刷新后丢失，因此选用随回复保存的上下文说明。此选择由实施者作出。
++
++状态契约：`complete`正常完成，`limited`正常返回但degraded，`unavailable`抛异常或缺少检索服务，`disabled`该次记忆未启用，`not-used`交给任务/工具而未检索，`unknown`旧记录缺字段或无法识别。没有prompt记录时不猜测过去状态。正常完成且ID为空显示“未找到相关记忆”；有ID显示“已使用记忆”。有限/不可用用琥珀色说明，仍展示实际召回条目；已删除条目沿用既有提示。设置改变不重写过去状态。
++
++UI：上下文卡注明“最近一次已完成回复”，增加独立状态块，文本明确指向“该次回复”。未记录和旧状态不能显示为成功。关闭上下文面板保持原行为，不增加弹窗或依赖开发术语。
++
++范围：只增加状态持久化与显示；不改变记忆召回策略、模型、阈值、提取、语音、任务执行或角色素材。不把模型遵循提示、语义准确率、完整SRS验收计为完成。
++
++验收：真实SQLite状态/旧记录/失败回滚；组件状态切换、删除后保留提示、折叠；旧包损坏本地模型场景先缺失UI而失败，新包真实IPC/HTTP流程及正常BGE都通过，刷新与切换新会话不串状态。保持原安装器和用户资料。
+diff --git a/src/main/core/services/conversation-service.ts b/src/main/core/services/conversation-service.ts
+index 583444b..6a1942b 100644
+--- a/src/main/core/services/conversation-service.ts
++++ b/src/main/core/services/conversation-service.ts
+@@ -1,20 +1,20 @@
+ import type { SqliteDatabase } from '../../data/sqlite-types'
+ import type { ChatTurn, ResolvedModel } from '../../model/types'
+ import { ModelGateway } from '../../model/gateway'
+ import { composePrompt } from '../../agent/prompts'
+ import type { ModelRegistry } from '../../model/registry'
+ import { searchHistory, type HistorySearchResult } from '../../history/search'
+ import { compactContext, RequestQueue } from '../../agent/runtime'
+ import { petLine, petSpeech, routeUtterance, type StepPose, type TeammateRoute } from '../../agent/teammates'
+ import { addressSequence } from '../../data/repositories/trace-repository'
+-import type { Conversation, Result } from '../../../shared/types'
++import type { Conversation, MemoryRecallStatus, Result } from '../../../shared/types'
+
+ const clone = <T>(value: T): T => structuredClone(value)
+ const nowStamp = (): string => new Date().toISOString()
+
+ function displayTime(value: string): string {
+   const date = new Date(value)
+   if (Number.isNaN(date.getTime())) return value
+   const clock = date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })
+   if (date.toDateString() === new Date().toDateString()) return clock
+   return `${date.getMonth() + 1}月${date.getDate()}日 ${clock}`
+@@ -149,21 +149,21 @@ export class ConversationService {
+           if (handled.pose) pose = handled.pose
+         } catch (error) {
+           say = `这件事没交出去。${error instanceof Error ? error.message : '队友没有开始。'}`
+           pose = 'fail'
+         }
+       }
+       if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+       this.db.transaction(() => {
+         this.insertMessage(conversationId, 'user', text, userAt)
+         this.insertMessage(conversationId, 'assistant', say, nowStamp(), turnId)
+-        this.recordRecall(conversationId, turnId, [], [])
++        this.recordRecall(conversationId, turnId, [], [], 'not-used')
+       })()
+       const title = existing.title === '新的对话' ? text.slice(0, 24) : existing.title
+       this.db.prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`).run(title, new Date().toISOString(), conversationId)
+       notify(() => this.context.onTurn?.(text, conversationId))
+       notify(() => this.context.onRecall?.(conversationId, { turnId, ids: [] }))
+       notify(() => this.context.onReply?.(petSpeech(say), pose))
+       return ok(this.require(conversationId))
+     }
+     const model = this.models.getDefault()
+     const characterName = this.context.character?.().name
+@@ -180,26 +180,28 @@ export class ConversationService {
+     const recentIds = new Set(compacted.recent.map((step) => step.id))
+     const messages: ChatTurn[] = history
+       .filter((message) => recentIds.has(message.id))
+       .map((message) => ({ role: message.role, content: message.text }))
+     messages.push({ role: 'user', content: text })
+     const character = this.context.character?.() ?? { name: '', style: '', example: '' }
+     const relationship = this.context.relationship?.()
+     const prompt = composePrompt(character, relationship?.stage)
+     const memoryEnabled = this.context.memoryEnabled?.() ?? false
+     let recalled: RecalledContext = { text: '', ids: [] }
+-    let recallUnavailable = false
++    let recallUnavailable = memoryEnabled && !this.context.recall
+     if (memoryEnabled && this.context.recall) {
+       try { recalled = await this.context.recall(text) } catch {
+         recallUnavailable = true
+       }
+     }
++    const recallStatus: MemoryRecallStatus = !memoryEnabled ? 'disabled'
++      : recallUnavailable ? 'unavailable' : recalled.degraded ? 'limited' : 'complete'
+     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+     const earlier = compacted.summary ? `\n更早的对话记录摘录（保留来源角色；更正以较新的用户陈述为准，助手陈述不等于用户事实）：\n${compacted.summary}` : ''
+     const voice = relationship ? `\n关系表达：${relationship.tone ?? ''} ${relationship.joke ?? ''}` : ''
+     const memoryStatus = recallUnavailable
+       ? '\n本轮长期记忆检索暂不可用；只能依据当前对话作答，不得声称已查到或不存在历史记忆。'
+       : recalled.degraded
+         ? '\n本轮长期记忆检索不完整或暂不可用；若提供了已检出的记忆，可继续参考，但可能遗漏其他相关记录。不得把未检出当作用户从未说过或没有这项偏好；缺少关键背景时应说明本轮无法确认，并向用户核实。'
+         : ''
+     const system = `${prompt.text}${voice}\n按用户需要给出完整、清楚的回答，详细说明和代码会保存在控制台。桌宠另行显示一句短话。不要自称人工智能或助手，不要声称已经操作了文件、命令或网页。${earlier}${memoryStatus}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
+
+@@ -214,21 +216,21 @@ export class ConversationService {
+     } catch (error) {
+       notify(() => this.models.markOffline(model.id, model))
+       return fail(error instanceof Error ? error.message : '模型请求失败，请稍后重试')
+     }
+     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+     if (!reply.trim()) return fail('模型返回了空内容，这次回复没有写入会话')
+     try {
+       this.db.transaction(() => {
+         this.insertMessage(conversationId, 'user', text, userAt)
+         this.insertMessage(conversationId, 'assistant', reply, nowStamp(), turnId)
+-        this.recordRecall(conversationId, turnId, recalled.ids, prompt.prompts)
++        this.recordRecall(conversationId, turnId, recalled.ids, prompt.prompts, recallStatus)
+       })()
+     } catch { return fail('会话保存失败，这次回复未写入历史') }
+     this.recordTrace(conversationId, [...messages.map((item) => String(item.content)), reply])
+     const title = existing.title === '新的对话' ? text.slice(0, 24) : existing.title
+     this.db
+       .prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`)
+       .run(title, new Date().toISOString(), conversationId)
+     notify(() => this.models.markVerified(model.id, Date.now() - startedAt, model))
+     notify(() => this.context.onTurn?.(text, conversationId))
+     notify(() => this.context.onReply?.(petSpeech(reply)))
+@@ -249,26 +251,28 @@ export class ConversationService {
+       this.db.prepare(`DELETE FROM messages WHERE conversation_id = ?`).run(id)
+       this.db.prepare(`DELETE FROM conversations WHERE id = ?`).run(id)
+       this.db.prepare(`DELETE FROM trace_nodes WHERE trace_id = ?`).run(id)
+       this.db.prepare(`DELETE FROM trace_blobs WHERE blob_hash NOT IN (SELECT blob_hash FROM trace_nodes)`).run()
+       this.db.prepare(`DELETE FROM tool_calls WHERE task_id = ? AND tool_id = 'prompt'`).run(id)
+     })()
+     return this.list()
+   }
+
+   /** Last completed turn's actual injection IDs, including an explicitly empty set. */
+-  getRecall(conversationId: string): { turnId: string; ids: string[] } | undefined {
++  getRecall(conversationId: string): { turnId: string; ids: string[]; status: MemoryRecallStatus } | undefined {
+     const row = this.db.prepare(`SELECT declared_json FROM tool_calls WHERE task_id = ? AND tool_id = 'prompt' ORDER BY created_at DESC, rowid DESC`).get(conversationId) as { declared_json: string } | undefined
+     if (!row) return undefined
+     try {
+       const args = JSON.parse(row.declared_json).args
+-      return { turnId: args.turnId, ids: Array.isArray(args.memoryIds) ? args.memoryIds : [] }
++      const known: MemoryRecallStatus[] = ['complete', 'limited', 'unavailable', 'disabled', 'not-used', 'unknown']
++      const status: MemoryRecallStatus = known.includes(args.memoryRecallStatus) ? args.memoryRecallStatus : 'unknown'
++      return { turnId: args.turnId, ids: Array.isArray(args.memoryIds) ? args.memoryIds : [], status }
+     } catch { return undefined }
+   }
+
+   /** Factual activity observations join the same serialized conversation timeline. */
+   async appendObservation(conversationId: string, text: string): Promise<Result<Conversation>> {
+     return this.inConversation(conversationId, async () => {
+       if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+       if (!text.trim()) return fail('活动记录为空')
+       this.insertMessage(conversationId, 'assistant', `活动记录：${text}`, nowStamp())
+       this.db.prepare(`UPDATE conversations SET updated_at = ? WHERE id = ?`).run(nowStamp(), conversationId)
+@@ -276,26 +280,26 @@ export class ConversationService {
+       return ok(this.require(conversationId))
+     })
+   }
+
+   private async inConversation<T>(id: string, job: () => Promise<T>): Promise<T> {
+     const queue = this.queues.get(id) ?? new RequestQueue()
+     this.queues.set(id, queue)
+     return queue.enqueue(job)
+   }
+
+-  private recordRecall(conversationId: string, turnId: string, memoryIds: string[], prompts: Array<{ id: string; version: string }>): void {
++  private recordRecall(conversationId: string, turnId: string, memoryIds: string[], prompts: Array<{ id: string; version: string }>, memoryRecallStatus: MemoryRecallStatus): void {
+     const now = nowStamp()
+     this.db.prepare(`INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
+       uid('call'), conversationId, 'prompt', 'prompt',
+-      JSON.stringify({ intent: 'system-prompt', args: { conversationId, turnId, prompts, memoryIds } }),
++      JSON.stringify({ intent: 'system-prompt', args: { conversationId, turnId, prompts, memoryIds, memoryRecallStatus } }),
+       JSON.stringify({ status: 'ok', raw: null, startedAt: now, endedAt: now }),
+       JSON.stringify({ method: 'prompt-version', evidence: [], verdict: 'confirmed' }), now, 'prompt'
+     )
+   }
+
+   /** 相同内容只存一份 blob，相同前缀只存一个节点，重述不额外占空间。 */
+   private recordTrace(conversationId: string, messages: string[]): void {
+     try {
+       const { nodes, blobs } = addressSequence(messages)
+       const insertBlob = this.db.prepare(`INSERT OR IGNORE INTO trace_blobs(blob_hash, body) VALUES (?, ?)`)
+@@ -361,14 +365,15 @@ export class ConversationService {
+     const preview = messages.at(-1)?.text.slice(0, 32).replace(/\n/g, ' ') ?? '从一个问题开始…'
+     return clone({
+       id: row.id,
+       title: row.title,
+       time: displayTime(row.updated_at),
+       preview,
+       count: messages.length,
+       pinned: row.pinned === 1,
+       messages,
+       recalledMemoryIds: recalled?.ids ?? [],
+-      recalledAtMessageId: recalled?.turnId
++      recalledAtMessageId: recalled?.turnId,
++      memoryRecallStatus: recalled?.status
+     })
+   }
+ }
+diff --git a/src/renderer/src/components/MemoryRecallStatus.tsx b/src/renderer/src/components/MemoryRecallStatus.tsx
+new file mode 100644
+index 0000000..6184959
+--- /dev/null
++++ b/src/renderer/src/components/MemoryRecallStatus.tsx
+@@ -0,0 +1,27 @@
++import type { MemoryRecallStatus as RecallStatus, Tone } from '@shared/types'
++import { Pill } from './ui'
++
++const notices: Record<RecallStatus, { label: string; detail: string; tone: Tone }> = {
++  complete: { label: '已使用记忆', detail: '该次检索已完成，下方列出实际提供给回复的记忆。', tone: 'green' },
++  limited: { label: '记忆检索受限', detail: '该次回复未能完整检索长期记忆，可能遗漏相关记录。已找到的内容仍可参考。', tone: 'amber' },
++  unavailable: { label: '记忆检索暂不可用', detail: '该次回复未能检索长期记忆，已有条目没有因此删除。', tone: 'amber' },
++  disabled: { label: '该次未启用记忆', detail: '生成该次回复时，长期记忆处于关闭状态。', tone: 'gray' },
++  'not-used': { label: '该次未检索记忆', detail: '该次回复用于处理任务或工具请求，没有检索长期记忆。', tone: 'gray' },
++  unknown: { label: '历史状态未记录', detail: '这条回复未保存可识别的检索状态，无法确认当时是否完整。', tone: 'gray' }
++}
++
++export function MemoryRecallStatus({ status, recorded, count }: {
++  status?: RecallStatus; recorded: boolean; count: number
++}): React.JSX.Element {
++  const notice = !recorded
++    ? { label: '尚无检索记录', detail: '完成一次对话后，这里会显示该次回复的记忆使用情况。', tone: 'gray' as const }
++    : status === 'complete' && count === 0
++      ? { label: '未找到相关记忆', detail: '该次检索已完成，没有找到可用于这次回复的相关记忆。', tone: 'gray' as const }
++      : notices[status ?? 'unknown']
++  return (
++    <div className="memory-recall-status" role="status" data-testid="memory-recall-status" aria-live="polite">
++      <Pill tone={notice.tone}>{notice.label}</Pill>
++      <p className="muted">{notice.detail}</p>
++    </div>
++  )
++}
+diff --git a/src/renderer/src/pages/ChatPage.tsx b/src/renderer/src/pages/ChatPage.tsx
+index d167edc..68134fd 100644
+--- a/src/renderer/src/pages/ChatPage.tsx
++++ b/src/renderer/src/pages/ChatPage.tsx
+@@ -1,17 +1,18 @@
+ import { ArrowRight, AudioLines, MonitorUp, Plus, Search, Send, Sparkles } from 'lucide-react'
+ import { useCallback, useEffect, useRef, useState } from 'react'
+ import { useNavigate } from 'react-router-dom'
+ import type { Message } from '@shared/types'
+ import { TaskCreateDialog } from '../components/dialogs'
+ import { Button, Card, CardHead, EmptyState, Pill, Spinner } from '../components/ui'
+ import { StatusPill } from '../components/StatusPill'
++import { MemoryRecallStatus } from '../components/MemoryRecallStatus'
+ import { clockLabel } from '../lib/utils'
+ import { playSamples, startRecording, type Recording } from '../lib/audio'
+ import { onWindowHidden } from '../lib/window-visibility'
+ import { useAppStore } from '../store'
+
+ export function ChatPage(): React.JSX.Element {
+   const navigate = useNavigate()
+   const data = useAppStore((state) => state.data)!
+   const selectedId = useAppStore((state) => state.selectedConversationId)
+   const selectConversation = useAppStore((state) => state.selectConversation)
+@@ -335,28 +336,29 @@ export function ChatPage(): React.JSX.Element {
+             <EmptyState
+               title="还没有会话"
+               description="从一个小问题开始。对话只保存在这台电脑上，敏感操作会先问你。"
+               action={<Button variant="primary" onClick={() => void newConversation()}>新建会话</Button>}
+             />
+           )}
+         </Card>
+
+         <div className="chat-context" id="chat-context-panel" hidden={!contextOpen}>
+           <Card>
+-            <CardHead title="本轮上下文" subtitle="显示最近一轮实际注入的长期记忆" aside={<Pill tone="gray">仅本机</Pill>} />
++            <CardHead title="本轮上下文" subtitle="显示最近一次已完成回复的记忆使用情况" aside={<Pill tone="gray">仅本机</Pill>} />
+             <div className="context-list">
+               <div><span>角色</span><strong>{data.character.name.trim() || '未命名'}{data.character.style ? ` · ${data.character.style}` : ''}</strong></div>
+               <div><span>模型</span><strong>{defaultModel?.name ?? '尚未配置'}</strong></div>
+               <div><span>已保存记忆</span><strong>{data.memories.length} 条</strong></div>
+               <div><span>屏幕</span><strong>{data.settings.permissions.screen ? '按需附加画面' : '未附加入口'}</strong></div>
+             </div>
+             <div className="subheading">已召回的记忆</div>
++            <MemoryRecallStatus status={conversation?.memoryRecallStatus} recorded={Boolean(conversation?.recalledAtMessageId)} count={recalledIds.size} />
+             <div className="memory-chips">
+               {recalledMemories.map((memory) => (
+                 <Pill key={memory.id} tone="coral">{memory.text}</Pill>
+               ))}
+               {recalledIds.size === 0 ? <p className="muted">本轮未注入长期记忆</p> : null}
+               {recalledIds.size > recalledMemories.length ? <p className="muted">部分曾注入的记忆已更正或删除，当前列表不再展示。</p> : null}
+             </div>
+             <div className="subheading">快捷动作</div>
+             <div className="quick-actions">
+               <Button size="sm" onClick={() => void quickSend('总结这段对话，保留结论、待办和仍然不确定的部分。')}>总结这段对话</Button>
+diff --git a/src/renderer/src/styles.css b/src/renderer/src/styles.css
+index db0aa69..824397c 100644
+--- a/src/renderer/src/styles.css
++++ b/src/renderer/src/styles.css
+@@ -476,20 +476,22 @@ a:focus-visible {
+ .composer-model { margin-left: auto; color: var(--faint); font-family: "Cascadia Mono", Consolas, monospace; font-size: 8.5px; white-space: nowrap; }
+ .composer-tools .btn { height: 34px; padding: 0 18px; }
+
+ .chat-context { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+ .context-list { padding: 0 20px 7px; }
+ .context-list > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 10px; }
+ .context-list span { flex: 0 0 46px; color: var(--muted); }
+ .context-list strong { font-size: 10px; font-weight: 500; text-align: right; }
+ .subheading { margin: 15px 20px 7px; color: #5d5f67; font-size: 10.5px; font-weight: 600; }
+ .memory-chips { display: flex; flex-direction: column; gap: 6px; padding: 0 20px; }
++.memory-recall-status { padding: 0 20px 8px; }
++.memory-recall-status p { margin: 6px 0 0; font-size: 10.5px; line-height: 1.6; overflow-wrap: anywhere; }
+ .memory-chips .pill { justify-content: flex-start; padding: 7px 9px; border-radius: 7px; text-align: left; white-space: normal; line-height: 1.45; }
+ .memory-chips .pill::before { width: 4px; height: 4px; flex: 0 0 4px; background: currentColor; border-radius: 50%; content: ""; }
+ .quick-actions { display: flex; flex-direction: column; gap: 6px; padding: 0 20px 19px; }
+ .quick-actions .btn { justify-content: flex-start; width: 100%; }
+ .chat-task-card { padding: 14px 17px; background: #f3f6f2; }
+ .chat-task-card > span { color: var(--muted); font-size: 9.5px; }
+ .chat-task-card > strong { display: block; margin-top: 5px; font-size: 11.5px; }
+ .chat-task-card button { display: flex; align-items: center; gap: 4px; margin-top: 9px; padding: 0; cursor: pointer; color: var(--green); background: transparent; border: 0; font-size: 10.5px; }
+
+ /* Screen */
+diff --git a/src/shared/types.ts b/src/shared/types.ts
+index 1645530..24bdbee 100644
+--- a/src/shared/types.ts
++++ b/src/shared/types.ts
+@@ -22,30 +22,33 @@ export type Tone = 'coral' | 'green' | 'amber' | 'blue' | 'violet' | 'gray' | 'r
+
+ export type Result<T> = { ok: true; data: T } | { ok: false; error: string }
+
+ export interface Message {
+   id: string
+   role: 'user' | 'assistant'
+   text: string
+   time: string
+ }
+
++export type MemoryRecallStatus = 'complete' | 'limited' | 'unavailable' | 'disabled' | 'not-used' | 'unknown'
++
+ export interface Conversation {
+   id: string
+   title: string
+   time: string
+   preview: string
+   count: number
+   pinned: boolean
+   messages: Message[]
+   recalledMemoryIds?: string[]
+   recalledAtMessageId?: string
++  memoryRecallStatus?: MemoryRecallStatus
+ }
+
+ export interface ConversationDeleted {
+   id: string
+   activeConversationId: string | null
+ }
+
+ export interface MemoryExtractionStatus {
+   conversationId: string
+   status: 'processing' | 'saved' | 'unchanged' | 'skipped' | 'failed' | 'cleared'
+diff --git a/tests/e2e/local-memory.spec.ts b/tests/e2e/local-memory.spec.ts
+index d7f558d..77c6879 100644
+--- a/tests/e2e/local-memory.spec.ts
++++ b/tests/e2e/local-memory.spec.ts
+@@ -34,15 +34,16 @@ test('[FR-14] 真实离线BGE在Electron中召回独立偏好并进入实际对
+     expect(indexed.ok && indexed.data?.memoryIndex).toMatchObject({ state: 'idle', completed: 1, total: 1 })
+     await page.getByTestId('nav-chat').click()
+     await page.getByLabel('新建会话', { exact: true }).click()
+     await page.getByTestId('chat-input').fill('推荐个菜')
+     await page.getByTestId('chat-send').click()
+     await expect.poll(() => requests.some(messages => messages.some(message => message.role === 'system' && String(message.content).includes('可参考的长期记忆：\n我不吃辣，喜欢清淡的菜。'))), { timeout: 20_000 }).toBe(true)
+     const chatRequest = requests.find(messages => messages.some(message => message.role === 'user' && message.content === '推荐个菜'))
+     expect(chatRequest?.filter(message => message.role === 'system').map(message => String(message.content)).join('\n')).not.toContain('检索不完整或暂不可用')
+     const reply = page.locator('.message-row.assistant').last()
+     await expect(reply).toContainText('真实流式回复')
++    await expect(page.getByTestId('memory-recall-status')).toContainText('已使用记忆')
+     await reply.scrollIntoViewIfNeeded()
+     await expect(page.locator('#chat-context-panel')).toBeVisible()
+     await page.screenshot({ path: test.info().outputPath('actual-local-memory.png') })
+   } finally { await closeApp(app); await server.close() }
+ })
+diff --git a/tests/e2e/memory-degraded-context.spec.ts b/tests/e2e/memory-degraded-context.spec.ts
+index 47be7b7..459b51b 100644
+--- a/tests/e2e/memory-degraded-context.spec.ts
++++ b/tests/e2e/memory-degraded-context.spec.ts
+@@ -33,15 +33,23 @@ test('[NFR-U03] unusable local model does not silently become a successful empty
+     await page.getByLabel('新建会话', { exact: true }).click()
+     const question = '我之前喜欢喝什么茶'
+     await page.getByTestId('chat-input').fill(question)
+     await page.getByTestId('chat-send').click()
+     await expect(page.locator('.message-row.assistant').last()).toContainText('真实流式回复')
+     const request = requests.find(messages => messages.some(item => item.role === 'user' && item.content === question))
+     const system = request?.filter(item => item.role === 'system').map(item => String(item.content)).join('\n') ?? ''
+     expect(system).toContain('本轮长期记忆检索不完整或暂不可用')
+     expect(system).toContain('不得把未检出当作用户从未说过或没有这项偏好')
+     expect(system).not.toContain('可参考的长期记忆：')
++    await expect(page.getByTestId('memory-recall-status')).toContainText('记忆检索受限')
++    await page.reload()
++    await expect(page.getByTestId('memory-recall-status')).toContainText('记忆检索受限')
++    await page.getByLabel('新建会话', { exact: true }).click()
++    await expect(page.getByTestId('memory-recall-status')).toContainText('尚无检索记录')
++    await page.locator('.conversation-item').filter({ hasText: question }).click()
++    await expect(page.getByTestId('memory-recall-status')).toContainText('记忆检索受限')
++    await page.screenshot({ path: test.info().outputPath('persisted-recall-warning.png'), fullPage: true })
+     await page.getByTestId('nav-memory').click()
+     await expect(page.getByTestId('memory-card')).toContainText('我喜欢白茶')
+     await page.screenshot({ path: test.info().outputPath('preserved-memory-with-unavailable-index.png'), fullPage: true })
+   } finally { await closeApp(app); await server.close() }
+ })
+diff --git a/tests/unit/chat-conversation-regression.test.ts b/tests/unit/chat-conversation-regression.test.ts
+index d544157..51ae141 100644
+--- a/tests/unit/chat-conversation-regression.test.ts
++++ b/tests/unit/chat-conversation-regression.test.ts
+@@ -38,20 +38,61 @@ beforeEach(async () => {
+       onMessageDelta: listen('delta'), onActiveConversation: listen('active'), onTaskUpdated: listen('task'), onMemoriesUpdated: listen('memories'), onMemoryExtractionStatus: listen('extraction'), onMemoryIndexStatus: listen('index')
+     }
+   } as unknown as MurasameApi
+   Object.defineProperty(window, 'murasame', { configurable: true, value: api })
+   Element.prototype.scrollIntoView = vi.fn()
+   await useAppStore.getState().init()
+ })
+ afterEach(() => { cleanup(); vi.restoreAllMocks() })
+
+ describe('conversation UI isolation', () => {
++  it.each([
++    ['complete', [], '未找到相关记忆'], ['complete', ['used'], '已使用记忆'],
++    ['limited', ['used'], '记忆检索受限'], ['unavailable', [], '记忆检索暂不可用'],
++    ['disabled', [], '该次未启用记忆'], ['not-used', [], '该次未检索记忆'],
++    ['unknown', [], '历史状态未记录']
++  ] as const)('shows the completed reply status %s without inferring it from current settings', (status, ids, label) => {
++    useAppStore.setState((state) => ({ data: state.data ? { ...state.data, conversations: state.data.conversations.map((chat) => chat.id === 'a' ? { ...chat, memoryRecallStatus: status, recalledMemoryIds: [...ids], recalledAtMessageId: 'reply-a' } : chat) } : null }))
++    render(createElement(MemoryRouter, null, createElement(ChatPage)))
++    expect(screen.getByTestId('memory-recall-status').textContent).toContain(label)
++    const settings = useAppStore.getState().data!.settings
++    act(() => emit('settings', { ...settings, memoryEnabled: !settings.memoryEnabled }))
++    expect(screen.getByTestId('memory-recall-status').textContent).toContain(label)
++  })
++
++  it('keeps recall warnings with their conversation through pending replies, deleted facts, collapse and background completion', () => {
++    act(() => emit('updated', { ...chats[0], memoryRecallStatus: 'limited', recalledMemoryIds: ['used'], recalledAtMessageId: 'reply-a' }))
++    render(createElement(MemoryRouter, null, createElement(ChatPage)))
++    const status = () => screen.getByTestId('memory-recall-status').textContent
++    expect(status()).toContain('记忆检索受限')
++    act(() => emit('started', { conversationId: 'a', userText: '等待中的问题' }))
++    act(() => emit('updated', { ...chats[1], memoryRecallStatus: 'complete', recalledMemoryIds: [], recalledAtMessageId: 'reply-b' }))
++    expect(status()).toContain('记忆检索受限')
++    act(() => emit('memories', []))
++    expect(status()).toContain('记忆检索受限')
++    expect(screen.queryByText('实际注入的白茶偏好')).toBeNull()
++    expect(screen.getByText(/部分曾注入的记忆已更正或删除/)).toBeTruthy()
++    fireEvent.click(screen.getByRole('button', { name: '收起上下文' }))
++    fireEvent.click(screen.getByRole('button', { name: '展开上下文' }))
++    fireEvent.click(screen.getByText('会话b'))
++    expect(status()).toContain('未找到相关记忆')
++    fireEvent.click(screen.getByText('会话a'))
++    expect(status()).toContain('记忆检索受限')
++  })
++
++  it('distinguishes a fresh conversation from an older reply without recorded health', () => {
++    render(createElement(MemoryRouter, null, createElement(ChatPage)))
++    expect(screen.getByTestId('memory-recall-status').textContent).toContain('尚无检索记录')
++    act(() => emit('updated', { ...chats[0], recalledAtMessageId: 'legacy-reply', recalledMemoryIds: [] }))
++    expect(screen.getByTestId('memory-recall-status').textContent).toContain('历史状态未记录')
++  })
++
+   it('removes externally deleted history and rejects a late conversation update', () => {
+     emit('deleted', { id: 'a', activeConversationId: 'b' })
+     emit('updated', { ...chats[0], messages: [{ id: 'late', role: 'assistant', text: '迟到旧回复', time: '现在' }] })
+     expect(useAppStore.getState().data?.conversations.map(item => item.id)).toEqual(['b'])
+     expect(useAppStore.getState().selectedConversationId).toBe('b')
+   })
+
+   it('cannot restore deleted history from a delayed initial snapshot', async () => {
+     const initial = await api.core.getBootstrap()
+     resetStoreForTests()
+diff --git a/tests/unit/conversation-memory-maturity.test.ts b/tests/unit/conversation-memory-maturity.test.ts
+index de87e1c..4cab566 100644
+--- a/tests/unit/conversation-memory-maturity.test.ts
++++ b/tests/unit/conversation-memory-maturity.test.ts
+@@ -502,20 +502,80 @@ describe('bounded background memory indexing', () => {
+     await memory.add('user', '保留事实')
+     db.exec("CREATE TRIGGER reject_index BEFORE UPDATE OF vector_json ON memories BEGIN SELECT RAISE(ABORT, 'synthetic index write failure'); END")
+     await memory.recall('查询')
+     await vi.waitFor(() => expect(memory.indexStatus()).toMatchObject({ state: 'failed', completed: 0, total: 1 }))
+     expect(memory.list()[0].text).toBe('保留事实')
+     expect(memory.active()[0].vector).toBeNull()
+   })
+ })
+
+ describe('conversation reliability at memory boundaries', () => {
++  it.each([
++    { kind: 'complete', enabled: true, recall: () => ({ text: '', ids: [] }) },
++    { kind: 'limited', enabled: true, recall: () => ({ text: '喜欢白茶', ids: ['fact'], degraded: true }) },
++    { kind: 'unavailable', enabled: true, recall: () => { throw new Error('synthetic recall failure') } },
++    { kind: 'unavailable', enabled: true, recall: undefined },
++    { kind: 'disabled', enabled: false, recall: () => { throw new Error('disabled recall must not run') } }
++  ])('[NFR-U03] persists $kind recall with its completed reply across service reloads', async ({ kind, enabled, recall }) => {
++    const db = database()
++    const service = new ConversationService(db, models, { chat: async () => '当前回复' }, { memoryEnabled: () => enabled, recall })
++    const chat = service.create()
++    expect(chat.memoryRecallStatus).toBeUndefined()
++    const result = await service.send(chat.id, '继续讨论')
++    expect(result.ok).toBe(true)
++    const saved = new ConversationService(db, models).list()[0]
++    expect(saved.memoryRecallStatus).toBe(kind)
++    expect(saved.recalledAtMessageId).toBe(saved.messages.at(-1)?.id)
++    expect(saved.recalledMemoryIds).toEqual(kind === 'limited' ? ['fact'] : [])
++    await service.send(chat.id, '请截图')
++    expect(new ConversationService(db, models).list()[0].memoryRecallStatus).toBe('not-used')
++  })
++
++  it.each([undefined, 'future-status'])('[NFR-U03] does not infer healthy recall from legacy or unknown metadata %s', async (status) => {
++    const db = database()
++    const service = new ConversationService(db, models, { chat: async () => '历史回复' })
++    const chat = service.create()
++    await service.send(chat.id, '继续讨论')
++    const row = db.prepare("SELECT id, declared_json FROM tool_calls WHERE tool_id = 'prompt'").get() as { id: string; declared_json: string }
++    const record = JSON.parse(row.declared_json)
++    record.args.memoryRecallStatus = status
++    db.prepare('UPDATE tool_calls SET declared_json = ? WHERE id = ?').run(JSON.stringify(record), row.id)
++    expect(new ConversationService(db, models).list()[0].memoryRecallStatus).toBe('unknown')
++  })
++
++  it.each(['model', 'write'])('[NFR-R02] %s failure cannot overwrite the previous completed recall status', async (failure) => {
++    const db = database()
++    const pending = deferred<string>()
++    const gateway = { chat: vi.fn(async () => '已保存回复') }
++    let degraded = true
++    const service = new ConversationService(db, models, gateway, {
++      memoryEnabled: () => true, recall: () => ({ text: '', ids: [], degraded })
++    })
++    const chat = service.create()
++    await service.send(chat.id, '第一轮')
++    const original = service.list()[0]
++    expect(original.memoryRecallStatus).toBe('limited')
++    degraded = false
++    gateway.chat.mockImplementationOnce(() => pending.promise)
++    const next = service.send(chat.id, '下一轮')
++    await vi.waitFor(() => expect(gateway.chat).toHaveBeenCalledTimes(2))
++    expect(service.list()[0].recalledAtMessageId).toBe(original.recalledAtMessageId)
++    expect(service.list()[0].memoryRecallStatus).toBe('limited')
++    if (failure === 'write') db.exec("CREATE TRIGGER fail_prompt BEFORE INSERT ON tool_calls BEGIN SELECT RAISE(ABORT, 'synthetic write failure'); END")
++    pending.release(failure === 'model' ? '' : '不能保存的回复')
++    expect((await next).ok).toBe(false)
++    const reloaded = new ConversationService(db, models).list()[0]
++    expect(reloaded.memoryRecallStatus).toBe('limited')
++    expect(reloaded.recalledAtMessageId).toBe(original.recalledAtMessageId)
++    expect(reloaded.messages).toEqual(original.messages)
++  })
++
+   it('[NFR-U03] failed local query embeddings reach the model as incomplete recall, not an empty successful search', async () => {
+     const db = database(); const memory = new MemoryService(db)
+     await memory.add('user', '喜欢白茶')
+     embedding.mockResolvedValue(null)
+     let request = ''
+     const service = new ConversationService(db, models, { chat: async (_model, _turns, _delta, system) => {
+       request = system ?? ''; return '可以先继续当前话题。'
+     } }, { memoryEnabled: () => true, recall: query => memory.recall(query) })
+     const result = await service.send(service.create().id, '我之前喜欢喝什么')
+     expect(result.ok).toBe(true)

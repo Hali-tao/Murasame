@@ -1,0 +1,62 @@
+{
+  "at": "2026-10-29T15:06:18.188Z",
+  "rejectedInstaller": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-29-memory-recall-status\\Murasame-Setup-0.9.0.exe",
+    "sha256": "7b3f23621cf3d76a5a80c2ee9ae4fe4967ba00c46196eb3d4accd284419b0d68"
+  },
+  "nativeHarnessFiles": [
+    {
+      "path": "\\out\\electron-tests\\database-recovery.cjs",
+      "declaredSize": 103264
+    },
+    {
+      "path": "\\out\\electron-tests\\migrate.cjs",
+      "declaredSize": 7446
+    }
+  ],
+  "lines": 12493,
+  "expectedLines": 12494,
+  "differences": 12385,
+  "sample": [
+    {
+      "line": 1,
+      "packaged": "nc)(dir, { recursive: true, force: true });",
+      "build": "Object.defineProperty(exports, Symbol.toStringTag, { value: \"Module\" });"
+    },
+    {
+      "line": 2,
+      "packaged": "    } catch (error) {",
+      "build": "//#region \\0rolldown/runtime.js"
+    },
+    {
+      "line": 3,
+      "packaged": "      console.log(`cleanup-skipped: ${error instanceof Error ? error.message : error}`);",
+      "build": "var __create = Object.create;"
+    },
+    {
+      "line": 4,
+      "packaged": "    }",
+      "build": "var __defProp = Object.defineProperty;"
+    },
+    {
+      "line": 5,
+      "packaged": "    import_electron.app.exit(code);",
+      "build": "var __getOwnPropDesc = Object.getOwnPropertyDescriptor;"
+    },
+    {
+      "line": 6,
+      "packaged": "  }",
+      "build": "var __getOwnPropNames = Object.getOwnPropertyNames;"
+    },
+    {
+      "line": 7,
+      "packaged": "});",
+      "build": "var __getProtoOf = Object.getPrototypeOf;"
+    },
+    {
+      "line": 8,
+      "packaged": "Object.defineProperty(exports, Symbol.toStringTag, { value: \"Module\" });",
+      "build": "var __hasOwnProp = Object.prototype.hasOwnProperty;"
+    }
+  ]
+}

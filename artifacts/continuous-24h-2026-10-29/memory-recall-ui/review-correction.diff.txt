@@ -1,0 +1,104 @@
+diff --git a/electron-builder.yml b/electron-builder.yml
+index 9c3b3f9..e85b0c5 100644
+--- a/electron-builder.yml
++++ b/electron-builder.yml
+@@ -6,6 +6,8 @@ directories:
+   buildResources: build
+ files:
+   - out/**/*
++  # 原生验证程序会在检查时重建，且不属于产品运行资源。
++  - '!out/electron-tests/**/*'
+   - package.json
+   # 这几个包自带全平台二进制，Windows 安装包只需要 win32-x64 那一份。
+   - '!node_modules/onnxruntime-node/bin/napi-v3/{darwin,linux}/**'
+diff --git a/src/main/core/services/conversation-service.ts b/src/main/core/services/conversation-service.ts
+index 6a1942b..9c9e948 100644
+--- a/src/main/core/services/conversation-service.ts
++++ b/src/main/core/services/conversation-service.ts
+@@ -50,6 +50,7 @@ interface RecalledContext {
+   text: string
+   ids: string[]
+   degraded?: boolean
++  skipped?: 'disabled' | 'changed'
+ }
+
+ export interface ConversationContext {
+@@ -193,14 +194,14 @@ export class ConversationService {
+         recallUnavailable = true
+       }
+     }
+-    const recallStatus: MemoryRecallStatus = !memoryEnabled ? 'disabled'
+-      : recallUnavailable ? 'unavailable' : recalled.degraded ? 'limited' : 'complete'
++    const recallStatus: MemoryRecallStatus = !memoryEnabled || recalled.skipped === 'disabled' ? 'disabled'
++      : recallUnavailable ? 'unavailable' : recalled.degraded || recalled.skipped === 'changed' ? 'limited' : 'complete'
+     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
+     const earlier = compacted.summary ? `\n更早的对话记录摘录（保留来源角色；更正以较新的用户陈述为准，助手陈述不等于用户事实）：\n${compacted.summary}` : ''
+     const voice = relationship ? `\n关系表达：${relationship.tone ?? ''} ${relationship.joke ?? ''}` : ''
+-    const memoryStatus = recallUnavailable
++    const memoryStatus = recallStatus === 'unavailable'
+       ? '\n本轮长期记忆检索暂不可用；只能依据当前对话作答，不得声称已查到或不存在历史记忆。'
+-      : recalled.degraded
++      : recallStatus === 'limited'
+         ? '\n本轮长期记忆检索不完整或暂不可用；若提供了已检出的记忆，可继续参考，但可能遗漏其他相关记录。不得把未检出当作用户从未说过或没有这项偏好；缺少关键背景时应说明本轮无法确认，并向用户核实。'
+         : ''
+     const system = `${prompt.text}${voice}\n按用户需要给出完整、清楚的回答，详细说明和代码会保存在控制台。桌宠另行显示一句短话。不要自称人工智能或助手，不要声称已经操作了文件、命令或网页。${earlier}${memoryStatus}${recalled.text ? `\n可参考的长期记忆：\n${recalled.text}` : ''}`
+diff --git a/src/main/core/services/memory-service.ts b/src/main/core/services/memory-service.ts
+index f0319fc..13a445e 100644
+--- a/src/main/core/services/memory-service.ts
++++ b/src/main/core/services/memory-service.ts
+@@ -91,11 +91,12 @@ export class MemoryService {
+   history(): MemoryEntry[] { return this.facts.map(toEntry) }
+   active(): MemoryFact[] { return structuredClone(activeMemories(this.facts)) }
+
+-  async recall(query: string): Promise<{ text: string; ids: string[]; degraded: boolean }> {
+-    if (!this.recallOn) return { text: '', ids: [], degraded: false }
++  async recall(query: string): Promise<{ text: string; ids: string[]; degraded: boolean; skipped?: 'disabled' | 'changed' }> {
++    if (!this.recallOn) return { text: '', ids: [], degraded: false, skipped: 'disabled' }
+     const generation = this.generation
+     const queryVector = await embedLocally(query, this.userDataDir)
+-    if (!this.recallOn || generation !== this.generation) return { text: '', ids: [], degraded: false }
++    if (!this.recallOn) return { text: '', ids: [], degraded: false, skipped: 'disabled' }
++    if (generation !== this.generation) return { text: '', ids: [], degraded: true, skipped: 'changed' }
+     const active = this.active()
+     const result = recallMemories(query, active.map((fact) => ({
+       id: fact.id, text: fact.text, category: fact.category, vector: fact.vector ?? null
+diff --git a/tests/unit/conversation-memory-maturity.test.ts b/tests/unit/conversation-memory-maturity.test.ts
+index 4cab566..643ee79 100644
+--- a/tests/unit/conversation-memory-maturity.test.ts
++++ b/tests/unit/conversation-memory-maturity.test.ts
+@@ -509,6 +509,35 @@ describe('bounded background memory indexing', () => {
+ })
+
+ describe('conversation reliability at memory boundaries', () => {
++  it.each([
++    ['disable-recall', 'disabled'], ['disable-extraction', 'limited'], ['clear', 'limited'], ['off-on', 'limited']
++  ] as const)('[NFR-U03] %s during actual embedding cannot be recorded as a completed empty search', async (change, expectedStatus) => {
++    const db = database(); const memory = new MemoryService(db)
++    await memory.add('user', '喜欢白茶')
++    const pending = deferred<number[]>()
++    const started = deferred<void>()
++    embedding.mockImplementationOnce(() => { started.release(); return pending.promise })
++    let request = ''
++    const service = new ConversationService(db, models, { chat: async (_model, _turns, _delta, system) => {
++      request = system ?? ''; return '继续当前话题'
++    } }, { memoryEnabled: () => memory.recallEnabled, recall: query => memory.recall(query) })
++    const chat = service.create()
++    const sending = service.send(chat.id, '我之前的偏好')
++    await started.promise
++    if (change === 'clear') await memory.clear()
++    else if (change === 'disable-extraction') memory.configure({ recallEnabled: true, extractionEnabled: false })
++    else memory.configure({ recallEnabled: false, extractionEnabled: false })
++    if (change === 'off-on') memory.configure({ recallEnabled: true, extractionEnabled: true })
++    pending.release(vector())
++    expect((await sending).ok).toBe(true)
++    const saved = new ConversationService(db, models).list()[0]
++    expect(saved.memoryRecallStatus).toBe(expectedStatus)
++    expect(saved.recalledMemoryIds).toEqual([])
++    expect(request).not.toContain('可参考的长期记忆：')
++    if (expectedStatus === 'limited') expect(request).toContain('本轮长期记忆检索不完整或暂不可用')
++    else expect(request).not.toContain('检索不完整或暂不可用')
++  })
++
+   it.each([
+     { kind: 'complete', enabled: true, recall: () => ({ text: '', ids: [] }) },
+     { kind: 'limited', enabled: true, recall: () => ({ text: '喜欢白茶', ids: ['fact'], degraded: true }) },

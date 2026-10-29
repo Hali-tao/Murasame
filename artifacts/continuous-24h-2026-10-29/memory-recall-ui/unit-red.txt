@@ -1,0 +1,2163 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:56412) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/conversation-memory-maturity.test.ts (59 tests | 9 failed) 10676ms
+   ❯ conversation reliability at memory boundaries (17)
+     × [NFR-U03] persists complete recall with its completed reply across service reloads 189ms
+     × [NFR-U03] persists limited recall with its completed reply across service reloads 192ms
+     × [NFR-U03] persists unavailable recall with its completed reply across service reloads 189ms
+     × [NFR-U03] persists unavailable recall with its completed reply across service reloads 183ms
+     × [NFR-U03] persists disabled recall with its completed reply across service reloads 184ms
+     × [NFR-U03] does not infer healthy recall from legacy or unknown metadata undefined 178ms
+     × [NFR-U03] does not infer healthy recall from legacy or unknown metadata future-status 189ms
+     × [NFR-R02] model failure cannot overwrite the previous completed recall status 186ms
+     × [NFR-R02] write failure cannot overwrite the previous completed recall status 180ms
+ ❯ tests/unit/chat-conversation-regression.test.ts (22 tests | 9 failed) 821ms
+   ❯ conversation UI isolation (16)
+     × shows the completed reply status complete without inferring it from current settings 72ms
+     × shows the completed reply status complete without inferring it from current settings 13ms
+     × shows the completed reply status limited without inferring it from current settings 18ms
+     × shows the completed reply status unavailable without inferring it from current settings 14ms
+     × shows the completed reply status disabled without inferring it from current settings 12ms
+     × shows the completed reply status not-used without inferring it from current settings 15ms
+     × shows the completed reply status unknown without inferring it from current settings 11ms
+     × keeps recall warnings with their conversation through pending replies, deleted facts, collapse and background completion 11ms
+     × distinguishes a fresh conversation from an older reply without recorded health 17ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status complete without inferring it from current settings
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status unavailable without inferring it from current settings
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status disabled without inferring it from current settings
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status not-used without inferring it from current settings
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status unknown without inferring it from current settings
+TestingLibraryElementError: Unable to find an element by: [data-testid="memory-recall-status"]
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page chat-page"
+    >
+      <div
+        class="chat-layout"
+      >
+        <section
+          class="card chat-conversations"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                会话
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                本地保存 · 已加密
+              </p>
+            </div>
+            <div
+              class="card-head-aside"
+            >
+              <button
+                aria-label="新建会话"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-plus"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="M12 5v14"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="search-box"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-search"
+              fill="none"
+              height="15"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="15"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m21 21-4.34-4.34"
+              />
+              <circle
+                cx="11"
+                cy="11"
+                r="8"
+              />
+            </svg>
+            <input
+              aria-label="搜索会话"
+              placeholder="搜索会话…"
+              value=""
+            />
+          </div>
+          <div
+            class="conversation-list"
+          >
+            <button
+              class="conversation-item active"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话a
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+            <button
+              class="conversation-item"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话b
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+          </div>
+        </section>
+        <section
+          class="card chat-thread-card"
+        >
+          <div
+            class="chat-thread-head"
+          >
+            <div>
+              <h2>
+                会话a
+              </h2>
+              <span>
+                0
+                 条消息 · 仅保存在此设备
+              </span>
+            </div>
+            <div
+              class="chat-thread-badges"
+            >
+              <span
+                class="pill pill-amber"
+              >
+                记忆未就绪
+              </span>
+              <button
+                aria-controls="chat-context-panel"
+                aria-expanded="true"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                收起上下文
+              </button>
+              <span
+                class="pill pill-gray"
+              >
+                文字
+              </span>
+            </div>
+          </div>
+          <div
+            class="chat-messages"
+          >
+            <div />
+          </div>
+          <div
+            class="chat-composer"
+          >
+            <textarea
+              data-testid="chat-input"
+              placeholder="和村雨说点什么… Enter 发送，Shift + Enter 换行"
+              rows="2"
+            />
+            <div
+              class="composer-tools"
+            >
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-audio-lines"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 10v3"
+                  />
+                  <path
+                    d="M6 6v11"
+                  />
+                  <path
+                    d="M10 3v18"
+                  />
+                  <path
+                    d="M14 8v7"
+                  />
+                  <path
+                    d="M18 5v13"
+                  />
+                  <path
+                    d="M22 10v3"
+                  />
+                </svg>
+                语音
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-monitor-up"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9 10 3-3 3 3"
+                  />
+                  <path
+                    d="M12 13V7"
+                  />
+                  <rect
+                    height="14"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="3"
+                  />
+                  <path
+                    d="M12 17v4"
+                  />
+                  <path
+                    d="M8 21h8"
+                  />
+                </svg>
+                屏幕
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-sparkles lucide-stars"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+                  />
+                  <path
+                    d="M20 2v4"
+                  />
+                  <path
+                    d="M22 4h-4"
+                  />
+                  <circle
+                    cx="4"
+                    cy="20"
+                    r="2"
+                  />
+                </svg>
+                转任务
+              </button>
+              <span
+                class="composer-model"
+              >
+                gpt-5.1
+              </span>
+              <button
+                class="btn btn-primary"
+                data-testid="chat-send"
+                disabled=""
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-send"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"
+                  />
+                  <path
+                    d="m21.854 2.147-10.94 10.939"
+                  />
+                </svg>
+                发送
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+          class="chat-context"
+          id="chat-context-panel"
+        >
+          <section
+            class="card"
+          >
+            <div
+              class="card-head"
+            >
+              <div>
+                <h2
+                  class="card-title"
+                >
+                  本轮上下文
+                </h2>
+                <p
+                  class="card-subtitle"
+                >
+                  显示最近一轮实际注入的长期记忆
+                </p>
+              </div>
+              <div
+                class="card-head-aside"
+              >
+                <span
+                  class="pill pill-gray"
+                >
+                  仅本机
+                </span>
+              </div>
+            </div>
+            <div
+              class="context-list"
+            >
+              <div>
+                <span>
+                  角色
+                </span>
+                <strong>
+                  村雨
+                   · 简洁、可靠、少量俏皮
+                </strong>
+              </div>
+              <div>
+                <span>
+                  模型
+                </span>
+                <strong>
+                  OpenAI · 主模型
+                </strong>
+              </div>
+              <div>
+                <span>
+                  已保存记忆
+                </span>
+                <strong>
+                  2
+                   条
+                </strong>
+              </div>
+              <div>
+                <span>
+                  屏幕
+                </span>
+                <strong>
+                  未附加入口
+                </strong>
+              </div>
+            </div>
+            <div
+              class="subheading"
+            >
+              已召回的记忆
+            </div>
+            <div
+              class="memory-chips"
+            >
+              <p
+                class="muted"
+              >
+                本轮未注入长期记忆
+              </p>
+            </div>
+            <div
+              class="subheading"
+            >
+              快捷动作
+            </div>
+            <div
+              class="quick-actions"
+            >
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                总结这段对话
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                解释这段代码
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                把讨论整理成任务
+              </button>
+            </div>
+          </section>
+          <section
+            class="card chat-task-card"
+          >
+            <span>
+              1 个任务正在执行
+            </span>
+            <strong>
+              整理论文相关工作
+               ·
+              62
+              %
+            </strong>
+            <button
+              type="button"
+            >
+              查看任务
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-arrow-right"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12h14"
+                />
+                <path
+                  d="m12 5 7 7-7 7"
+                />
+              </svg>
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/unit/chat-conversation-regression.test.ts:56:19
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status complete without inferring it from current settings
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > shows the completed reply status limited without inferring it from current settings
+TestingLibraryElementError: Unable to find an element by: [data-testid="memory-recall-status"]
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page chat-page"
+    >
+      <div
+        class="chat-layout"
+      >
+        <section
+          class="card chat-conversations"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                会话
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                本地保存 · 已加密
+              </p>
+            </div>
+            <div
+              class="card-head-aside"
+            >
+              <button
+                aria-label="新建会话"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-plus"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="M12 5v14"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="search-box"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-search"
+              fill="none"
+              height="15"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="15"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m21 21-4.34-4.34"
+              />
+              <circle
+                cx="11"
+                cy="11"
+                r="8"
+              />
+            </svg>
+            <input
+              aria-label="搜索会话"
+              placeholder="搜索会话…"
+              value=""
+            />
+          </div>
+          <div
+            class="conversation-list"
+          >
+            <button
+              class="conversation-item active"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话a
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+            <button
+              class="conversation-item"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话b
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+          </div>
+        </section>
+        <section
+          class="card chat-thread-card"
+        >
+          <div
+            class="chat-thread-head"
+          >
+            <div>
+              <h2>
+                会话a
+              </h2>
+              <span>
+                0
+                 条消息 · 仅保存在此设备
+              </span>
+            </div>
+            <div
+              class="chat-thread-badges"
+            >
+              <span
+                class="pill pill-amber"
+              >
+                记忆未就绪
+              </span>
+              <button
+                aria-controls="chat-context-panel"
+                aria-expanded="true"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                收起上下文
+              </button>
+              <span
+                class="pill pill-gray"
+              >
+                文字
+              </span>
+            </div>
+          </div>
+          <div
+            class="chat-messages"
+          >
+            <div />
+          </div>
+          <div
+            class="chat-composer"
+          >
+            <textarea
+              data-testid="chat-input"
+              placeholder="和村雨说点什么… Enter 发送，Shift + Enter 换行"
+              rows="2"
+            />
+            <div
+              class="composer-tools"
+            >
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-audio-lines"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 10v3"
+                  />
+                  <path
+                    d="M6 6v11"
+                  />
+                  <path
+                    d="M10 3v18"
+                  />
+                  <path
+                    d="M14 8v7"
+                  />
+                  <path
+                    d="M18 5v13"
+                  />
+                  <path
+                    d="M22 10v3"
+                  />
+                </svg>
+                语音
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-monitor-up"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9 10 3-3 3 3"
+                  />
+                  <path
+                    d="M12 13V7"
+                  />
+                  <rect
+                    height="14"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="3"
+                  />
+                  <path
+                    d="M12 17v4"
+                  />
+                  <path
+                    d="M8 21h8"
+                  />
+                </svg>
+                屏幕
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-sparkles lucide-stars"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+                  />
+                  <path
+                    d="M20 2v4"
+                  />
+                  <path
+                    d="M22 4h-4"
+                  />
+                  <circle
+                    cx="4"
+                    cy="20"
+                    r="2"
+                  />
+                </svg>
+                转任务
+              </button>
+              <span
+                class="composer-model"
+              >
+                gpt-5.1
+              </span>
+              <button
+                class="btn btn-primary"
+                data-testid="chat-send"
+                disabled=""
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-send"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"
+                  />
+                  <path
+                    d="m21.854 2.147-10.94 10.939"
+                  />
+                </svg>
+                发送
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+          class="chat-context"
+          id="chat-context-panel"
+        >
+          <section
+            class="card"
+          >
+            <div
+              class="card-head"
+            >
+              <div>
+                <h2
+                  class="card-title"
+                >
+                  本轮上下文
+                </h2>
+                <p
+                  class="card-subtitle"
+                >
+                  显示最近一轮实际注入的长期记忆
+                </p>
+              </div>
+              <div
+                class="card-head-aside"
+              >
+                <span
+                  class="pill pill-gray"
+                >
+                  仅本机
+                </span>
+              </div>
+            </div>
+            <div
+              class="context-list"
+            >
+              <div>
+                <span>
+                  角色
+                </span>
+                <strong>
+                  村雨
+                   · 简洁、可靠、少量俏皮
+                </strong>
+              </div>
+              <div>
+                <span>
+                  模型
+                </span>
+                <strong>
+                  OpenAI · 主模型
+                </strong>
+              </div>
+              <div>
+                <span>
+                  已保存记忆
+                </span>
+                <strong>
+                  2
+                   条
+                </strong>
+              </div>
+              <div>
+                <span>
+                  屏幕
+                </span>
+                <strong>
+                  未附加入口
+                </strong>
+              </div>
+            </div>
+            <div
+              class="subheading"
+            >
+              已召回的记忆
+            </div>
+            <div
+              class="memory-chips"
+            >
+              <span
+                class="pill pill-coral"
+              >
+                实际注入的白茶偏好
+              </span>
+            </div>
+            <div
+              class="subheading"
+            >
+              快捷动作
+            </div>
+            <div
+              class="quick-actions"
+            >
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                总结这段对话
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                解释这段代码
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                把讨论整理成任务
+              </button>
+            </div>
+          </section>
+          <section
+            class="card chat-task-card"
+          >
+            <span>
+              1 个任务正在执行
+            </span>
+            <strong>
+              整理论文相关工作
+               ·
+              62
+              %
+            </strong>
+            <button
+              type="button"
+            >
+              查看任务
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-arrow-right"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12h14"
+                />
+                <path
+                  d="m12 5 7 7-7 7"
+                />
+              </svg>
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/unit/chat-conversation-regression.test.ts:56:19
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > keeps recall warnings with their conversation through pending replies, deleted facts, collapse and background completion
+TestingLibraryElementError: Unable to find an element by: [data-testid="memory-recall-status"]
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page chat-page"
+    >
+      <div
+        class="chat-layout"
+      >
+        <section
+          class="card chat-conversations"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                会话
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                本地保存 · 已加密
+              </p>
+            </div>
+            <div
+              class="card-head-aside"
+            >
+              <button
+                aria-label="新建会话"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-plus"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="M12 5v14"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="search-box"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-search"
+              fill="none"
+              height="15"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="15"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m21 21-4.34-4.34"
+              />
+              <circle
+                cx="11"
+                cy="11"
+                r="8"
+              />
+            </svg>
+            <input
+              aria-label="搜索会话"
+              placeholder="搜索会话…"
+              value=""
+            />
+          </div>
+          <div
+            class="conversation-list"
+          >
+            <button
+              class="conversation-item active"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话a
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+            <button
+              class="conversation-item"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话b
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+          </div>
+        </section>
+        <section
+          class="card chat-thread-card"
+        >
+          <div
+            class="chat-thread-head"
+          >
+            <div>
+              <h2>
+                会话a
+              </h2>
+              <span>
+                0
+                 条消息 · 仅保存在此设备
+              </span>
+            </div>
+            <div
+              class="chat-thread-badges"
+            >
+              <span
+                class="pill pill-amber"
+              >
+                记忆未就绪
+              </span>
+              <button
+                aria-controls="chat-context-panel"
+                aria-expanded="true"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                收起上下文
+              </button>
+              <span
+                class="pill pill-gray"
+              >
+                文字
+              </span>
+            </div>
+          </div>
+          <div
+            class="chat-messages"
+          >
+            <div />
+          </div>
+          <div
+            class="chat-composer"
+          >
+            <textarea
+              data-testid="chat-input"
+              placeholder="和村雨说点什么… Enter 发送，Shift + Enter 换行"
+              rows="2"
+            />
+            <div
+              class="composer-tools"
+            >
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-audio-lines"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 10v3"
+                  />
+                  <path
+                    d="M6 6v11"
+                  />
+                  <path
+                    d="M10 3v18"
+                  />
+                  <path
+                    d="M14 8v7"
+                  />
+                  <path
+                    d="M18 5v13"
+                  />
+                  <path
+                    d="M22 10v3"
+                  />
+                </svg>
+                语音
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-monitor-up"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9 10 3-3 3 3"
+                  />
+                  <path
+                    d="M12 13V7"
+                  />
+                  <rect
+                    height="14"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="3"
+                  />
+                  <path
+                    d="M12 17v4"
+                  />
+                  <path
+                    d="M8 21h8"
+                  />
+                </svg>
+                屏幕
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-sparkles lucide-stars"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+                  />
+                  <path
+                    d="M20 2v4"
+                  />
+                  <path
+                    d="M22 4h-4"
+                  />
+                  <circle
+                    cx="4"
+                    cy="20"
+                    r="2"
+                  />
+                </svg>
+                转任务
+              </button>
+              <span
+                class="composer-model"
+              >
+                gpt-5.1
+              </span>
+              <button
+                class="btn btn-primary"
+                data-testid="chat-send"
+                disabled=""
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-send"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"
+                  />
+                  <path
+                    d="m21.854 2.147-10.94 10.939"
+                  />
+                </svg>
+                发送
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+          class="chat-context"
+          id="chat-context-panel"
+        >
+          <section
+            class="card"
+          >
+            <div
+              class="card-head"
+            >
+              <div>
+                <h2
+                  class="card-title"
+                >
+                  本轮上下文
+                </h2>
+                <p
+                  class="card-subtitle"
+                >
+                  显示最近一轮实际注入的长期记忆
+                </p>
+              </div>
+              <div
+                class="card-head-aside"
+              >
+                <span
+                  class="pill pill-gray"
+                >
+                  仅本机
+                </span>
+              </div>
+            </div>
+            <div
+              class="context-list"
+            >
+              <div>
+                <span>
+                  角色
+                </span>
+                <strong>
+                  村雨
+                   · 简洁、可靠、少量俏皮
+                </strong>
+              </div>
+              <div>
+                <span>
+                  模型
+                </span>
+                <strong>
+                  OpenAI · 主模型
+                </strong>
+              </div>
+              <div>
+                <span>
+                  已保存记忆
+                </span>
+                <strong>
+                  2
+                   条
+                </strong>
+              </div>
+              <div>
+                <span>
+                  屏幕
+                </span>
+                <strong>
+                  未附加入口
+                </strong>
+              </div>
+            </div>
+            <div
+              class="subheading"
+            >
+              已召回的记忆
+            </div>
+            <div
+              class="memory-chips"
+            >
+              <span
+                class="pill pill-coral"
+              >
+                实际注入的白茶偏好
+              </span>
+            </div>
+            <div
+              class="subheading"
+            >
+              快捷动作
+            </div>
+            <div
+              class="quick-actions"
+            >
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                总结这段对话
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                解释这段代码
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                把讨论整理成任务
+              </button>
+            </div>
+          </section>
+          <section
+            class="card chat-task-card"
+          >
+            <span>
+              1 个任务正在执行
+            </span>
+            <strong>
+              整理论文相关工作
+               ·
+              62
+              %
+            </strong>
+            <button
+              type="button"
+            >
+              查看任务
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-arrow-right"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12h14"
+                />
+                <path
+                  d="m12 5 7 7-7 7"
+                />
+              </svg>
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ status tests/unit/chat-conversation-regression.test.ts:65:33
+     63|     act(() => emit('updated', { ...chats[0], memoryRecallStatus: 'limi…
+     64|     render(createElement(MemoryRouter, null, createElement(ChatPage)))
+     65|     const status = () => screen.getByTestId('memory-recall-status').te…
+       |                                 ^
+     66|     expect(status()).toContain('记忆检索受限')
+     67|     act(() => emit('started', { conversationId: 'a', userText: '等待中的问题…
+ ❯ tests/unit/chat-conversation-regression.test.ts:66:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/unit/chat-conversation-regression.test.ts > conversation UI isolation > distinguishes a fresh conversation from an older reply without recorded health
+TestingLibraryElementError: Unable to find an element by: [data-testid="memory-recall-status"]
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="page chat-page"
+    >
+      <div
+        class="chat-layout"
+      >
+        <section
+          class="card chat-conversations"
+        >
+          <div
+            class="card-head"
+          >
+            <div>
+              <h2
+                class="card-title"
+              >
+                会话
+              </h2>
+              <p
+                class="card-subtitle"
+              >
+                本地保存 · 已加密
+              </p>
+            </div>
+            <div
+              class="card-head-aside"
+            >
+              <button
+                aria-label="新建会话"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-plus"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="M12 5v14"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="search-box"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-search"
+              fill="none"
+              height="15"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="15"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m21 21-4.34-4.34"
+              />
+              <circle
+                cx="11"
+                cy="11"
+                r="8"
+              />
+            </svg>
+            <input
+              aria-label="搜索会话"
+              placeholder="搜索会话…"
+              value=""
+            />
+          </div>
+          <div
+            class="conversation-list"
+          >
+            <button
+              class="conversation-item active"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话a
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+            <button
+              class="conversation-item"
+              type="button"
+            >
+              <div
+                class="conversation-title-row"
+              >
+                <strong>
+                  会话b
+                </strong>
+                <time>
+                  今天
+                </time>
+              </div>
+              <p>
+                历史
+              </p>
+            </button>
+          </div>
+        </section>
+        <section
+          class="card chat-thread-card"
+        >
+          <div
+            class="chat-thread-head"
+          >
+            <div>
+              <h2>
+                会话a
+              </h2>
+              <span>
+                0
+                 条消息 · 仅保存在此设备
+              </span>
+            </div>
+            <div
+              class="chat-thread-badges"
+            >
+              <span
+                class="pill pill-amber"
+              >
+                记忆未就绪
+              </span>
+              <button
+                aria-controls="chat-context-panel"
+                aria-expanded="true"
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                收起上下文
+              </button>
+              <span
+                class="pill pill-gray"
+              >
+                文字
+              </span>
+            </div>
+          </div>
+          <div
+            class="chat-messages"
+          >
+            <div />
+          </div>
+          <div
+            class="chat-composer"
+          >
+            <textarea
+              data-testid="chat-input"
+              placeholder="和村雨说点什么… Enter 发送，Shift + Enter 换行"
+              rows="2"
+            />
+            <div
+              class="composer-tools"
+            >
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-audio-lines"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 10v3"
+                  />
+                  <path
+                    d="M6 6v11"
+                  />
+                  <path
+                    d="M10 3v18"
+                  />
+                  <path
+                    d="M14 8v7"
+                  />
+                  <path
+                    d="M18 5v13"
+                  />
+                  <path
+                    d="M22 10v3"
+                  />
+                </svg>
+                语音
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-monitor-up"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9 10 3-3 3 3"
+                  />
+                  <path
+                    d="M12 13V7"
+                  />
+                  <rect
+                    height="14"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="3"
+                  />
+                  <path
+                    d="M12 17v4"
+                  />
+                  <path
+                    d="M8 21h8"
+                  />
+                </svg>
+                屏幕
+              </button>
+              <button
+                class="composer-tool"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-sparkles lucide-stars"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+                  />
+                  <path
+                    d="M20 2v4"
+                  />
+                  <path
+                    d="M22 4h-4"
+                  />
+                  <circle
+                    cx="4"
+                    cy="20"
+                    r="2"
+                  />
+                </svg>
+                转任务
+              </button>
+              <span
+                class="composer-model"
+              >
+                gpt-5.1
+              </span>
+              <button
+                class="btn btn-primary"
+                data-testid="chat-send"
+                disabled=""
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-send"
+                  fill="none"
+                  height="15"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"
+                  />
+                  <path
+                    d="m21.854 2.147-10.94 10.939"
+                  />
+                </svg>
+                发送
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+          class="chat-context"
+          id="chat-context-panel"
+        >
+          <section
+            class="card"
+          >
+            <div
+              class="card-head"
+            >
+              <div>
+                <h2
+                  class="card-title"
+                >
+                  本轮上下文
+                </h2>
+                <p
+                  class="card-subtitle"
+                >
+                  显示最近一轮实际注入的长期记忆
+                </p>
+              </div>
+              <div
+                class="card-head-aside"
+              >
+                <span
+                  class="pill pill-gray"
+                >
+                  仅本机
+                </span>
+              </div>
+            </div>
+            <div
+              class="context-list"
+            >
+              <div>
+                <span>
+                  角色
+                </span>
+                <strong>
+                  村雨
+                   · 简洁、可靠、少量俏皮
+                </strong>
+              </div>
+              <div>
+                <span>
+                  模型
+                </span>
+                <strong>
+                  OpenAI · 主模型
+                </strong>
+              </div>
+              <div>
+                <span>
+                  已保存记忆
+                </span>
+                <strong>
+                  2
+                   条
+                </strong>
+              </div>
+              <div>
+                <span>
+                  屏幕
+                </span>
+                <strong>
+                  未附加入口
+                </strong>
+              </div>
+            </div>
+            <div
+              class="subheading"
+            >
+              已召回的记忆
+            </div>
+            <div
+              class="memory-chips"
+            >
+              <p
+                class="muted"
+              >
+                本轮未注入长期记忆
+              </p>
+            </div>
+            <div
+              class="subheading"
+            >
+              快捷动作
+            </div>
+            <div
+              class="quick-actions"
+            >
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                总结这段对话
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                解释这段代码
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+              >
+                把讨论整理成任务
+              </button>
+            </div>
+          </section>
+          <section
+            class="card chat-task-card"
+          >
+            <span>
+              1 个任务正在执行
+            </span>
+            <strong>
+              整理论文相关工作
+               ·
+              62
+              %
+            </strong>
+            <button
+              type="button"
+            >
+              查看任务
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-arrow-right"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12h14"
+                />
+                <path
+                  d="m12 5 7 7-7 7"
+                />
+              </svg>
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/unit/chat-conversation-regression.test.ts:84:19
+     82|   it('distinguishes a fresh conversation from an older reply without r…
+     83|     render(createElement(MemoryRouter, null, createElement(ChatPage)))
+     84|     expect(screen.getByTestId('memory-recall-status').textContent).toC…
+       |                   ^
+     85|     act(() => emit('updated', { ...chats[0], recalledAtMessageId: 'leg…
+     86|     expect(screen.getByTestId('memory-recall-status').textContent).toC…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] persists complete recall with its completed reply across service reloads
+AssertionError: expected undefined to be 'complete' // Object.is equality
+
+- Expected:
+"complete"
+
++ Received:
+undefined
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:526:38
+    524|     expect(result.ok).toBe(true)
+    525|     const saved = new ConversationService(db, models).list()[0]
+    526|     expect(saved.memoryRecallStatus).toBe(kind)
+       |                                      ^
+    527|     expect(saved.recalledAtMessageId).toBe(saved.messages.at(-1)?.id)
+    528|     expect(saved.recalledMemoryIds).toEqual(kind === 'limited' ? ['fac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] persists limited recall with its completed reply across service reloads
+AssertionError: expected undefined to be 'limited' // Object.is equality
+
+- Expected:
+"limited"
+
++ Received:
+undefined
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:526:38
+    524|     expect(result.ok).toBe(true)
+    525|     const saved = new ConversationService(db, models).list()[0]
+    526|     expect(saved.memoryRecallStatus).toBe(kind)
+       |                                      ^
+    527|     expect(saved.recalledAtMessageId).toBe(saved.messages.at(-1)?.id)
+    528|     expect(saved.recalledMemoryIds).toEqual(kind === 'limited' ? ['fac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] persists unavailable recall with its completed reply across service reloads
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] persists unavailable recall with its completed reply across service reloads
+AssertionError: expected undefined to be 'unavailable' // Object.is equality
+
+- Expected:
+"unavailable"
+
++ Received:
+undefined
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:526:38
+    524|     expect(result.ok).toBe(true)
+    525|     const saved = new ConversationService(db, models).list()[0]
+    526|     expect(saved.memoryRecallStatus).toBe(kind)
+       |                                      ^
+    527|     expect(saved.recalledAtMessageId).toBe(saved.messages.at(-1)?.id)
+    528|     expect(saved.recalledMemoryIds).toEqual(kind === 'limited' ? ['fac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] persists disabled recall with its completed reply across service reloads
+AssertionError: expected undefined to be 'disabled' // Object.is equality
+
+- Expected:
+"disabled"
+
++ Received:
+undefined
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:526:38
+    524|     expect(result.ok).toBe(true)
+    525|     const saved = new ConversationService(db, models).list()[0]
+    526|     expect(saved.memoryRecallStatus).toBe(kind)
+       |                                      ^
+    527|     expect(saved.recalledAtMessageId).toBe(saved.messages.at(-1)?.id)
+    528|     expect(saved.recalledMemoryIds).toEqual(kind === 'limited' ? ['fac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] does not infer healthy recall from legacy or unknown metadata undefined
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-U03] does not infer healthy recall from legacy or unknown metadata future-status
+AssertionError: expected undefined to be 'unknown' // Object.is equality
+
+- Expected:
+"unknown"
+
++ Received:
+undefined
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:542:78
+    540|     record.args.memoryRecallStatus = status
+    541|     db.prepare('UPDATE tool_calls SET declared_json = ? WHERE id = ?')…
+    542|     expect(new ConversationService(db, models).list()[0].memoryRecallS…
+       |                                                                              ^
+    543|   })
+    544|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-R02] model failure cannot overwrite the previous completed recall status
+ FAIL  tests/unit/conversation-memory-maturity.test.ts > conversation reliability at memory boundaries > [NFR-R02] write failure cannot overwrite the previous completed recall status
+AssertionError: expected undefined to be 'limited' // Object.is equality
+
+- Expected:
+"limited"
+
++ Received:
+undefined
+
+ ❯ tests/unit/conversation-memory-maturity.test.ts:556:41
+    554|     await service.send(chat.id, '第一轮')
+    555|     const original = service.list()[0]
+    556|     expect(original.memoryRecallStatus).toBe('limited')
+       |                                         ^
+    557|     degraded = false
+    558|     gateway.chat.mockImplementationOnce(() => pending.promise)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  18 failed | 63 passed (81)
+   Start at  22:31:02
+   Duration  24.04s (environment 46%, tests 32%, import 19%, transform 3%)

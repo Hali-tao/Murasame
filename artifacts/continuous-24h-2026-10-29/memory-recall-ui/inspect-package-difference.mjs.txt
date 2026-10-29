@@ -1,0 +1,17 @@
+import { extractFile, listPackage, statFile } from '@electron/asar'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
+import { createHash } from 'node:crypto'
+const target = 'previews/memory-recall-ui-2026-10-29/packaged-main.js.txt'
+const actual = extractFile(resolve('release/continuous-2026-10-29-memory-recall-status/win-unpacked/resources/app.asar'), join('out', 'main', 'index.js')).toString()
+writeFileSync(target, actual)
+const expected = readFileSync('out/main/index.js', 'utf8').split('\n')
+const lines = actual.split('\n')
+const changes = lines.flatMap((line, i) => line === expected[i] ? [] : [{ line: i + 1, packaged: line.slice(0, 800), build: expected[i]?.slice(0, 800) }])
+const archive = resolve('release/continuous-2026-10-29-memory-recall-status/win-unpacked/resources/app.asar')
+const installerPath = resolve('release/continuous-2026-10-29-memory-recall-status/Murasame-Setup-0.9.0.exe')
+const result = { at: new Date().toISOString(), rejectedInstaller: { path: installerPath, sha256: createHash('sha256').update(readFileSync(installerPath)).digest('hex') },
+  nativeHarnessFiles: listPackage(archive).filter(path => path.replaceAll('\\', '/').includes('/out/electron-tests/')).map(path => ({ path, declaredSize: statFile(archive, path.slice(1)).size })),
+  lines: lines.length, expectedLines: expected.length, differences: changes.length, sample: changes.slice(0, 8) }
+writeFileSync('previews/memory-recall-ui-2026-10-29/rejected-package-inspection.json', JSON.stringify(result, null, 2))
+console.log(JSON.stringify(result, null, 2))
