@@ -1,0 +1,132 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 E:/Desktop/软件工程/murasame
+
+(node:48940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/task-continuation-races.test.ts (6 tests | 6 failed) 97ms
+   ❯ task continuation result ownership (6)
+     × does not resurrect a cancelled task or replace its saved plan when planning returns late 27ms
+     × uses only the latest request with older-first completion 8ms
+     × uses only the latest request with newer-first completion 9ms
+     × does not reactivate an older request when the latest planner fails 6ms
+     × keeps cancellation while checkpoint verification is pending and never persists its proposed replacement 35ms
+     × keeps independent tasks separate and allows an explicit new continuation after cancellation 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/task-continuation-races.test.ts > task continuation result ownership > does not resurrect a cancelled task or replace its saved plan when planning returns late
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-continuation-races.test.ts:45:23
+     43|     await service.cancel(id); const cancelled = task()
+     44|     later.resolve(plan(root, 'late')); const result = await pending
+     45|     expect(result.ok).toBe(false)
+       |                       ^
+     46|     expect(task()).toEqual(cancelled); expect(savedPlan()).toBe(before)
+     47|     expect(task().status).toBe('已取消'); expect(existsSync(join(root, 'l…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/task-continuation-races.test.ts > task continuation result ownership > uses only the latest request with older-first completion
+AssertionError: expected '等待批准' to be '待确认' // Object.is equality
+
+Expected: "待确认"
+Received: "等待批准"
+
+ ❯ tests/unit/task-continuation-races.test.ts:58:29
+     56|     if (order === 'older-first') {
+     57|       older.resolve(plan(root, 'older')); firstResult = await first
+     58|       expect(task().status).toBe('待确认'); expect(savedPlan()).not.toCon…
+       |                             ^
+     59|       newer.resolve(plan(root, 'newer'))
+     60|     } else { newer.resolve(plan(root, 'newer')); await second; older.r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/task-continuation-races.test.ts > task continuation result ownership > uses only the latest request with newer-first completion
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-continuation-races.test.ts:61:66
+     59|       newer.resolve(plan(root, 'newer'))
+     60|     } else { newer.resolve(plan(root, 'newer')); await second; older.r…
+     61|     expect((await second).ok).toBe(true); expect(firstResult.ok).toBe(…
+       |                                                                  ^
+     62|     expect(task().title).toContain('新要求'); expect(task().title).not.to…
+     63|     expect(savedPlan()).toContain('newer'); expect(savedPlan()).not.to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/task-continuation-races.test.ts > task continuation result ownership > does not reactivate an older request when the latest planner fails
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-continuation-races.test.ts:75:66
+     73|     const first = service.continueTask(id, '旧要求'); const second = serv…
+     74|     newer.reject(new Error('temporary planner failure')); expect((awai…
+     75|     older.resolve(plan(root, 'older')); expect((await first).ok).toBe(…
+       |                                                                  ^
+     76|     expect(task().status).toBe('待确认'); expect(savedPlan()).toBe(before)
+     77|     expect(task().title).toBe('创建文件任务')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/task-continuation-races.test.ts > task continuation result ownership > keeps cancellation while checkpoint verification is pending and never persists its proposed replacement
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/task-continuation-races.test.ts:96:23
+     94|     await service.cancel(id); const cancelled = task()
+     95|     release.resolve(); const result = await pending
+     96|     expect(result.ok).toBe(false); expect(planDuringPreview).toBe(befo…
+       |                       ^
+     97|     expect(task()).toEqual(cancelled); expect(existsSync(join(root, 'r…
+     98|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/task-continuation-races.test.ts > task continuation result ownership > keeps independent tasks separate and allows an explicit new continuation after cancellation
+AssertionError: expected '等待批准' to be '已取消' // Object.is equality
+
+Expected: "已取消"
+Received: "等待批准"
+
+ ❯ tests/unit/task-continuation-races.test.ts:109:27
+    107|     await service.cancel(id); first.resolve(plan(root, 'cancelled')); …
+    108|     await one; expect((await two).ok).toBe(true)
+    109|     expect(task().status).toBe('已取消'); expect(service.list().find(task…
+       |                           ^
+    110|     service.setPlanner(async () => plan(root, 'resumed'))
+    111|     expect((await service.continueTask(id, '重新开始')).ok).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  00:00:18
+   Duration  10.22s (import 71%, transform 22%, tests 6%, worker 1%)

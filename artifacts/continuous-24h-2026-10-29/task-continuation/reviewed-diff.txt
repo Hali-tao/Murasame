@@ -1,0 +1,499 @@
+# Review package: 7c526063e55ce302f7dc47efd17896d6afb9f501..HEAD
+
+## Commits
+f86f57c Fix stale task continuation results overriding cancellation
+
+## Files changed
+ .../plans/2026-10-30-task-continuation.md          |  35 +++++
+ .../specs/2026-10-30-task-continuation-design.md   |  13 ++
+ src/main/core/services/task-service.ts             |  42 ++++--
+ tests/e2e/task-continuation.spec.ts                |  65 ++++++++++
+ tests/unit/task-continuation-races.test.ts         | 144 +++++++++++++++++++++
+ 5 files changed, 291 insertions(+), 8 deletions(-)
+
+## Diff
+diff --git a/docs/superpowers/plans/2026-10-30-task-continuation.md b/docs/superpowers/plans/2026-10-30-task-continuation.md
+new file mode 100644
+index 0000000..3177f6c
+--- /dev/null
++++ b/docs/superpowers/plans/2026-10-30-task-continuation.md
+@@ -0,0 +1,35 @@
++# Task Continuation Implementation Plan
++
++> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
++
++**Goal:** 任务取消和后续补充不被晚到的旧计划覆盖。
++**Architecture:** 每任务请求标识配合等待后的有效性检查，计划准备与持久保存分离；保留原审批和恢复机制。
++**Tech Stack:** TypeScript、Electron、SQLite、Vitest、Playwright；不加依赖。
++**Spec:** docs/superpowers/specs/2026-10-30-task-continuation-design.md
++
++## Global Constraints
++
++原SRS不改；用户授权自主实施软件细节；角色暂停；独立测试资料；不评论/关闭issue；验证和打包串行；只普通推送已检查代码；保留旧安装包和失败证据。
++
++## Review Focus
++
++- 取消发生在计划生成或检查点预览期间，都不能恢复任务或保存新计划。
++- 新请求先失败时旧请求不能重新生效。
++- 旧请求先返回时不能清除新请求标识。
++- 不同任务互不取消；显式重新补充仍可恢复。
++- 计划准备失败保留之前计划、任务信息和已有产物，不重复执行检查点。
++
++### Task 1: Guard and stage task continuations
++
++**Files:** 修改src/main/core/services/task-service.ts；新增tests/unit/task-continuation-races.test.ts、tests/e2e/task-continuation.spec.ts；新增专项交付记录和独立证据目录。
++
++**Interfaces:** 公开`continueTask(id, answer): Promise<Result<Task>>`不变；内部每任务Symbol标识，私有preparePlan(plan, root): TaskPlan与storePlan(id, plan): void分离；cancel使进行中补充失效。
++
++- [ ] 在真实SQLite任务服务中写延迟计划/检查点测试，断言取消后status仍已取消且plan/title/steps不被旧结果替换；双请求仅最新可保存（包括最新失败）；任务隔离和再次恢复通过。
++- [ ] 定向运行新文件，预期旧源码至少取消/逆序用例失败，保存完整失败日志；增加实际旧包IPC取消场景并保存失败证据。
++- [ ] 实施请求标识与每次等待后的检查，先prepare/preview再store，过期结果不广播。保存路径不新增异步间隙，不改变模型/审批约束。
++- [ ] 新旧任务相关测试与`npm run verify`全部通过，记录实际数量。源码检查通过后本地提交并进行一次新上下文只读审阅；阻塞发现以RED→GREEN修正。
++- [ ] 新目录串行打包并核对资源，运行最终包完整Playwright（新场景、旧任务、记忆、桌宠、真实隔离创作），预期0失败0跳过；目视新截图。
++- [ ] 归档失败/通过日志、指纹、审阅及剩余边界，普通推送并核对GitHub SHA。保持角色与真实数据不变。
++
++整体检查命令`npm run verify`。一次独立可交付修复，不在未通过检查时推送。
+diff --git a/docs/superpowers/specs/2026-10-30-task-continuation-design.md b/docs/superpowers/specs/2026-10-30-task-continuation-design.md
+new file mode 100644
+index 0000000..3a72bdc
+--- /dev/null
++++ b/docs/superpowers/specs/2026-10-30-task-continuation-design.md
+@@ -0,0 +1,13 @@
++# 任务补充与取消的竞态修复
++
++用户已授权24小时软件优化并自主决定实施细节，本方案由执行者选定；不重复请求确认，不更改原SRS。角色制作仍暂停。
++
++`TaskService.continueTask` 在生成计划及复核检查点两次等待后，未检查请求是否已取消或被后续要求替代；还在预览完成前保存计划。晚到结果可能恢复已取消任务，或让旧计划覆盖新要求。
++
++每个任务使用独立的进行中请求标识。开始有效补充时替代前次标识，取消任务时使其失效；每次等待后核对标识，过期请求返回明确未采用信息，不写任务、不广播旧结果。最新请求失败也不能复活更早请求，结束时只清理自己的标识。此标识不持久化，重启不自动重放。
++
++把计划准备（克隆、目录范围、文件清单和产物基线）与保存分开；补充计划先在内存中准备和预览，只有请求仍有效才同步保存计划及结果。沿用现有审批范围、模型绑定、检查点复核和停止规则，不放宽权限。取消后仍可显式重新补充。
++
++验收使用独立SQLite和临时文件、可控延迟计划器/网页服务：取消时计划生成中、取消时检查点复核中、新旧请求逆序完成、最新请求失败、不同任务不相互影响、取消后显式恢复。实际新安装包通过公开IPC及真实任务页面复现并验证取消后保持取消、旧计划不生效。模型回应受控，不宣称真实模型规划质量改善。
++
++本轮不改检查点内容失效策略、不扩充通用多文件开发能力。旧包/数据/证据保留；全仓验证与打包串行，源码检查通过且最终包回归通过后普通推送GitHub main，不强推、不评论或关闭issue。
+diff --git a/src/main/core/services/task-service.ts b/src/main/core/services/task-service.ts
+index c240765..056594f 100644
+--- a/src/main/core/services/task-service.ts
++++ b/src/main/core/services/task-service.ts
+@@ -76,20 +76,21 @@ export class TaskService {
+   private readonly modelBindings = new Map<string, TaskModelBinding | null>()
+   private planner: TaskPlanner | null = null
+   private summaryGenerator?: SummaryGenerator
+   private toolGate: ((tool: string) => string | null) | null = null
+   private changed: ((task: Task) => void) | null = null
+   private readonly plans = new Map<string, TaskPlan>()
+   private readonly running = new Map<string, { stop: boolean; controller: AbortController }>()
+   private isolatedRunner?: IsolatedRunner
+   private readonly executionGuards = new Map<string, () => string | null>()
+   private readonly pending = new Map<string, Promise<void>>()
++  private readonly continuations = new Map<string, symbol>()
+
+   constructor(private readonly db?: SqliteDatabase) {
+     this.db?.exec('CREATE TABLE IF NOT EXISTS task_execution_plans(task_id TEXT PRIMARY KEY, plan_json TEXT NOT NULL)')
+     this.db?.exec('CREATE TABLE IF NOT EXISTS task_execution_checkpoints(task_id TEXT NOT NULL, step_id TEXT NOT NULL, checkpoint_json TEXT NOT NULL, PRIMARY KEY(task_id,step_id))')
+     this.db?.exec('CREATE TABLE IF NOT EXISTS task_model_snapshots(task_id TEXT PRIMARY KEY, snapshot_json TEXT NOT NULL)')
+     this.db?.exec('CREATE TABLE IF NOT EXISTS task_teammate_requests(task_id TEXT PRIMARY KEY REFERENCES tasks(id) ON DELETE CASCADE, request_json TEXT NOT NULL)')
+     this.db?.exec('CREATE TABLE IF NOT EXISTS task_grounded_checkpoints(task_id TEXT PRIMARY KEY REFERENCES tasks(id) ON DELETE CASCADE, checkpoint_json TEXT NOT NULL)')
+     this.recover()
+   }
+
+@@ -145,33 +146,33 @@ export class TaskService {
+     return task
+   }
+
+   /** 有已验证的模型时由模型出计划；没有时 planner 返回 null，执行器按规则处理并如实标注。 */
+   setPlanner(planner: TaskPlanner): void {
+     this.planner = planner
+   }
+
+   setSummaryGenerator(generator: SummaryGenerator): void { this.summaryGenerator = generator }
+
+-  private groundedOptions(id: string): GroundedExecutionOptions {
+-    if (!this.getPlan(id)?.workflow) return {}
++  private groundedOptions(id: string, plan = this.getPlan(id)): GroundedExecutionOptions {
++    if (!plan?.workflow) return {}
+     return { summaryGenerator: this.summaryGenerator, summaryModel: this.boundModel(id), groundedCheckpoint: this.groundedCheckpoint(id),
+       onGroundedCheckpoint: checkpoint => { this.db?.prepare('INSERT INTO task_grounded_checkpoints(task_id, checkpoint_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET checkpoint_json = excluded.checkpoint_json').run(id, JSON.stringify(checkpoint)) } }
+   }
+
+   private groundedCheckpoint(id: string): GroundedCheckpoint | undefined {
+     const row = this.db?.prepare('SELECT checkpoint_json FROM task_grounded_checkpoints WHERE task_id = ?').get(id) as { checkpoint_json: string } | undefined
+     return row ? JSON.parse(row.checkpoint_json) as GroundedCheckpoint : undefined
+   }
+
+-  private groundedModelGuard(id: string): string | null {
+-    if (!this.getPlan(id)?.workflow || !this.modelResolver) return null
++  private groundedModelGuard(id: string, plan = this.getPlan(id)): string | null {
++    if (!plan?.workflow || !this.modelResolver) return null
+     const row = this.db?.prepare('SELECT snapshot_json FROM task_model_snapshots WHERE task_id = ?').get(id) as { snapshot_json: string } | undefined
+     if (!row) return '摘要任务缺少原模型绑定证据，需重新确认'
+     const snapshot = JSON.parse(row.snapshot_json) as StoredTaskModelSnapshot
+     const model = this.modelResolver(snapshot.id)
+     return !model || !snapshot.bindingSalt || bindingFingerprint(model, snapshot.bindingSalt) !== snapshot.bindingFingerprint ? '任务原模型配置已变更或被删除，未向其他服务发送来源；请恢复原配置或新建任务' : null
+   }
+
+   private async plan(title: string, model: TaskModelBinding | null): Promise<TaskPlan | null> {
+     if (!this.planner) return null
+     try {
+@@ -457,20 +458,21 @@ export class TaskService {
+   deny(id: string): Promise<Result<Task>> {
+     const current = this.read(id)
+     if (current.status !== '等待批准') return Promise.resolve(fail('当前没有待批准的操作'))
+     if (current.approval_json) this.rememberImageRequest(id, JSON.parse(current.approval_json))
+     this.db?.prepare('UPDATE tasks SET status = ?, approval_json = NULL, updated_at = ? WHERE id = ?').run('待确认', new Date().toISOString(), id)
+     this.touch(id, '任务受阻：敏感操作未获批准，没有执行。可以补充要求后重新确认。', '未批准，未执行')
+     return Promise.resolve(ok(this.emit(id)))
+   }
+
+   cancel(id: string): Promise<Result<Task>> {
++    this.continuations.delete(id)
+     const control = this.running.get(id)
+     if (control) {
+       control.stop = true
+       control.controller.abort()
+       if (this.read(id).status === '执行中') this.move(id, '正在停止')
+       this.touch(id, '正在停止：手上这个文件处理完就停，不再移动新文件。', '正在停止')
+       return Promise.resolve(ok(this.emit(id)))
+     }
+     const current = this.read(id)
+     if (['已完成', '失败', '部分完成', '已取消', '已中断'].includes(current.status)) return Promise.resolve(ok(this.emit(id)))
+@@ -538,54 +540,71 @@ export class TaskService {
+
+   private appendCall(id: string, item: GoalOutcome['calls'][number]): void {
+     const now = new Date().toISOString()
+     const snapshot = item.agentRole === 'Planner' && item.toolId === 'model' ? this.db?.prepare('SELECT snapshot_json FROM task_model_snapshots WHERE task_id = ?').get(id) as { snapshot_json: string } | undefined : undefined
+     const callId = `${id}-${item.traceId ?? item.stepId ?? 'work'}-${item.agentRole}-${item.phase ?? 'result'}`
+     this.db?.prepare(`INSERT INTO tool_calls(id, task_id, step_id, tool_id, declared_json, execution_json, verification_json, created_at, agent_role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET execution_json = excluded.execution_json, verification_json = excluded.verification_json`).run(callId, id, `${id}-${item.stepId ?? 'work'}`, item.toolId, JSON.stringify({ intent: item.declared, args: { ...(typeof item.args === 'object' && item.args ? item.args : {}), traceId: item.traceId, phase: item.phase, ...(snapshot ? { modelSnapshot: JSON.parse(snapshot.snapshot_json) as TaskModelSnapshot } : {}) } }), JSON.stringify({ status: item.executionStatus, raw: item.raw, startedAt: item.startedAt ?? now, endedAt: item.endedAt ?? now }), JSON.stringify({ method: 'independent', evidence: item.evidence, verdict: item.verdict }), now, item.agentRole)
+   }
+
+   private savePlan(id: string, plan: TaskPlan, approvedRoot?: string): void {
+     const root = approvedRoot ?? this.read(id).scope
++    this.storePlan(id, this.preparePlan(plan, root))
++  }
++
++  private preparePlan(plan: TaskPlan, root: string): TaskPlan {
+     plan = structuredClone(plan)
+     for (const step of plan.steps) {
+       const tool = step.tool ?? plan.tool
+       const needsFiles = tool === 'filesystem' || Boolean(step.outputs?.length)
+       if (needsFiles) { const blocked = this.toolGate?.('filesystem'); if (blocked) throw new Error(blocked) }
+       if (tool === 'filesystem' && (step.args?.action === 'organize' || plan.steps.length === 1 && /按类型|按扩展名|归类/.test(step.title))) {
+         step.args = { ...step.args, action: 'organize', ...(root ? { files: organizeManifest(resolveInside(root, step.workspace ?? '.')) } : {}) }
+       }
+     }
+     for (const step of plan.steps) for (const output of root ? step.outputs ?? [] : []) {
+       const path = resolveInside(resolveInside(root, step.workspace ?? '.'), output.path)
+       try { if (!statSync(path).isFile()) throw new Error('声明的产物目标不是文件'); output.baselineHash = createHash('sha256').update(readFileSync(path)).digest('hex') } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') output.baselineHash = null; else throw error }
+       const check = step.checks?.find((item) => item.path === output.path && (item.kind === 'file-content' || item.kind === 'file-hash'))
+       if (check?.kind === 'file-content' && output.expectedContent === undefined) output.expectedContent = check.value
+       if (check?.kind === 'file-hash' && output.expectedHash === undefined) output.expectedHash = check.value
+     }
+-    this.plans.set(id, structuredClone(plan))
++    return plan
++  }
++
++  private storePlan(id: string, plan: TaskPlan): void {
+     this.db?.prepare('INSERT INTO task_execution_plans(task_id, plan_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET plan_json = excluded.plan_json').run(id, JSON.stringify(plan))
++    this.plans.set(id, structuredClone(plan))
+   }
+   private getPlan(id: string): TaskPlan | undefined {
+     const current = this.plans.get(id); if (current) return current
+     const row = this.db?.prepare('SELECT plan_json FROM task_execution_plans WHERE task_id = ?').get(id) as { plan_json: string } | undefined
+     if (!row) return undefined
+     const plan = JSON.parse(row.plan_json) as TaskPlan; this.plans.set(id, plan); return plan
+   }
+
+   private checkpoints(id: string): StepCheckpoint[] {
+     const rows = this.db?.prepare('SELECT checkpoint_json FROM task_execution_checkpoints WHERE task_id = ?').all(id) as Array<{ checkpoint_json: string }> | undefined
+     return (rows ?? []).map((row) => JSON.parse(row.checkpoint_json) as StepCheckpoint)
+   }
+
+   async continueTask(id: string, answer: string): Promise<Result<Task>> {
+     const current = this.read(id)
+     if (!['待确认', '已中断', '失败', '部分完成', '已取消'].includes(current.status)) return fail('当前任务不在可补充或恢复的状态')
++    const request = Symbol(id)
++    this.continuations.set(id, request)
++    const isCurrent = (): boolean => this.continuations.get(id) === request
++    try { return await this.continueCurrentTask(id, answer, isCurrent) }
++    finally { if (isCurrent()) this.continuations.delete(id) }
++  }
++
++  private async continueCurrentTask(id: string, answer: string, isCurrent: () => boolean): Promise<Result<Task>> {
++    const current = this.read(id)
+     const checkpoints = this.checkpoints(id)
+     const grounded = Boolean(this.getPlan(id)?.workflow)
+     const resumeRequested = /^\s*(继续|恢复|resume|continue)\s*$/i.test(answer)
+     const priorSummary = this.groundedCheckpoint(id)
+     // Check the durable receipt before replanning: an ordinary replacement must not hide an unresolved summary write.
+     if (priorSummary && !priorSummary.outcomeKnown && (!grounded || !resumeRequested)) return fail('上次摘要写入的实际结果尚未核对，不能替换原计划；请先使用“核对并继续”核对原目标，之后再新建其他任务。')
+     const unknown = this.require(id).toolCalls.some((call) => {
+       if (call.agentRole !== 'Worker' || call.toolId === 'filesystem.effect') return false
+       // The dedicated workflow reconciles its persisted write receipt against disk before any replay.
+       if (grounded && (call.toolId === 'model.summary' || call.stepId === `${id}-summary-save`)) return false
+@@ -601,34 +620,41 @@ export class TaskService {
+       if (existsSync(request.hostPath)) return fail('图片目标已经存在，请先检查已有成果；不会覆盖或重复生成')
+       const blocked = this.toolGate?.('filesystem'); if (blocked) return fail(blocked)
+       request.requestedAt = Date.now()
+       this.db?.prepare('UPDATE tasks SET status = ?, approval_json = ?, summary = ?, result = ?, updated_at = ? WHERE id = ?').run('等待批准', JSON.stringify(request), '图片请求已重新核对，等待批准', '仍将写入原来确认的目标。批准前不会生成或复制图片。', new Date().toISOString(), id)
+       return ok(this.emit(id))
+     }
+     const resume = (checkpoints.length > 0 || grounded) && resumeRequested
+     const goal = resumeRequested ? current.title : `${current.title}\n用户补充：${answer}`
+     let plan: TaskPlan | null
+     try { plan = resume ? this.getPlan(id) ?? null : await this.plan(goal, this.boundModel(id)) ?? localRulePlan(goal) } catch (error) { return fail(error instanceof Error ? error.message : String(error)) }
++    if (!isCurrent()) return fail('本次补充已取消或被新的要求替代，未改变任务。')
+     let root: string | null
+     try {
+       // Preserve the stored spelling on resume: existing checkpoint hashes include that exact scope.
+       root = extractRoot(answer) ?? (current.scope || null)
+       if (root && plan?.root?.trim() && !taskRootsEqual(root, plan.root)) return fail('计划目录与本次确认的目录不一致；原计划与授权范围已保留，请重新确认')
+       if (root && !resume && plan?.tool !== 'browser') root = confirmedDirectory(root)
+     } catch (error) { return fail(error instanceof Error ? error.message : '目录无法核对') }
+     if (!root && (plan?.tool ?? chooseTool(goal)) !== 'browser') return fail('仍缺少明确授权目录')
+-    if (plan && !resume) this.savePlan(id, plan, root ?? '')
++    try { if (plan && !resume) plan = this.preparePlan(plan, root ?? '') } catch (error) { return fail(error instanceof Error ? error.message : '计划范围无法核对，原计划已保留') }
+     let preview: GoalOutcome
++    let preparedCheckpoint: GroundedCheckpoint | undefined
+     try {
+-      const blocked = this.groundedModelGuard(id); if (blocked) return fail(blocked)
+-      preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan: this.getPlan(id) ?? plan, taskId: id, checkpoints, ...this.groundedOptions(id) })
++      const blocked = this.groundedModelGuard(id, plan ?? undefined); if (blocked) return fail(blocked)
++      preview = await executeGoal({ goal, root, approved: false, cancelled: false, plan, taskId: id, checkpoints, ...this.groundedOptions(id, plan ?? undefined), onGroundedCheckpoint: checkpoint => { preparedCheckpoint = checkpoint } })
+     } catch (error) { return fail(error instanceof Error ? error.message : '摘要恢复失败，未自动重放') }
++    if (!isCurrent()) return fail('本次补充已取消或被新的要求替代，未改变任务。')
++    // No await between the ownership check and publication: obsolete previews cannot
++    // replace the plan, checkpoints, task state, or emitted result.
++    if (plan && !resume) this.storePlan(id, plan)
++    if (preparedCheckpoint) this.db?.prepare('INSERT INTO task_grounded_checkpoints(task_id, checkpoint_json) VALUES (?, ?) ON CONFLICT(task_id) DO UPDATE SET checkpoint_json = excluded.checkpoint_json').run(id, JSON.stringify(preparedCheckpoint))
+     this.db?.prepare('UPDATE tasks SET title = ?, scope = ?, status = ?, updated_at = ? WHERE id = ?').run(goal, root ?? '', preview.status, new Date().toISOString(), id)
+     this.saveOutcome(id, preview); return ok(this.emit(id))
+   }
+
+   private require(id: string): Task {
+     return this.toTask(this.read(id))
+   }
+
+   private read(id: string): TaskRow {
+     const row = this.db?.prepare(
+diff --git a/tests/e2e/task-continuation.spec.ts b/tests/e2e/task-continuation.spec.ts
+new file mode 100644
+index 0000000..0cdc295
+--- /dev/null
++++ b/tests/e2e/task-continuation.spec.ts
+@@ -0,0 +1,65 @@
++import { createServer, type ServerResponse } from 'node:http'
++import { mkdtempSync, readdirSync, rmSync } from 'node:fs'
++import { tmpdir } from 'node:os'
++import { join } from 'node:path'
++import { expect, test } from '@playwright/test'
++import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
++
++test('[FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务', async () => {
++  test.setTimeout(90_000)
++  const root = mkdtempSync(join(tmpdir(), 'task-continuation-ui-'))
++  const upstream = await startModelServer()
++  let pending: ServerResponse | undefined
++  function reply(response: ServerResponse, later: boolean): void {
++    const value = { tool: 'filesystem', root, question: later ? '' : '请补充目标', steps: [{ id: 'write', title: later ? '晚到的新计划' : '原计划', detail: '创建合成文件', expected: '', args: { action: 'write', path: 'late.txt', content: 'synthetic output' }, checks: [{ kind: 'file-content', path: 'late.txt', value: 'synthetic output' }] }] }
++    response.writeHead(200, { 'content-type': 'application/json' })
++    response.end(JSON.stringify({ choices: [{ message: { role: 'assistant', tool_calls: [{ type: 'function', function: { name: 'plan_task', arguments: JSON.stringify(value) } }] } }] }))
++  }
++  const server = createServer((request, response) => {
++    let raw = ''; request.setEncoding('utf8'); request.on('data', (part: string) => { raw += part })
++    request.on('end', () => {
++      void (async () => {
++        const payload = JSON.parse(raw) as { tools?: Array<{ function?: { name: string } }>; messages?: Array<{ role: string; content: unknown }> }
++        const goal = String(payload.messages?.filter(message => message.role === 'user').at(-1)?.content ?? '')
++        if (payload.tools?.[0]?.function?.name === 'plan_task' && goal.includes('TASK_CONTINUE_TEST')) {
++          if (goal.includes('CONTINUE_LATE')) { pending = response; return }
++          reply(response, false); return
++        }
++        const result = await fetch(`${upstream.url}/chat/completions`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer test-key' }, body: raw })
++        response.writeHead(result.status, { 'content-type': result.headers.get('content-type') ?? 'application/json' }); response.end(Buffer.from(await result.arrayBuffer()))
++      })().catch(() => { if (!response.writableEnded) { response.writeHead(500); response.end('controlled server failure') } })
++    })
++  })
++  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
++  const address = server.address(); if (!address || typeof address === 'string') throw new Error('No test server')
++  const app = await launchApp()
++  try {
++    const page = await findMainPage(app)
++    await configureTestModel(page, `http://127.0.0.1:${address.port}/v1`)
++    const created = await page.evaluate(root => window.murasame.core.createTask('创建任务 TASK_CONTINUE_TEST', root), root)
++    if (!created.ok) throw new Error(created.error)
++    await page.getByTestId('nav-tasks').click()
++    await expect(page.locator('.task-detail-titleline .pill')).toHaveText('待确认')
++    const continuation = page.evaluate(id => window.murasame.core.continueTask(id, 'CONTINUE_LATE 写入新文件'), created.data.id)
++    await expect.poll(() => Boolean(pending)).toBe(true)
++    await page.getByTestId('cancel-task').click()
++    await page.getByRole('dialog').getByRole('button', { name: '取消任务', exact: true }).click()
++    await expect(page.locator('.task-detail-titleline .pill')).toHaveText('已取消')
++    reply(pending!, true); pending = undefined
++    const returned = await continuation
++    const after = await page.evaluate(() => window.murasame.core.getBootstrap())
++    if (!after.ok) throw new Error(after.error)
++    const task = after.data.tasks.find(task => task.id === created.data.id)
++    await page.screenshot({ path: test.info().outputPath('cancelled-after-late-plan.png') })
++    expect(returned.ok).toBe(false)
++    expect(task?.status).toBe('已取消'); expect(task?.title).toBe(created.data.title)
++    await expect(page.locator('.task-detail-titleline .pill')).toHaveText('已取消')
++    await expect(page.getByTestId('approve-task')).toHaveCount(0)
++    expect(readdirSync(root)).toEqual([])
++  } finally {
++    pending?.destroy(); server.closeAllConnections()
++    await closeApp(app)
++    await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()))
++    await upstream.close(); rmSync(root, { recursive: true, force: true })
++  }
++})
+diff --git a/tests/unit/task-continuation-races.test.ts b/tests/unit/task-continuation-races.test.ts
+new file mode 100644
+index 0000000..b4a0baf
+--- /dev/null
++++ b/tests/unit/task-continuation-races.test.ts
+@@ -0,0 +1,144 @@
++import { afterEach, describe, expect, it, vi } from 'vitest'
++import { DatabaseSync } from 'node:sqlite'
++import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
++import { tmpdir } from 'node:os'
++import { join } from 'node:path'
++import type { SqliteDatabase } from '../../src/main/data/sqlite-types'
++import type { TaskPlan } from '../../src/main/agent/executor'
++
++vi.mock('electron', () => ({ Notification: { isSupported: () => false } }))
++vi.mock('../../src/main/settings', () => ({ getSettings: () => ({ taskNotifications: false }) }))
++import { TaskService } from '../../src/main/core/services/task-service'
++
++const databases: DatabaseSync[] = []
++const roots: string[] = []
++afterEach(() => { vi.restoreAllMocks(); databases.splice(0).forEach(db => db.close()); roots.splice(0).forEach(root => rmSync(root, { recursive: true, force: true })) })
++function deferred<T>() {
++  let resolve!: (value: T) => void
++  let reject!: (error: Error) => void
++  const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no })
++  return { promise, resolve, reject }
++}
++function plan(root: string, label: string, question = ''): TaskPlan {
++  return { tool: 'filesystem', root, question, steps: [{ id: 'write', title: label, detail: label, expected: '', args: { action: 'write', path: `${label}.txt`, content: label }, checks: [{ kind: 'file-content', path: `${label}.txt`, value: label }] }] }
++}
++async function fixture(withModel = false) {
++  const root = mkdtempSync(join(tmpdir(), 'task-continuation-')); roots.push(root)
++  const db = new DatabaseSync(':memory:'); databases.push(db)
++  db.exec(readFileSync('src/main/data/migrations/001_init.sql', 'utf8')); db.exec(readFileSync('src/main/data/migrations/003_trace.sql', 'utf8'))
++  const service = new TaskService(db as unknown as SqliteDatabase)
++  if (withModel) {
++    const binding = { id: 'test-model', endpoint: 'http://127.0.0.1:12345/v1', model: 'fixture', apiKey: 'synthetic-key' }
++    service.setModelSnapshotProvider(() => binding, () => binding)
++  }
++  service.setPlanner(async () => plan(root, 'original', '请补充要求'))
++  const created = await service.create('创建文件任务', root)
++  if (!created.ok) throw new Error(created.error)
++  const id = created.data.id
++  const savedPlan = () => (db.prepare('SELECT plan_json FROM task_execution_plans WHERE task_id = ?').get(id) as { plan_json: string }).plan_json
++  return { root, db, service, id, savedPlan, task: () => service.list().find(task => task.id === id)! }
++}
++
++describe('task continuation result ownership', () => {
++  it('does not resurrect a cancelled task or replace its saved plan when planning returns late', async () => {
++    const { root, service, id, savedPlan, task } = await fixture()
++    const before = savedPlan(); const later = deferred<TaskPlan>(); service.setPlanner(() => later.promise)
++    const events: string[] = []; service.onChange(task => events.push(task.status))
++    const pending = service.continueTask(id, '写新文件')
++    await service.cancel(id); const cancelled = task()
++    later.resolve(plan(root, 'late')); const result = await pending
++    expect(result.ok).toBe(false)
++    expect(task()).toEqual(cancelled); expect(savedPlan()).toBe(before)
++    expect(events).toEqual(['已取消'])
++    expect(task().status).toBe('已取消'); expect(existsSync(join(root, 'late.txt'))).toBe(false)
++  })
++
++  it.each(['older-first', 'newer-first'] as const)('uses only the latest request with %s completion', async order => {
++    const { root, service, id, task, savedPlan } = await fixture()
++    const older = deferred<TaskPlan>(); const newer = deferred<TaskPlan>()
++    service.setPlanner(goal => goal.includes('新要求') ? newer.promise : older.promise)
++    const first = service.continueTask(id, '旧要求'); const second = service.continueTask(id, '新要求')
++    let firstResult
++    if (order === 'older-first') {
++      older.resolve(plan(root, 'older')); firstResult = await first
++      expect(task().status).toBe('待确认'); expect(savedPlan()).not.toContain('older')
++      newer.resolve(plan(root, 'newer'))
++    } else { newer.resolve(plan(root, 'newer')); await second; older.resolve(plan(root, 'older')); firstResult = await first }
++    expect((await second).ok).toBe(true); expect(firstResult.ok).toBe(false)
++    expect(task().title).toContain('新要求'); expect(task().title).not.toContain('旧要求')
++    expect(savedPlan()).toContain('newer'); expect(savedPlan()).not.toContain('older')
++    await service.approve(id, 'once'); await service.settled(id)
++    expect(task().status).toBe('已完成'); expect(readFileSync(join(root, 'newer.txt'), 'utf8')).toBe('newer')
++    expect(existsSync(join(root, 'older.txt'))).toBe(false)
++  })
++
++  it('does not reactivate an older request when the latest planner fails', async () => {
++    const { root, service, id, task, savedPlan } = await fixture()
++    const before = savedPlan(); const older = deferred<TaskPlan>(); const newer = deferred<TaskPlan>()
++    service.setPlanner(goal => goal.includes('新要求') ? newer.promise : older.promise)
++    const first = service.continueTask(id, '旧要求'); const second = service.continueTask(id, '新要求')
++    newer.reject(new Error('temporary planner failure')); expect((await second).ok).toBe(false)
++    older.resolve(plan(root, 'older')); expect((await first).ok).toBe(false)
++    expect(task().status).toBe('待确认'); expect(savedPlan()).toBe(before)
++    expect(task().title).toBe('创建文件任务')
++  })
++
++  it('keeps cancellation while checkpoint verification is pending and never persists its proposed replacement', async () => {
++    const { root, service, id, task, savedPlan } = await fixture()
++    const browserStep = { id: 'read', tool: 'browser' as const, title: 'read', detail: 'read', expected: '', args: { url: 'https://example.com/source' }, checks: [{ kind: 'output-includes' as const, value: 'source' }] }
++    const make = (label: string): TaskPlan => ({ ...plan(root, label), steps: [browserStep, { ...plan(root, label).steps[0], dependsOn: ['read'] }] })
++    const fetcher = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response('source', { status: 200 }))
++    service.setPlanner(async () => make('original'))
++    await service.continueTask(id, '读取后写文件'); await service.approve(id, 'once'); await service.settled(id); await service.deny(id)
++    expect(task().status).toBe('待确认')
++    const before = savedPlan(); const entered = deferred<void>(); const release = deferred<void>()
++    fetcher.mockImplementation(async () => { entered.resolve(); await release.promise; return new Response('source', { status: 200 }) })
++    service.setPlanner(async () => make('replacement'))
++    const pending = service.continueTask(id, '换成新文件')
++    await entered.promise
++    const planDuringPreview = savedPlan()
++    await service.cancel(id); const cancelled = task()
++    release.resolve(); const result = await pending
++    expect(result.ok).toBe(false); expect(planDuringPreview).toBe(before); expect(savedPlan()).toBe(before)
++    expect(task()).toEqual(cancelled); expect(existsSync(join(root, 'replacement.txt'))).toBe(false)
++  })
++
++  it('keeps independent tasks separate and allows an explicit new continuation after cancellation', async () => {
++    const { root, service, id, task } = await fixture()
++    const secondCreated = await service.create('另一个文件任务', root); if (!secondCreated.ok) throw new Error(secondCreated.error)
++    const secondId = secondCreated.data.id
++    const first = deferred<TaskPlan>(); const second = deferred<TaskPlan>()
++    service.setPlanner(goal => goal.includes('另一个') ? second.promise : first.promise)
++    const one = service.continueTask(id, '第一次'); const two = service.continueTask(secondId, '第二次')
++    await service.cancel(id); first.resolve(plan(root, 'cancelled')); second.resolve(plan(root, 'independent'))
++    await one; expect((await two).ok).toBe(true)
++    expect(task().status).toBe('已取消'); expect(service.list().find(task => task.id === secondId)?.status).toBe('等待批准')
++    service.setPlanner(async () => plan(root, 'resumed'))
++    expect((await service.continueTask(id, '重新开始')).ok).toBe(true)
++    await service.approve(id); await service.settled(id)
++    expect(task().status).toBe('已完成'); expect(readFileSync(join(root, 'resumed.txt'), 'utf8')).toBe('resumed')
++    expect(existsSync(join(root, 'cancelled.txt'))).toBe(false)
++  })
++
++  it('retains the last plan and task when the candidate workspace cannot be prepared', async () => {
++    const { root, service, id, task, savedPlan } = await fixture()
++    const before = savedPlan(); const previous = task()
++    const candidate = plan(root, 'invalid'); candidate.steps[0].workspace = '..'; candidate.steps[0].outputs = [{ path: 'out.txt' }]
++    service.setPlanner(async () => candidate)
++    const result = await service.continueTask(id, '尝试新计划')
++    expect(result.ok).toBe(false); expect(savedPlan()).toBe(before); expect(task()).toEqual(previous)
++  })
++
++  it('previews a newly selected summary workflow with the original bound model and saves its approval receipt', async () => {
++    const { root, db, service, id, task, savedPlan } = await fixture(true)
++    writeFileSync(join(root, 'source.md'), '合成资料，没有真实用户内容。')
++    service.setPlanner(async () => ({ tool: 'filesystem', root, question: '', steps: [], workflow: { kind: 'summarize-files', sources: ['source.md'], outputPath: 'summary.md', instruction: '总结资料' } }))
++    const result = await service.continueTask(id, '改为摘要')
++    expect(result.ok).toBe(true); expect(task().status).toBe('等待批准')
++    expect(savedPlan()).toContain('summarize-files')
++    expect(JSON.parse(task().approval!.impact)).toMatchObject({ stage: 'awaiting-source-approval', recipient: { id: 'test-model' } })
++    const row = db.prepare('SELECT checkpoint_json FROM task_grounded_checkpoints WHERE task_id = ?').get(id) as { checkpoint_json: string }
++    expect(JSON.parse(row.checkpoint_json)).toMatchObject({ modelSnapshotId: 'test-model', stage: 'awaiting-source-approval', dispatchCount: 0 })
++    expect(existsSync(join(root, 'summary.md'))).toBe(false)
++  })
++})

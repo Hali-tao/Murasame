@@ -1,0 +1,14 @@
+{
+  "installer": {
+    "path": "E:\\Desktop\\软件工程\\murasame\\release\\continuous-2026-10-30-task-continuation\\Murasame-Setup-0.9.0.exe",
+    "bytes": 292513505,
+    "sha256": "84034a0d54b7d4b5930013beb610a6318146276929214f720eab4545d0d95bef"
+  },
+  "applicationFiles": 109,
+  "changedProgramFiles": [
+    "out/main/index.js"
+  ],
+  "models": 18,
+  "isolation": 6,
+  "previousInstallers": 15
+}

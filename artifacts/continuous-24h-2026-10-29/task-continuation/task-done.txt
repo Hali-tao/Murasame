@@ -1,0 +1,6 @@
+
+> murasame-desktop@0.9.0 trace
+> node scripts/traceability.mjs
+
+trace: 74/74 covered, missing 0
+ledger: Task 1: complete (commits 7c52606..f86f57c, tests: npm run verify → trace: 74/74 covered, missing 0)

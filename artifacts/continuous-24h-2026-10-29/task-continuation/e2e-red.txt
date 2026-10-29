@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+(node:43700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\task-continuation.spec.ts:8:5 › [FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务 (5.7s)
+
+
+  1) tests\e2e\task-continuation.spec.ts:8:5 › [FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务 ───────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      52 |     const task = after.data.tasks.find(task => task.id === created.data.id)
+      53 |     await page.screenshot({ path: test.info().outputPath('cancelled-after-late-plan.png') })
+    > 54 |     expect(returned.ok).toBe(false)
+         |                         ^
+      55 |     expect(task?.status).toBe('已取消'); expect(task?.title).toBe(created.data.title)
+      56 |     await expect(page.locator('.task-detail-titleline .pill')).toHaveText('已取消')
+      57 |     await expect(page.getByTestId('approve-task')).toHaveCount(0)
+        at E:\Desktop\软件工程\murasame\tests\e2e\task-continuation.spec.ts:54:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\task-continuation-2026-10-30\e2e-old\task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\task-continuation-2026-10-30\e2e-old\task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\task-continuation-2026-10-30\e2e-old\task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\task-continuation-2026-10-30\e2e-old\task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\task-continuation-2026-10-30\e2e-old\task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\task-continuation.spec.ts:8:5 › [FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务 ────────────

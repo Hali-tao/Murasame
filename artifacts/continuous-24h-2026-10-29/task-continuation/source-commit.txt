@@ -1,0 +1,6 @@
+[feat/overnight-2026-10-29 f86f57c] Fix stale task continuation results overriding cancellation
+ 5 files changed, 291 insertions(+), 8 deletions(-)
+ create mode 100644 docs/superpowers/plans/2026-10-30-task-continuation.md
+ create mode 100644 docs/superpowers/specs/2026-10-30-task-continuation-design.md
+ create mode 100644 tests/e2e/task-continuation.spec.ts
+ create mode 100644 tests/unit/task-continuation-races.test.ts

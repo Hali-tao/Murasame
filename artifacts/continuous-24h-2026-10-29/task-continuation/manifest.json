@@ -1,0 +1,484 @@
+{
+  "archivedAt": "2026-10-29T16:21:24.048Z",
+  "baseline": "7c526063e55ce302f7dc47efd17896d6afb9f501",
+  "sourceFiles": [
+    {
+      "path": "src/main/core/services/task-service.ts",
+      "sha256": "e01404159bc3c0ab0ff10ba0808efb59009a72fa5f68e4019905eee4aed70dcc",
+      "textLfSha256": "b2cd3e3cbfbaee840a81103a0fb2ec269d19e99f3bbbb8a9058028b3e314a14e"
+    },
+    {
+      "path": "tests/unit/task-continuation-races.test.ts",
+      "sha256": "a5bbd1908015a61821e6bf625b5a5afc70d081966b57066ccb79e58fde513639",
+      "textLfSha256": "a5bbd1908015a61821e6bf625b5a5afc70d081966b57066ccb79e58fde513639"
+    },
+    {
+      "path": "tests/e2e/task-continuation.spec.ts",
+      "sha256": "cc0c654a7a9f0d2a35a7629121d15c15a4f4f7cfca5f261fbb90207d2cd5fb67",
+      "textLfSha256": "cc0c654a7a9f0d2a35a7629121d15c15a4f4f7cfca5f261fbb90207d2cd5fb67"
+    }
+  ],
+  "files": [
+    {
+      "path": "archive-evidence.mjs.txt",
+      "bytes": 2359,
+      "sha256": "bbca63d58a411aa70151e79ed6bc8921804b7b0e4e2083e4e1e30fad3974b521",
+      "originalSha256": "826d8c3cd4b7690f440dbcbde98cb6088d432d45437d43859707add0b5bfd082"
+    },
+    {
+      "path": "cleanup-check.json",
+      "bytes": 113,
+      "sha256": "1166df5368c147b9dafb22825d62386a34413cc2b39fbf66d21b911c5f4c31ab",
+      "originalSha256": "7f77973cedbdc39cca8d938c95320512430262e7b2065cd8df220572cf08d53b"
+    },
+    {
+      "path": "e2e-old/.last-run.json",
+      "bytes": 97,
+      "sha256": "74a922650dc5c48de466decfb4e61705ed83fb96b8a2a722a6b4bace5775f712",
+      "originalSha256": "9556e6c9508a0060a61b6676bbacb4a4f9560b71b3fbd81352de5aa05f638b3a"
+    },
+    {
+      "path": "e2e-old/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/cancelled-after-late-plan.png",
+      "bytes": 257038,
+      "sha256": "6270a742df2c1630abf43dfc76375f7157ae6f821944735ee551387136a11ca3"
+    },
+    {
+      "path": "e2e-old/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/error-context.md",
+      "bytes": 5675,
+      "sha256": "8537eb39366e878583a35f604b4d14ed70225c3bc68e3020e9b64b30e31f49cb",
+      "originalSha256": "bfb8155962d05f1c092847236b566574f325837562d15a5f01926589f9a5cc87"
+    },
+    {
+      "path": "e2e-old/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/test-failed-1.png",
+      "bytes": 84800,
+      "sha256": "680504e18c1644d4379bc2e846c8cab15b1ca297d943e71042f7c21d2e6935f4"
+    },
+    {
+      "path": "e2e-old/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/test-failed-2.png",
+      "bytes": 254342,
+      "sha256": "77ba94c852756b3e7c5aaecf1d0f599f22d4e0b0075f873b84d01a3cbf5a70f0"
+    },
+    {
+      "path": "e2e-old/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/trace.zip",
+      "bytes": 340354,
+      "sha256": "d8c56f42586263ccfe3bbb2cb923e64ac1ca9a23cb60cbe391bf7c983facc67f"
+    },
+    {
+      "path": "e2e-red.txt",
+      "bytes": 3945,
+      "sha256": "990b1ba62c31c0ac8e5776eba6aee20eb7bf5efb9efa0c1b6673c7163a9d1ddc",
+      "originalSha256": "a8d8c3fe61afeda0497ad8d2f7c759595e27b2b886441aa60860e6b39d05c968"
+    },
+    {
+      "path": "execution-ledger.md",
+      "bytes": 1049,
+      "sha256": "738b082b4ccffd608b9f76d82806331adae32083db5e6de89a27ba2fe15753dc",
+      "originalSha256": "cf8d672a5094d114f8e352d1070d886cd6dc8921ee12923c18cd8623b99e572e"
+    },
+    {
+      "path": "github-issues.json",
+      "bytes": 609,
+      "sha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10",
+      "originalSha256": "a19b4cbba893463b3c763e827ec94a33304f481ec1984d7103cb4a271fd34c10"
+    },
+    {
+      "path": "package-build.txt",
+      "bytes": 7218,
+      "sha256": "c99c2f8c576a81f8c4512b337c486feccd96a1a31d32a413d5e63998d397373f",
+      "originalSha256": "41d4331de3a10dedf9f2909339fc6ed6e8dc341807c70c3a149e45c2da66290c"
+    },
+    {
+      "path": "package-check.txt",
+      "bytes": 402,
+      "sha256": "46fd86ba6bbd741c42515848d3c3327bc711748a9d1daf9e098feff7825ddf86",
+      "originalSha256": "46fd86ba6bbd741c42515848d3c3327bc711748a9d1daf9e098feff7825ddf86"
+    },
+    {
+      "path": "package-e2e/.last-run.json",
+      "bytes": 46,
+      "sha256": "fff6299efb51ba9ef550e500ecc967e972c83e86be387042c360caea7fdbae29",
+      "originalSha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/character-presets.png",
+      "bytes": 278467,
+      "sha256": "8f988797af60fbb863df73163dc279bfabc96e37c2b410b16f0f29f4bd661501"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-naiwa.png",
+      "bytes": 146927,
+      "sha256": "1158d20d8e433ecbc0cd08f8f872346771afe7bcc70d3d994daf3ddef56210ed"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-tororo.png",
+      "bytes": 76257,
+      "sha256": "cefd739dd0ff7022d3b51bcdf8bc86dbcd62132d43819d608f72d8d1e444f934"
+    },
+    {
+      "path": "package-e2e/app-character-page-switche-8aead-e-three-bundled-pet-presets/preset-whale-girl.png",
+      "bytes": 134871,
+      "sha256": "0600e420572548b9b667255f809698a77e76145ebf92b3763ba61e8cf2958243"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/01-overview.png",
+      "bytes": 455197,
+      "sha256": "ac24db5d8b56666511297347c069509faed9b68762d27bed8fd6c7200e55dde2"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/02-tasks.png",
+      "bytes": 280156,
+      "sha256": "160866eb86910eeebed7380ea130cb6893aefda60c3f282e112f7f7ed2d99712"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/organize-input/文档/example.txt",
+      "bytes": 14,
+      "sha256": "60e4550be005ac387240dd6fadb674015475bde32c05c572bc18743084910a08",
+      "originalSha256": "00e89ad71205b460a88cd57c8811bb61a0ad58ecc2daa85350a7a9b5010d87b5"
+    },
+    {
+      "path": "package-e2e/app-console-starts-and-all-ten-pages-are-reachable/task-readable-approval.png",
+      "bytes": 82443,
+      "sha256": "5605d1d0b5df03c9dc62d836736ba73f2f58526b28afb6ed89f8ad0b5ed4cbc3"
+    },
+    {
+      "path": "package-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/03-pet-live2d.png",
+      "bytes": 76304,
+      "sha256": "e64883b9ce9b2ba24e2c7e1b2b78f664a8dc9a44f09a2bf901e6018c149d6a11"
+    },
+    {
+      "path": "package-e2e/app-pet-window-is-created--356fb-den-or-restored-through-IPC/pet-140-percent.png",
+      "bytes": 158347,
+      "sha256": "896cdcec9f53b43deb862707bb4bb3cee0b6a15572150c7208aa4c2008d70c8b"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-real-code-result.png",
+      "bytes": 217113,
+      "sha256": "748994e6c98a2ea2ce75e4009e276a200baff1f8048f8d393f6aa6b315d9da99"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/external-stop-synchronized.png",
+      "bytes": 198959,
+      "sha256": "13ac444ea7effc55420ade099fc9fbeec4f0c5010261150047384579e38de263"
+    },
+    {
+      "path": "package-e2e/autonomy-external-status-a-3875b-real-isolated-work-and-stop/externally-started-visible.png",
+      "bytes": 186613,
+      "sha256": "7a6d6cf8bbbfd96c7d9be296d1137dc731ac9e49871c4d0c6c45f7bf2e425642"
+    },
+    {
+      "path": "package-e2e/flows-history-clearing-mem-6db26-ching-are-end-to-end-usable/memory-index-progress.png",
+      "bytes": 185046,
+      "sha256": "47987fec57ff7257c19047f587b5d5167c66ab00a342c146a08015b1965e226d"
+    },
+    {
+      "path": "package-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/hidden.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-a-slow-re-62c8c-lation-discards-late-output/source-data/source.md",
+      "bytes": 44,
+      "sha256": "2f364d852f07322b68db747d2de942aa6dd8ce5c26284a0426dba0b8c491bc2d",
+      "originalSha256": "93213fe15ec2493af9a7af2b0becbe062c88e4d1b23ea822744d346895372b6e"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/source.md",
+      "bytes": 97,
+      "sha256": "773f41b11a57b1b8ac7fe4e2b0f8d56c8509be5c04c584abaf9963f3d0425f3c",
+      "originalSha256": "33c9078c71fde39b43560efbca21e5fea7dffc58bc0125284928ad6a70719fb4"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/source-data/summary.md",
+      "bytes": 291,
+      "sha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a",
+      "originalSha256": "defa71e9abe30ea781157e670ba2761f5855f69edf72d5e823ee75b00a51df1a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-draft-approval.png",
+      "bytes": 103088,
+      "sha256": "bd7c2ca14298d8ef7b91e7d8816c20f2e40548387e8df9354a7b6e38bea9beea"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-source-approval.png",
+      "bytes": 115041,
+      "sha256": "9679b68b1c87ca07b1e4604e131b8a58e7e24c88a389297eabf109007f12ee4a"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verification.json",
+      "bytes": 206,
+      "sha256": "4b9029c4ca0ebf6dc5ca5efabc7861037dc827e9b79477238b6baf2f94954faf",
+      "originalSha256": "8079080e1387c2fdcbb1be80ee9d59aac8f89e0d96ea66b66c28c173ef7c57ce"
+    },
+    {
+      "path": "package-e2e/grounded-summary-real-sour-5ebb9-draft-is-saved-only-after-B/summary-verified.png",
+      "bytes": 239894,
+      "sha256": "0fc4b161c06596b9fa33f63c64fbeea36b6b6cacae83c0d155b5af4b041c9aa3"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-offline-live-desktop.png",
+      "bytes": 73601,
+      "sha256": "352ddf871ef2d5f8a3ceedd3aa49b93eef5c82938f32924bdfe9e61e0fb267cb"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-real-result-pet.png",
+      "bytes": 76973,
+      "sha256": "6ad2b1ee9940458cb3dca2d7c37c54705d537d0de4cfa7ac48130771fd0a9a2c"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-saved-result-pet.png",
+      "bytes": 74340,
+      "sha256": "946529da291e4cfce09836129f1eb8a5ebe1a80b0092e5fd9d315b02bfa3b083"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-07b63--model-transport-and-Docker/code-verified-export.png",
+      "bytes": 226735,
+      "sha256": "dae627280dab4238953674cb61f9326e30c8c39b22e6325c25a386ac02c6137a"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-offline-live-desktop.png",
+      "bytes": 95941,
+      "sha256": "de1912226ba14884a9599e3cb774871edb409b1c0f354101481d0b8f747d14f5"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-real-result-pet.png",
+      "bytes": 76690,
+      "sha256": "8a7a869cb5877a70dacd8b4a2f18d20778e6be36dcdf08df51bf49454934ae6a"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-saved-result-pet.png",
+      "bytes": 78665,
+      "sha256": "04027f54ec4c34f225c28cc250eeeee57db6550b1de0c2d9e1cc4db157db1e0e"
+    },
+    {
+      "path": "package-e2e/isolated-creation-real-iso-7a832--model-transport-and-Docker/office-verified-export.png",
+      "bytes": 246623,
+      "sha256": "6c306fb4a3cd49e22cdedda88679d9287af85b5f99ec95decb7c305197d63a21"
+    },
+    {
+      "path": "package-e2e/local-memory--FR-14-真实离线BGE在Electron中召回独立偏好并进入实际对话请求/actual-local-memory.png",
+      "bytes": 199989,
+      "sha256": "4dce44caf604d1f80f09c84a01594a5c44ba9bbcc81bb07a858aca55b21e6e35"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-a-r-e2e52--clearing-only-its-memories/retained-conversation-learns-after-clearing.png",
+      "bytes": 172911,
+      "sha256": "d636ce01fa271361314110dd2e67b084ff68253cb6300420a316dab62978da22"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-cleared-without-old-notices.png",
+      "bytes": 177441,
+      "sha256": "b40ac196cbb83170d3fd081fbcbde236964ff0afcc946e5e186e2ad3cd099531"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-mem-c5ef8--no-stale-extraction-notice/memory-survives-history-only-clear.png",
+      "bytes": 184686,
+      "sha256": "c4241edc7a25f2cc6b93b3297a9618c30c25ca4a900273eff87725ad6a2ec0ac"
+    },
+    {
+      "path": "package-e2e/memory-clear-ui--FR-15-set-0e113-ps-persisted-memory-visible/failed-clear-keeps-actual-memory.png",
+      "bytes": 180632,
+      "sha256": "898b84a8e3d1dc2688a78398c1bbb3f6e65d8824f374a6c613e14147e5f36e34"
+    },
+    {
+      "path": "package-e2e/memory-correction-source---0ca62-memory-in-its-actual-source/correction-source-cleared.png",
+      "bytes": 181813,
+      "sha256": "3f35e2a830baf1bf1ebefb454e4e120392f8bf2d2b308534f02d196ae037e7d0"
+    },
+    {
+      "path": "package-e2e/memory-correction-source---ee9ba-memory-in-its-actual-source/original-source-cleared.png",
+      "bytes": 189345,
+      "sha256": "73092f51caa3e1c5f4f27a253edf481d782d231d79395b273889e5ea344b5866"
+    },
+    {
+      "path": "package-e2e/memory-degraded-context--N-e95f6-cessful-empty-memory-search/persisted-recall-warning.png",
+      "bytes": 212951,
+      "sha256": "ed0c0883caf6d9f30e432614dd5b7df10ff99c1133a319ee6d2fdaba770a46c6"
+    },
+    {
+      "path": "package-e2e/memory-degraded-context--N-e95f6-cessful-empty-memory-search/preserved-memory-with-unavailable-index.png",
+      "bytes": 173328,
+      "sha256": "015d807e847b534a97616a234e2d45165590c6b38c74bb7929e2ddecdf6bd1d4"
+    },
+    {
+      "path": "package-e2e/model-lifecycle-an-old-fai-54644-r-actual-model-verification/verified-model-after-old-failure.png",
+      "bytes": 250265,
+      "sha256": "acde652d40dd97b0f01839cfe2e225ab273c396b5f0d716308676e1e331f245b"
+    },
+    {
+      "path": "package-e2e/model-lifecycle-removing-a-cbe61--answer-to-the-conversation/reply-delivered-after-model-removal.png",
+      "bytes": 216871,
+      "sha256": "d569a64d7e0bdb63c5b945a7df88ffe389f37ec603d333f650130be1d2c3e8ce"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-offline-without-reload.png",
+      "bytes": 251926,
+      "sha256": "5231e1dfe5c471582fd7f586a5532a3af9c6859b01a4174482fdeebea7d84ae3"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-r-c4b97-t-service-without-reloading/service-recovers-without-reload.png",
+      "bytes": 249089,
+      "sha256": "2efcd83201b121d094f58d73ccbbaa39ee0414731418f44dbc48cab1d42be6db"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/status-snapshots.json",
+      "bytes": 5014,
+      "sha256": "feca815ce62423063bc85ead2e2afbe940d120613694e889c278d42ca395b316",
+      "originalSha256": "e0339282aa7e3ba30a68b87cdebcce1ee353e3a3b9010c1413f5d4570f5d0a09"
+    },
+    {
+      "path": "package-e2e/model-status-sync--FR-25-v-1acd6-ed-chat-and-renderer-reload/verified-status-after-reload.png",
+      "bytes": 210064,
+      "sha256": "5668efd79ba3d156639de73e5cdf39f9112d652b37a2650f7b3eca3d8a3797cc"
+    },
+    {
+      "path": "package-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-persistent-errors.png",
+      "bytes": 213184,
+      "sha256": "23f5eb93d0161d261001b8f38622e689ab868e04b5007b11dac68dde6acc1d6b"
+    },
+    {
+      "path": "package-e2e/notifications-distinct-err-5cd6e-fter-routine-notices-expire/actual-small-window-long-error.png",
+      "bytes": 381523,
+      "sha256": "34ba8655114b6997a68746b2c90bb452ca6e7023206711b6e972c863d721eccb"
+    },
+    {
+      "path": "package-e2e/notifications-model-setup--4a65f-ve-the-chat-composer-usable/actual-model-memory-notifications.png",
+      "bytes": 188559,
+      "sha256": "28815297e1f5ea46600748609d358d1d8a0aaee430c54fc4855178d22d6c7a0f"
+    },
+    {
+      "path": "package-e2e/pet-history-sync--FR-02-bo-53c68-citly-opens-and-closes-chat/pet-menu-controls-chat.png",
+      "bytes": 79948,
+      "sha256": "0ad46b4fc44188eb47c305e35b821f956b884db90f08a9e35cce4173461a4833"
+    },
+    {
+      "path": "package-e2e/pet-history-sync--FR-15-de-86698-pet-chat-without-restarting/pet-history-cleared.png",
+      "bytes": 97848,
+      "sha256": "5a0f4d70cdd34297c23a717365aa8f350fcb78a1da68038f52ed41b5f35273ea"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/native-working-with-real-pet-ui.png",
+      "bytes": 132144,
+      "sha256": "c1a36c1d0e5b6fb94edf61b1a16f50ac9eae01332a1ed664a1aa580993e76c64"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/saved-long-path-fits-card.png",
+      "bytes": 125146,
+      "sha256": "3ea00bb495eb699a0a9c0821df5cbff910da647647147ac74cb73712c6142bfe"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/stopped-no-stale-success.png",
+      "bytes": 153026,
+      "sha256": "1026c5a30d547a012f36074e7d64cb7fca2646aa5b70b3663f43f455234dcc40"
+    },
+    {
+      "path": "package-e2e/pet-work-real-pet-follows--1dcda-ut-celebrating-stale-output/verified-artifact-before-saving.png",
+      "bytes": 141724,
+      "sha256": "026247a22112bf46422bc502031e3982f8fe662373733d56f0c9f025581879db"
+    },
+    {
+      "path": "package-e2e/task-continuation--FR-16-FR-18-取消待规划任务后，晚到的模型计划不能恢复审批或更换任务/cancelled-after-late-plan.png",
+      "bytes": 217488,
+      "sha256": "229ed3a7237ac7d25a552b0f411a83f3d5ad9842921747ddc2245f4bc2fcaf62"
+    },
+    {
+      "path": "package-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/chosen-directory.png",
+      "bytes": 250415,
+      "sha256": "2e93c9a764e5f56953a3deaf29f9be14ee4f3fcf8ee1ab0cce6e75f66edaf5e1"
+    },
+    {
+      "path": "package-e2e/task-directory--FR-16-新任务选择目录经真实-IPC-审批后整理文件，取消选择保留先前范围/directory-task-complete.png",
+      "bytes": 234570,
+      "sha256": "6a9c2c25c89b0e6dca2e5415776991cbb13392a39a6e704b30b6e9656d6a58d3"
+    },
+    {
+      "path": "package-e2e.txt",
+      "bytes": 4776,
+      "sha256": "65f0f4b8693c73af9d9dd0ae304027e0351bbca8fee93f93d71f18a9526b1ab5",
+      "originalSha256": "17e0fc22a34b78c8036f3f9317ed2dd7adbf0f70131dce78ef2a844aa20e4299"
+    },
+    {
+      "path": "package-receipt.json",
+      "bytes": 26553,
+      "sha256": "4c816c143e022e708c409e77c8b02522267e46022d1876de0d8e00daa896e3e3",
+      "originalSha256": "4c816c143e022e708c409e77c8b02522267e46022d1876de0d8e00daa896e3e3"
+    },
+    {
+      "path": "package-receipt.mjs.txt",
+      "bytes": 3388,
+      "sha256": "cf02f203306045e086c5c0f801092f1bda539209183a6cc8901cb2c506047d05",
+      "originalSha256": "cf02f203306045e086c5c0f801092f1bda539209183a6cc8901cb2c506047d05"
+    },
+    {
+      "path": "raw-text-evidence.zip",
+      "bytes": 43748,
+      "sha256": "9b4f76e55289bc45c685d313b0e4d8adb4f8f3081f270108ec06e264fcf68277"
+    },
+    {
+      "path": "remote-before.txt",
+      "bytes": 57,
+      "sha256": "c560d3f39399a4960a3d27c9f203265c15f89773c64c4d7a15fba71e1aab4a55",
+      "originalSha256": "c560d3f39399a4960a3d27c9f203265c15f89773c64c4d7a15fba71e1aab4a55"
+    },
+    {
+      "path": "review.txt",
+      "bytes": 675,
+      "sha256": "f86305538580136ecec6602c3084e94c28af09cb2322542ce110d840194365b8",
+      "originalSha256": "bbc363f25044fd55d7a7da8704e20745b2d05269fcc6f116fafc160af57d3d5b"
+    },
+    {
+      "path": "reviewed-diff.txt",
+      "bytes": 36656,
+      "sha256": "705230812d36204cbeca4421c3c473cebc62ffb6b03acd4e21bb16c902c901de",
+      "originalSha256": "931db43c668d7c7d5f40ae4b3fc36d7d0cb4a79e13d74d9fb9476ed8d26e8222"
+    },
+    {
+      "path": "source-commit.txt",
+      "bytes": 424,
+      "sha256": "aae1318433d36557b383555dc86c6afa745dc019faf5e6646df6bce898e66da9",
+      "originalSha256": "aae1318433d36557b383555dc86c6afa745dc019faf5e6646df6bce898e66da9"
+    },
+    {
+      "path": "task-done.txt",
+      "bytes": 208,
+      "sha256": "a52540625b5087518dbb153168b65b30772fc6bc147a67f9f4e4062c47a235b6",
+      "originalSha256": "26a8aca61a2b80cd690fefae9738cd9230537237a6f7038d1a0dd122df7e4beb"
+    },
+    {
+      "path": "unit-green.txt",
+      "bytes": 1403,
+      "sha256": "478096a51e3d213ebf9fd41592e114a708602eb93db9ac350e32281635e3d7e4",
+      "originalSha256": "3c885fd9191f229f1c881b56f8e1da7ea2e9de808a259bcf7d15de6f94396754"
+    },
+    {
+      "path": "unit-red.txt",
+      "bytes": 6423,
+      "sha256": "68f16350ed3188701bf268218db80a6f301ee87f6cbaabf238a2c796fd30240a",
+      "originalSha256": "8da50e6ea95ca60b8f017f7bd4ab3edb0f33865b7063ab87be90a552908b78f1"
+    },
+    {
+      "path": "verify-committed.mjs.txt",
+      "bytes": 1311,
+      "sha256": "c8ebe4adec69619b398a58b540b298f1a83bcab1a3054a3984339d397dc5e83f",
+      "originalSha256": "cad330e65ce9374dea614df294493e52e86921d15ef7451e28fefb63c67f6993"
+    },
+    {
+      "path": "verify-final.txt",
+      "bytes": 3030,
+      "sha256": "872bd51da41a16ab92083ecd5474b4d69b27df66703b1d9c953b369330f0f225",
+      "originalSha256": "872bd51da41a16ab92083ecd5474b4d69b27df66703b1d9c953b369330f0f225"
+    },
+    {
+      "path": "verify-initial.txt",
+      "bytes": 3035,
+      "sha256": "be3c3b1f7c95cf27bd6ae14c1c93e100dcdcce1a0d4c09fa469621bc431e5452",
+      "originalSha256": "332b3892846141aa6f06b7f1f2e769f9fd215c2df5e9b62d1d1a2d2e3dda88fc"
+    },
+    {
+      "path": "zip-evidence.ps1.txt",
+      "bytes": 955,
+      "sha256": "ebf7a44faa71d3b9c5d2620a841d5a39bbc658c25a24f17bc4cf82fb866dc49b",
+      "originalSha256": "5b51ec27cd365200dd755abb99a4549dfc51b33253be97e52ae8b1ff4ea8e6cb"
+    }
+  ]
+}
