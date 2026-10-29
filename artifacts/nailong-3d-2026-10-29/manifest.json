@@ -1,5 +1,6 @@
 {
-  "created_at": "2026-10-29T13:22:32.6131826+08:00",
+  "created_at": "2026-10-29T13:28:51.5833990+08:00",
+  "stage": "unapproved static study v3; no rig, animation or runtime integration",
   "files": [
     {
       "file": ".gitattributes",
@@ -45,6 +46,11 @@
       "file": "evidence/build-v3.txt",
       "bytes": 22221,
       "sha256": "7bb0b14cf50d5b2565d5a722ff26dd3c688b4a5f740709cbf68d4b60c66de0c9"
+    },
+    {
+      "file": "evidence/execution-record.md",
+      "bytes": 4777,
+      "sha256": "c387a4318805ece55910dd1db56c595c2740beabcb138299b3ad50ba1d9e2033"
     },
     {
       "file": "evidence/index-desktop.png",
@@ -221,6 +227,5 @@
       "bytes": 3311,
       "sha256": "f8766d4887fc1852aaf7aac57094185803bf2e55db6f088a5ecace5cc71add54"
     }
-  ],
-  "stage": "unapproved static study v3; no rig, animation or runtime integration"
+  ]
 }
