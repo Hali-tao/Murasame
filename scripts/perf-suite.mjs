@@ -1,147 +1,208 @@
 import { _electron as electron } from '@playwright/test'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { createHash } from 'node:crypto'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpus } from 'node:os'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { bounded, measureScenario } from './lib/perf-measurement.mjs'
+import { startPerformanceModel } from './lib/perf-model-fixture.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const seconds = Number(process.argv.find((arg) => arg.startsWith('--seconds='))?.split('=')[1] ?? 12)
-const logicalCores = Number(process.env.NUMBER_OF_PROCESSORS ?? 1)
-const powershell = join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe')
-const wait = (ms) => new Promise((done) => setTimeout(done, ms))
-
-/** 采集整棵 Electron 进程树的 CPU 时间与工作集。 */
-function snapshot(pids) {
-  const script = `
-$ids = '${pids.join(',')}'.Split(',')
-$total = 0.0
-$mem = 0.0
-foreach ($id in $ids) {
-  $p = Get-Process -Id $id -ErrorAction SilentlyContinue
-  if ($p) { $total += $p.TotalProcessorTime.TotalSeconds; $mem += $p.WorkingSet64 }
-}
-Write-Output ("{0}|{1}" -f $total, $mem)
-`
-  const raw = execFileSync(powershell, ['-NoProfile', '-NonInteractive', '-Command', script], {
-    encoding: 'utf8',
-    windowsHide: true,
-    timeout: 30_000
-  }).trim()
-  const [cpu, mem] = raw.split('|')
-  return { cpuSeconds: Number(cpu), memoryBytes: Number(mem) }
-}
-
-async function measure(label, pids, drive) {
-  const before = snapshot(pids)
-  const started = Date.now()
-  await drive()
-  const remaining = seconds * 1000 - (Date.now() - started)
-  if (remaining > 0) await wait(remaining)
-  const elapsed = (Date.now() - started) / 1000
-  const after = snapshot(pids)
-  const cpuLogical = (after.cpuSeconds - before.cpuSeconds) / elapsed
-  return {
-    scenario: label,
-    cpuLogical,
-    cpuPercentOfMachine: (cpuLogical / logicalCores) * 100,
-    memoryMb: after.memoryBytes / 1024 / 1024,
-    elapsed
-  }
-}
-
-const userData = mkdtempSync(join(tmpdir(), 'murasame-perf-'))
-// 新建的 userData 会先显示首次引导，这里直接标记为已看过，避免测量停在引导页。
+const argument = (name) => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3)
+const seconds = Number(argument('seconds') ?? 60)
+if (!Number.isFinite(seconds) || seconds < 1 || seconds > 600) throw new Error('--seconds 须为 1–600；D10 正式采样至少 60 秒')
+const executable = argument('executable')
+const enableIsolation = process.argv.includes('--isolation')
+const base = join(root, 'previews', 'performance-runs')
+mkdirSync(base, { recursive: true })
+const output = argument('output') ? resolve(argument('output')) : join(base, new Date().toISOString().replace(/[:.]/g, '-'))
+mkdirSync(output) // Fail rather than overwrite an earlier run.
+const scratchBase = join(root, 'previews', 'tmp')
+mkdirSync(scratchBase, { recursive: true })
+const userData = mkdtempSync(join(scratchBase, 'murasame-perf-'))
+const taskRoot = join(userData, 'independent-task')
+mkdirSync(taskRoot)
+writeFileSync(join(taskRoot, 'example.txt'), 'performance independent fixture')
 writeFileSync(join(userData, 'murasame.json'), JSON.stringify({ settings: { onboardingDone: true } }))
-const app = await electron.launch({
-  args: ['.'],
-  cwd: root,
-  env: { ...process.env, MURASAME_USER_DATA: userData }
-})
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+const check = (condition, reason) => { if (!condition) throw new Error(reason) }
+const resultData = (result) => { check(result?.ok, result?.error ?? '未返回成功结果'); return result.data }
+let app, page, server, taskId, isolationAttempted = false
+const report = {
+  startedAt: new Date().toISOString(), seconds, formalDuration: seconds >= 60,
+  logicalCores: cpus().length, executable: executable ? resolve(executable) : 'development out/',
+  scope: '本次 Electron 应用进程，IPC/文件/容器真实执行，模型使用本地固定响应；不代表外部模型质量或网络延迟。',
+  limitations: ['GPU 使用率未测量。', '工作集相加包含共享页，不是独占内存。', '不包含 Docker/宿主服务资源。', '屏幕理解及完整语音交流的独立真实场景仍待补齐。'],
+  rows: [], cleanupErrors: [], captureIssues: []
+}
+const stamp = (path) => existsSync(path) ? createHash('sha256').update(readFileSync(path)).digest('hex') : null
 
-const mainPid = app.process().pid
-const treeScript = `Get-CimInstance Win32_Process | Where-Object { $_.Name -like 'electron*' } | Select-Object -ExpandProperty ProcessId`
-const pids = execFileSync(powershell, ['-NoProfile', '-NonInteractive', '-Command', treeScript], {
-  encoding: 'utf8',
-  windowsHide: true
-}).trim().split(/\s+/).filter(Boolean)
-if (pids.length === 0) pids.push(String(mainPid))
+try {
+  report.sourceHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', windowsHide: true }).trim()
+  report.runtimeSha256 = stamp(executable ? resolve(executable) : join(root, 'out/main/index.js'))
+  if (executable) report.applicationArchiveSha256 = stamp(join(dirname(resolve(executable)), 'resources/app.asar'))
+  server = await startPerformanceModel(taskRoot)
+  const env = { ...process.env, MURASAME_USER_DATA: userData, TEMP: scratchBase, TMP: scratchBase }
+  delete env.ELECTRON_RUN_AS_NODE
+  app = await electron.launch({ ...(executable ? { executablePath: resolve(executable) } : {}), args: executable ? [] : ['.'], cwd: root, env, timeout: 30_000 })
+  for (let attempt = 0; attempt < 150 && !page; attempt++) {
+    for (const candidate of app.windows()) {
+      if (!candidate.isClosed() && !candidate.url().includes('/pet.html') && await candidate.getByTestId('nav-overview').count()) { page = candidate; break }
+    }
+    if (!page) await wait(100)
+  }
+  check(page, '主窗口未加载')
+  report.app = await bounded(page.evaluate(() => window.murasame.app.getInfo()), 30_000)
+  check(resolve(report.app.userDataPath) === resolve(userData), '应用未使用独立测试资料，停止测试')
+  await bounded(page.evaluate(() => window.murasame.pet.show()), 30_000)
+  await bounded(page.evaluate(() => window.murasame.window.hideMain()), 30_000)
+  await wait(15_000)
 
-let page = null
-for (let attempt = 0; attempt < 120 && !page; attempt += 1) {
-  for (const candidate of app.windows()) {
-    if (candidate.isClosed() || candidate.url().includes('/pet.html')) continue
-    if (await candidate.getByTestId('nav-overview').count()) {
-      page = candidate
-      break
+  const sample = () => app.evaluate(({ app: target }) => target.getAppMetrics())
+  const capture = async (name) => {
+    try {
+      const state = await bounded(app.evaluate(({ BrowserWindow, powerMonitor }) => ({
+        idle: powerMonitor.getSystemIdleState(60),
+        windows: BrowserWindow.getAllWindows().map(win => ({ visible: win.isVisible(), minimized: win.isMinimized(), focused: win.isFocused(), url: win.webContents.getURL() }))
+      })), 5000)
+      report.captureIssues.push({ name, state })
+      await page.screenshot({ path: join(output, name + '.png'), timeout: 10_000 })
+    } catch (error) { report.captureIssues.push({ name, error: String(error) }) }
+  }
+  const measure = async (name, options) => {
+    const row = await measureScenario({ name, durationMs: seconds * 1000, timeoutMs: Math.max(180_000, seconds * 1000 + 60_000), logicalCores: report.logicalCores, sample, ...options })
+    report.rows.push(row)
+    writeFileSync(join(output, 'report.json'), JSON.stringify(report, null, 2))
+    console.log(name + ': ' + row.status + (row.error ? ' — ' + row.error : ''))
+    if (row.cleanupError) report.cleanupErrors.push(name + '：' + row.cleanupError)
+    if (row.status === 'failed') throw new Error(name + '失败；停止后续场景，关闭独立应用。' + row.error)
+    return row
+  }
+  await measure('待机', { drive: async () => {
+    const pet = await page.evaluate(() => window.murasame.pet.getState())
+    const visible = await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().filter(win => win.isVisible()).map(win => win.webContents.getURL()))
+    check(visible.some(url => url.includes('/pet.html')), '桌宠窗口未真实显示')
+    check(visible.every(url => url.includes('/pet.html')), '待机时主控制台应隐藏')
+    return { ok: true, evidence: { pet, visibleWindows: visible, warmupSeconds: 15 } }
+  } })
+  const readiness = await bounded(page.evaluate(() => window.murasame.voice.readiness()), 30_000)
+  await measure('语音交流', {
+    prerequisite: !readiness.stt || !readiness.tts ? '本地语音未就绪：' + readiness.detail : '尚缺独立录音输入、转写、回复和实际播报的完整测量驱动；单独 TTS 不作为语音交流。',
+    drive: async () => ({ ok: false })
+  })
+  await measure('屏幕理解', {
+    prerequisite: '尚缺固定独立测试窗口及模型场景；本轮不读取或发送用户当前桌面。',
+    drive: async () => ({ ok: false })
+  })
+
+  await bounded(page.evaluate(() => window.murasame.window.showMain()), 30_000)
+  const model = resultData(await bounded(page.evaluate(() => window.murasame.core.createModel()), 30_000))
+  resultData(await bounded(page.evaluate(async ({ id, endpoint }) => window.murasame.core.verifyModel(id, {
+    name: '独立性能测量模型边界', provider: 'OpenAI Compatible', endpoint, key: 'performance-fixture', model: 'performance-model', caps: []
+  }), { id: model.id, endpoint: server.url }), 30_000))
+  await page.getByTestId('nav-tasks').click()
+  await measure('任务执行', { drive: async (signal) => {
+    signal.throwIfAborted()
+    const created = resultData(await page.evaluate(folder => window.murasame.core.createTask('按类型整理独立资料', folder), taskRoot))
+    taskId = created.id
+    signal.throwIfAborted()
+    check(created.status === '等待批准', '没有进入真实批准阶段：' + created.status)
+    check(existsSync(join(taskRoot, 'example.txt')) && !existsSync(join(taskRoot, '文档/example.txt')), '批准前已发生写入')
+    resultData(await page.evaluate(id => window.murasame.core.approveTask(id, 'once'), taskId))
+    signal.throwIfAborted()
+    let task
+    for (let attempt = 0; attempt < 200; attempt++) {
+      const bootstrap = resultData(await page.evaluate(() => window.murasame.core.getBootstrap()))
+      signal.throwIfAborted()
+      task = bootstrap.tasks.find(item => item.id === taskId)
+      if (['已完成', '失败', '已取消', '部分完成'].includes(task?.status)) break
+      await wait(100)
+      signal.throwIfAborted()
+    }
+    check(task?.status === '已完成', '任务没有完成：' + task?.status)
+    check(readFileSync(join(taskRoot, '文档/example.txt'), 'utf8') === 'performance independent fixture', '实际文件内容不符')
+    check(!existsSync(join(taskRoot, 'example.txt')), '实际文件没有移动')
+    return { ok: true, evidence: { taskId, status: task.status, toolCalls: task.toolCalls, verdict: task.verdict, movedFileSha256: stamp(join(taskRoot, '文档/example.txt')), modelBoundary: '本地固定响应' } }
+  }, cancel: async () => { if (taskId) resultData(await page.evaluate(id => window.murasame.core.cancelTask(id), taskId)) } })
+  await capture('task-completed')
+
+  let prerequisite = '未启用 --isolation；未启动容器，不能记录为自主活动测量。'
+  if (enableIsolation) {
+    const environment = await bounded(page.evaluate(() => window.murasame.autonomy.environment()), 30_000)
+    report.isolationEnvironment = environment
+    prerequisite = environment.image && environment.docker ? undefined : '隔离环境未就绪；本测量不自动下载或构建。'
+  }
+  await measure('自主活动', { prerequisite, drive: async (signal) => {
+    signal.throwIfAborted()
+    await page.getByTestId('nav-autonomy').click()
+    signal.throwIfAborted()
+    isolationAttempted = true
+    resultData(await page.evaluate(() => window.murasame.autonomy.start({ confirmed: true, allowNetwork: false, kind: 'code' })))
+    signal.throwIfAborted()
+    const state = await page.evaluate(() => window.murasame.autonomy.status())
+    signal.throwIfAborted()
+    check(state.running && state.allowNetwork === false, '容器未实际运行或没有关闭联网')
+    report.activityStarted = state.activityId
+    resultData(await page.evaluate(() => window.murasame.autonomy.create('code', '计算1到10的平方和')))
+    signal.throwIfAborted()
+    const completed = await page.evaluate(() => window.murasame.autonomy.status())
+    signal.throwIfAborted()
+    const artifact = completed.creation?.artifact
+    check(artifact?.sha256 && artifact.bytes > 0, '没有经过核验的真实代码产物')
+    return { ok: true, evidence: { activityId: state.activityId, creation: completed.creation, modelBoundary: '固定 Worker/Critic 响应；真实容器运行及文件核验' } }
+  }, cancel: async () => { resultData(await page.evaluate(() => window.murasame.autonomy.stop())) } })
+  if (isolationAttempted) await capture('autonomy-completed')
+} catch (error) {
+  report.error = error instanceof Error ? error.stack : String(error)
+} finally {
+  if (app) {
+    try {
+      if (isolationAttempted) {
+        check(page && !page.isClosed(), '停止活动前页面已不可用')
+        report.stopReceipt = resultData(await bounded(page.evaluate(() => window.murasame.autonomy.stop()), 20_000))
+        check(!report.stopReceipt.running, '停止回执仍显示活动运行')
+        check(!report.activityStarted || report.stopReceipt.result?.cleanupSucceeded === true, '未取得容器已清理的核验回执')
+      }
+    }
+    catch (error) { report.cleanupErrors.push('停止隔离活动：' + String(error)) }
+    try { await bounded(app.close(), 20_000) }
+    catch (error) {
+      report.cleanupErrors.push('关闭应用：' + String(error))
+      const launched = app.process()
+      try {
+        if (launched.exitCode === null && launched.signalCode === null) {
+          // Playwright may launch through cmd.exe on Windows. Kill only this
+          // launch's tree; never select by executable name or kill other apps.
+          if (process.platform === 'win32') execFileSync('taskkill.exe', ['/PID', String(launched.pid), '/T', '/F'], { windowsHide: true, timeout: 5000, stdio: 'pipe' })
+          else launched.kill('SIGKILL')
+          await bounded(new Promise(done => {
+            if (launched.exitCode !== null || launched.signalCode !== null) done()
+            else launched.once('exit', done)
+          }), 5000)
+          report.forcedLaunchTreeExit = true
+        }
+      } catch (killError) { report.cleanupErrors.push('终止本次启动进程树：' + String(killError)) }
     }
   }
-  if (!page) await wait(100)
+  if (server) { report.modelCalls = server.calls; await server.close() }
+  const inside = relative(scratchBase, resolve(userData))
+  if (inside.startsWith('..') || resolve(userData) === resolve(scratchBase)) report.cleanupErrors.push('临时目录不在允许清理的范围，保留目录')
+  else if (report.cleanupErrors.length === 0) {
+    try { rmSync(userData, { recursive: true, force: true }); report.profileRemoved = true }
+    catch (error) { report.cleanupErrors.push('清理独立资料：' + String(error)) }
+  }
+  if (!report.profileRemoved) report.retainedProfile = userData
+  for (const scenario of ['待机', '语音交流', '屏幕理解', '任务执行', '自主活动']) {
+    if (!report.rows.some(row => row.scenario === scenario)) report.rows.push({ scenario, status: 'blocked', metrics: null, error: '前序准备失败，本场景未运行' })
+  }
+  report.finishedAt = new Date().toISOString()
+  report.formalDuration = report.rows.some(row => row.status === 'measured') && report.rows.filter(row => row.status === 'measured').every(row => row.metrics.elapsedSeconds >= 60)
+  report.completeFiveScenarios = !report.error && !report.cleanupErrors.length && report.formalDuration && report.rows.every(row => row.status === 'measured')
+  writeFileSync(join(output, 'report.json'), JSON.stringify(report, null, 2))
+  const rows = report.rows.map(row => '| ' + [row.scenario, row.status, row.metrics?.cpuLogical.toFixed(3) ?? '—', row.metrics?.meanWorkingSetMiB.toFixed(1) ?? '—', row.metrics?.elapsedSeconds.toFixed(1) ?? '—', row.error ?? ''].join(' | ') + ' |')
+  const markdown = ['# 独立性能测量', '', '起始：' + report.startedAt + '；五场景完整：' + report.completeFiveScenarios + '；实际采样至少60秒：' + report.formalDuration + '。', '', report.scope, '', '| 场景 | 状态 | CPU 逻辑核 | 平均工作集 MiB | 秒 | 原因 |', '| --- | --- | --- | --- | --- | --- |', ...rows, '', ...report.limitations.map(item => '- ' + item), '- CPU 为已观察累计时间差，采样间退出进程最后一段可能遗漏；原始逐进程样本保存在 report.json。', '- 工作场景包含任务开始、执行、完成后余下窗口；不是持续满载测试。', '- 截图在测量窗口之后单独记录，失败见 captureIssues；不能将场景 measured 当作界面截图通过。', '- 原 docs/04 历史报告保留，本结果不能视为 D10 全部验收。', '', report.error ?? '', ...report.cleanupErrors, ...report.captureIssues.filter(item => item.error).map(item => item.name + '：' + item.error), ''].join('\n')
+  writeFileSync(join(output, 'README.md'), markdown)
+  console.log('证据：' + output)
+  if (!report.completeFiveScenarios) process.exitCode = report.error || report.rows.some(row => row.status === 'failed') || report.cleanupErrors.length ? 1 : 2
 }
-if (!page) throw new Error('主窗口未加载，无法采样')
-
-// 先预热，避免把启动开销记成待机开销。
-await page.getByTestId('nav-overview').click()
-await wait(15_000)
-
-const rows = []
-rows.push(await measure('待机', pids, async () => {
-  await wait(500)
-}))
-
-rows.push(await measure('语音交流', pids, async () => {
-  await page.evaluate(async () => {
-    const readiness = await window.murasame.voice.readiness()
-    if (readiness.tts) await window.murasame.voice.speak('性能采样用的一句话。')
-  })
-}))
-
-rows.push(await measure('屏幕理解', pids, async () => {
-  await page.getByTestId('nav-screen').click()
-  await page.evaluate(async () => {
-    await window.murasame.core.analyzeScreen()
-  })
-}))
-
-rows.push(await measure('任务执行', pids, async () => {
-  await page.evaluate(async () => {
-    await window.murasame.core.createTask('整理 C:\\Windows\\Temp 下的临时文件')
-  })
-}))
-
-rows.push(await measure('自主活动', pids, async () => {
-  await page.getByTestId('nav-autonomy').click()
-  await page.evaluate(async () => {
-    await window.murasame.autonomy.start()
-  })
-}))
-
-await app.close()
-rmSync(userData, { recursive: true, force: true })
-
-const table = rows.map((row) =>
-  `| ${row.scenario} | ${row.cpuLogical.toFixed(3)} | ${row.cpuPercentOfMachine.toFixed(1)}% | ${row.memoryMb.toFixed(0)} | ${row.elapsed.toFixed(0)} s |`
-).join('\n')
-
-const report = [
-  '# 性能测量',
-  '',
-  `测量设备以 \`docs/01-DECISIONS.md\` D-10 为准。本机 ${logicalCores} 个逻辑核。`,
-  '',
-  '五个场景分别驱动并采样整棵 Electron 进程树的 CPU 时间与工作集，不用单一空闲值代表全部状态。',
-  '测量前先预热 15 秒，避免把启动开销记成待机开销。',
-  '按已确认的口径，数值未达目标不阻塞交付，这里如实记录。',
-  '',
-  '| 场景 | CPU（逻辑核） | 占整机 | 内存 MB | 采样时长 |',
-  '| --- | --- | --- | --- | --- |',
-  table,
-  '',
-  `目标：待机 CPU ≤ 0.2 逻辑核、内存 ≤ 600 MB。实测待机 ${rows[0].cpuLogical.toFixed(3)} 逻辑核、${rows[0].memoryMb.toFixed(0)} MB。`,
-  '',
-  '说明：自主活动一栏若 Docker 未运行，记录的是「拒绝启动并提示」路径的开销，不是容器运行时的开销。',
-  `重跑：\`node scripts/perf-suite.mjs --seconds=${seconds}\`，需要先执行 \`npm run build\`。`,
-  ''
-].join('\n')
-
-writeFileSync(join(root, 'docs', '04-PERFORMANCE.md'), report)
-console.log(report)

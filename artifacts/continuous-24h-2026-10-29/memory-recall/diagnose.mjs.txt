@@ -1,0 +1,65 @@
+import { build } from 'esbuild'
+import { createHash } from 'node:crypto'
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { cpus } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+
+const output = dirname(fileURLToPath(import.meta.url))
+const temp = resolve('previews/tmp'); mkdirSync(temp, { recursive: true })
+const userData = mkdtempSync(join(temp, 'recall-diagnostic-'))
+const engine = join(userData, 'engine.mjs')
+await build({ stdin: { contents: "export * from './src/main/local/embedding'; export {setBundledModelsRoot} from './src/main/local/model-env'", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, packages: 'external', platform: 'node', format: 'esm', outfile: engine })
+const api = await import(pathToFileURL(engine).href)
+const modelRoot = resolve(process.env.MURASAME_MODELS || 'build/bundled-models')
+api.setBundledModelsRoot(modelRoot)
+const { env } = await import('@huggingface/transformers')
+env.useFSCache = false; env.useBrowserCache = false
+let networkAttempts = 0
+globalThis.fetch = async () => { networkAttempts++; throw new Error('Offline diagnostic forbids network access') }
+const encode = async text => {
+  const vector = await api.embedLocally(text, userData)
+  if (!vector || vector.length !== 512) throw new Error('Actual local embedding unavailable')
+  return vector
+}
+const suites = [
+  ['original', join(output, 'original-fixture.json')],
+  ['independent', join(output, 'holdout.json')]
+]
+const reports = []
+for (const [name, fixturePath] of suites) {
+  const fixture = JSON.parse(readFileSync(fixturePath, 'utf8'))
+  const entries = []
+  for (const fact of fixture.facts) entries.push({ ...fact, vector: await encode(fact.text) })
+  const cases = []
+  for (const item of fixture.cases) {
+    const variants = []
+    for (const [variant, text] of [['plain', item.query], ['retrieval-prefix', `为这个句子生成表示以用于检索相关文章：${item.query}`]]) {
+      const started = performance.now()
+      const vector = await encode(text)
+      const result = api.recallMemories(item.query, entries, vector)
+      const ranking = entries.map(fact => ({ id: fact.id, cosine: api.cosine(vector, fact.vector) })).sort((a, b) => b.cosine - a.cosine)
+      const forbidden = item.negative ? entries.filter(fact => !['style', 'eye'].includes(fact.id)).map(fact => fact.id) : (item.forbidden || []).filter(Boolean)
+      variants.push({ variant, ids: result.ids, expectedHit: item.expected.every(id => result.ids.includes(id)), forbiddenHit: forbidden.filter(id => result.ids.includes(id)), latencyMs: performance.now() - started, ranking })
+    }
+    cases.push({ ...item, variants })
+  }
+  const summary = ['plain', 'retrieval-prefix'].map(variant => {
+    const positives = cases.filter(item => item.expected.length).map(item => item.variants.find(result => result.variant === variant))
+    const negatives = cases.filter(item => item.negative).map(item => item.variants.find(result => result.variant === variant))
+    return { variant, positiveCases: positives.length, hitCases: positives.filter(item => item.expectedHit).length,
+      qualityTargetsMet: cases.every(item => { const result = item.variants.find(value => value.variant === variant); return result.expectedHit && !result.forbiddenHit.length }),
+      forbiddenCases: cases.filter(item => item.variants.find(result => result.variant === variant).forbiddenHit.length).length,
+      negativeCases: negatives.length, negativeIntrusions: negatives.filter(item => item.forbiddenHit.length).length }
+  })
+  reports.push({ name, fixtureSha256: createHash('sha256').update(readFileSync(fixturePath)).digest('hex'), summary, cases, entries })
+  console.log(JSON.stringify({ name, summary }))
+}
+const report = { at: new Date().toISOString(), node: process.version, cpu: cpus()[0]?.model, actualLocalModel: true, networkAttempts,
+  profile: api.EMBEDDING_PROFILE,
+  sourceFiles: ['src/main/local/embedding.ts', 'src/main/local/model-env.ts'].map(file => ({ file, sha256: createHash('sha256').update(readFileSync(resolve(file))).digest('hex') })),
+  modelFiles: api.EMBEDDING_FILES.map(file => ({ file, sha256: createHash('sha256').update(readFileSync(join(modelRoot, api.EMBEDDING_MODEL_ID, file))).digest('hex') })), reports }
+if (networkAttempts) throw new Error('Network was attempted')
+const path = join(output, 'diagnostic-plain-vs-prefix.json')
+writeFileSync(path, JSON.stringify(report, null, 2) + '\n')
+console.log(JSON.stringify({ report: path, networkAttempts }))

@@ -1,0 +1,32 @@
+import { build } from 'esbuild'
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+const dir = dirname(fileURLToPath(import.meta.url))
+const temp = resolve('previews/tmp'); mkdirSync(temp, { recursive: true })
+const userData = mkdtempSync(join(temp, 'recall-identifiers-'))
+const engine = join(userData, 'engine.mjs')
+await build({ stdin: { contents: "export * from './src/main/local/embedding'; export {setBundledModelsRoot} from './src/main/local/model-env'", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, packages: 'external', platform: 'node', format: 'esm', outfile: engine })
+const api = await import(pathToFileURL(engine).href)
+api.setBundledModelsRoot(resolve(process.env.MURASAME_MODELS || 'build/bundled-models'))
+const { env } = await import('@huggingface/transformers'); env.useFSCache = false; env.useBrowserCache = false
+let networkAttempts = 0
+globalThis.fetch = async () => { networkAttempts++; throw new Error('Offline only') }
+const entries = []
+for(let i = 1; i <= 24; i++) {
+  const code = `arc-${String(i).padStart(3, '0')}`
+  const text = `合成测试项目 ${code} 需要整理设计文档和审查记录。`
+  entries.push({id: code, category: 'project', text, vector: await api.embedLocally(text, userData)})
+}
+const cases = []
+for(const entry of entries) {
+  for(const query of [entry.id, `${entry.id}?`, `“${entry.id.toUpperCase()}”`, `请整理${entry.id}的资料`]) {
+    const vector = await api.embedLocally(query, userData)
+    if(!vector || entries.some(fact => !fact.vector)) throw new Error('Local embeddings unavailable')
+    const result = api.recallMemories(query, entries, vector)
+    cases.push({query, expected:entry.id, hit:result.ids.includes(entry.id), ids:result.ids,
+      ranking: entries.map(fact => ({id:fact.id, cosine:api.cosine(vector, fact.vector)})).sort((a,b) => b.cosine-a.cosine)})
+  }
+}
+writeFileSync(join(dir, 'identifier-baseline.json'), JSON.stringify({networkAttempts,cases,entries}, null, 2))
+console.log(JSON.stringify({total:cases.length, hits:cases.filter(item => item.hit).length, misses:cases.filter(item => !item.hit).map(item => ({query:item.query,expected:item.expected,rank:item.ranking.findIndex(fact => fact.id === item.expected)+1,score:item.ranking.find(fact => fact.id === item.expected).cosine})),networkAttempts}))

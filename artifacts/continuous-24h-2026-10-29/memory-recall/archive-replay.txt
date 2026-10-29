@@ -1,0 +1,88 @@
+{"name":"original","summary":[{"variant":"plain","positiveCases":19,"hitCases":17,"qualityTargetsMet":false,"forbiddenCases":0,"negativeCases":0,"negativeIntrusions":0},{"variant":"retrieval-prefix","positiveCases":19,"hitCases":15,"qualityTargetsMet":false,"forbiddenCases":0,"negativeCases":0,"negativeIntrusions":0}]}
+{"name":"independent","summary":[{"variant":"plain","positiveCases":38,"hitCases":35,"qualityTargetsMet":false,"forbiddenCases":1,"negativeCases":16,"negativeIntrusions":1},{"variant":"retrieval-prefix","positiveCases":38,"hitCases":30,"qualityTargetsMet":false,"forbiddenCases":0,"negativeCases":16,"negativeIntrusions":0}]}
+{"report":"E:\\Desktop\\软件工程\\murasame\\previews\\memory-diagnostic-ad798ab005d14dc7a300fc0fa55dd438\\diagnostic-plain-vs-prefix.json","networkAttempts":0}
+{"total":96,"hits":96,"misses":[],"networkAttempts":0}
+[
+  {
+    "name": "original",
+    "thresholds": [
+      {
+        "threshold": 0.45,
+        "positiveCases": 19,
+        "hitCases": 17,
+        "explicitForbiddenCases": 0,
+        "negativeCases": 0,
+        "negativeIntrusions": 0,
+        "returnedCount": 57
+      },
+      {
+        "threshold": 0.4,
+        "positiveCases": 19,
+        "hitCases": 17,
+        "explicitForbiddenCases": 0,
+        "negativeCases": 0,
+        "negativeIntrusions": 0,
+        "returnedCount": 90
+      },
+      {
+        "threshold": 0.35,
+        "positiveCases": 19,
+        "hitCases": 18,
+        "explicitForbiddenCases": 2,
+        "negativeCases": 0,
+        "negativeIntrusions": 0,
+        "returnedCount": 134
+      },
+      {
+        "threshold": 0.3,
+        "positiveCases": 19,
+        "hitCases": 19,
+        "explicitForbiddenCases": 3,
+        "negativeCases": 0,
+        "negativeIntrusions": 0,
+        "returnedCount": 160
+      }
+    ]
+  },
+  {
+    "name": "independent",
+    "thresholds": [
+      {
+        "threshold": 0.45,
+        "positiveCases": 38,
+        "hitCases": 35,
+        "explicitForbiddenCases": 1,
+        "negativeCases": 16,
+        "negativeIntrusions": 1,
+        "returnedCount": 98
+      },
+      {
+        "threshold": 0.4,
+        "positiveCases": 38,
+        "hitCases": 38,
+        "explicitForbiddenCases": 6,
+        "negativeCases": 16,
+        "negativeIntrusions": 6,
+        "returnedCount": 192
+      },
+      {
+        "threshold": 0.35,
+        "positiveCases": 38,
+        "hitCases": 38,
+        "explicitForbiddenCases": 11,
+        "negativeCases": 16,
+        "negativeIntrusions": 11,
+        "returnedCount": 299
+      },
+      {
+        "threshold": 0.3,
+        "positiveCases": 38,
+        "hitCases": 38,
+        "explicitForbiddenCases": 14,
+        "negativeCases": 16,
+        "negativeIntrusions": 14,
+        "returnedCount": 372
+      }
+    ]
+  }
+]

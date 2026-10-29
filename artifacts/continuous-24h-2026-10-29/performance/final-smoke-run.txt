@@ -1,0 +1,6 @@
+待机: measured
+语音交流: blocked — 尚缺独立录音输入、转写、回复和实际播报的完整测量驱动；单独 TTS 不作为语音交流。
+屏幕理解: blocked — 尚缺固定独立测试窗口及模型场景；本轮不读取或发送用户当前桌面。
+任务执行: measured
+自主活动: measured
+证据：E:\Desktop\软件工程\murasame\previews\performance-runs\2026-10-29T02-25-00-761Z

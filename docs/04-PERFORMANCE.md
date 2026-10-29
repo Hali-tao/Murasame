@@ -1,5 +1,7 @@
 # 性能测量
 
+> **历史记录，不能用作当前验收结论（2026-10-29 复核）**：下方旧脚本曾混入其他 Electron 进程，并未确认语音、屏幕、任务和自主活动是否真正执行，且采样不足60秒。保留原始数值供追溯，不代表当前版本五场景达标。新版 `scripts/perf-suite.mjs` 使用独立资料与本次应用进程，输出独立 `previews/performance-runs/<时间>/` 证据；未完成场景明确标为 blocked。新进展见 `docs/21-CONTINUOUS-IMPROVEMENT-24H.md`。
+
 测量设备以 `docs/01-DECISIONS.md` D-10 为准。本机 32 个逻辑核。
 
 五个场景分别驱动并采样整棵 Electron 进程树的 CPU 时间与工作集，不用单一空闲值代表全部状态。

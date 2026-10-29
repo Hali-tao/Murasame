@@ -1,0 +1,25 @@
+import { readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// Counterfactual analysis only. This never changes production retrieval.
+// Rankings come from the actual offline model, using the unprefixed query.
+const output = dirname(fileURLToPath(import.meta.url))
+const source = JSON.parse(readFileSync(join(output, 'diagnostic-plain-vs-prefix.json'), 'utf8'))
+const reports = source.reports.map(suite => ({ name: suite.name, thresholds: [0.45, 0.4, 0.35, 0.3].map(threshold => {
+  const cases = suite.cases.map(item => {
+    const semantic = item.variants[0].ranking.filter(fact => fact.cosine >= threshold).map(fact => fact.id)
+    const lexical = suite.entries.filter(fact => item.query.split(/[，。\s]/).filter(token => token.length >= 2).some(token => fact.text.includes(token))).map(fact => fact.id)
+    const scores = new Map()
+    for(const ranking of [semantic, lexical]) ranking.forEach((id, index) => scores.set(id, (scores.get(id) || 0) + 1 / (61 + index)))
+    const ids = [...scores].sort((a,b) => b[1] - a[1]).slice(0,8).map(([id]) => id)
+    const forbidden = item.negative ? suite.entries.filter(fact => !['style', 'eye'].includes(fact.id)).map(fact => fact.id) : (item.forbidden || []).filter(Boolean)
+    return { query: item.query, positive: item.expected.length > 0, hit: item.expected.every(id => ids.includes(id)), negative: !!item.negative,
+      forbiddenHit: forbidden.filter(id => ids.includes(id)), returnedCount: ids.length }
+  })
+  return { threshold, positiveCases: cases.filter(item => item.positive).length, hitCases: cases.filter(item => item.positive && item.hit).length,
+    explicitForbiddenCases: cases.filter(item => item.forbiddenHit.length).length, negativeCases: cases.filter(item => item.negative).length,
+    negativeIntrusions: cases.filter(item => item.negative && item.forbiddenHit.length).length, returnedCount: cases.reduce((sum,item) => sum + item.returnedCount, 0) }
+}) }))
+writeFileSync(join(output, 'threshold-sensitivity.json'), JSON.stringify({source: 'diagnostic-plain-vs-prefix.json', counterfactualOnly: true, productionThresholdUnchanged: 0.45, reports}, null, 2))
+console.log(JSON.stringify(reports, null, 2))
