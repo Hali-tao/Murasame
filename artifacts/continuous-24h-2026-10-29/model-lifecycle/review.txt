@@ -1,0 +1,24 @@
+Independent review: /root/model_lifecycle_review
+Baseline: 67150abe2af1befc36c49b0be2b6b4f923c91ca0
+Scope: src/main/model/registry.ts, src/main/core/services/conversation-service.ts,
+tests/unit/conversation-model-lifecycle.test.ts, tests/e2e/model-lifecycle.spec.ts.
+
+First review: no blocking correctness findings. Reviewer ran 40 tests across the initial
+16 lifecycle tests and existing model-maturity-regression tests; all passed.
+Inspected singleton registry and exact-object health-report callers, connection epochs,
+successful verification commits, deletion, metadata edits, status persistence errors,
+and absence of serialized revision markers or additional credential copies.
+
+Follow-up after re-entered-key guard and final E2E changes: no blocking findings.
+Boolean(input.key.trim()) matches the existing reset semantics, even when encryption
+is deterministic. Two added lifecycle cases first failed and then the guard was changed.
+The later verification tool probe is held only at the external HTTP boundary; the real
+chat starts before verification commits. A changed persisted probedAt confirms the
+commit before releasing the old 503. The toast confirms failure handling before health
+assertion. The deletion test asserts rendered reply before querying persisted state.
+No significant false-pass path found. Reviewer did not rerun full tests/build or edit files.
+
+Optional coverage noted but not required: default switch while a chat is pending,
+failed configuration save, pending/failed verification. Inspection found these preserve
+valid status reporting. Unchanged conversation trace/title-write failure handling was
+outside this model-status repair and is not claimed fixed.

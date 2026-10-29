@@ -59,6 +59,8 @@ const DEMO_SEED_IDS = ['openai-main', 'claude-long', 'qwen-local']
 
 export class ModelRegistry {
   private readonly verificationVersions = new Map<string, number>()
+  private readonly connectionEpochs = new Map<string, number>()
+  private readonly statusSnapshots = new WeakMap<ResolvedModel, { id: string; epoch: number }>()
   private store = new Store<ModelStoreShape>({
     name: 'murasame-models',
     defaults: { models: seedModels() }
@@ -92,6 +94,7 @@ export class ModelRegistry {
     // 删掉当前服务后，把第一条顶上，避免没有可用配置却仍显示有。
     if (target.default && kept.length > 0) kept[0].default = true
     this.store.set('models', kept)
+    this.invalidateConnectionStatus(id)
     return kept.map(publicProfile)
   }
 
@@ -144,6 +147,9 @@ export class ModelRegistry {
     updated[index] = next
     this.store.set('models', updated)
     this.nextVerificationVersion(id)
+    const previous = models[index]
+    if (previous.provider !== next.provider || previous.endpoint !== next.endpoint
+      || previous.model !== next.model || Boolean(input.key.trim())) this.invalidateConnectionStatus(id)
     return publicProfile(next)
   }
 
@@ -170,6 +176,9 @@ export class ModelRegistry {
         models[index] = next
         this.store.set('models', models)
         this.nextVerificationVersion(id)
+        // This explicit verification is newer evidence than in-flight chats,
+        // even if the user verified exactly the same connection again.
+        this.invalidateConnectionStatus(id)
         return publicProfile(next)
       }
     }
@@ -179,6 +188,10 @@ export class ModelRegistry {
     const version = (this.verificationVersions.get(id) ?? 0) + 1
     this.verificationVersions.set(id, version)
     return version
+  }
+
+  private invalidateConnectionStatus(id: string): void {
+    this.connectionEpochs.set(id, (this.connectionEpochs.get(id) ?? 0) + 1)
   }
 
   private withInput(current: StoredModel, input: ModelInput): StoredModel {
@@ -233,21 +246,30 @@ export class ModelRegistry {
     return publicProfile(updated[index])
   }
 
-  markVerified(id: string, latencyMs: number): ModelProfile {
-    return this.updateStatus(id, '在线', 'green', `${latencyMs} ms`)
+  markVerified(id: string, latencyMs: number, expected?: ResolvedModel): ModelProfile | null {
+    return this.updateStatus(id, '在线', 'green', `${latencyMs} ms`, expected)
   }
 
-  markOffline(id: string): ModelProfile {
-    return this.updateStatus(id, '离线', 'red', '连接失败')
+  markOffline(id: string, expected?: ResolvedModel): ModelProfile | null {
+    return this.updateStatus(id, '离线', 'red', '连接失败', expected)
   }
 
   private resolveStored(model: StoredModel): ResolvedModel {
-    return { ...publicProfile(model), apiKey: this.decryptKey(model.encryptedKey) }
+    const resolved = { ...publicProfile(model), apiKey: this.decryptKey(model.encryptedKey) }
+    this.statusSnapshots.set(resolved, { id: model.id, epoch: this.connectionEpochs.get(model.id) ?? 0 })
+    return resolved
   }
 
-  private updateStatus(id: string, status: ModelStatus, tone: Tone, latency: string): ModelProfile {
+  private updateStatus(id: string, status: ModelStatus, tone: Tone, latency: string, expected?: ResolvedModel): ModelProfile | null {
     const models = this.store.get('models')
     const index = models.findIndex((item) => item.id === id)
+    if (expected) {
+      const snapshot = this.statusSnapshots.get(expected)
+      // A late reply still belongs to its conversation, but cannot attest to a
+      // replaced/deleted connection. Tokens stay private; no credentials or
+      // revision markers need to be serialized into profiles or conversation data.
+      if (index < 0 || snapshot?.id !== id || snapshot.epoch !== (this.connectionEpochs.get(id) ?? 0)) return null
+    }
     if (index < 0) throw new Error('模型配置不存在')
     const updated = [...models]
     updated[index] = { ...updated[index], status, tone, latency }

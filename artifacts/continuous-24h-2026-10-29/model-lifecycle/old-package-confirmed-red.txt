@@ -1,0 +1,91 @@
+
+Running 2 tests using 1 worker
+
+(node:44528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\model-lifecycle.spec.ts:55:5 › an old failed chat cannot invalidate a newer actual model verification (6.2s)
+(node:70252) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 tests\e2e\model-lifecycle.spec.ts:92:5 › removing a model during a real pending request still delivers its complete answer to the conversation (11.1s)
+
+
+  1) tests\e2e\model-lifecycle.spec.ts:55:5 › an old failed chat cannot invalidate a newer actual model verification
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "在线"
+    Received: "离线"
+
+      84 |     expect(state.ok).toBe(true)
+      85 |     if (!state.ok) throw new Error(state.error)
+    > 86 |     expect(state.data.models.find(model => model.default)?.status).toBe('在线')
+         |                                                                    ^
+      87 |     await page.getByTestId('nav-models').click()
+      88 |     await page.screenshot({ path: test.info().outputPath('verified-model-after-old-failure.png') })
+      89 |   } finally { await closeApp(app); await server.close() }
+        at E:\Desktop\软件工程\murasame\tests\e2e\model-lifecycle.spec.ts:86:68
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-an-old-fai-54644-r-actual-model-verification\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-an-old-fai-54644-r-actual-model-verification\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-an-old-fai-54644-r-actual-model-verification\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-an-old-fai-54644-r-actual-model-verification\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-an-old-fai-54644-r-actual-model-verification\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\model-lifecycle.spec.ts:92:5 › removing a model during a real pending request still delivers its complete answer to the conversation
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.message-row.assistant').last()
+    Expected substring: "这是删除配置前已经发出的请求的完整回复。"
+    Received string:    "雨桌宠12:30朗读我在。"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.message-row.assistant').last() with timeout 5000ms
+      - waiting for locator('.message-row.assistant').last()
+        13 × locator resolved to <div class="message-row assistant">…</div>
+           - unexpected value "雨桌宠12:30朗读我在。"
+
+
+      107 |     await page.getByTestId('nav-chat').click()
+      108 |     server.release(text, true)
+    > 109 |     await expect(page.locator('.message-row.assistant').last()).toContainText('这是删除配置前已经发出的请求的完整回复。')
+          |                                                                 ^
+      110 |     await expect(page.locator('.toast-red').filter({ hasText: '模型配置不存在' })).toHaveCount(0)
+      111 |     const state = await page.evaluate(() => window.murasame.core.getBootstrap())
+      112 |     expect(state.ok).toBe(true)
+        at E:\Desktop\软件工程\murasame\tests\e2e\model-lifecycle.spec.ts:109:65
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-removing-a-cbe61--answer-to-the-conversation\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-removing-a-cbe61--answer-to-the-conversation\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-removing-a-cbe61--answer-to-the-conversation\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-removing-a-cbe61--answer-to-the-conversation\trace.zip
+    Usage:
+
+        npx playwright show-trace previews\continuous-24h-2026-10-29\model-lifecycle\old-package-confirmed-red\model-lifecycle-removing-a-cbe61--answer-to-the-conversation\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\model-lifecycle.spec.ts:55:5 › an old failed chat cannot invalidate a newer actual model verification
+    tests\e2e\model-lifecycle.spec.ts:92:5 › removing a model during a real pending request still delivers its complete answer to the conversation

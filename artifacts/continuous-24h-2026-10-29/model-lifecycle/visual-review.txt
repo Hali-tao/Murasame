@@ -1,0 +1,15 @@
+2026-10-29 Beijing, final packaged application screenshots inspected by primary agent.
+
+verified-model-after-old-failure.png:
+The model page retains its green current-service / verified state. The controlled older
+HTTP 503 remains visible as a request error toast; it has not replaced the newer verified
+connection status. The E2E additionally queries the public bootstrap to verify persistence.
+
+reply-delivered-after-model-removal.png:
+The conversation displays the original greeting, user message and complete expected answer.
+The removed service is no longer configured; sending a new message is disabled accordingly.
+No model-configuration-not-found error obscures the completed reply. The E2E additionally
+checks that the model list is empty and the full response is saved in history.
+
+These are real independent packaged Electron windows and controlled external HTTP responses.
+They are not evidence of real provider answer quality, installation/upgrade or new character art.

@@ -1,5 +1,5 @@
 import type { SqliteDatabase } from '../../data/sqlite-types'
-import type { ChatTurn } from '../../model/types'
+import type { ChatTurn, ResolvedModel } from '../../model/types'
 import { ModelGateway } from '../../model/gateway'
 import { composePrompt } from '../../agent/prompts'
 import type { ModelRegistry } from '../../model/registry'
@@ -42,8 +42,8 @@ interface ConversationRow {
 
 interface ModelAccess {
   getDefault(): ReturnType<ModelRegistry['getDefault']>
-  markOffline(id: string): void
-  markVerified(id: string, latencyMs: number): void
+  markOffline(id: string, expected?: ResolvedModel): void
+  markVerified(id: string, latencyMs: number, expected?: ResolvedModel): void
 }
 
 export interface ConversationContext {
@@ -202,7 +202,7 @@ export class ConversationService {
       reply = await this.gateway.chat(model, messages, undefined, system)
       void onDelta
     } catch (error) {
-      this.models.markOffline(model.id)
+      notify(() => this.models.markOffline(model.id, model))
       return fail(error instanceof Error ? error.message : '模型请求失败，请稍后重试')
     }
     if (!this.findRow(conversationId)) return fail('会话不存在或已被清除')
@@ -219,7 +219,7 @@ export class ConversationService {
     this.db
       .prepare(`UPDATE conversations SET title = ?, updated_at = ? WHERE id = ?`)
       .run(title, new Date().toISOString(), conversationId)
-    this.models.markVerified(model.id, Date.now() - startedAt)
+    notify(() => this.models.markVerified(model.id, Date.now() - startedAt, model))
     notify(() => this.context.onTurn?.(text, conversationId))
     notify(() => this.context.onReply?.(petSpeech(reply)))
     return ok(this.require(conversationId))
