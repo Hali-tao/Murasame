@@ -12,6 +12,8 @@ import { useAppStore } from '../store'
 type TaskFilter = '全部任务' | TaskStatus
 const taskFilters: TaskFilter[] = ['全部任务', '待确认', '已确认', '规划中', '执行中', '等待批准', '正在停止', '已完成', '部分完成', '失败', '已取消', '已中断']
 
+const progressLabel = (progress: number): string => `${Number(progress.toFixed(1))}%`
+
 export function TasksPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const selectedId = useAppStore((state) => state.selectedTaskId)
@@ -99,7 +101,7 @@ export function TasksPage(): React.JSX.Element {
                   <strong>{task.title}</strong>
                   <Pill tone={task.tone}>{task.status}</Pill>
                 </div>
-                <div className="task-list-meta"><span>{task.id}</span><span>{task.progress}%</span></div>
+                <div className="task-list-meta"><span>{task.id}</span><span>{progressLabel(task.progress)}</span></div>
                 <div className="progress-track"><span style={{ width: `${task.progress}%` }} /></div>
               </button>
             ))}
@@ -116,7 +118,7 @@ export function TasksPage(): React.JSX.Element {
                   <span className="mono-id">{selected.id}</span>
                 </div>
                 <div className="task-actions">
-                  <Button size="sm" icon={<RefreshCw size={14} />} onClick={() => notify(`${selected.status} · ${selected.progress}% · ${selected.summary || '还没有进度'}`)}>查询进度</Button>
+                  <Button size="sm" icon={<RefreshCw size={14} />} onClick={() => notify(`${selected.status} · ${progressLabel(selected.progress)} · ${selected.summary || '还没有进度'}`)}>查询进度</Button>
                   {selected.approval ? (
                     <Button size="sm" variant="primary" icon={<ShieldAlert size={14} />} onClick={() => setApprovalOpen(true)} data-testid="approve-task">
                       处理审批
@@ -160,7 +162,7 @@ export function TasksPage(): React.JSX.Element {
               ) : null}
 
               <div className="task-progress-card">
-                <div><span>任务进度</span><span>{selected.progress}% · {selected.status}</span></div>
+                <div><span>任务进度</span><span>{progressLabel(selected.progress)} · {selected.status}</span></div>
                 <div className="progress-track"><span style={{ width: `${selected.progress}%` }} /></div>
               </div>
 

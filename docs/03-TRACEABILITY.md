@@ -163,7 +163,7 @@
 | FR-16 | tests/e2e/task-directory.spec.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-directory.test.ts<br>tests/unit/task-store-events.test.ts<br>tests/unit/task-system-folders.test.ts |
 | FR-17 | tests/e2e/task-directory-checkpoints.spec.ts<br>tests/unit/grounded-summary.test.ts<br>tests/unit/grounded-task-service.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-18 | tests/e2e/task-directory.spec.ts<br>tests/unit/grounded-approval.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-directory.test.ts<br>tests/unit/task-system-folders.test.ts |
-| FR-19 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-19 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-progress-display.test.ts |
 | FR-20 | tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-21 | tests/unit/autonomy-status-events.test.ts<br>tests/unit/errors.test.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/task-status.test.ts<br>tests/unit/traceability.test.ts |
 | FR-22 | tests/unit/p1-p3.test.ts |

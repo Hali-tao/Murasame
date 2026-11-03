@@ -35,6 +35,9 @@ for (const externalAddition of [false, true]) test(`[FR-17] 三步任务逐项�
       await approveOnce(page)
       await expect.poll(workerCount).toBe(i + 1)
       await expect(page.locator('.task-detail-titleline .pill')).toHaveText('等待批准')
+      const progress = i === 0 ? '33.3%' : '66.7%'
+      await expect(page.locator('.task-list-item.active .task-list-meta')).toContainText(progress)
+      await expect(page.locator('.task-progress-card')).toContainText(`${progress} · 等待批准`)
     }
     expect(readFileSync(join(root, 'a.txt'), 'utf8')).toBe('first result')
     if (externalAddition) writeFileSync(join(root, 'external.txt'), 'user-added synthetic file')
