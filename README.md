@@ -37,7 +37,7 @@ npm run package:win
 ## 环境要求
 
 - Windows 10/11 x64
-- Node.js 22 或更新版本
+- Node.js `^22.12.0 || ^24.0.0 || >=26.0.0`（Vitest 5 的要求；本轮验证使用 24.22.1）
 - npm
 
 ## 加密数据库（SQLCipher）
@@ -159,3 +159,13 @@ npm run inspect:pet
 ```
 
 `test:e2e` 会启动 Electron 和本地模拟模型服务，覆盖 10 页导航、真实流式聊天、任务审批、桌宠、托盘与单实例行为。
+
+Electron 44.9.1 与 Playwright 1.64.1 的默认截图路径在本机出现过元素稳定性等待超时。复核时可使用 Playwright 提供的旧截图兼容模式，业务断言和超时保持不变：
+
+```powershell
+$env:PLAYWRIGHT_LEGACY_SCREENSHOT = '1'
+npm run test:e2e
+Remove-Item Env:PLAYWRIGHT_LEGACY_SCREENSHOT
+```
+
+该设置只用于测试进程，不修改产品功能；超时根因尚未确认，原始失败记录应保留。真实 BGE 用例需要 `build/bundled-models/bge-small-zh-v1.5` 的完整模型文件，Docker 集成用例需要已验证的隔离镜像并显式设置 `MURASAME_E2E_ISOLATION=1`。缺少这些条件时，既有跳过项应单独报告，不能计为通过。
