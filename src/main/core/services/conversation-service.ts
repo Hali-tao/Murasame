@@ -7,7 +7,7 @@ import { searchHistory, type HistorySearchResult } from '../../history/search'
 import { compactContext, RequestQueue } from '../../agent/runtime'
 import { petLine, petSpeech, routeUtterance, type StepPose, type TeammateRoute } from '../../agent/teammates'
 import { addressSequence } from '../../data/repositories/trace-repository'
-import type { Conversation, MemoryRecallSource, MemoryRecallStatus, Result } from '../../../shared/types'
+import type { Conversation, MemoryRecallEvent, MemoryRecallSource, MemoryRecallStatus, Result } from '../../../shared/types'
 
 const clone = <T>(value: T): T => structuredClone(value)
 const nowStamp = (): string => new Date().toISOString()
@@ -19,31 +19,44 @@ interface RecallRow {
   title: string | null
 }
 
+const RECENT_RECALL_LIMIT = 5
+
 /**
- * 从 prompt 工具调用记录里汇总「每条记忆最近一次真正被召回」的来源。
+ * 从 prompt 工具调用记录里汇总「每条记忆被真正召回」的来源：最近一次、总次数、最近若干次事件。
  * 只认实际写入模型上下文的 memoryIds；解析失败的单行跳过，不影响其它记忆。
  */
 export function collectRecallSources(rows: readonly RecallRow[]): MemoryRecallSource[] {
-  const latest = new Map<string, MemoryRecallSource>()
+  const byMemory = new Map<string, { latest: MemoryRecallEvent; count: number; recent: MemoryRecallEvent[] }>()
   for (const row of rows) {
     try {
       const args = (JSON.parse(row.declared) as { args?: { turnId?: unknown; memoryIds?: unknown } } | null)?.args
       if (!args || !Array.isArray(args.memoryIds)) continue
       for (const memoryId of args.memoryIds) {
-        if (typeof memoryId !== 'string' || !memoryId || latest.has(memoryId)) continue
-        latest.set(memoryId, {
-          memoryId,
+        if (typeof memoryId !== 'string' || !memoryId) continue
+        const event: MemoryRecallEvent = {
           conversationId: row.conversationId,
           conversationTitle: row.title?.trim() || '已删除的对话',
           turnId: typeof args.turnId === 'string' ? args.turnId : '',
           at: row.at
-        })
+        }
+        const existing = byMemory.get(memoryId)
+        if (!existing) {
+          byMemory.set(memoryId, { latest: event, count: 1, recent: [event] })
+          continue
+        }
+        existing.count += 1
+        if (existing.recent.length < RECENT_RECALL_LIMIT) existing.recent.push(event)
       }
     } catch {
       // 损坏的历史记录不应影响其它召回来源。
     }
   }
-  return [...latest.values()]
+  return [...byMemory.entries()].map(([memoryId, entry]) => ({
+    memoryId,
+    ...entry.latest,
+    count: entry.count,
+    recent: entry.recent
+  }))
 }
 
 function displayTime(value: string): string {

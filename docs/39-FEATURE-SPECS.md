@@ -1216,3 +1216,15 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 - 测试：`tests/unit/affect-events.test.ts`（4 用例：记录/无 reason 不记录/上限 5/返回副本）、
   `tests/e2e/qa-affect-events.spec.ts`（空状态诚实 → 一次真实对话回复后显示原因）。
 - 未实现（仍为设计）：完整情绪历史/来源详情页、跨会话情绪趋势、可解释的模型侧原因（当前只记录事件名，不猜测原因）。
+
+
+### 已落地（2026-11-13）：F-01 记忆房间「点亮程度」增量
+
+- 记忆卡片在「上次被想起」之外新增：**被想起 N 次**（count 统计全部历史召回，不设上限），
+  以及可展开的「查看最近 N 次来源」详情（最近 5 次：对话标题 + 时间）。
+- 数据仍只来自真实注入模型上下文的 memoryIds；从未被召回的显示「还没有被真正想起过」，
+  读取失败显示「召回记录暂时读不到」，三态不混淆。
+- 实现：`collectRecallSources` 聚合 count/recent（最新在前、最多 5 条、容错损坏记录）；记忆卡片渲染 count + details。
+- 测试：`tests/unit/qa-memory-recall-source.test.ts`（7 用例，含次数统计与 recent 上限）、
+  `tests/unit/memory-recall-ui.test.ts`（3 用例：显示次数/展开详情、未召回空状态、读取失败三态）。
+- 未实现（仍为设计）：房间视图与点亮动画、完整召回历史分页、按记忆查看隐私遮罩。

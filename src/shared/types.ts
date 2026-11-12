@@ -346,14 +346,22 @@ export interface RelationshipView {
   archivedLines?: Array<{ lineId: string; stage: string; since: string; history: Array<{ stage: string; since: string }> }>
 }
 
-/** 一条长期记忆最近一次被真实召回（进入模型上下文）的来源。 */
-export interface MemoryRecallSource {
-  memoryId: string
+/** 一次真实的记忆召回事件（该记忆在这一轮被写进模型上下文）。 */
+export interface MemoryRecallEvent {
   conversationId: string
   conversationTitle: string
   turnId: string
   /** 该轮对话记录时间（ISO 字符串）。 */
   at: string
+}
+
+/** 一条长期记忆的召回来源：最近一次 + 总次数 + 最近若干次事件。 */
+export interface MemoryRecallSource extends MemoryRecallEvent {
+  memoryId: string
+  /** 该记忆被真正带进模型上下文的总次数（没有上限，统计自历史记录）。 */
+  count: number
+  /** 最近若干次召回事件（最新在前，最多 5 条）。 */
+  recent: MemoryRecallEvent[]
 }
 
 /** 每日回顾（事实版）：只汇总今天真实发生的事，不做评分/打卡。 */

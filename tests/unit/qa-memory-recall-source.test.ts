@@ -8,14 +8,27 @@ const row = (overrides: Partial<{ conversationId: string; at: string; declared: 
   title: overrides.title === undefined ? '早上聊的菜谱' : overrides.title
 })
 
+const newest = {
+  conversationId: 'chat-1',
+  conversationTitle: '新会话',
+  turnId: 'turn-new',
+  at: '2026-11-13T03:00:00.000Z'
+}
+const older = {
+  conversationId: 'chat-1',
+  conversationTitle: '旧会话',
+  turnId: 'turn-old',
+  at: '2026-11-13T01:00:00.000Z'
+}
+
 describe('[QA-MEMRECALL-00] 记忆召回来源（记忆房间来源链）', () => {
-  it('[QA-MEMRECALL-01] 每条记忆只保留最近一次被真正召回的来源（按输入顺序即最新在前）', () => {
+  it('[QA-MEMRECALL-01] 记录最近一次来源、总次数与最近事件列表（按输入顺序即最新在前）', () => {
     const sources = collectRecallSources([
-      row({ at: '2026-11-13T03:00:00.000Z', title: '新会话', declared: JSON.stringify({ args: { turnId: 'turn-new', memoryIds: ['mem-1'] } }) }),
-      row({ at: '2026-11-13T01:00:00.000Z', title: '旧会话', declared: JSON.stringify({ args: { turnId: 'turn-old', memoryIds: ['mem-1'] } }) })
+      row({ at: newest.at, title: '新会话', declared: JSON.stringify({ args: { turnId: 'turn-new', memoryIds: ['mem-1'] } }) }),
+      row({ at: older.at, title: '旧会话', declared: JSON.stringify({ args: { turnId: 'turn-old', memoryIds: ['mem-1'] } }) })
     ])
     expect(sources).toEqual([
-      { memoryId: 'mem-1', conversationId: 'chat-1', conversationTitle: '新会话', turnId: 'turn-new', at: '2026-11-13T03:00:00.000Z' }
+      { memoryId: 'mem-1', ...newest, count: 2, recent: [newest, older] }
     ])
   })
 
@@ -25,6 +38,7 @@ describe('[QA-MEMRECALL-00] 记忆召回来源（记忆房间来源链）', () =
     ])
     expect(sources.map((item) => item.memoryId).sort()).toEqual(['mem-a', 'mem-b'])
     expect(sources.every((item) => item.turnId === 'turn-9')).toBe(true)
+    expect(sources.every((item) => item.count === 1 && item.recent.length === 1)).toBe(true)
   })
 
   it('[QA-MEMRECALL-03] 损坏的 declared_json / 非数组 memoryIds / 空 id 被跳过，不影响其它记录', () => {
@@ -46,5 +60,31 @@ describe('[QA-MEMRECALL-00] 记忆召回来源（记忆房间来源链）', () =
   it('[QA-MEMRECALL-05] 从未真正进入模型上下文的记忆不会出现在来源结果里（空数组）', () => {
     expect(collectRecallSources([])).toEqual([])
     expect(collectRecallSources([row({ declared: JSON.stringify({ args: { turnId: 'turn-1', memoryIds: [] } }) })])).toEqual([])
+  })
+
+  it('[QA-MEMRECALL-06] 多次召回：count 统计全部历史，recent 最多保留 5 条且最新在前', () => {
+    const rows = Array.from({ length: 9 }, (_, index) => row({
+      at: `2026-11-13T0${index + 1}:00:00.000Z`,
+      title: `会话 ${index + 1}`,
+      declared: JSON.stringify({ args: { turnId: `turn-${index + 1}`, memoryIds: ['mem-hot'] } })
+    }))
+    const [source] = collectRecallSources(rows)
+    expect(source.count).toBe(9)
+    expect(source.recent).toHaveLength(5)
+    expect(source.recent.map((event) => event.turnId)).toEqual(['turn-1', 'turn-2', 'turn-3', 'turn-4', 'turn-5'])
+    // latest 指向输入中最新的那条（第一行）。
+    expect(source.turnId).toBe('turn-1')
+  })
+
+  it('[QA-MEMRECALL-07] 不同记忆的计数互不影响，且每条都带自己的最近事件', () => {
+    const sources = collectRecallSources([
+      row({ declared: JSON.stringify({ args: { turnId: 'turn-a', memoryIds: ['mem-a', 'mem-b'] } }) }),
+      row({ at: '2026-11-13T02:00:00.000Z', declared: JSON.stringify({ args: { turnId: 'turn-b', memoryIds: ['mem-b'] } }) })
+    ])
+    const byId = new Map(sources.map((item) => [item.memoryId, item]))
+    expect(byId.get('mem-a')?.count).toBe(1)
+    expect(byId.get('mem-a')?.recent).toHaveLength(1)
+    expect(byId.get('mem-b')?.count).toBe(2)
+    expect(byId.get('mem-b')?.recent.map((event) => event.turnId)).toEqual(['turn-a', 'turn-b'])
   })
 })

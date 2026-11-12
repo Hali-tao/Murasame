@@ -164,14 +164,29 @@ export function MemoryPage(): React.JSX.Element {
             {recallSources === null ? (
               <span className="memory-recall" data-testid="memory-recall-source">召回记录暂时读不到</span>
             ) : recallSources.get(memory.id) ? (
-              <Link
-                className="memory-recall"
-                data-testid="memory-recall-source"
-                to="/history"
-                onClick={() => selectConversation(recallSources.get(memory.id)!.conversationId)}
-              >
-                上次被想起：{recallSources.get(memory.id)!.conversationTitle} · {formatRecallTime(recallSources.get(memory.id)!.at)}
-              </Link>
+              <>
+                <div className="memory-recall-line">
+                  <Link
+                    className="memory-recall"
+                    data-testid="memory-recall-source"
+                    to="/history"
+                    onClick={() => selectConversation(recallSources.get(memory.id)!.conversationId)}
+                  >
+                    上次被想起：{recallSources.get(memory.id)!.conversationTitle} · {formatRecallTime(recallSources.get(memory.id)!.at)}
+                  </Link>
+                  <span className="memory-recall-count" data-testid="memory-recall-count">被想起 {recallSources.get(memory.id)!.count} 次</span>
+                </div>
+                {recallSources.get(memory.id)!.count > 1 ? (
+                  <details className="memory-recall-detail" data-testid="memory-recall-detail">
+                    <summary>查看最近 {recallSources.get(memory.id)!.recent.length} 次来源</summary>
+                    <ul>
+                      {recallSources.get(memory.id)!.recent.map((event) => (
+                        <li key={`${event.turnId}-${event.at}`}>{event.conversationTitle} · {formatRecallTime(event.at)}</li>
+                      ))}
+                    </ul>
+                  </details>
+                ) : null}
+              </>
             ) : (
               <span className="memory-recall" data-testid="memory-recall-source">还没有被真正想起过</span>
             )}

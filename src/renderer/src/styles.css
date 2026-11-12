@@ -659,6 +659,12 @@ a:focus-visible {
 .memory-card > p { min-height: 39px; margin: 12px 0 15px; font-size: 11.5px; line-height: 1.65; }
 .memory-recall { display: block; margin: -6px 0 12px; color: var(--muted); font-size: 10.5px; line-height: 1.5; overflow-wrap: anywhere; }
 .memory-recall:hover { color: var(--coral); }
+.memory-recall-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin: -6px 0 10px; }
+.memory-recall-line .memory-recall { margin: 0; }
+.memory-recall-count { color: var(--faint); font-size: 10px; white-space: nowrap; }
+.memory-recall-detail { margin: -4px 0 12px; color: var(--muted); font-size: 10.5px; line-height: 1.6; }
+.memory-recall-detail summary { cursor: pointer; }
+.memory-recall-detail ul { margin: 6px 0 0; padding-left: 16px; display: grid; gap: 3px; }
 .memory-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 9px; border-top: 1px solid var(--line-soft); }
 .memory-card-foot > span { color: var(--muted); font-size: 9.5px; }
 .memory-card-foot > div { display: flex; gap: 10px; }
