@@ -66,7 +66,18 @@ test('[F-04-THEATER-05] 任务取消后桌宠演出任务幕，点「跳过」�
     await main.getByRole('dialog').getByRole('button', { name: '取消任务', exact: true }).click()
     await expect(main.locator('.task-detail-titleline .pill')).toHaveText('已取消', { timeout: 20_000 })
     await expect(pet.getByTestId('pet-theater')).toBeVisible({ timeout: 10_000 })
-    await pet.getByTestId('pet-theater-skip').click()
+    // 「查看」：打开控制台任务页并聚焦到这一幕对应的任务。
+    await pet.getByTestId('pet-theater-view').click()
+    await expect(main).toHaveURL(/\/tasks\?focus=/, { timeout: 10_000 })
+    await expect(main.getByTestId('nav-tasks')).toHaveAttribute('aria-current', 'page')
+    // 控制台打开的是这一幕对应的任务：标题是任务名，URL focus 与详情里的任务 id 一致。
+    await expect(main.locator('.task-detail-card h2')).toContainText('整理文件夹')
+    const focusTaskId = await main.evaluate(() => {
+      const hash = window.location.hash
+      const query = hash.includes('?') ? hash.slice(hash.indexOf('?') + 1) : ''
+      return new URLSearchParams(query).get('focus')
+    })
+    await expect(main.locator('.mono-id')).toHaveText(focusTaskId ?? '')
     await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
 
     // 勿扰：同一流程再来一次，不演。

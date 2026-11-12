@@ -710,6 +710,16 @@ function PetApp(): React.JSX.Element {
               <span className="pet-theater-actions">
                 <button
                   type="button"
+                  data-testid="pet-theater-view"
+                  onClick={() => {
+                    void window.murasame.window.openPath(`/tasks?focus=${encodeURIComponent(theater.taskId)}`)
+                    dismissTheater()
+                  }}
+                >
+                  查看
+                </button>
+                <button
+                  type="button"
                   data-testid="pet-theater-mute-today"
                   onClick={() => { void window.murasame.pet.muteTheaterToday().finally(dismissTheater) }}
                 >
