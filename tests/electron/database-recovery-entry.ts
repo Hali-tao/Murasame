@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve, sep } from 'node:path'
 import { app, safeStorage } from 'electron'
@@ -96,6 +96,21 @@ app.whenReady().then(async () => {
       assert.equal(new MemoryService(reopened, root).list().length, partial ? 1 : 0)
       assert.deepEqual(readFileSync(keyFile), originalKey)
       closeDatabase()
+    } else if (scenario === 'interrupted-first-run') {
+      // 首次启动在 Local State 落盘前被强杀：密钥密文在密码学上不可恢复。
+      // 期望：备份旧文件 + 重建密钥 + 应用可继续启动，而不是永久打不开。
+      seed()
+      writeFileSync(keyFile, JSON.stringify({ encryptedKey: Buffer.from('not-a-Windows-secret').toString('base64') }))
+      rmSync(join(root, 'Local State'), { force: true })
+      assert.equal(existsSync(join(root, 'Local State')), false)
+      const recovered = getDatabase()
+      recovered.exec('CREATE TABLE recovery_fixture(note TEXT NOT NULL)')
+      recovered.prepare('INSERT INTO recovery_fixture VALUES (?)').run('new-database-works')
+      assert.equal((recovered.prepare('SELECT note FROM recovery_fixture').get() as { note: string }).note, 'new-database-works')
+      closeDatabase()
+      assert(existsSync(join(root, 'murasame-key-recovery.json')), 'must leave a recovery marker')
+      const backups = readdirSync(root).filter((name) => name.includes('.unreadable-'))
+      assert(backups.length >= 1, 'must back up the unreadable database/key')
     } else {
       seed()
       const originalDatabase = readFileSync(file)
@@ -112,6 +127,11 @@ app.whenReady().then(async () => {
       assert(scenario in badKeys, `Unknown scenario: ${scenario}`)
       const badKey = badKeys[scenario]
       if (badKey !== undefined) writeFileSync(keyFile, badKey)
+      // 「跨账户/跨机器恢复」场景：Local State 存在但密钥密文不属于本机账户，
+      // 数据仍可能通过正确账户找回，必须 fail-closed 而不是自动重建。
+      if (scenario === 'undecryptable-key' || scenario === 'invalid-key') {
+        writeFileSync(join(root, 'Local State'), '{"os_crypt":{"encrypted_key":"fixture"}}')
+      }
       assert.throws(() => getDatabase(), assertRecoveryGuidance)
       assert.deepEqual(readFileSync(file), originalDatabase, 'startup must preserve the encrypted database')
       if (badKey === undefined) assert.equal(existsSync(keyFile), false, 'startup must not generate a replacement key')

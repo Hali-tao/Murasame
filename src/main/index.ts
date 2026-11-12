@@ -6,6 +6,7 @@ import { extname, join, resolve, sep } from 'node:path'
 import log from './logger'
 import { markQuitting } from './app-state'
 import { getDatabase, databaseCapacityWarning } from './data/db'
+import { consumeKeyRecoveryNotice } from './data/keys'
 import { MurasameCore } from './core/murasame-core'
 import { ModelRegistry } from './model/registry'
 import { registerIpcHandlers } from './ipc'
@@ -157,6 +158,20 @@ if (!gotSingleInstanceLock) {
     registerIpcHandlers(core)
     initializeWindows()
     createTray()
+    const keyRecoveryNotice = consumeKeyRecoveryNotice()
+    if (keyRecoveryNotice) {
+      // 首次启动被中断导致旧加密数据不可恢复时，必须让用户知道「重新开始了、旧数据在哪备份」，
+      // 不能用静默成功掩盖数据丢失。
+      void dialog
+        .showMessageBox({
+          type: 'warning',
+          title: 'Murasame 已恢复启动',
+          message: '上次启动在初始化完成前被中断，旧的加密数据库无法解密。',
+          detail: keyRecoveryNotice,
+          buttons: ['知道了']
+        })
+        .catch((error) => log.warn('展示密钥恢复提示失败', error))
+    }
     const hotkey = applyHotkey(getSettings().petHotkey, () => focusPetChat())
     refreshMemoryStatus(app.getPath('userData'))
     if (!hotkey.ok) log.warn(hotkey.message)

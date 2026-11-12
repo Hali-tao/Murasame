@@ -1,0 +1,77 @@
+{
+  "at": "2026-11-12T18:39:03.768Z",
+  "results": [
+    {
+      "name": "early-kill-first-run",
+      "startedAt": "2026-11-12T18:38:30.587Z",
+      "memoryAdded": true,
+      "killed": {
+        "killed": true,
+        "killedMs": 1082
+      },
+      "localStateAfterKill": false,
+      "databaseBeforeRestart": true,
+      "restart": {
+        "bootstrapOk": true,
+        "bootstrapError": null,
+        "memoryPersisted": false,
+        "writeAfterRestart": true,
+        "exportOk": true,
+        "quit": {
+          "quitMs": 441,
+          "hung": false
+        }
+      },
+      "recoveryMarker": "safe-storage-key-unreadable-and-local-state-missing",
+      "backupFiles": 2,
+      "verdict": "OK_RECOVERED"
+    },
+    {
+      "name": "durable-kill-after-local-state",
+      "startedAt": "2026-11-12T18:38:36.112Z",
+      "memoryAdded": true,
+      "localState": true,
+      "killed": {
+        "killed": true,
+        "killedMs": 984
+      },
+      "restart": {
+        "bootstrapOk": true,
+        "bootstrapError": null,
+        "memoryPersisted": true,
+        "writeAfterRestart": true,
+        "exportOk": true,
+        "quit": {
+          "quitMs": 440,
+          "hung": false
+        }
+      },
+      "verdict": "OK"
+    },
+    {
+      "name": "kill-restart-loop",
+      "runs": [
+        {
+          "run": 1,
+          "launchMs": 2521,
+          "alive": true,
+          "killed": true
+        },
+        {
+          "run": 2,
+          "launchMs": 2621,
+          "alive": true,
+          "killed": true
+        },
+        {
+          "run": 3,
+          "launchMs": 2527,
+          "alive": true,
+          "killed": true
+        }
+      ],
+      "verdict": "OK"
+    }
+  ],
+  "findings": []
+}

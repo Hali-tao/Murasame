@@ -51,7 +51,7 @@ it.each([
   'fresh-restart', 'missing-key-file', 'missing-key-entry', 'null-key-entry',
   'mismatched-key', 'undecryptable-key', 'invalid-key', 'malformed-key-file',
   'orphan-journal', 'orphan-journal-with-key', 'migration-failure',
-  'scoped-clear-restart', 'scoped-partial-clear-restart'
+  'scoped-clear-restart', 'scoped-partial-clear-restart', 'interrupted-first-run'
 ])('[NFR-R02] database recovery: %s', (scenario) => {
   const fixture = mkdtempSync(join(tmpdir(), 'murasame-database-recovery-'))
   const env: NodeJS.ProcessEnv = { ...process.env, MURASAME_DATABASE_FIXTURE: fixture }
