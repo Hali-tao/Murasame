@@ -1,0 +1,371 @@
+{
+  "at": "2026-11-12T22:19:31.625Z",
+  "channelCount": 67,
+  "results": [
+    {
+      "channel": "app:get-info",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "app:hide-to-tray",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 2
+    },
+    {
+      "channel": "app:hotkey",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:active-changed",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:add-memory",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 1
+    },
+    {
+      "channel": "core:approve-task",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:cancel-task",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:clear-memories",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 10
+    },
+    {
+      "channel": "core:continue-task",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:conversation-deleted",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:conversation-updated",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:create-conversation",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 19
+    },
+    {
+      "channel": "core:create-model",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 5
+    },
+    {
+      "channel": "core:create-task",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:daily-recap",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 1
+    },
+    {
+      "channel": "core:delete-conversation",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:delete-memory",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:delete-model",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:deny-task",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:get-bootstrap",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 4
+    },
+    {
+      "channel": "core:memories-updated",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:memory-extraction-status",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:memory-index-status",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:memory-recall-sources",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:message-delta",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:message-failed",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:message-started",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:models-updated",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:save-character",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 1
+    },
+    {
+      "channel": "core:save-model",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:save-recap-note",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:screen-updated",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:search-history",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:send-message",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:set-active-conversation",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:set-default-model",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:set-tool-enabled",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:task-updated",
+      "status": "no-handler"
+    },
+    {
+      "channel": "core:update-memory",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "core:verify-model",
+      "status": "resolved",
+      "shape": "result",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:get-affect",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:get-affect-events",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:get-bounds",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:get-state",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:hide",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 8
+    },
+    {
+      "channel": "pet:performance",
+      "status": "no-handler"
+    },
+    {
+      "channel": "pet:reset-position",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 11
+    },
+    {
+      "channel": "pet:set-chat-open",
+      "status": "rejected",
+      "message": "请求参数无效",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:set-ignore-mouse-events",
+      "status": "rejected",
+      "message": "请求参数无效",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:set-position",
+      "status": "rejected",
+      "message": "请求参数无效",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:set-scale",
+      "status": "rejected",
+      "message": "请求参数无效",
+      "elapsed": 0
+    },
+    {
+      "channel": "pet:show",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 13
+    },
+    {
+      "channel": "pet:state-changed",
+      "status": "no-handler"
+    },
+    {
+      "channel": "pet:toggle",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 8
+    },
+    {
+      "channel": "relationship:change-appearance",
+      "status": "rejected",
+      "message": "请求参数无效",
+      "elapsed": 0
+    },
+    {
+      "channel": "relationship:changed",
+      "status": "no-handler"
+    },
+    {
+      "channel": "relationship:get",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "relationship:reset",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 6
+    },
+    {
+      "channel": "settings:changed",
+      "status": "no-handler"
+    },
+    {
+      "channel": "settings:get",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 5
+    },
+    {
+      "channel": "settings:update",
+      "status": "rejected",
+      "message": "请求参数无效",
+      "elapsed": 0
+    },
+    {
+      "channel": "task:progress",
+      "status": "no-handler"
+    },
+    {
+      "channel": "window:hidden",
+      "status": "no-handler"
+    },
+    {
+      "channel": "window:hide-main",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 0
+    },
+    {
+      "channel": "window:minimize",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 34
+    },
+    {
+      "channel": "window:navigated",
+      "status": "no-handler"
+    },
+    {
+      "channel": "window:show-main",
+      "status": "resolved",
+      "shape": "value",
+      "elapsed": 19
+    }
+  ],
+  "findings": []
+}

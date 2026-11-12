@@ -211,6 +211,24 @@
 - 测试：e2e [F-01-ROOM-01] 覆盖「列表可见正文 → 房间 DOM 无原文 → 单条显示 → Esc 遮蔽 → 切回列表正常」。
 - 未落地（完整房间视觉/点亮动画/来源详情弹层/遮罩持久化/角标进入高亮）按 docs/39 §12 记录，不算交付。
 
+### 3.19 IPC 错误形态审计（本轮新增可复跑证据）
+
+新增 `scripts/qa-ipc-shapes.mjs`（`npm run qa:ipc-shapes`）：启动真实应用后，对全部 invoke 通道注入非法载荷（undefined），
+记录「结构化 Result / 中文 rejection / 挂起 / 无 handler」四类结果，并检查业务通道必须以 Result 返回、值通道错误必须为中文、不得挂起。
+
+| 指标 | 结果 |
+| --- | --- |
+| 审计通道数 | 67（排除会启动循环/弹窗/联网的通道后） |
+| 业务通道返回结构化 Result | 25 / 25 |
+| 值通道以中文错误拒绝 | 6（settings:update、pet:set-scale/position/chat-open/ignore-mouse、relationship:change-appearance） |
+| 值通道正常返回值 | 17 |
+| 事件通道（无 handler，符合预期） | 19 |
+| 挂起（>3s） | 0（最慢 27ms） |
+| 裸英文错误 | 0 |
+
+- 结论：错误形态**不一致的旧问题（已知限制 #9）已被审计并协议化**：业务结果用 Result、值读写用中文 rejection，两种协议均有明确边界；不把「统一成一种」当成必要修复（会破坏值通道 API 形态），而是用可复跑审计守住边界。
+- 证据：`artifacts/qa-runtime-2026-11-13/ipc-shapes/{summary.json,report.md}`。
+
 ## 4. 复跑方式
 
 ```powershell
@@ -233,7 +251,7 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 6. **渲染进程崩溃循环不再自动恢复**：60 秒内崩溃超过 3 次时停止自动重载（避免无限重载拖垮主进程），需要用户重启应用；恢复后控制台回到默认页面，不保留崩溃前的路由。
 7. **首次启动前约 10 秒内被强杀**：旧加密数据在密码学上不可恢复。现在的行为是备份旧文件、写恢复标记并用中文明确告知用户后重新开始（不是静默丢数据），但旧数据本身无法找回。
 8. **极端多显示器/混合 DPI** 只修正了单次越界 1px 的问题，未做多屏矩阵遍历测试。
-9. **IPC 校验失败的错误形态不一致**：部分 handler（如 settings:update）以 invoke rejection 抛出中文错误，部分返回 {ok:false,error} 结构化结果；渲染层均已捕获并提示，但协议不统一，后续可统一为 Result。
+9. **IPC 错误形态（已审计，协议明确，不再是未知缺陷）**：业务通道（core/data 等）统一返回 `{ok:false,error}` 结构化结果；值通道（settings/window/pet 等）以中文「请求参数无效」rejection 返回。`scripts/qa-ipc-shapes.mjs` 对全部 67 个 invoke 通道注入非法载荷审计：25 个业务通道全部结构化 Result、6 个值通道全部中文错误、17 个值通道正常返回、19 个事件通道无 handler、**0 挂起、0 裸英文错误**（最慢 27ms）。两种协议是刻意保留的（业务结果 vs 值读写），后续新通道按此约定。
 
 ## 6. 功能扩展提案
 

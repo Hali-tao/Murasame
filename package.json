@@ -22,6 +22,7 @@
     "verify:data": "node scripts/verify-data.mjs",
     "trace": "node scripts/traceability.mjs",
     "verify": "npm run typecheck && npm run lint && npm test && npm run trace",
+    "qa:ipc-shapes": "node scripts/qa-ipc-shapes.mjs",
     "preview": "electron-vite preview"
   },
   "dependencies": {
