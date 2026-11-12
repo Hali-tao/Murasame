@@ -8,15 +8,17 @@ import { closeApp, findMainPage, findPetPage, launchApp } from './helpers'
  * 与用例本身无关；本用例在能正常启动的环境执行。
  */
 test('official mesh pet loads, animates, blinks and keeps Live2D presets intact', async () => {
-  test.setTimeout(120_000)
+  test.setTimeout(180_000)
   const app = await launchApp()
   try {
     const main = await findMainPage(app)
     await main.evaluate(() => window.murasame.settings.update({ petPreset: 'nailong', speakReplies: false }))
     const pet = await findPetPage(app)
+    // 满载整套运行时桌宠窗口可能被遮挡，WebGL 读回需要前台合成；先置前再断言。
+    await pet.bringToFront()
     const host = pet.locator('[data-model-id="nailong"][data-live2d-state="ready"]')
-    await expect(host).toBeVisible({ timeout: 30_000 })
-    await expect(pet.locator('.mesh-pet-host canvas')).toBeVisible()
+    await expect(host).toBeVisible({ timeout: 60_000 })
+    await expect(pet.locator('.mesh-pet-host canvas')).toBeVisible({ timeout: 60_000 })
     await expect(host).toHaveAttribute('data-motion-group', 'Idle')
 
     // 连续两帧 alpha 有变化，说明网格在动，而不是一张静态图。

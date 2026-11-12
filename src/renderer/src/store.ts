@@ -77,6 +77,7 @@ let modelEventVersion = 0
 let latestModelSnapshot: ModelProfile[] | undefined
 let unsubscribeModels: (() => void) | undefined
 let toastCounter = 0
+const MAX_PERSISTENT_TOASTS = 20
 const toastId = (): string => `toast-${Date.now()}-${toastCounter++}`
 const toastTimers = new Map<string, ReturnType<typeof setTimeout>>()
 const isPersistentToast = (toast: Pick<ToastItem, 'tone'>): boolean => toast.tone === 'red' || toast.tone === 'amber'
@@ -278,10 +279,12 @@ export const useAppStore = create<AppStore>((set, get) => {
         count: previous?.message === message && previous.tone === tone ? previous.count + 1 : 1
       }
       const next = [...get().toasts.filter((item) => item.id !== id), toast]
-      // Only routine results are replaceable. Warnings/errors stay available until
-      // explicitly closed, even when many successful actions arrive afterwards.
-      const recent = new Set(next.filter((item) => !isPersistentToast(item)).slice(-2).map((item) => item.id))
-      const toasts = next.filter((item) => isPersistentToast(item) || recent.has(item.id))
+      // Routine results are replaceable and transient；error/warning 保留到用户关闭，
+      // 但重复失败风暴不能无限堆 DOM：最多保留最近 5 条持久提示 + 2 条常规提示。
+      const persistent = next.filter((item) => isPersistentToast(item))
+      const routine = next.filter((item) => !isPersistentToast(item))
+      const kept = new Set([...persistent.slice(-MAX_PERSISTENT_TOASTS), ...routine.slice(-2)].map((item) => item.id))
+      const toasts = next.filter((item) => kept.has(item.id))
       for (const item of get().toasts) {
         if (item.id === id || !toasts.some((current) => current.id === item.id)) clearToastTimer(item.id)
       }

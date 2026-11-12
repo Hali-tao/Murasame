@@ -162,4 +162,25 @@ describe('Zustand app store', () => {
     expect(useAppStore.getState().data?.memories.length).toBe(before)
     expect(useAppStore.getState().toasts.some((toast) => toast.message === '数据库暂时不可用')).toBe(true)
   })
+
+  it('[QA-NOTIFY-01] 连续错误提示最多保留 20 条，旧提示会被收起而不是无限堆 DOM', async () => {
+    await useAppStore.getState().init()
+    for (let index = 0; index < 40; index += 1) {
+      useAppStore.getState().notify(`错误提示 ${index}`, 'red')
+    }
+    const toasts = useAppStore.getState().toasts
+    expect(toasts.length).toBeLessThanOrEqual(20)
+    expect(toasts.some((toast) => toast.message === '错误提示 39')).toBe(true)
+    expect(toasts.some((toast) => toast.message === '错误提示 0')).toBe(false)
+  })
+
+  it('[QA-NOTIFY-02] 常规成功提示只保留最近 2 条，且错误提示不被成功提示挤掉', async () => {
+    await useAppStore.getState().init()
+    useAppStore.getState().notify('一条重要错误', 'red')
+    for (let index = 0; index < 6; index += 1) useAppStore.getState().notify(`完成 ${index}`, 'green')
+    const toasts = useAppStore.getState().toasts
+    expect(toasts.some((toast) => toast.message === '一条重要错误')).toBe(true)
+    expect(toasts.filter((toast) => toast.tone === 'green').length).toBeLessThanOrEqual(2)
+    expect(toasts.some((toast) => toast.message === '完成 5')).toBe(true)
+  })
 })

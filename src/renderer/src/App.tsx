@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar'
 import { TopBar } from './components/TopBar'
 import { ToastHost } from './components/ToastHost'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { useAppStore } from './store'
 import { DashboardPage } from './pages/DashboardPage'
 import { ChatPage } from './pages/ChatPage'
@@ -19,6 +20,7 @@ import { SettingsPage } from './pages/SettingsPage'
 
 export function App(): React.JSX.Element {
   const navigate = useNavigate()
+  const location = useLocation()
   const init = useAppStore((state) => state.init)
   const loading = useAppStore((state) => state.loading)
   const startupError = useAppStore((state) => state.startupError)
@@ -71,20 +73,22 @@ export function App(): React.JSX.Element {
         <TopBar />
         <ToastHost />
         <main className="content-scroll">
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/chat" element={<ChatPage />} />
-            <Route path="/screen" element={<ScreenPage />} />
-            <Route path="/autonomy" element={<AutonomyPage />} />
-            <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/memory" element={<MemoryPage />} />
-            <Route path="/tools" element={<ToolsPage />} />
-            <Route path="/models" element={<ModelsPage />} />
-            <Route path="/character" element={<CharacterPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="*" element={<DashboardPage />} />
-          </Routes>
+          <ErrorBoundary mode="page" resetKey={location.pathname}>
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/screen" element={<ScreenPage />} />
+              <Route path="/autonomy" element={<AutonomyPage />} />
+              <Route path="/tasks" element={<TasksPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/memory" element={<MemoryPage />} />
+              <Route path="/tools" element={<ToolsPage />} />
+              <Route path="/models" element={<ModelsPage />} />
+              <Route path="/character" element={<CharacterPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="*" element={<DashboardPage />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
       </div>
     </div>

@@ -4,6 +4,8 @@ interface Props {
   children: ReactNode
   /** 桌宠窗口只有几百像素宽，用小号提示，不铺满整个窗口。 */
   compact?: boolean
+  /** page：只替换页面内容区；fatal（默认）：整屏兜底。 */
+  mode?: 'fatal' | 'page'
   /** 值变化时清掉错误状态，例如换了形象就重新尝试加载。 */
   resetKey?: string
 }
@@ -35,6 +37,20 @@ export class ErrorBoundary extends Component<Props, State> {
           <strong>!</strong>
           <span>形象出错了：{this.state.error.message}</span>
           <button type="button" className="btn" onClick={() => this.setState({ error: null })}>重新加载形象</button>
+        </div>
+      )
+    }
+    if (this.props.mode === 'page') {
+      // 只替换内容区，侧边栏/顶栏仍可用；切到其它页面时 resetKey 变化会自动恢复。
+      return (
+        <div className="page-error" data-testid="page-error" role="alert">
+          <div className="fatal-mark">雨</div>
+          <h2>这个页面出错了</h2>
+          <p>{this.state.error.message}</p>
+          <p className="muted">其它页面和本地数据不受影响；可以从左侧切换到别的页面继续。</p>
+          <button type="button" className="btn btn-primary" onClick={() => window.location.reload()}>
+            重新载入界面
+          </button>
         </div>
       )
     }
