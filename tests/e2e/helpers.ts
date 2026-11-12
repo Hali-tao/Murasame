@@ -71,7 +71,7 @@ export interface TestModelServer {
   close(): Promise<void>
 }
 
-export async function startModelServer(options: { taskRoot?: string; onMessages?: (messages: Array<{ role: string; content: unknown }>) => void; toolResponse?: (tool: string, messages: Array<{ role: string; content: unknown }>) => unknown } = {}): Promise<TestModelServer> {
+export async function startModelServer(options: { taskRoot?: string; onMessages?: (messages: Array<{ role: string; content: unknown }>) => void; toolResponse?: (tool: string, messages: Array<{ role: string; content: unknown }>) => unknown; streamChunkDelayMs?: number; onStreamChunk?: (index: number) => void } = {}): Promise<TestModelServer> {
   const server = createServer((request, response) => {
     if (request.method !== 'POST' || !request.url?.endsWith('/chat/completions')) {
       response.writeHead(404, { 'Content-Type': 'application/json' })
@@ -128,8 +128,9 @@ export async function startModelServer(options: { taskRoot?: string; onMessages?
       const chunks = ['这是来自', '测试模型的', '真实流式回复。']
       void (async () => {
         for (const chunk of chunks) {
+          options.onStreamChunk?.(chunks.indexOf(chunk))
           response.write(`data: ${JSON.stringify({ choices: [{ delta: { content: chunk } }] })}\n\n`)
-          await wait(90)
+          await wait(options.streamChunkDelayMs ?? 90)
         }
         response.write('data: [DONE]\n\n')
         response.end()
