@@ -8,6 +8,7 @@ import type {
   DeleteScope,
   MemoryEntry,
   MemoryExtractionStatus,
+  MemoryRecallSource,
   ModelInput,
   ModelProfile,
   Result,
@@ -50,6 +51,8 @@ interface AppStore {
   updateMemory(id: string, category: string, text: string): Promise<MemoryEntry | null>
   deleteMemory(id: string): Promise<boolean>
   clearMemories(): Promise<boolean>
+  /** 读取每条记忆最近一次被真实召回的来源；读取失败返回 null（不能伪装成「从未被想起」）。 */
+  loadMemoryRecallSources(): Promise<MemoryRecallSource[] | null>
   createTask(title: string, root?: string): Promise<Task | null>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Task | null>
   cancelTask(id: string): Promise<Task | null>
@@ -424,6 +427,20 @@ export const useAppStore = create<AppStore>((set, get) => {
         get().notify('长期记忆已清空')
         return true
       })
+    },
+
+    async loadMemoryRecallSources() {
+      // 旧版本 preload（或测试里的部分 mock）没有这个接口：返回 null 表示「不知道」，
+      // 不能返回空数组伪装成「从未被想起」。
+      const api = window.murasame?.core
+      if (!api || typeof api.memoryRecallSources !== 'function') return null
+      try {
+        const result = await api.memoryRecallSources()
+        if (!result.ok) return null
+        return result.data
+      } catch {
+        return null
+      }
     },
 
     async createTask(title, root) {

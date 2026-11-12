@@ -338,6 +338,16 @@ export interface RelationshipView {
   archivedLines?: Array<{ lineId: string; stage: string; since: string; history: Array<{ stage: string; since: string }> }>
 }
 
+/** 一条长期记忆最近一次被真实召回（进入模型上下文）的来源。 */
+export interface MemoryRecallSource {
+  memoryId: string
+  conversationId: string
+  conversationTitle: string
+  turnId: string
+  /** 该轮对话记录时间（ISO 字符串）。 */
+  at: string
+}
+
 export interface MurasameCore {
   getBootstrap(): Promise<Result<BootstrapData>>
   createConversation(): Promise<Result<Conversation>>
@@ -352,6 +362,8 @@ export interface MurasameCore {
   updateMemory(id: string, category: string, text: string): Promise<Result<MemoryEntry>>
   deleteMemory(id: string): Promise<Result<string>>
   clearMemories(): Promise<Result<MemoryEntry[]>>
+  /** 每条记忆最近一次真正被召回进入对话的来源；从未被召回的记忆不会出现在结果里。 */
+  memoryRecallSources(): Promise<Result<MemoryRecallSource[]>>
   createTask(title: string, root?: string): Promise<Result<Task>>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Result<Task>>
   continueTask(id: string, answer: string): Promise<Result<Task>>

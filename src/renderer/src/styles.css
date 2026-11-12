@@ -648,6 +648,8 @@ a:focus-visible {
 .memory-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .memory-card-head > span { color: var(--faint); font-size: 9.5px; }
 .memory-card > p { min-height: 39px; margin: 12px 0 15px; font-size: 11.5px; line-height: 1.65; }
+.memory-recall { display: block; margin: -6px 0 12px; color: var(--muted); font-size: 10.5px; line-height: 1.5; overflow-wrap: anywhere; }
+.memory-recall:hover { color: var(--coral); }
 .memory-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 9px; border-top: 1px solid var(--line-soft); }
 .memory-card-foot > span { color: var(--muted); font-size: 9.5px; }
 .memory-card-foot > div { display: flex; gap: 10px; }

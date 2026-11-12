@@ -7,10 +7,44 @@ import { searchHistory, type HistorySearchResult } from '../../history/search'
 import { compactContext, RequestQueue } from '../../agent/runtime'
 import { petLine, petSpeech, routeUtterance, type StepPose, type TeammateRoute } from '../../agent/teammates'
 import { addressSequence } from '../../data/repositories/trace-repository'
-import type { Conversation, MemoryRecallStatus, Result } from '../../../shared/types'
+import type { Conversation, MemoryRecallSource, MemoryRecallStatus, Result } from '../../../shared/types'
 
 const clone = <T>(value: T): T => structuredClone(value)
 const nowStamp = (): string => new Date().toISOString()
+
+interface RecallRow {
+  conversationId: string
+  at: string
+  declared: string
+  title: string | null
+}
+
+/**
+ * 从 prompt 工具调用记录里汇总「每条记忆最近一次真正被召回」的来源。
+ * 只认实际写入模型上下文的 memoryIds；解析失败的单行跳过，不影响其它记忆。
+ */
+export function collectRecallSources(rows: readonly RecallRow[]): MemoryRecallSource[] {
+  const latest = new Map<string, MemoryRecallSource>()
+  for (const row of rows) {
+    try {
+      const args = (JSON.parse(row.declared) as { args?: { turnId?: unknown; memoryIds?: unknown } } | null)?.args
+      if (!args || !Array.isArray(args.memoryIds)) continue
+      for (const memoryId of args.memoryIds) {
+        if (typeof memoryId !== 'string' || !memoryId || latest.has(memoryId)) continue
+        latest.set(memoryId, {
+          memoryId,
+          conversationId: row.conversationId,
+          conversationTitle: row.title?.trim() || '已删除的对话',
+          turnId: typeof args.turnId === 'string' ? args.turnId : '',
+          at: row.at
+        })
+      }
+    } catch {
+      // 损坏的历史记录不应影响其它召回来源。
+    }
+  }
+  return [...latest.values()]
+}
 
 function displayTime(value: string): string {
   const date = new Date(value)
@@ -270,6 +304,17 @@ export class ConversationService {
       const status: MemoryRecallStatus = known.includes(args.memoryRecallStatus) ? args.memoryRecallStatus : 'unknown'
       return { turnId: args.turnId, ids: Array.isArray(args.memoryIds) ? args.memoryIds : [], status }
     } catch { return undefined }
+  }
+
+  /** 每条长期记忆最近一次被真实召回的来源；从未真正进入对话的记忆不会出现在结果里。 */
+  recallSources(limit = 2000): MemoryRecallSource[] {
+    const rows = this.db.prepare(
+      `SELECT t.task_id AS conversationId, t.created_at AS at, t.declared_json AS declared, c.title AS title
+         FROM tool_calls t LEFT JOIN conversations c ON c.id = t.task_id
+        WHERE t.tool_id = 'prompt' AND t.declared_json LIKE '%"memoryIds"%'
+        ORDER BY t.created_at DESC, t.rowid DESC LIMIT ?`
+    ).all(limit) as RecallRow[]
+    return collectRecallSources(rows)
   }
 
   /** Factual activity observations join the same serialized conversation timeline. */

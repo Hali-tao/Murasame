@@ -34,6 +34,7 @@ import type {
   Conversation,
   DeleteScope,
   MemoryEntry,
+  MemoryRecallSource,
   ModelInput,
   ModelProfile,
   Result,
@@ -426,6 +427,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
     core.deleteMemory((input as { id: string }).id)
   )
   handleCore<MemoryEntry[]>(IPC.core.clearMemories, z.undefined(), () => core.clearMemories())
+  handleCore<MemoryRecallSource[]>(IPC.core.memoryRecallSources, z.undefined(), () => core.memoryRecallSources())
   handleCore<Task>(IPC.core.createTask, taskCreateSchema, (input) =>
     core.createTask((input as { title: string; root?: string }).title, (input as { root?: string }).root)
   )

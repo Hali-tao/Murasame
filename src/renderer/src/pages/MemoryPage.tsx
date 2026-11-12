@@ -1,10 +1,16 @@
 import { Plus, Search, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import type { MemoryEntry, MemoryExtractionStatus } from '@shared/types'
+import type { MemoryEntry, MemoryExtractionStatus, MemoryRecallSource } from '@shared/types'
 import { MemoryEditDialog } from '../components/dialogs'
 import { Button, Card, ConfirmDialog, EmptyState, Pill, StatTile, ToggleSwitch } from '../components/ui'
 import { useAppStore } from '../store'
+
+function formatRecallTime(value: string): string {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return `${date.getMonth() + 1}月${date.getDate()}日 ${date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })}`
+}
 
 export function MemoryPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
@@ -25,6 +31,18 @@ export function MemoryPage(): React.JSX.Element {
   const [clearOpen, setClearOpen] = useState(false)
   const [busyDelete, setBusyDelete] = useState(false)
   const [busyClear, setBusyClear] = useState(false)
+  const loadMemoryRecallSources = useAppStore((state) => state.loadMemoryRecallSources)
+  // null = 读取失败（不能伪装成「从未被想起」）；空 Map = 确实都还没有被召回。
+  const [recallSources, setRecallSources] = useState<Map<string, MemoryRecallSource> | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    void loadMemoryRecallSources().then((list) => {
+      if (cancelled) return
+      setRecallSources(list ? new Map(list.map((item) => [item.memoryId, item])) : null)
+    })
+    return () => { cancelled = true }
+  }, [loadMemoryRecallSources, data.memories.length])
 
   const categories = ['全部类别', ...Array.from(new Set(data.memories.map((memory) => memory.category)))]
   const sources = new Map(data.conversations.map(conversation => [conversation.id, conversation.title.trim() || '未命名会话']))
@@ -143,6 +161,20 @@ export function MemoryPage(): React.JSX.Element {
               <span>{memory.updated}</span>
             </div>
             <p>{memory.text}</p>
+            {recallSources === null ? (
+              <span className="memory-recall" data-testid="memory-recall-source">召回记录暂时读不到</span>
+            ) : recallSources.get(memory.id) ? (
+              <Link
+                className="memory-recall"
+                data-testid="memory-recall-source"
+                to="/history"
+                onClick={() => selectConversation(recallSources.get(memory.id)!.conversationId)}
+              >
+                上次被想起：{recallSources.get(memory.id)!.conversationTitle} · {formatRecallTime(recallSources.get(memory.id)!.at)}
+              </Link>
+            ) : (
+              <span className="memory-recall" data-testid="memory-recall-source">还没有被真正想起过</span>
+            )}
             <div className="memory-card-foot">
               {sources.has(memory.source)
                 ? <Link className="memory-source-link" to="/history" onClick={() => selectConversation(memory.source)} aria-label={`查看来源：${sourceLabel(memory.source)}`}>来自：{sourceLabel(memory.source)}</Link>

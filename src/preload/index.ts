@@ -11,6 +11,7 @@ import type {
   Conversation,
   DeleteScope,
   MemoryEntry,
+  MemoryRecallSource,
   ModelInput,
   ModelProfile,
   MurasameApi,
@@ -106,6 +107,8 @@ const api: MurasameApi = {
       ipcRenderer.invoke(IPC.core.deleteMemory, { id }),
     clearMemories: (): Promise<Result<MemoryEntry[]>> =>
       ipcRenderer.invoke(IPC.core.clearMemories),
+    memoryRecallSources: (): Promise<Result<MemoryRecallSource[]>> =>
+      ipcRenderer.invoke(IPC.core.memoryRecallSources),
     createTask: (title: string, root?: string): Promise<Result<Task>> =>
       ipcRenderer.invoke(IPC.core.createTask, { title, root }),
     approveTask: (id: string, scope?: 'once' | 'task'): Promise<Result<Task>> =>

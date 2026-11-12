@@ -34,6 +34,7 @@ import type {
   DeleteScope,
   MemoryEntry,
   MemoryExtractionStatus,
+  MemoryRecallSource,
   ModelInput,
   ModelProfile,
   MurasameCore as CoreApi,
@@ -522,6 +523,15 @@ export class MurasameCore implements CoreApi {
     const result = await this.memory.clear()
     if (result.ok) for (const [id, run] of previous) this.clearMemoryStatus(id, run.version)
     return result
+  }
+
+  /** 每条长期记忆最近一次真正被召回进入对话的来源（记忆房间的来源链基础）。 */
+  async memoryRecallSources(): Promise<Result<MemoryRecallSource[]>> {
+    try {
+      return { ok: true, data: this.conversations.recallSources() }
+    } catch (error) {
+      return { ok: false, error: `读取记忆召回来源失败：${error instanceof Error ? error.message : '本地数据库暂不可用'}` }
+    }
   }
 
   createTask(title: string, root?: string): Promise<Result<Task>> {

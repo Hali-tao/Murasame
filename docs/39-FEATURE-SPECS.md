@@ -1154,3 +1154,31 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 | 日期 | 变更 |
 | --- | --- |
 | 2026-11-13 | 建立文档：F-01 记忆房间、F-02 每日回顾、F-03 情绪天气、F-04 桌面小剧场，含状态机、数据结构、IPC 草案、验收标准与工作量；记录两个被推迟的候选 |
+
+
+---
+
+## 12. 实现状态（2026-11-13：F-01 首个可验证切片）
+
+> 本节区分「设计」与「已落地」，未落地部分仍只算提案，不算交付。
+
+### 已落地：F-01 记忆房间的来源链
+
+- 控制台「记忆」页每条记忆新增一行来源链：
+  - 真正被召回过的记忆显示「上次被想起：<对话标题> · <时间>」，点击可跳到那次对话；
+  - 从未真正进入模型上下文的记忆显示「还没有被真正想起过」（不允许假装记得）；
+  - 读取失败显示「召回记录暂时读不到」，不伪装成「从未被想起」。
+- 数据来源：`tool_calls` 中 `tool_id = 'prompt'` 的 `declared_json.args.memoryIds` / `turnId` / `created_at`，只统计真的写进模型上下文的记忆 id；对话已删除时标题显示「已删除的对话」。
+- 接口：新增 IPC `core:memory-recall-sources`；主进程 `MurasameCore.memoryRecallSources()` → `ConversationService.recallSources()` → 纯函数 `collectRecallSources()`（可单测、容错损坏记录）。
+- 测试：`tests/unit/qa-memory-recall-source.test.ts`（5 用例）、`tests/e2e/qa-memory-provenance.spec.ts`（诚实空状态）。
+
+### 未实现（仍为设计）
+
+- 房间视图与「点亮」动画、来源详情抽屉、隐私遮罩、按记忆查看全部召回历史。
+- 真实召回的正向 UI 路径依赖本机 BGE 向量模型；当前由单测覆盖数据层，e2e 覆盖诚实空状态。
+
+### 变更记录补充
+
+| 日期 | 变更 |
+| --- | --- |
+| 2026-11-13 | F-01 落地来源链切片（IPC + 服务 + 记忆卡片 + 单测/e2e）；其余仍为设计 |
