@@ -135,4 +135,31 @@ describe('Zustand app store', () => {
     expect(saved).toBe(true)
     expect(useAppStore.getState().data?.settings.doNotDisturb).toBe(false)
   })
+
+  it('[QA-IPC-11] 导入数据包后 reloadData 让恢复的记忆立即出现（不需要重启）', async () => {
+    await useAppStore.getState().init()
+    expect(useAppStore.getState().data?.memories.some((item) => item.text === '恢复的记忆')).toBe(false)
+
+    const restored = initialBootstrap()
+    restored.memories = [
+      ...restored.memories,
+      { id: 'imported-memory', category: '偏好', text: '恢复的记忆', source: '导入', updated: '有效' }
+    ]
+    vi.mocked(api.core.getBootstrap).mockResolvedValueOnce({ ok: true, data: restored })
+
+    await useAppStore.getState().reloadData()
+    expect(useAppStore.getState().data?.memories.some((item) => item.text === '恢复的记忆')).toBe(true)
+    // 设置以当前内存状态为准，不被 reload 覆盖。
+    expect(useAppStore.getState().data?.settings).toEqual(restored.settings)
+  })
+
+  it('[QA-IPC-12] reloadData 失败时如实提示，不把旧数据假装成最新', async () => {
+    await useAppStore.getState().init()
+    const before = useAppStore.getState().data?.memories.length
+    vi.mocked(api.core.getBootstrap).mockResolvedValueOnce({ ok: false, error: '数据库暂时不可用' })
+
+    await useAppStore.getState().reloadData()
+    expect(useAppStore.getState().data?.memories.length).toBe(before)
+    expect(useAppStore.getState().toasts.some((toast) => toast.message === '数据库暂时不可用')).toBe(true)
+  })
 })

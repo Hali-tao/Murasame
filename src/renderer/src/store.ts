@@ -53,6 +53,8 @@ interface AppStore {
   clearMemories(): Promise<boolean>
   /** 读取每条记忆最近一次被真实召回的来源；读取失败返回 null（不能伪装成「从未被想起」）。 */
   loadMemoryRecallSources(): Promise<MemoryRecallSource[] | null>
+  /** 导入数据包/外部写入数据库后重新拉取 bootstrap，让恢复的数据立刻出现在界面上。 */
+  reloadData(): Promise<void>
   createTask(title: string, root?: string): Promise<Task | null>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Task | null>
   cancelTask(id: string): Promise<Task | null>
@@ -441,6 +443,23 @@ export const useAppStore = create<AppStore>((set, get) => {
       } catch {
         return null
       }
+    },
+
+    async reloadData() {
+      const bootstrap = await window.murasame.core.getBootstrap()
+      if (!bootstrap.ok) {
+        get().notify(bootstrap.error, 'red')
+        return
+      }
+      const current = get().data
+      if (!current) return
+      // settings/models 以当前内存状态为准，其余列表/角色等用数据库最新快照替换。
+      const data = { ...bootstrap.data, settings: current.settings, models: current.models }
+      set({
+        data,
+        selectedConversationId: data.activeConversationId ?? data.conversations[0]?.id ?? null,
+        selectedTaskId: data.tasks[0]?.id ?? null
+      })
     },
 
     async createTask(title, root) {

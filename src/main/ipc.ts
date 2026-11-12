@@ -611,6 +611,8 @@ export function registerIpcHandlers(core: DesktopCore): void {
       const dbFile = databasePath(getUserDataDir())
       if (existsSync(dbFile)) copyFileSync(dbFile, `${dbFile}.before-import`)
       const merged = mergeImportedBundle(getDatabase(), bundle)
+      // 导入完成后从数据库重载记忆缓存并广播，避免「恢复成功但页面还是空的」。
+      core.memory.reloadFromStorage()
       if (bundle.character?.name) {
         await core.saveCharacter({
           name: bundle.character.name,

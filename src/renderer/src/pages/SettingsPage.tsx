@@ -142,6 +142,8 @@ export function SettingsPage(): React.JSX.Element {
         notify(result.error, 'red')
         return
       }
+      // 导入只写了数据库；不重新拉取 bootstrap 的话，恢复的会话/记忆要重启才出现。
+      await useAppStore.getState().reloadData()
       notify(`${result.data.note} 新会话 ${result.data.conversations} 个，新记忆 ${result.data.memories} 条`, 'green')
     }
     setBundle(null)

@@ -88,6 +88,17 @@ export class MemoryService {
     this.cancelIndex('来源已删除，索引恢复已暂停')
   }
   list(): MemoryEntry[] { return this.active().map(toEntry) }
+  /**
+   * 外部直接写库（数据包导入）后从数据库重新加载。
+   * 不重新加载的话内存缓存会让界面以为「导入成功但记忆还是空的」。
+   */
+  reloadFromStorage(): MemoryEntry[] {
+    if (!this.db) return this.list()
+    this.generation += 1
+    this.load()
+    this.notify()
+    return this.list()
+  }
   history(): MemoryEntry[] { return this.facts.map(toEntry) }
   active(): MemoryFact[] { return structuredClone(activeMemories(this.facts)) }
 
