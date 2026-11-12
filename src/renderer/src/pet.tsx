@@ -86,6 +86,8 @@ function PetApp(): React.JSX.Element {
   const [idleMs, setIdleMs] = useState(0)
   const [speaking, setSpeaking] = useState(false)
   const live2dRef = useRef<Live2DPetHandle>(null)
+  const menuRef = useRef<HTMLDivElement | null>(null)
+  const characterRef = useRef<HTMLDivElement | null>(null)
   const ignoringRef = useRef(true)
   const lastHitAt = useRef(0)
   const layerRef = useRef<PerformanceLayer>('idle')
@@ -145,6 +147,20 @@ function PetApp(): React.JSX.Element {
     const timer = window.setInterval(() => setIdleMs(Date.now() - lastInteraction.current), 1000)
     return () => { window.clearInterval(timer); window.removeEventListener('pointerdown', touched); window.removeEventListener('keydown', touched) }
   }, [])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    // 菜单打开后焦点进入第一个菜单项；Esc 关闭并把焦点还给桌宠（键盘用户不能被困在菜单里）。
+    menuRef.current?.querySelector<HTMLButtonElement>('button')?.focus()
+    const closeOnEscape = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      setMenuOpen(false)
+      characterRef.current?.focus()
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [menuOpen])
 
   useEffect(() => {
     if (!window.murasame) return
@@ -664,7 +680,12 @@ function PetApp(): React.JSX.Element {
         <div
           className="pet-character"
           data-pet-hit
-          onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); void openChat() } }}
+          ref={characterRef}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); void openChat() }
+            // 桌宠没有系统菜单栏：F10 / 菜单键打开右键菜单，保证键盘可用。
+            else if (event.key === 'F10' || event.key === 'ContextMenu') { event.preventDefault(); setMenuOpen(true) }
+          }}
           onPointerDown={startDrag}
           onPointerMove={moveDrag}
           onPointerUp={endDrag}
@@ -675,7 +696,7 @@ function PetApp(): React.JSX.Element {
         }}
         role="button"
           tabIndex={0}
-          aria-label="拖动桌宠，单击互动，右键打开菜单"
+          aria-label="拖动桌宠，单击互动，右键打开菜单，F10 打开菜单"
         >
           <ErrorBoundary compact resetKey={`${preset.id}:${preset.modelUrl}`}>
             {preset.format.startsWith('Mesh') ? (
@@ -766,7 +787,7 @@ function PetApp(): React.JSX.Element {
         ) : null}
         <div className="pet-brand" data-pet-hit><span />MURASAME</div>
         {menuOpen ? (
-          <div className="pet-menu" data-pet-hit role="menu">
+          <div className="pet-menu" data-pet-hit role="group" aria-label="桌宠菜单" ref={menuRef}>
             <button type="button" onClick={() => { setMenuOpen(false); void (chat.open ? closeChat() : openChat()) }}>{chat.open ? '收起对话' : '打开对话'}</button>
             <button type="button" onClick={() => { setMenuOpen(false); void window.murasame.window.showMain() }}>打开控制台</button>
             <button type="button" onClick={() => { setMenuOpen(false); void window.murasame.window.showMain(); void window.murasame.core.analyzeScreen() }}>截图提问</button>

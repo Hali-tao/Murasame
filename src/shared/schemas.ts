@@ -37,7 +37,8 @@ export const toolToggleSchema = z.object({
 export const modelInputSchema = z.object({
   name: z.string().trim().min(1).max(80),
   provider: z.string().trim().min(1).max(60),
-  endpoint: z.string().trim().max(500).url(),
+  // 只接受 http/https：file://、javascript:、data: 等 scheme 不进入模型网关（防御纵深）。
+  endpoint: z.string().trim().max(500).url().refine((value) => /^https?:\/\//i.test(value), '模型服务地址只支持 http/https'),
   key: z.string().max(500),
   model: z.string().trim().min(1).max(200),
   caps: z.array(z.string().min(1).max(30)).max(10)
