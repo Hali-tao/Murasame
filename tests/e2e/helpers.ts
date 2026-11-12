@@ -14,11 +14,15 @@ export async function launchApp(onboardingDone = true, prepare?: (userData: stri
   writeFileSync(join(userData, 'murasame.json'), JSON.stringify({ settings: { onboardingDone } }))
   prepare?.(userData)
   const executablePath = process.env.MURASAME_E2E_EXECUTABLE
+  // 宿主工具可能设置 ELECTRON_RUN_AS_NODE=1；带着它启动会让 Electron 以 Node 模式运行，
+  // Chromium 的 --remote-debugging-port 会被拒绝，Playwright 直接判定启动失败。
+  const env = { ...process.env, MURASAME_USER_DATA: userData } as Record<string, string>
+  delete env.ELECTRON_RUN_AS_NODE
   const app = await electron.launch({
     ...(executablePath ? { executablePath } : {}),
     args: executablePath ? [] : ['.'],
     cwd: root,
-    env: { ...process.env, MURASAME_USER_DATA: userData } as Record<string, string>
+    env
   })
   userDataByApp.set(app, userData)
   return app

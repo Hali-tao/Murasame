@@ -77,10 +77,14 @@ test('a second launch exits and the existing instance remains available', async 
     const page = await findMainPage(app)
     await expect(page.getByTestId('nav-overview')).toBeVisible()
 
+    // 宿主环境可能带 ELECTRON_RUN_AS_NODE=1（例如 CI/代理工具）；带着它启动第二个
+    // 实例会变成 Node 模式，退出码非 0，测不到真正的单实例行为。
+    const secondEnv: NodeJS.ProcessEnv = { ...process.env, MURASAME_USER_DATA: testUserData(app) }
+    delete secondEnv.ELECTRON_RUN_AS_NODE
     const second = spawn(electronBinary, process.env.MURASAME_E2E_EXECUTABLE ? [] : [root], {
       cwd: root,
       stdio: 'ignore',
-      env: { ...process.env, MURASAME_USER_DATA: testUserData(app) }
+      env: secondEnv
     })
     const exitCode = await Promise.race([
       new Promise<number | null>((resolve) => second.once('exit', (code) => resolve(code))),

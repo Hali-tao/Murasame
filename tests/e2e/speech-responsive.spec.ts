@@ -3,6 +3,8 @@ import { launchApp, closeApp, findMainPage } from './helpers'
 
 test.describe('real local speech responsiveness', () => {
   test.skip(process.env.MURASAME_E2E_SPEECH !== '1', 'Requires packaged offline speech models and Chinese phonemizer')
+  // Playwright 要求第一个参数是解构的 fixtures 对象；这里只用到 TestInfo，故留空对象。
+  // eslint-disable-next-line no-empty-pattern
   test('cold and warm speech preserve control responses and actual audio', async ({}, info) => {
     test.setTimeout(90_000)
     const app = await launchApp()
