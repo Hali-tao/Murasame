@@ -1,0 +1,4 @@
+page.waitForTimeout: Page crashed
+    at petCanvasOpaquePixels (E:\Desktop\软件工程\murasame\scripts\qa-renderer-crash.mjs:51:16)
+    at async crash (E:\Desktop\软件工程\murasame\scripts\qa-renderer-crash.mjs:124:41)
+    at async main (E:\Desktop\软件工程\murasame\scripts\qa-renderer-crash.mjs:149:5)

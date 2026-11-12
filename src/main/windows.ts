@@ -108,7 +108,39 @@ function secureWebContents(window: BrowserWindow): void {
   hardenWebContents(window.webContents, shell.openExternal.bind(shell))
   window.webContents.on('render-process-gone', (_event, details) => {
     log.error('Renderer process gone', details.reason)
+    if (details.reason === 'clean-exit') return
+    recoverCrashedRenderer(window, details.reason)
   })
+}
+
+const RENDERER_RECOVERY_LIMIT = 3
+const RENDERER_RECOVERY_WINDOW_MS = 60_000
+const rendererRecoveryTimes = new Map<number, number[]>()
+
+/**
+ * 单窗口渲染进程崩溃不能让桌宠/控制台永久空白：自动重新加载一次。
+ * 崩溃循环（60 秒内超过 3 次）时停止自动恢复，避免无限重载拖垮主进程。
+ */
+function recoverCrashedRenderer(window: BrowserWindow, reason: string): void {
+  if (isQuitting() || window.isDestroyed()) return
+  const id = window.webContents.id
+  const now = Date.now()
+  const recent = (rendererRecoveryTimes.get(id) ?? []).filter((time) => now - time < RENDERER_RECOVERY_WINDOW_MS)
+  recent.push(now)
+  rendererRecoveryTimes.set(id, recent)
+  if (recent.length > RENDERER_RECOVERY_LIMIT) {
+    log.error(`渲染进程 60 秒内崩溃 ${recent.length} 次，停止自动恢复（${reason}）`)
+    return
+  }
+  log.warn(`渲染进程崩溃（${reason}），第 ${recent.length} 次自动恢复`)
+  setTimeout(() => {
+    if (isQuitting() || window.isDestroyed()) return
+    try {
+      window.webContents.reload()
+    } catch (error) {
+      log.error('渲染进程自动恢复失败', error)
+    }
+  }, 250).unref?.()
 }
 
 function broadcastPetState(state: PetState): PetState {
