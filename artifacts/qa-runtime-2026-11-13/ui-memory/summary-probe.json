@@ -1,0 +1,183 @@
+{
+  "at": "2026-11-12T19:32:40.049Z",
+  "results": [
+    {
+      "scenario": "same-route-click-120",
+      "iterations": 120,
+      "first": {
+        "at": 1794511932925,
+        "mainMB": 97.9,
+        "petMB": 130.1,
+        "totalMB": 228
+      },
+      "last": {
+        "at": 1794511935899,
+        "mainMB": 115.6,
+        "petMB": 131.5,
+        "totalMB": 247.1
+      },
+      "growthMB": 19.1,
+      "mainGrowthMB": 17.7,
+      "afterIdleMB": 249.1,
+      "afterIdleDeltaMB": 2,
+      "samples": [
+        {
+          "at": 1794511932925,
+          "mainMB": 97.9,
+          "petMB": 130.1,
+          "totalMB": 228
+        },
+        {
+          "at": 1794511933397,
+          "mainMB": 105.5,
+          "petMB": 130.2,
+          "totalMB": 235.7
+        },
+        {
+          "at": 1794511933729,
+          "mainMB": 106.6,
+          "petMB": 130.5,
+          "totalMB": 237.1
+        },
+        {
+          "at": 1794511934108,
+          "mainMB": 107.6,
+          "petMB": 130.6,
+          "totalMB": 238.2
+        },
+        {
+          "at": 1794511934441,
+          "mainMB": 110.9,
+          "petMB": 130.6,
+          "totalMB": 241.5
+        },
+        {
+          "at": 1794511934815,
+          "mainMB": 113.3,
+          "petMB": 130.7,
+          "totalMB": 244
+        },
+        {
+          "at": 1794511935180,
+          "mainMB": 113.9,
+          "petMB": 130.9,
+          "totalMB": 244.8
+        },
+        {
+          "at": 1794511935534,
+          "mainMB": 114.8,
+          "petMB": 131,
+          "totalMB": 245.8
+        },
+        {
+          "at": 1794511935896,
+          "mainMB": 115.6,
+          "petMB": 131.5,
+          "totalMB": 247.1
+        },
+        {
+          "at": 1794511935899,
+          "mainMB": 115.6,
+          "petMB": 131.5,
+          "totalMB": 247.1
+        },
+        {
+          "at": 1794511943917,
+          "mainMB": 115.6,
+          "petMB": 133.5,
+          "totalMB": 249.1
+        }
+      ]
+    },
+    {
+      "scenario": "switch-overview-chat-60",
+      "iterations": 60,
+      "first": {
+        "at": 1794511948470,
+        "mainMB": 98.2,
+        "petMB": 127.9,
+        "totalMB": 226.1
+      },
+      "last": {
+        "at": 1794511951451,
+        "mainMB": 171.1,
+        "petMB": 129,
+        "totalMB": 300.1
+      },
+      "growthMB": 74,
+      "mainGrowthMB": 72.9,
+      "afterIdleMB": 300.6,
+      "afterIdleDeltaMB": 0.5,
+      "samples": [
+        {
+          "at": 1794511948470,
+          "mainMB": 98.2,
+          "petMB": 127.9,
+          "totalMB": 226.1
+        },
+        {
+          "at": 1794511948952,
+          "mainMB": 117.9,
+          "petMB": 128,
+          "totalMB": 245.9
+        },
+        {
+          "at": 1794511949350,
+          "mainMB": 132.6,
+          "petMB": 128.2,
+          "totalMB": 260.8
+        },
+        {
+          "at": 1794511949736,
+          "mainMB": 144.7,
+          "petMB": 128.3,
+          "totalMB": 273
+        },
+        {
+          "at": 1794511950116,
+          "mainMB": 157.1,
+          "petMB": 128.1,
+          "totalMB": 285.2
+        },
+        {
+          "at": 1794511950493,
+          "mainMB": 168.3,
+          "petMB": 128.3,
+          "totalMB": 296.6
+        },
+        {
+          "at": 1794511950864,
+          "mainMB": 170.6,
+          "petMB": 128.4,
+          "totalMB": 299
+        },
+        {
+          "at": 1794511951256,
+          "mainMB": 170.9,
+          "petMB": 128.8,
+          "totalMB": 299.7
+        },
+        {
+          "at": 1794511951451,
+          "mainMB": 171.1,
+          "petMB": 129,
+          "totalMB": 300.1
+        },
+        {
+          "at": 1794511959457,
+          "mainMB": 170.6,
+          "petMB": 130,
+          "totalMB": 300.6
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "severity": "P2",
+      "id": "QA-UI-MEMORY-GROWTH",
+      "title": "switch-overview-chat-60 后渲染进程内存增长 74MB",
+      "detail": "{\"mainGrowth\":72.9,\"afterIdleDelta\":0.5,\"samples\":[{\"at\":1794511951256,\"mainMB\":170.9,\"petMB\":128.8,\"totalMB\":299.7},{\"at\":1794511951451,\"mainMB\":171.1,\"petMB\":129,\"totalMB\":300.1},{\"at\":1794511959457,\"mainMB\":170.6,\"petMB\":130,\"totalMB\":300.6}]}"
+    }
+  ]
+}

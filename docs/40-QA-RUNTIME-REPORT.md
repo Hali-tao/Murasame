@@ -84,7 +84,7 @@
 | `speech-responsive.spec.ts` 的 `async (_fixtures, info)` 违反 Playwright 参数解构要求，导致**整个 e2e 套件无法收集**（基线 0 用例可跑） | 改为解构空对象并注明原因 |
 | `flows.spec.ts` 第二个实例 spawn 继承了宿主的 `ELECTRON_RUN_AS_NODE=1`，Electron 以 Node 模式运行导致退出码非 0，单实例用例必失败 | 启动第二实例前删除该环境变量 |
 | 压测脚本把「非法输入被校验拒绝」误判为缺陷 | 明确为预期行为（结构化拒绝），只把超时/崩溃计为缺陷 |
-| 语音 e2e 在满载整套运行中偶发超时（单独运行稳定） | 增加 90s 测试超时、步骤时间线日志与 15s 软关闭兜底；全量复跑 51/51 通过。若再次复现按测试基础设施问题跟进，不伪装成产品缺陷 |
+| 语音 e2e 在满载整套运行中偶发超时（单独运行稳定） | 步骤日志定位到「点击隐藏到托盘按钮（副作用是隐藏自身窗口）后 Playwright 点击确认偶发挂起」；改为走同一 hide IPC 语义（按钮路径由 flows.spec 托盘用例覆盖），并保留 90s 超时/步骤时间线/软关闭兜底。全量复跑验证 |
 
 ### 3.6 数据包导入后界面不刷新（P2，修复）
 
@@ -115,6 +115,19 @@
 - 单次崩溃约 525ms 自动恢复（桌宠/控制台均验证）。
 - 连续崩溃：60 秒内前 3 次自动重载，第 4 次起停止恢复（窗口保持 crashed），主进程 CPU 0%、仍可响应。这是**有意设计的防无限重载**，不是卡死；用户需要重启应用。
 - 证据：`scripts/qa-renderer-crash.mjs` 的 `crash-loop-cap` 场景（states=[恢复,恢复,停止,停止,停止]，verdict=OK_CAPPED）。
+
+### 3.9 IPC 大载荷、界面重复操作内存与备份恢复（本轮新增测量）
+
+| 场景 | 结果 | 主线程影响 | 判定 |
+| --- | --- | --- | --- |
+| sendMessage 8MB 文本 / addMemory 4MB / updateSettings 4MB | 结构化拒绝（请求参数无效），无崩溃 | 主线程 ping max ≤2ms | OK |
+| transcribe 200 万个样本 | 有界处理后被拒绝，瞬时内存 +70MB 后回落 | ping max 0.9ms | OK |
+| 循环引用对象 | 渲染进程 structured clone 拒绝，主进程不受影响 | ping max 2ms | OK |
+| 200 条记忆备份导入全新资料目录 | op=84ms，导入后记忆数=200 | ping max 63ms | OK |
+| 240 次路由切换 | RSS +84MB 后进入平台，尾部增长 ≈0；JS 堆 5.8→11.6MB、DOM 节点稳定 | — | P3 观察 |
+
+- **重复导航内存的正确结论**：不是无界泄漏。240 轮切换后尾部增长 ≈0，320 轮复测平台稳定在约 178MB（主渲染进程），JS 堆与 DOM 节点无增长；属于有界渲染预热/图层缓存。P3 观察：大量模糊背景/大图层带来约 80MB 一次性渲染内存，低内存设备后续可优化。
+- 证据：`scripts/qa-ipc-payload.mjs`、`scripts/qa-ui-memory.mjs`、`artifacts/qa-runtime-2026-11-13/ipc-payload/`、`artifacts/qa-runtime-2026-11-13/ui-memory/`（含 320 轮平台复测 report-probe.md）。
 
 ## 4. 复跑方式
 

@@ -1,0 +1,596 @@
+{
+  "at": "2026-11-12T19:37:06.858Z",
+  "results": [
+    {
+      "scenario": "route-nav-chat-120",
+      "iterations": 120,
+      "first": {
+        "at": 1794512136630,
+        "mainMB": 97.9,
+        "petMB": 127.5,
+        "totalMB": 225.4,
+        "domNodes": 240,
+        "jsHeapMB": 5.8
+      },
+      "last": {
+        "at": 1794512143918,
+        "mainMB": 184.9,
+        "petMB": 129.4,
+        "totalMB": 314.3,
+        "domNodes": 192,
+        "jsHeapMB": 10.4
+      },
+      "growthMB": 88.9,
+      "mainGrowthMB": 87,
+      "afterIdleMB": 308.2,
+      "afterIdleDeltaMB": -6.1,
+      "lateGrowthMB": 0.9,
+      "heapGrowthMB": 4.6,
+      "domEnd": 192,
+      "verdict": "OK_BOUNDED",
+      "samples": [
+        {
+          "at": 1794512136630,
+          "mainMB": 97.9,
+          "petMB": 127.5,
+          "totalMB": 225.4,
+          "domNodes": 240,
+          "jsHeapMB": 5.8
+        },
+        {
+          "at": 1794512137657,
+          "mainMB": 132.5,
+          "petMB": 128,
+          "totalMB": 260.5,
+          "domNodes": 192,
+          "jsHeapMB": 10.2
+        },
+        {
+          "at": 1794512138572,
+          "mainMB": 157.2,
+          "petMB": 128.1,
+          "totalMB": 285.3,
+          "domNodes": 192,
+          "jsHeapMB": 12.4
+        },
+        {
+          "at": 1794512139523,
+          "mainMB": 180.3,
+          "petMB": 128.6,
+          "totalMB": 308.9,
+          "domNodes": 192,
+          "jsHeapMB": 8.5
+        },
+        {
+          "at": 1794512140469,
+          "mainMB": 182.9,
+          "petMB": 129,
+          "totalMB": 311.9,
+          "domNodes": 192,
+          "jsHeapMB": 8.2
+        },
+        {
+          "at": 1794512141394,
+          "mainMB": 182.8,
+          "petMB": 128.6,
+          "totalMB": 311.4,
+          "domNodes": 192,
+          "jsHeapMB": 8.9
+        },
+        {
+          "at": 1794512142288,
+          "mainMB": 184.5,
+          "petMB": 129,
+          "totalMB": 313.5,
+          "domNodes": 192,
+          "jsHeapMB": 9.6
+        },
+        {
+          "at": 1794512143049,
+          "mainMB": 184.3,
+          "petMB": 129.1,
+          "totalMB": 313.4,
+          "domNodes": 192,
+          "jsHeapMB": 10.2
+        },
+        {
+          "at": 1794512143914,
+          "mainMB": 184.9,
+          "petMB": 129.4,
+          "totalMB": 314.3,
+          "domNodes": 192,
+          "jsHeapMB": 10.4
+        },
+        {
+          "at": 1794512143918,
+          "mainMB": 184.9,
+          "petMB": 129.4,
+          "totalMB": 314.3,
+          "domNodes": 192,
+          "jsHeapMB": 10.4
+        },
+        {
+          "at": 1794512151931,
+          "mainMB": 176.8,
+          "petMB": 131.4,
+          "totalMB": 308.2,
+          "domNodes": 192,
+          "jsHeapMB": 10.5
+        }
+      ]
+    },
+    {
+      "scenario": "route-nav-memory-120",
+      "iterations": 120,
+      "first": {
+        "at": 1794512156437,
+        "mainMB": 98,
+        "petMB": 127.1,
+        "totalMB": 225.1,
+        "domNodes": 240,
+        "jsHeapMB": 5.8
+      },
+      "last": {
+        "at": 1794512162792,
+        "mainMB": 183.7,
+        "petMB": 128.3,
+        "totalMB": 312,
+        "domNodes": 198,
+        "jsHeapMB": 9.5
+      },
+      "growthMB": 86.9,
+      "mainGrowthMB": 85.7,
+      "afterIdleMB": 312.7,
+      "afterIdleDeltaMB": 0.7,
+      "lateGrowthMB": -0.4,
+      "heapGrowthMB": 3.7,
+      "domEnd": 198,
+      "verdict": "OK_BOUNDED",
+      "samples": [
+        {
+          "at": 1794512156437,
+          "mainMB": 98,
+          "petMB": 127.1,
+          "totalMB": 225.1,
+          "domNodes": 240,
+          "jsHeapMB": 5.8
+        },
+        {
+          "at": 1794512157407,
+          "mainMB": 136.5,
+          "petMB": 127.3,
+          "totalMB": 263.8,
+          "domNodes": 198,
+          "jsHeapMB": 8.6
+        },
+        {
+          "at": 1794512158304,
+          "mainMB": 162.7,
+          "petMB": 127.7,
+          "totalMB": 290.4,
+          "domNodes": 198,
+          "jsHeapMB": 11.7
+        },
+        {
+          "at": 1794512159064,
+          "mainMB": 178,
+          "petMB": 127.9,
+          "totalMB": 305.9,
+          "domNodes": 198,
+          "jsHeapMB": 10
+        },
+        {
+          "at": 1794512159842,
+          "mainMB": 181.2,
+          "petMB": 128.1,
+          "totalMB": 309.3,
+          "domNodes": 198,
+          "jsHeapMB": 7.9
+        },
+        {
+          "at": 1794512160605,
+          "mainMB": 181.5,
+          "petMB": 128.3,
+          "totalMB": 309.8,
+          "domNodes": 198,
+          "jsHeapMB": 10.4
+        },
+        {
+          "at": 1794512161333,
+          "mainMB": 182.8,
+          "petMB": 128.4,
+          "totalMB": 311.2,
+          "domNodes": 198,
+          "jsHeapMB": 8.3
+        },
+        {
+          "at": 1794512162049,
+          "mainMB": 183.7,
+          "petMB": 128.7,
+          "totalMB": 312.4,
+          "domNodes": 198,
+          "jsHeapMB": 12.8
+        },
+        {
+          "at": 1794512162787,
+          "mainMB": 183.7,
+          "petMB": 128.3,
+          "totalMB": 312,
+          "domNodes": 198,
+          "jsHeapMB": 9.5
+        },
+        {
+          "at": 1794512162792,
+          "mainMB": 183.7,
+          "petMB": 128.3,
+          "totalMB": 312,
+          "domNodes": 198,
+          "jsHeapMB": 9.5
+        },
+        {
+          "at": 1794512170801,
+          "mainMB": 182.1,
+          "petMB": 130.6,
+          "totalMB": 312.7,
+          "domNodes": 198,
+          "jsHeapMB": 9.5
+        }
+      ]
+    },
+    {
+      "scenario": "route-nav-tasks-120",
+      "iterations": 120,
+      "first": {
+        "at": 1794512175274,
+        "mainMB": 97.9,
+        "petMB": 130.3,
+        "totalMB": 228.2,
+        "domNodes": 240,
+        "jsHeapMB": 5.8
+      },
+      "last": {
+        "at": 1794512181143,
+        "mainMB": 177.8,
+        "petMB": 131.6,
+        "totalMB": 309.4,
+        "domNodes": 172,
+        "jsHeapMB": 7.7
+      },
+      "growthMB": 81.2,
+      "mainGrowthMB": 79.9,
+      "afterIdleMB": 311.1,
+      "afterIdleDeltaMB": 1.7,
+      "lateGrowthMB": 0.5,
+      "heapGrowthMB": 1.9,
+      "domEnd": 172,
+      "verdict": "OK_BOUNDED",
+      "samples": [
+        {
+          "at": 1794512175274,
+          "mainMB": 97.9,
+          "petMB": 130.3,
+          "totalMB": 228.2,
+          "domNodes": 240,
+          "jsHeapMB": 5.8
+        },
+        {
+          "at": 1794512176152,
+          "mainMB": 129.8,
+          "petMB": 130.6,
+          "totalMB": 260.4,
+          "domNodes": 240,
+          "jsHeapMB": 8.9
+        },
+        {
+          "at": 1794512176874,
+          "mainMB": 151.9,
+          "petMB": 130.8,
+          "totalMB": 282.7,
+          "domNodes": 172,
+          "jsHeapMB": 10.1
+        },
+        {
+          "at": 1794512177634,
+          "mainMB": 173.3,
+          "petMB": 131.1,
+          "totalMB": 304.4,
+          "domNodes": 172,
+          "jsHeapMB": 11
+        },
+        {
+          "at": 1794512178353,
+          "mainMB": 174.9,
+          "petMB": 131.4,
+          "totalMB": 306.3,
+          "domNodes": 172,
+          "jsHeapMB": 9.3
+        },
+        {
+          "at": 1794512179046,
+          "mainMB": 176,
+          "petMB": 131.6,
+          "totalMB": 307.6,
+          "domNodes": 172,
+          "jsHeapMB": 8.8
+        },
+        {
+          "at": 1794512179722,
+          "mainMB": 177,
+          "petMB": 131.2,
+          "totalMB": 308.2,
+          "domNodes": 172,
+          "jsHeapMB": 8.2
+        },
+        {
+          "at": 1794512180424,
+          "mainMB": 177.4,
+          "petMB": 131.5,
+          "totalMB": 308.9,
+          "domNodes": 172,
+          "jsHeapMB": 7.9
+        },
+        {
+          "at": 1794512181137,
+          "mainMB": 177.8,
+          "petMB": 131.6,
+          "totalMB": 309.4,
+          "domNodes": 172,
+          "jsHeapMB": 7.7
+        },
+        {
+          "at": 1794512181143,
+          "mainMB": 177.8,
+          "petMB": 131.6,
+          "totalMB": 309.4,
+          "domNodes": 172,
+          "jsHeapMB": 7.7
+        },
+        {
+          "at": 1794512189155,
+          "mainMB": 177.4,
+          "petMB": 133.7,
+          "totalMB": 311.1,
+          "domNodes": 172,
+          "jsHeapMB": 7.7
+        }
+      ]
+    },
+    {
+      "scenario": "route-nav-character-120",
+      "iterations": 120,
+      "first": {
+        "at": 1794512193647,
+        "mainMB": 100.8,
+        "petMB": 127.7,
+        "totalMB": 228.5,
+        "domNodes": 240,
+        "jsHeapMB": 5.7
+      },
+      "last": {
+        "at": 1794512199516,
+        "mainMB": 177.3,
+        "petMB": 129.2,
+        "totalMB": 306.5,
+        "domNodes": 282,
+        "jsHeapMB": 8.7
+      },
+      "growthMB": 78,
+      "mainGrowthMB": 76.5,
+      "afterIdleMB": 307.9,
+      "afterIdleDeltaMB": 1.4,
+      "lateGrowthMB": -0.1,
+      "heapGrowthMB": 3,
+      "domEnd": 282,
+      "verdict": "OK_BOUNDED",
+      "samples": [
+        {
+          "at": 1794512193647,
+          "mainMB": 100.8,
+          "petMB": 127.7,
+          "totalMB": 228.5,
+          "domNodes": 240,
+          "jsHeapMB": 5.7
+        },
+        {
+          "at": 1794512194481,
+          "mainMB": 138.3,
+          "petMB": 128.3,
+          "totalMB": 266.6,
+          "domNodes": 282,
+          "jsHeapMB": 11.3
+        },
+        {
+          "at": 1794512195188,
+          "mainMB": 162.2,
+          "petMB": 128.4,
+          "totalMB": 290.6,
+          "domNodes": 282,
+          "jsHeapMB": 12.9
+        },
+        {
+          "at": 1794512195904,
+          "mainMB": 173.2,
+          "petMB": 128.4,
+          "totalMB": 301.6,
+          "domNodes": 282,
+          "jsHeapMB": 7.6
+        },
+        {
+          "at": 1794512196633,
+          "mainMB": 174.7,
+          "petMB": 128.5,
+          "totalMB": 303.2,
+          "domNodes": 282,
+          "jsHeapMB": 10.9
+        },
+        {
+          "at": 1794512197405,
+          "mainMB": 175.8,
+          "petMB": 128.7,
+          "totalMB": 304.5,
+          "domNodes": 282,
+          "jsHeapMB": 9
+        },
+        {
+          "at": 1794512198109,
+          "mainMB": 177.1,
+          "petMB": 128.9,
+          "totalMB": 306,
+          "domNodes": 282,
+          "jsHeapMB": 9
+        },
+        {
+          "at": 1794512198817,
+          "mainMB": 177.5,
+          "petMB": 129.1,
+          "totalMB": 306.6,
+          "domNodes": 282,
+          "jsHeapMB": 10.4
+        },
+        {
+          "at": 1794512199513,
+          "mainMB": 177.3,
+          "petMB": 129.2,
+          "totalMB": 306.5,
+          "domNodes": 282,
+          "jsHeapMB": 8.7
+        },
+        {
+          "at": 1794512199516,
+          "mainMB": 177.3,
+          "petMB": 129.2,
+          "totalMB": 306.5,
+          "domNodes": 282,
+          "jsHeapMB": 8.7
+        },
+        {
+          "at": 1794512207523,
+          "mainMB": 177,
+          "petMB": 130.9,
+          "totalMB": 307.9,
+          "domNodes": 282,
+          "jsHeapMB": 8.7
+        }
+      ]
+    },
+    {
+      "scenario": "route-nav-settings-120",
+      "iterations": 120,
+      "first": {
+        "at": 1794512212107,
+        "mainMB": 98.2,
+        "petMB": 127.3,
+        "totalMB": 225.5,
+        "domNodes": 240,
+        "jsHeapMB": 5.8
+      },
+      "last": {
+        "at": 1794512218267,
+        "mainMB": 193,
+        "petMB": 128.6,
+        "totalMB": 321.6,
+        "domNodes": 343,
+        "jsHeapMB": 18.7
+      },
+      "growthMB": 96.1,
+      "mainGrowthMB": 94.8,
+      "afterIdleMB": 323.7,
+      "afterIdleDeltaMB": 2.1,
+      "lateGrowthMB": 1.4,
+      "heapGrowthMB": 12.9,
+      "domEnd": 343,
+      "verdict": "OK_BOUNDED",
+      "samples": [
+        {
+          "at": 1794512212107,
+          "mainMB": 98.2,
+          "petMB": 127.3,
+          "totalMB": 225.5,
+          "domNodes": 240,
+          "jsHeapMB": 5.8
+        },
+        {
+          "at": 1794512212933,
+          "mainMB": 140.9,
+          "petMB": 127.7,
+          "totalMB": 268.6,
+          "domNodes": 343,
+          "jsHeapMB": 11
+        },
+        {
+          "at": 1794512213667,
+          "mainMB": 172.6,
+          "petMB": 127.8,
+          "totalMB": 300.4,
+          "domNodes": 343,
+          "jsHeapMB": 7
+        },
+        {
+          "at": 1794512214410,
+          "mainMB": 176.6,
+          "petMB": 127.9,
+          "totalMB": 304.5,
+          "domNodes": 343,
+          "jsHeapMB": 12.8
+        },
+        {
+          "at": 1794512215152,
+          "mainMB": 176,
+          "petMB": 128.5,
+          "totalMB": 304.5,
+          "domNodes": 343,
+          "jsHeapMB": 8.1
+        },
+        {
+          "at": 1794512215901,
+          "mainMB": 177.8,
+          "petMB": 128.6,
+          "totalMB": 306.4,
+          "domNodes": 343,
+          "jsHeapMB": 13.8
+        },
+        {
+          "at": 1794512216753,
+          "mainMB": 184.6,
+          "petMB": 128.7,
+          "totalMB": 313.3,
+          "domNodes": 343,
+          "jsHeapMB": 11.1
+        },
+        {
+          "at": 1794512217547,
+          "mainMB": 191.1,
+          "petMB": 129.1,
+          "totalMB": 320.2,
+          "domNodes": 343,
+          "jsHeapMB": 13.7
+        },
+        {
+          "at": 1794512218263,
+          "mainMB": 193,
+          "petMB": 128.6,
+          "totalMB": 321.6,
+          "domNodes": 343,
+          "jsHeapMB": 18.7
+        },
+        {
+          "at": 1794512218267,
+          "mainMB": 193,
+          "petMB": 128.6,
+          "totalMB": 321.6,
+          "domNodes": 343,
+          "jsHeapMB": 18.7
+        },
+        {
+          "at": 1794512226286,
+          "mainMB": 192.8,
+          "petMB": 130.9,
+          "totalMB": 323.7,
+          "domNodes": 343,
+          "jsHeapMB": 18.7
+        }
+      ]
+    }
+  ],
+  "findings": []
+}

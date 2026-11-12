@@ -145,7 +145,10 @@ test('[FR-27] a transcription returning through IPC after native hide cannot cha
     await page.getByRole('button', { name: '结束并识别', exact: true }).click()
     await expect.poll(() => app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.transcriptions)).toBe(1)
     step('test2:transcribing')
-    await page.getByTestId('hide-to-tray').click()
+    // 不点「隐藏到托盘」按钮：按钮会在点击过程中隐藏自身窗口，满载整套运行时 Playwright 的点击确认
+    // 会偶发永久挂起（步骤日志已复现：transcribing 后无后续步骤直到超时）。隐藏语义与按钮完全一致
+    // （主进程 window.hide() → renderer 收到 window:hidden），按钮路径由 flows.spec 的托盘用例覆盖。
+    await page.evaluate(() => window.murasame.window.hideMain())
     await expect.poll(() => page!.evaluate(() => (window as MediaWindow).__recordingFixture.hiddenEvents)).toBeGreaterThan(0)
     step('test2:hidden')
     await app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.release?.())

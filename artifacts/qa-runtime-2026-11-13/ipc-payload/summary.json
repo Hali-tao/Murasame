@@ -1,0 +1,131 @@
+{
+  "at": "2026-11-12T19:38:01.642Z",
+  "findings": [],
+  "results": [
+    {
+      "kind": "oversized",
+      "label": "sendMessage 8MB 文本",
+      "outcome": {
+        "resolved": true,
+        "ok": false,
+        "error": "请求参数无效：text",
+        "ms": 12
+      },
+      "memoryBefore": 539.1,
+      "memoryAfter": 621.4,
+      "responsiveness": {
+        "median": 0.5,
+        "max": 1.8
+      }
+    },
+    {
+      "kind": "oversized",
+      "label": "addMemory 4MB 文本",
+      "outcome": {
+        "resolved": true,
+        "ok": false,
+        "error": "请求参数无效：text",
+        "ms": 4
+      },
+      "memoryBefore": 622.4,
+      "memoryAfter": 623.6,
+      "responsiveness": {
+        "median": 0.5,
+        "max": 1.4
+      }
+    },
+    {
+      "kind": "oversized",
+      "label": "transcribe 200 万个样本",
+      "outcome": {
+        "resolved": true,
+        "ok": false,
+        "error": "",
+        "ms": 241
+      },
+      "memoryBefore": 623.9,
+      "memoryAfter": 690.4,
+      "responsiveness": {
+        "median": 0.5,
+        "max": 0.9
+      }
+    },
+    {
+      "kind": "oversized",
+      "label": "updateSettings 4MB 字段",
+      "outcome": {
+        "resolved": false,
+        "thrown": "Error: Error invoking remote method 'settings:update': Error: 请求参数无效：userName",
+        "ms": 6
+      },
+      "memoryBefore": 690.7,
+      "memoryAfter": 699,
+      "responsiveness": {
+        "median": 0.5,
+        "max": 0.7
+      }
+    },
+    {
+      "kind": "cyclic-object",
+      "cyclic": {
+        "resolved": true
+      },
+      "responsiveness": {
+        "median": 0.5,
+        "max": 2
+      }
+    },
+    {
+      "kind": "navigation-memory",
+      "startMemory": 699.6,
+      "endMemory": 894.2,
+      "growthMB": 194.6,
+      "samples": [
+        {
+          "round": 1,
+          "at": 1794512265357,
+          "memoryMB": 730.8
+        },
+        {
+          "round": 5,
+          "at": 1794512266677,
+          "memoryMB": 781.2
+        },
+        {
+          "round": 9,
+          "at": 1794512267943,
+          "memoryMB": 826.9
+        },
+        {
+          "round": 13,
+          "at": 1794512269440,
+          "memoryMB": 868.2
+        },
+        {
+          "round": 17,
+          "at": 1794512271061,
+          "memoryMB": 906.5
+        },
+        {
+          "round": 20,
+          "at": 1794512272121,
+          "memoryMB": 894.2
+        }
+      ]
+    },
+    {
+      "kind": "restore-import",
+      "seedMs": 1592,
+      "exported": true,
+      "opMs": 77,
+      "pings": {
+        "median": 0.6,
+        "max": 56.2
+      },
+      "importedOk": true,
+      "memoriesAfter": 200,
+      "memoryBefore": 538.7,
+      "memoryAfter": 617.4
+    }
+  ]
+}
