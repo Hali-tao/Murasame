@@ -49,7 +49,7 @@ export default tseslint.config(
   },
   {
     // 这些脚本里有 page.evaluate 回调，回调体在渲染上下文执行。
-    files: ['scripts/inspect-pet.mjs', 'scripts/perf-suite.mjs', 'scripts/probe-window.mjs', 'scripts/qa-soak.mjs', 'scripts/qa-ipc-shapes.mjs', 'scripts/qa-adversarial.mjs', 'scripts/qa-kill-restart.mjs', 'scripts/qa-main-thread.mjs', 'scripts/qa-ipc-payload.mjs', 'scripts/qa-ui-memory.mjs', 'artifacts/nailong-3d-refined-2026-10-29/verify-page.cjs', 'artifacts/nailong-appearance-spec-2026-11-04/scripts/render_check.mjs'],
+    files: ['scripts/inspect-pet.mjs', 'scripts/perf-suite.mjs', 'scripts/probe-window.mjs', 'scripts/qa-soak.mjs', 'scripts/qa-ipc-shapes.mjs', 'scripts/qa-memory-perf.mjs', 'scripts/qa-adversarial.mjs', 'scripts/qa-kill-restart.mjs', 'scripts/qa-main-thread.mjs', 'scripts/qa-ipc-payload.mjs', 'scripts/qa-ui-memory.mjs', 'artifacts/nailong-3d-refined-2026-10-29/verify-page.cjs', 'artifacts/nailong-appearance-spec-2026-11-04/scripts/render_check.mjs'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } }
   }
 )

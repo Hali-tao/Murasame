@@ -23,6 +23,7 @@
     "trace": "node scripts/traceability.mjs",
     "verify": "npm run typecheck && npm run lint && npm test && npm run trace",
     "qa:ipc-shapes": "node scripts/qa-ipc-shapes.mjs",
+    "qa:memory-perf": "node scripts/qa-memory-perf.mjs",
     "preview": "electron-vite preview"
   },
   "dependencies": {
