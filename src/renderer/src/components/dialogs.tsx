@@ -4,6 +4,13 @@ import { Button, ConfirmDialog, Field, Input, Modal, Textarea } from './ui'
 import { useAppStore } from '../store'
 import { ApprovalDetails } from './ApprovalDetails'
 
+const MEMORY_CATEGORY_ALIASES: Record<string, string> = {
+  偏好: '偏好', 用户: '偏好', user: '偏好',
+  反馈: '反馈', feedback: '反馈',
+  项目: '项目', project: '项目',
+  参考: '参考', reference: '参考'
+}
+
 const scopeOptions: Array<{ value: DeleteScope; title: string; hint: string }> = [
   { value: 'history', title: '对话历史', hint: '删除所选会话与消息正文。' },
   { value: 'memory', title: '相关长期记忆', hint: '只删除由本次选择产生的可识别条目。' },
@@ -184,6 +191,7 @@ export function MemoryEditDialog({
   entry: MemoryEntry | null
 }): React.JSX.Element {
   const [category, setCategory] = useState(entry?.category ?? '偏好')
+  const [categoryError, setCategoryError] = useState('')
   const [text, setText] = useState(entry?.text ?? '')
   const addMemory = useAppStore((state) => state.addMemory)
   const updateMemory = useAppStore((state) => state.updateMemory)
@@ -192,16 +200,24 @@ export function MemoryEditDialog({
   const handleOpenChange = (next: boolean): void => {
     if (!next) {
       setCategory(entry?.category ?? '偏好')
+      setCategoryError('')
       setText(entry?.text ?? '')
     }
     onOpenChange(next)
   }
 
   const submit = async (): Promise<void> => {
-    if (!category.trim() || !text.trim()) return
+    const raw = category.trim()
+    const normalized = MEMORY_CATEGORY_ALIASES[raw] ?? MEMORY_CATEGORY_ALIASES[raw.toLowerCase()]
+    if (!normalized) {
+      setCategoryError('类别只能是：偏好、反馈、项目、参考。')
+      return
+    }
+    if (!text.trim()) return
+    setCategoryError('')
     const result = entry
-      ? await updateMemory(entry.id, category.trim(), text.trim())
-      : await addMemory(category.trim(), text.trim())
+      ? await updateMemory(entry.id, normalized, text.trim())
+      : await addMemory(normalized, text.trim())
     if (result) handleOpenChange(false)
   }
 
@@ -221,7 +237,14 @@ export function MemoryEditDialog({
       }
     >
       <Field label="类别">
-        <Input value={category} maxLength={30} onChange={(event) => setCategory(event.target.value)} data-testid="memory-category" />
+        <Input
+          value={category}
+          maxLength={30}
+          aria-invalid={Boolean(categoryError)}
+          onChange={(event) => { setCategory(event.target.value); setCategoryError('') }}
+          data-testid="memory-category"
+        />
+        {categoryError ? <span className="muted" role="alert">{categoryError}</span> : null}
       </Field>
       <Field label="记忆内容" hint="最多 1000 字，保存后可在列表中逐条删除。">
         <Textarea value={text} rows={5} maxLength={1000} onChange={(event) => setText(event.target.value)} data-testid="memory-text" />

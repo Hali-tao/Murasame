@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { z } from 'zod'
 import { AppError } from '../shared/errors'
@@ -85,7 +85,13 @@ let registered = false
 
 function broadcast(channel: string, payload: unknown): void {
   for (const window of BrowserWindow.getAllWindows()) {
-    if (!window.isDestroyed()) window.webContents.send(channel, payload)
+    if (window.isDestroyed()) continue
+    try {
+      window.webContents.send(channel, payload)
+    } catch (error) {
+      // 渲染进程崩溃或窗口正在销毁时，事件丢弃不应该让业务调用失败。
+      log.warn(`Renderer broadcast dropped: ${channel}`, error)
+    }
   }
 }
 
@@ -238,24 +244,45 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
 
   ipcMain.handle(IPC.app.pickOpen, async (_event, raw: unknown) => {
-    const value = (raw ?? {}) as { title?: string; directory?: boolean; filters?: Array<{ name: string; extensions: string[] }> }
-    const result = await dialog.showOpenDialog({
-      title: value.title,
-      properties: value.directory ? ['openDirectory'] : ['openFile'],
-      filters: value.filters
-    })
-    return result.canceled ? null : result.filePaths[0] ?? null
+    const value = raw && typeof raw === 'object' ? (raw as { title?: unknown; directory?: unknown; filters?: unknown }) : {}
+    const title = typeof value.title === 'string' ? value.title.slice(0, 200) : undefined
+    const directory = value.directory === true
+    const filters = Array.isArray(value.filters)
+      ? value.filters
+          .filter((item): item is { name: string; extensions: string[] } =>
+            Boolean(item) && typeof (item as { name?: unknown }).name === 'string' && Array.isArray((item as { extensions?: unknown }).extensions))
+          .slice(0, 20)
+          .map((item) => ({
+            name: item.name.slice(0, 100),
+            extensions: item.extensions.filter((ext): ext is string => typeof ext === 'string').slice(0, 20).map((ext) => ext.slice(0, 20))
+          }))
+      : undefined
+    try {
+      const result = await dialog.showOpenDialog({
+        title,
+        properties: directory ? ['openDirectory'] : ['openFile'],
+        filters
+      })
+      return result.canceled ? null : result.filePaths[0] ?? null
+    } catch (error) {
+      log.error('打开文件选择框失败', error)
+      throw new Error('无法打开文件选择框，请稍后重试。', { cause: error })
+    }
   })
 
   ipcMain.handle(IPC.app.hotkey, () => readHotkey())
 
   ipcMain.handle(IPC.app.pickSave, async (_event, raw: unknown) => {
-    const value = (raw ?? {}) as { title?: string; defaultPath?: string }
-    const result = await dialog.showSaveDialog({
-      title: value.title,
-      defaultPath: value.defaultPath
-    })
-    return result.canceled ? null : result.filePath ?? null
+    const value = raw && typeof raw === 'object' ? (raw as { title?: unknown; defaultPath?: unknown }) : {}
+    const title = typeof value.title === 'string' ? value.title.slice(0, 200) : undefined
+    const defaultPath = typeof value.defaultPath === 'string' && value.defaultPath.length <= 32767 ? value.defaultPath : undefined
+    try {
+      const result = await dialog.showSaveDialog({ title, defaultPath })
+      return result.canceled ? null : result.filePath ?? null
+    } catch (error) {
+      log.error('打开保存对话框失败', error)
+      throw new Error('无法打开保存对话框，请稍后重试。', { cause: error })
+    }
   })
 
   ipcMain.handle(IPC.window.showMain, () => showMain())
@@ -308,20 +335,37 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
   ipcMain.handle(IPC.pet.endDrag, () => endPetDrag())
 
-  ipcMain.handle(IPC.settings.get, () => getSettings())
+  ipcMain.handle(IPC.settings.get, () => {
+    try {
+      return getSettings()
+    } catch (error) {
+      log.error('读取设置失败', error)
+      throw new Error('本地设置读取失败，请检查用户目录权限后重试。', { cause: error })
+    }
+  })
 
   ipcMain.handle(IPC.settings.update, (_event, raw: unknown) => {
     const parsed = settingsPatchSchema.safeParse(raw)
     if (!parsed.success) throw new Error(validationError(parsed.error))
-    const previous = getSettings()
-    let next = updateSettings(parsed.data as Partial<AppSettings>)
-    applyLoginSetting(next)
-    syncPetSettings(previous, next)
-    if (parsed.data.petHotkey && parsed.data.petHotkey !== previous.petHotkey) {
-      const result = applyHotkey(parsed.data.petHotkey, () => focusPetChat())
-      if (!result.ok) next = updateSettings({ petHotkey: previous.petHotkey })
+    try {
+      const patch = { ...(parsed.data as Partial<AppSettings>) }
+      const previous = getSettings()
+      if (patch.petHotkey && patch.petHotkey !== previous.petHotkey) {
+        const result = applyHotkey(patch.petHotkey, () => focusPetChat())
+        if (!result.ok) {
+          // 先注册再持久化：注册失败时不留下不可用的快捷键，其余设置照常保存。
+          log.warn(`快捷键注册失败：${result.message}`)
+          delete patch.petHotkey
+        }
+      }
+      const next = updateSettings(patch)
+      applyLoginSetting(next)
+      syncPetSettings(previous, next)
+      return next
+    } catch (error) {
+      log.error('保存设置失败', error)
+      throw new Error(error instanceof Error && error.message.startsWith('请求参数无效') ? error.message : '设置保存失败，请检查磁盘权限后重试。', { cause: error })
     }
-    return next
   })
 
   ipcMain.handle(IPC.updates.check, () => checkForUpdates())
@@ -432,7 +476,14 @@ export function registerIpcHandlers(core: DesktopCore): void {
         `INSERT INTO characters_imported(id, name, format, root_path, loaded, error, created_at) VALUES (?, ?, 'cubism', ?, 1, NULL, ?)`
       ).run(imported.id, imported.modelUrl, join(app.getPath('userData'), 'characters', imported.id), new Date().toISOString())
     } catch (error) {
-      return { ok: false, error: error instanceof Error ? error.message : '导入记录保存失败，原有角色保持不变' }
+      log.error('角色导入记录保存失败', error)
+      // 数据库写入失败时撤销已经复制到 userData 的角色目录，避免留下孤儿文件。
+      try {
+        rmSync(join(app.getPath('userData'), 'characters', imported.id), { recursive: true, force: true })
+      } catch (cleanupError) {
+        log.warn('撤销导入的角色目录失败', cleanupError)
+      }
+      return { ok: false, error: '导入记录保存失败，已撤销本次复制的角色文件，原有角色保持不变。' }
     }
     return { ok: true, data: imported }
   })
@@ -446,36 +497,69 @@ export function registerIpcHandlers(core: DesktopCore): void {
     address: relationshipVoice(record.stage).title,
     archivedLines: record.archivedLines
   })
-  ipcMain.handle(IPC.relationship.get, () => relationshipView(readRelationship()))
+  ipcMain.handle(IPC.relationship.get, () => {
+    try {
+      return relationshipView(readRelationship())
+    } catch (error) {
+      log.error('读取关系记录失败', error)
+      throw new Error('读取关系记录失败，请稍后重试。', { cause: error })
+    }
+  })
   ipcMain.handle(IPC.relationship.reset, () => {
-    const relationship = writeRelationship(resetRelationship(readRelationship()))
-    const view = relationshipView(relationship)
-    broadcast(IPC.relationship.changed, view)
-    return view
+    try {
+      const relationship = writeRelationship(resetRelationship(readRelationship()))
+      const view = relationshipView(relationship)
+      broadcast(IPC.relationship.changed, view)
+      return view
+    } catch (error) {
+      log.error('重置关系记录失败', error)
+      throw new Error('重置关系记录失败，请稍后重试。', { cause: error })
+    }
   })
   ipcMain.handle(IPC.relationship.changeAppearance, (_event, raw: unknown) => {
     const schema = z.object({ mode: z.enum(['continue', 'new']), patch: settingsPatchSchema.pick({ petPreset: true, importedModelUrl: true, importedCharacterName: true }).strict() })
     const parsed = schema.safeParse(raw)
     if (!parsed.success) throw new Error(validationError(parsed.error))
-    const previous = getSettings()
-    const next = updateSettings(parsed.data.patch)
-    const relationship = parsed.data.mode === 'new' ? writeRelationship(startNewLine(readRelationship())) : readRelationship()
-    syncPetSettings(previous, next)
-    // Import switches do not change preset ID; explicitly refresh the model URL too.
-    if (previous.importedModelUrl !== next.importedModelUrl) refreshPetState()
-    const view = relationshipView(relationship)
-    broadcast(IPC.relationship.changed, view)
-    return { settings: next, relationship: view }
+    try {
+      const previous = getSettings()
+      const next = updateSettings(parsed.data.patch)
+      const relationship = parsed.data.mode === 'new' ? writeRelationship(startNewLine(readRelationship())) : readRelationship()
+      syncPetSettings(previous, next)
+      // Import switches do not change preset ID; explicitly refresh the model URL too.
+      if (previous.importedModelUrl !== next.importedModelUrl) refreshPetState()
+      const view = relationshipView(relationship)
+      broadcast(IPC.relationship.changed, view)
+      return { settings: next, relationship: view }
+    } catch (error) {
+      log.error('切换角色形象失败', error)
+      throw new Error('切换角色形象失败，请稍后重试。', { cause: error })
+    }
   })
   ipcMain.handle(IPC.voice.readiness, () => core.voice.readiness())
   ipcMain.handle(IPC.voice.transcribe, async (_event, raw: unknown) => {
     const payload = raw as { samples?: number[] }
-    const samples = Array.isArray(payload?.samples) ? Float32Array.from(payload.samples) : new Float32Array()
+    const rawSamples = payload?.samples
+    const maxSamples = 16_000 * 120
+    if (
+      !Array.isArray(rawSamples) ||
+      rawSamples.length > maxSamples ||
+      !rawSamples.every((value) => typeof value === 'number' && Number.isFinite(value))
+    ) {
+      return { text: '', accepted: false, message: '录音数据无效或过长，已忽略这次录音。' }
+    }
+    const samples = Float32Array.from(rawSamples)
     return core.voice.transcribe(samples, getSettings().permissions.microphone)
   })
   ipcMain.handle(IPC.voice.speak, async (_event, raw: unknown) => {
     const payload = raw as { text?: string }
-    const spoken = await core.voice.speak(String(payload?.text ?? ''))
+    const text = String(payload?.text ?? '').trim()
+    if (!text) {
+      return { samples: [], sampleRate: 24_000, played: false, message: '没有可朗读的文字。' }
+    }
+    if (text.length > 2000) {
+      return { samples: [], sampleRate: 24_000, played: false, message: '这段文字太长，已保留文字回复。' }
+    }
+    const spoken = await core.voice.speak(text)
     return {
       samples: spoken.audio ? Array.from(spoken.audio) : [],
       sampleRate: spoken.sampleRate,
@@ -487,6 +571,9 @@ export function registerIpcHandlers(core: DesktopCore): void {
     const requested = (raw as { passphrase?: string; path?: string }) ?? {}
     const passphrase = String(requested.passphrase ?? '')
     if (passphrase.length < 6) return { ok: false, error: '导出口令至少 6 位。没有口令不会导出。' }
+    if (passphrase.length > 200) return { ok: false, error: '导出口令不能超过 200 位。' }
+    const requestedPath = typeof requested.path === 'string' ? requested.path.trim() : ''
+    if (requestedPath.length > 32767) return { ok: false, error: '导出路径过长，请换一个更短的路径。' }
     const bootstrap = await core.getBootstrap()
     if (!bootstrap.ok) return bootstrap
     const bundle = stripSecrets({
@@ -496,7 +583,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
       character: bootstrap.data.character,
       models: bootstrap.data.models.map((model) => ({ id: model.id, name: model.name, endpoint: model.endpoint }))
     })
-    const target = requested.path?.trim() || join(app.getPath('downloads'), `murasame-${new Date().toISOString().slice(0, 10)}.murapack`)
+    const target = requestedPath || join(app.getPath('downloads'), `murasame-${new Date().toISOString().slice(0, 10)}.murapack`)
     try {
       writeFileSync(target, exportBundle(bundle, passphrase))
       return { ok: true, data: { path: target, note: '数据包已加密，不含明文密钥。' } }
@@ -506,10 +593,15 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
   ipcMain.handle(IPC.data.importBundle, async (_event, raw: unknown) => {
     const value = raw as { path?: string; passphrase?: string }
-    const source = String(value?.path ?? '')
+    const source = String(value?.path ?? '').trim()
+    const passphrase = String(value?.passphrase ?? '')
+    if (!source) return { ok: false, error: '请选择要导入的数据包文件。' }
+    if (source.length > 32767) return { ok: false, error: '数据包路径过长，请换一个更短的路径。' }
+    if (passphrase.length < 6) return { ok: false, error: '导入口令至少 6 位。' }
+    if (passphrase.length > 200) return { ok: false, error: '导入口令不能超过 200 位。' }
     try {
       const payload = readFileSync(source)
-      const bundle = importBundle(payload, String(value?.passphrase ?? ''), 3) as {
+      const bundle = importBundle(payload, passphrase, 3) as {
         conversations?: Parameters<typeof mergeImportedBundle>[1]['conversations']
         memories?: Parameters<typeof mergeImportedBundle>[1]['memories']
         character?: { name?: string; style?: string; example?: string; keywords?: string[]; proactive?: boolean; memory?: boolean }
@@ -532,7 +624,9 @@ export function registerIpcHandlers(core: DesktopCore): void {
         data: {
           conversations: merged.conversations,
           memories: merged.memories,
-          note: `已合并导入。原数据库备份在 ${dbFile}.before-import。`
+          note: merged.skippedMessages > 0
+            ? `已合并导入，跳过 ${merged.skippedMessages} 条重复消息。原数据库备份在 ${dbFile}.before-import。`
+            : `已合并导入。原数据库备份在 ${dbFile}.before-import。`
         }
       }
     } catch (error) {
@@ -622,6 +716,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   ipcMain.handle(IPC.autonomy.browse, (_event, raw: unknown) => {
     const goal = String((raw as { goal?: string })?.goal ?? '').trim()
     if (!goal) return { ok: false, error: '先说想让它在隔离桌面里看什么。' }
+    if (goal.length > 2000) return { ok: false, error: '目标不能超过 2000 字，请缩短后再试。' }
     if (!getSettings().outboundImages) return { ok: false, error: '自己逛需要把隔离桌面的截图发给看图模型。请先在设置里打开「允许把截图发给模型」。' }
     return core.autonomy.browse(goal, (image, target, notes, signal) => core.decideIsolationStep(image, target, notes, signal))
   })

@@ -439,6 +439,8 @@ export const useAppStore = create<AppStore>((set, get) => {
     },
 
     async approveTask(id, scope = 'once') {
+      // 连点时第二个请求直接忽略：主进程对非「等待批准」状态会返回失败，重复提示没有意义。
+      if (get().busy['task:approve']) return null
       return busyRun('task:approve', async () => {
         const result = await window.murasame.core.approveTask(id, scope)
         const task = unwrap(result, get().notify)

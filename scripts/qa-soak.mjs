@@ -102,7 +102,6 @@ async function sample(tag) {
   const startedAt = Date.now()
   let processes = []
   let mainResponsive = false
-  let mainLatency = -1
   try {
     const evaluated = await Promise.race([
       app.evaluate(async ({ app }) =>
@@ -125,7 +124,7 @@ async function sample(tag) {
   } catch (error) {
     addFinding('P0', 'QA-SOAK-MAIN-ERR', '主进程评估失败', String(error).slice(0, 300))
   }
-  mainLatency = Date.now() - startedAt
+  const mainLatency = Date.now() - startedAt
   const totals = processes.reduce(
     (acc, p) => ({ cpu: acc.cpu + (p.cpu || 0), memoryMB: acc.memoryMB + (p.memoryMB || 0) }),
     { cpu: 0, memoryMB: 0 }

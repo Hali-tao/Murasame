@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import * as SwitchPrimitive from '@radix-ui/react-switch'
 import { X } from 'lucide-react'
@@ -276,6 +277,10 @@ export function ConfirmDialog({
   onCancel?: () => void | Promise<void>
   busy?: boolean
 }): React.JSX.Element {
+  // 同一帧内连点「确认/取消」时，busy 状态要等下一次渲染才生效；用同步 ref 挡住重入，
+  // 避免对同一审批发两次请求（第二次会被主进程判为「没有待批准操作」）。
+  const confirming = useRef(false)
+  const cancelling = useRef(false)
   return (
     <Modal
       open={open}
@@ -286,8 +291,11 @@ export function ConfirmDialog({
         <>
           <Button
             onClick={() => {
-              if (onCancel) void onCancel()
-              else onOpenChange(false)
+              if (cancelling.current) return
+              cancelling.current = true
+              void Promise.resolve(onCancel ? onCancel() : onOpenChange(false)).finally(() => {
+                cancelling.current = false
+              })
             }}
             disabled={busy}
           >
@@ -295,7 +303,13 @@ export function ConfirmDialog({
           </Button>
           <Button
             variant={tone === 'red' ? 'danger' : 'primary'}
-            onClick={() => void onConfirm()}
+            onClick={() => {
+              if (confirming.current) return
+              confirming.current = true
+              void Promise.resolve(onConfirm()).finally(() => {
+                confirming.current = false
+              })
+            }}
             disabled={busy}
           >
             {busy ? <Spinner /> : null}

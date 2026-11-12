@@ -28,7 +28,7 @@ export class ProactiveLoop {
 
   start(intervalMs = 5 * 60 * 1000): void {
     if (this.timer) return
-    this.timer = setInterval(() => { void this.tick() }, intervalMs)
+    this.timer = setInterval(() => { void this.tick().catch(() => undefined) }, intervalMs)
   }
   stop(): void {
     if (this.timer) clearInterval(this.timer)

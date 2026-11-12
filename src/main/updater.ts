@@ -5,6 +5,7 @@ import log from './logger'
 
 let configured = false
 let timer: NodeJS.Timeout | null = null
+let delayedTimer: NodeJS.Timeout | null = null
 
 function disabled(message: string): UpdateCheckResult {
   return { status: 'disabled', message }
@@ -34,7 +35,15 @@ function configure(): boolean {
 }
 
 export async function checkForUpdates(): Promise<UpdateCheckResult> {
-  if (!configure()) {
+  let ready = false
+  try {
+    ready = configure()
+  } catch (error) {
+    // 非法更新源会让 setFeedURL 抛错；不能变成未处理 rejection。
+    log.error('Auto-update configuration failed', error)
+    return { status: 'error', message: '更新源配置无效，自动更新已关闭。' }
+  }
+  if (!ready) {
     return disabled(
       !app.isPackaged
         ? '开发环境不检查更新。安装版配置更新源后可自动检查。'
@@ -56,22 +65,30 @@ export async function checkForUpdates(): Promise<UpdateCheckResult> {
     log.error('Update check failed', error)
     return {
       status: 'error',
-      message: error instanceof Error ? error.message : '检查更新失败，请稍后重试。'
+      message: '检查更新失败，请稍后重试。'
     }
   }
 }
 
 export function initializeUpdater(): void {
-  if (!configure()) return
+  try {
+    if (!configure()) return
+  } catch (error) {
+    log.error('Auto-update configuration failed', error)
+    return
+  }
   timer = setInterval(() => {
-    void checkForUpdates()
+    void checkForUpdates().catch((error) => log.error('Auto-update interval failed', error))
   }, 6 * 60 * 60 * 1000)
-  setTimeout(() => {
-    void checkForUpdates()
+  delayedTimer = setTimeout(() => {
+    delayedTimer = null
+    void checkForUpdates().catch((error) => log.error('Auto-update initial check failed', error))
   }, 10_000)
 }
 
 export function stopUpdater(): void {
   if (timer) clearInterval(timer)
   timer = null
+  if (delayedTimer) clearTimeout(delayedTimer)
+  delayedTimer = null
 }

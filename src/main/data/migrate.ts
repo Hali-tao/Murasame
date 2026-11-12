@@ -11,7 +11,11 @@ export function migrate(db: SqliteDatabase, migrations: readonly Migration[]): n
   const currentRow = db.prepare(`SELECT value FROM meta WHERE key = 'schema_version'`).get() as
     | { value: string }
     | undefined
-  let current = Number(currentRow?.value ?? 0)
+  const recorded = Number(currentRow?.value ?? 0)
+  if (!Number.isFinite(recorded) || recorded < 0) {
+    throw new Error('本地数据库版本元数据损坏（schema_version 非法），为避免重复迁移已停止打开。请先备份并清除本地数据后重试。')
+  }
+  let current = Math.trunc(recorded)
   const newest = [...migrations].reduce((max, item) => Math.max(max, item.version), 0)
   const rejection = rejectDowngrade(current, newest)
   if (rejection) throw new Error(rejection)

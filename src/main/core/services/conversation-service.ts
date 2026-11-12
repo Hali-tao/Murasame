@@ -255,6 +255,8 @@ export class ConversationService {
       this.db.prepare(`DELETE FROM trace_blobs WHERE blob_hash NOT IN (SELECT blob_hash FROM trace_nodes)`).run()
       this.db.prepare(`DELETE FROM tool_calls WHERE task_id = ? AND tool_id = 'prompt'`).run(id)
     })()
+    // 删除会话时同步释放该会话的请求队列，避免长期使用后 Map 只增不减。
+    this.queues.delete(id)
     return this.list()
   }
 

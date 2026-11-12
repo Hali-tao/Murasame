@@ -59,20 +59,40 @@ function icon() {
   return nativeImage.createFromPath(resourcePath('icon.png'))
 }
 
+/**
+ * 向渲染进程发事件时的统一保护：窗口或 webContents 已销毁、渲染帧已释放时
+ * 不抛异常（否则会让已经成功的 IPC 调用返回失败，或中断任务状态回调链）。
+ */
+function safeSend(window: BrowserWindow | null | undefined, channel: string, payload?: unknown): void {
+  if (!window || window.isDestroyed()) return
+  const contents = window.webContents
+  if (!contents || (typeof contents.isDestroyed === 'function' && contents.isDestroyed())) return
+  try {
+    if (payload === undefined) contents.send(channel)
+    else contents.send(channel, payload)
+  } catch (error) {
+    log.warn(`Renderer event dropped: ${channel}`, error)
+  }
+}
+
 function loadRenderer(window: BrowserWindow, page: 'index' | 'pet'): void {
-  if (rendererUrl) {
-    void window.loadURL(`${rendererUrl}/${page}.html`)
-  } else {
-    // A custom scheme keeps fetch()/CORS working for Live2D model assets in
-    // production, whereas file:// would block runtime JSON and texture loads.
-    void window.loadURL(`murasame://app/${page}.html`)
+  const target = rendererUrl ? `${rendererUrl}/${page}.html` : `murasame://app/${page}.html`
+  // A custom scheme keeps fetch()/CORS working for Live2D model assets in
+  // production, whereas file:// would block runtime JSON and texture loads.
+  try {
+    const loading = window.loadURL(target)
+    if (loading && typeof loading.catch === 'function') {
+      loading.catch((error: unknown) => log.error(`页面加载失败：${target}`, error))
+    }
+  } catch (error) {
+    log.error(`页面加载失败：${target}`, error)
   }
 }
 
 function secureWebContents(window: BrowserWindow): void {
   // A hidden BrowserWindow stays mounted. Its microphone owner must cancel
   // pending acquisition/transcription as well as an already active stream.
-  const stopVoiceInput = (): void => { window.webContents.send(IPC.window.hidden) }
+  const stopVoiceInput = (): void => { safeSend(window, IPC.window.hidden) }
   window.on('hide', stopVoiceInput)
   window.on('minimize', stopVoiceInput)
   if (!app.isPackaged) {
@@ -95,7 +115,7 @@ function broadcastPetState(state: PetState): PetState {
   const windows = [mainWindow, petWindow].filter(
     (window): window is BrowserWindow => Boolean(window && !window.isDestroyed())
   )
-  windows.forEach((window) => window.webContents.send(IPC.pet.stateChanged, state))
+  windows.forEach((window) => safeSend(window, IPC.pet.stateChanged, state))
   return state
 }
 
@@ -207,6 +227,8 @@ export function createMainWindow(): BrowserWindow {
   })
 
   mainWindow.on('closed', () => {
+    if (saveBoundsTimer) clearTimeout(saveBoundsTimer)
+    saveBoundsTimer = null
     mainWindow = null
   })
 
@@ -287,6 +309,8 @@ export function createPetWindow(): BrowserWindow {
   })
 
   petWindow.on('closed', () => {
+    if (savePetTimer) clearTimeout(savePetTimer)
+    savePetTimer = null
     petWindow = null
   })
 
@@ -294,8 +318,7 @@ export function createPetWindow(): BrowserWindow {
 }
 
 export function broadcastPetPerformance(cue: unknown): void {
-  const window = getPetWindow()
-  if (window && !window.isDestroyed()) window.webContents.send(IPC.pet.performance, cue)
+  safeSend(getPetWindow(), IPC.pet.performance, cue)
 }
 
 export function isPetHidden(): boolean {
@@ -341,7 +364,7 @@ export function openMainPath(path: string): void {
   const pathOnly = path.split('?')[0]
   if (!MAIN_PATHS.has(pathOnly)) return
   showMain()
-  getMainWindow()?.webContents.send(IPC.window.navigated, path)
+  safeSend(getMainWindow(), IPC.window.navigated, path)
 }
 
 function bringOntoScreen(window: BrowserWindow): void {
@@ -388,7 +411,8 @@ export function getPetStateSafe(): PetState {
   const window = getPetWindow()
   const [x, y] = window?.getPosition() ?? [0, 0]
   return {
-    visible: Boolean(window?.isVisible()),
+    // 可见性以持久化设置为准：窗口可能尚未完成首次 show，但状态早已是「应显示」。
+    visible: Boolean(window) && settings.petVisible,
     scale: settings.petScale,
     x,
     y,
@@ -498,6 +522,12 @@ export function movePetDrag(screenX: number, screenY: number): void {
   if (next.x === currentX && next.y === currentY) return
   // setPosition 在 125% 缩放下每次都会把窗口撑大 1 像素，聊天框就被越拉越长。
   window.setBounds({ x: next.x, y: next.y, width: size.width, height: size.height })
+  // DPI 缩放可能让实际 bounds 比请求值大 1px；落位后按真实 bounds 再夹一次，避免越出工作区。
+  const actual = window.getBounds()
+  const corrected = clampPetPosition(actual.x, actual.y, actual.width, actual.height)
+  if (corrected.x !== actual.x || corrected.y !== actual.y) {
+    window.setBounds({ x: corrected.x, y: corrected.y, width: actual.width, height: actual.height })
+  }
 }
 
 export function endPetDrag(): void {
@@ -558,5 +588,5 @@ export function focusPetChat(): void {
   showPet()
   window.show()
   window.focus()
-  window.webContents.send(IPC.pet.focusChat)
+  safeSend(window, IPC.pet.focusChat)
 }

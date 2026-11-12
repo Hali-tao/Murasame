@@ -21,7 +21,7 @@ interface PersistedShape {
 
 let cached: Store<PersistedShape> | null = null
 
-/** ? keys.ts??????? userData ???????? app ????? */
+/** 延迟构造 electron-store：等 app 的 userData 路径就绪后再创建，避免在模块加载阶段读取磁盘。 */
 function store(): Store<PersistedShape> {
   if (!cached) {
     cached = new Store<PersistedShape>({
@@ -69,7 +69,14 @@ export function updateSettings(patch: Partial<AppSettings>): AppSettings {
     }
   })
   store().set('settings', next)
-  listeners.forEach((listener) => listener(next))
+  // 观察者不得回滚已提交的写入：一个监听器失败（例如广播到已销毁的窗口）不能阻断其余监听器。
+  for (const listener of listeners) {
+    try {
+      listener(next)
+    } catch {
+      // 广播失败只影响该监听器自身的通知，设置已经落盘。
+    }
+  }
   return next
 }
 

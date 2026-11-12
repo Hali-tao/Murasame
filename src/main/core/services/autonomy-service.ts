@@ -179,7 +179,7 @@ export class AutonomyService {
       run.containerId = started.id
       await this.check(run, 'start', false)
       this.updateState({ ...this.state, running: true, phase: 'running', reason: `活动进行中。上限 ${ACTIVITY_LIMITS.steps} 次动作/观察请求、${ACTIVITY_LIMITS.minutes} 分钟。`, viewUrl: run.allowNetwork ? vncView(true, started.port).url : '' }, run)
-      run.deadline = setTimeout(() => { void this.finish(run, 'limited', `已到 ${ACTIVITY_LIMITS.minutes} 分钟上限，活动停止，没有记成完成。`) }, Math.max(1, ACTIVITY_LIMITS.minutes * 60000 - (Date.now() - run.startedAt)))
+      run.deadline = setTimeout(() => { void this.finish(run, 'limited', `已到 ${ACTIVITY_LIMITS.minutes} 分钟上限，活动停止，没有记成完成。`).catch(() => undefined) }, Math.max(1, ACTIVITY_LIMITS.minutes * 60000 - (Date.now() - run.startedAt)))
       run.deadline.unref?.()
       return { ok: true, data: this.status() }
     } catch (error) {

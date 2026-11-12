@@ -36,14 +36,16 @@ export function createTray(): Tray {
       {
         label: '检查更新',
         click: () => {
-          void checkForUpdates().then((result) => {
-            void dialog.showMessageBox({
-              type: result.status === 'error' ? 'error' : 'info',
-              title: 'Murasame 更新',
-              message: result.message,
-              buttons: ['关闭']
-            })
-          })
+          void checkForUpdates()
+            .then((result) =>
+              dialog.showMessageBox({
+                type: result.status === 'error' ? 'error' : 'info',
+                title: 'Murasame 更新',
+                message: result.message,
+                buttons: ['关闭']
+              })
+            )
+            .catch((error) => log.error('展示更新结果失败', error))
         }
       },
       { type: 'separator' },

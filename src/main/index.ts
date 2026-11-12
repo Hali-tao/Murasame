@@ -228,6 +228,13 @@ if (!gotSingleInstanceLock) {
 
     app.on('activate', () => showMain())
     log.info(`Murasame ${app.getVersion()} started; packaged=${app.isPackaged}`)
+  }).catch((error: unknown) => {
+    // 启动链路任何一步失败（数据库之后）都必须让用户看到原因并退出，
+    // 不能留下没有窗口、没有托盘、没有 IPC 的挂起进程。
+    const message = error instanceof Error ? error.message : String(error)
+    log.error('Startup chain failed', error)
+    dialog.showErrorBox('Murasame 启动失败', `初始化过程中发生错误，应用将退出。\n${message}`)
+    app.exit(1)
   })
 
   app.on('before-quit', () => {
