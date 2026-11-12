@@ -1,0 +1,112 @@
+{
+  "at": "2026-11-12T17:47:17.824Z",
+  "results": [
+    {
+      "name": "corrupt-settings-json",
+      "startedAt": "2026-11-12T17:46:42.049Z",
+      "exit": null,
+      "verdict": "EXPECTED_MODAL_BLOCK",
+      "aliveAfter10s": true,
+      "note": "按设计弹出中文错误框并等待用户确认；自动化环境主动结束进程",
+      "exitAfterKill": {
+        "code": 1,
+        "signal": null,
+        "at": 11292
+      },
+      "durationMs": 11502
+    },
+    {
+      "name": "unknown-preset",
+      "settings": {
+        "onboardingDone": true,
+        "petPreset": "not-a-real-preset"
+      },
+      "extraFiles": [],
+      "startedAt": "2026-11-12T17:46:53.639Z",
+      "launchMs": 832,
+      "windows": [
+        "murasame://app/index.html",
+        "murasame://app/pet.html"
+      ],
+      "hasMain": true,
+      "hasPet": true,
+      "probe": {
+        "ready": "complete",
+        "hasApi": true,
+        "bodyChars": 28
+      },
+      "quitMs": 324,
+      "quitHung": false,
+      "verdict": "OK",
+      "durationMs": 2237
+    },
+    {
+      "name": "invalid-scale-and-position",
+      "settings": {
+        "onboardingDone": true,
+        "petScale": 0,
+        "petHotkey": "Definitely-Not-A-Key"
+      },
+      "extraFiles": [],
+      "startedAt": "2026-11-12T17:46:55.879Z",
+      "launchMs": 792,
+      "windows": [
+        "murasame://app/index.html",
+        "murasame://app/pet.html"
+      ],
+      "hasMain": true,
+      "hasPet": true,
+      "probe": {
+        "ready": "complete",
+        "hasApi": true,
+        "bodyChars": 0
+      },
+      "quitMs": 315,
+      "quitHung": false,
+      "verdict": "OK",
+      "durationMs": 1794
+    },
+    {
+      "name": "corrupt-database",
+      "startedAt": "2026-11-12T17:46:57.678Z",
+      "exit": null,
+      "verdict": "EXPECTED_MODAL_BLOCK",
+      "aliveAfter10s": true,
+      "note": "按设计弹出中文错误框并等待用户确认；自动化环境主动结束进程",
+      "exitAfterKill": {
+        "code": 1,
+        "signal": null,
+        "at": 11226
+      },
+      "durationMs": 11476
+    },
+    {
+      "name": "second-instance",
+      "startedAt": "2026-11-12T17:47:09.234Z",
+      "secondExitCode": 0,
+      "secondInstanceMs": 2987,
+      "verdict": "OK",
+      "firstStillResponsive": true,
+      "quitMs": 620,
+      "quitHung": false
+    },
+    {
+      "name": "restart-loop",
+      "runs": [
+        {
+          "run": 1,
+          "totalMs": 1751,
+          "quitMs": 325,
+          "quitHung": false
+        },
+        {
+          "run": 2,
+          "totalMs": 1596,
+          "quitMs": 327,
+          "quitHung": false
+        }
+      ],
+      "verdict": "OK"
+    }
+  ]
+}

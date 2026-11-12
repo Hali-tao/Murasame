@@ -298,9 +298,14 @@ async function invalidInputFuzz(mainPage) {
       return out
     })
     .catch((error) => [{ name: 'fuzz 整体', ok: false, error: String(error) }])
+  // 非法输入被校验拒绝是预期行为（表达为中文结构化错误）；只有超时/崩溃/非预期异常才算缺陷。
+  const expectedRejection = /请求参数无效|无效|不能为空|长度|过长|至少|请选择|先说|太短/
   for (const item of results) {
     if (item.result === 'TIMEOUT') addFinding('P1', 'QA-SOAK-FUZZ-TIMEOUT', `非法输入导致 8 秒超时：${item.name}`, '')
-    else if (!item.ok) addFinding('P2', 'QA-SOAK-FUZZ-REJECT', `非法输入抛出异常：${item.name}`, item.error)
+    else if (!item.ok) {
+      if (expectedRejection.test(String(item.error))) item.expectedRejection = true
+      else addFinding('P2', 'QA-SOAK-FUZZ-REJECT', `非法输入抛出非预期异常：${item.name}`, item.error)
+    }
   }
   // 主进程仍可用？
   const alive = await app.evaluate(({ app }) => app.isReady()).catch(() => false)
@@ -349,6 +354,7 @@ function writeReport(summary) {
   lines.push(failures.length === 0 ? '- 未发现崩溃/未响应/异常退出（PASS）' : `- 发现 ${failures.length} 个 P0 问题（FAIL）`)
   lines.push(`- 崩溃次数：${summary.crashes.length}；异常退出：${summary.unexpectedExit}`)
   lines.push(`- 控制台错误条数：${summary.consoleErrorCount}`)
+  lines.push(`- 非法输入被校验拒绝（预期行为）：${summary.expectedRejections ?? 0} 项`)
   lines.push('')
   lines.push('## 指标')
   lines.push('| 指标 | 值 |')
@@ -419,6 +425,7 @@ async function main() {
   summary.ipcBefore = ipcBefore
   summary.ipcAfter = ipcAfter
   summary.fuzz = fuzz
+  summary.expectedRejections = fuzz.filter((item) => item.expectedRejection).length
   summary.stressRounds = stressRounds
   writeReport(summary)
   console.log('报告已写入：', join(OUT_DIR, 'report.md'))

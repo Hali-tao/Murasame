@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T17:04:56.989Z",
+  "at": "2026-11-12T17:54:27.265Z",
   "quick": false,
   "durations": {
     "warmup": 8,
@@ -7,41 +7,28 @@
     "idle": 120
   },
   "samples": 127,
-  "idleMemoryStartMB": 236.7,
-  "idleMemoryEndMB": 268.9,
-  "idleMemoryGrowthMB": 32.2,
-  "idleMemoryGrowthMBPerMinute": 16.1,
+  "idleMemoryStartMB": 1278.5,
+  "idleMemoryEndMB": 878.4,
+  "idleMemoryGrowthMB": -400.1,
+  "idleMemoryGrowthMBPerMinute": -200,
   "maxMainLatencyMS": 9,
-  "maxTotalCpuPercent": 3.4,
+  "maxTotalCpuPercent": 4.9,
   "crashes": [],
   "unexpectedExit": false,
   "consoleErrorCount": 0,
   "consoleErrorSamples": [],
-  "findings": [
-    {
-      "severity": "P2",
-      "id": "QA-SOAK-FUZZ-REJECT",
-      "title": "非法输入抛出异常：setScale NaN",
-      "detail": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
-    },
-    {
-      "severity": "P2",
-      "id": "QA-SOAK-FUZZ-REJECT",
-      "title": "非法输入抛出异常：setScale 负数",
-      "detail": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
-    }
-  ],
+  "findings": [],
   "ipcBefore": {
     "count": 40,
-    "median": 0.3,
-    "p95": 1,
-    "max": 1.7
+    "median": 0.2,
+    "p95": 0.3,
+    "max": 0.4
   },
   "ipcAfter": {
     "count": 40,
-    "median": 1.1,
-    "p95": 3.3,
-    "max": 3.7
+    "median": 0.2,
+    "p95": 0.6,
+    "max": 0.8
   },
   "fuzz": [
     {
@@ -57,18 +44,20 @@
     {
       "name": "setScale NaN",
       "ok": false,
-      "error": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
+      "error": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale",
+      "expectedRejection": true
     },
     {
       "name": "setScale 负数",
       "ok": false,
-      "error": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
+      "error": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale",
+      "expectedRejection": true
     },
     {
       "name": "setPosition 越界",
       "ok": true,
       "result": {
-        "visible": false,
+        "visible": true,
         "scale": 1.2000000000000002,
         "x": 1110,
         "y": -864,
@@ -112,5 +101,6 @@
       "result": false
     }
   ],
-  "stressRounds": 7
+  "expectedRejections": 2,
+  "stressRounds": 60
 }
