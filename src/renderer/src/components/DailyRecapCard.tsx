@@ -8,6 +8,9 @@ export function DailyRecapCard(): React.JSX.Element {
   const [recap, setRecap] = useState<DailyRecap | null>(null)
   const [failed, setFailed] = useState(false)
   const [tick, setTick] = useState(0)
+  const [noteDraft, setNoteDraft] = useState('')
+  const [noteSaving, setNoteSaving] = useState(false)
+  const [noteStatus, setNoteStatus] = useState<'idle' | 'saved' | 'failed'>('idle')
   const memoriesCount = useAppStore((state) => state.data?.memories.length ?? 0)
   const tasksCount = useAppStore((state) => state.data?.tasks.length ?? 0)
   const conversationsCount = useAppStore((state) => state.data?.conversations.length ?? 0)
@@ -26,6 +29,8 @@ export function DailyRecapCard(): React.JSX.Element {
         }
         setFailed(false)
         setRecap(result.data)
+        setNoteDraft(result.data.userNote ?? '')
+        setNoteStatus('idle')
       })
       .catch(() => {
         if (!cancelled) setFailed(true)
@@ -39,6 +44,26 @@ export function DailyRecapCard(): React.JSX.Element {
     const timer = window.setInterval(() => setTick((value) => value + 1), 30_000)
     return () => window.clearInterval(timer)
   }, [])
+
+  const saveNote = async (): Promise<void> => {
+    if (!recap || noteSaving) return
+    setNoteSaving(true)
+    setNoteStatus('idle')
+    try {
+      const result = await window.murasame.core.saveRecapNote(noteDraft)
+      if (!result.ok) {
+        setNoteStatus('failed')
+        return
+      }
+      setNoteDraft(result.data)
+      setRecap((previous) => (previous ? { ...previous, userNote: result.data } : previous))
+      setNoteStatus('saved')
+    } catch {
+      setNoteStatus('failed')
+    } finally {
+      setNoteSaving(false)
+    }
+  }
 
   return (
     <Card className="daily-recap-card" data-testid="daily-recap">
@@ -64,6 +89,38 @@ export function DailyRecapCard(): React.JSX.Element {
           <li className="muted"><small>回顾来自本地数据库，不调用模型；读取失败会如实显示失败，不编造。</small></li>
         </ul>
       )}
+      {recap && !failed ? (
+        <div className="recap-note" data-testid="recap-note">
+          <label htmlFor="recap-note-input">留给明天的一句话</label>
+          <textarea
+            id="recap-note-input"
+            data-testid="recap-note-input"
+            rows={2}
+            maxLength={200}
+            value={noteDraft}
+            placeholder="只保存在本机，不评分、不会上传。"
+            onChange={(event) => {
+              setNoteDraft(event.target.value)
+              setNoteStatus('idle')
+            }}
+            disabled={noteSaving}
+          />
+          <div className="recap-note-foot">
+            <button
+              type="button"
+              className="btn"
+              data-testid="recap-note-save"
+              disabled={noteSaving || noteDraft.trim() === (recap.userNote ?? '').trim()}
+              onClick={() => void saveNote()}
+            >
+              {noteSaving ? '保存中…' : '保存'}
+            </button>
+            {noteStatus === 'saved' ? <span className="muted small" data-testid="recap-note-status">已留给明天，只保存在本机。</span> : null}
+            {noteStatus === 'failed' ? <span className="muted small" data-testid="recap-note-status">保存失败，稍后再试；内容不会上传。</span> : null}
+            <span className="muted small">{noteDraft.length}/200</span>
+          </div>
+        </div>
+      ) : null}
     </Card>
   )
 }

@@ -23,6 +23,16 @@ test('[FR-RECAP-06] 仪表盘今日回顾：空状态诚实，新增记忆后显
     await expect(facts).toContainText('1 条')
     // 回顾只读本地数据，不出现网络/模型调用措辞。
     await expect(card).toContainText('不调用模型')
+
+    // 「留给明天」一句话：保存后切页再回来（重新挂载卡片）仍能读回，证明保存在主进程本地存储。
+    const noteInput = page.getByTestId('recap-note-input')
+    await expect(noteInput).toBeVisible()
+    await noteInput.fill('明天先做最重要的一件事。')
+    await page.getByTestId('recap-note-save').click()
+    await expect(page.getByTestId('recap-note-status')).toContainText('已留给明天')
+    await page.getByTestId('nav-memory').click()
+    await page.getByTestId('nav-overview').click()
+    await expect(page.getByTestId('recap-note-input')).toHaveValue('明天先做最重要的一件事。')
   } finally {
     await closeApp(app)
   }

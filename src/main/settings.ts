@@ -17,6 +17,8 @@ interface PersistedShape {
   } | null
   relationship: RelationshipRecord | null
   toolEnabled: Record<string, boolean>
+  /** 每天一条「留给明天」；键为本地日期 YYYY-MM-DD。 */
+  recapNotes: Record<string, string>
 }
 
 let cached: Store<PersistedShape> | null = null
@@ -31,7 +33,8 @@ function store(): Store<PersistedShape> {
         pet: { x: null, y: null },
         windowBounds: null,
         relationship: null,
-        toolEnabled: {}
+        toolEnabled: {},
+        recapNotes: {}
       }
     })
   }
@@ -128,4 +131,16 @@ export function saveWindowBounds(bounds: { x?: number; y?: number; width: number
 
 export function getWindowBounds(): PersistedShape['windowBounds'] {
   return store().get('windowBounds')
+}
+
+export function readRecapNote(localDate: string): string {
+  const notes = store().get('recapNotes')
+  if (!notes || typeof notes[localDate] !== 'string') return ''
+  return notes[localDate]
+}
+
+export function writeRecapNote(localDate: string, note: string): string {
+  const notes = { ...(store().get('recapNotes') ?? {}), [localDate]: note }
+  store().set('recapNotes', notes)
+  return note
 }

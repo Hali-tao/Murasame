@@ -114,3 +114,5 @@ export const characterImportSchema = z.object({
   path: z.string().trim().min(1).max(1000)
 })
 export const taskProgressSchema = z.object({ id: z.string().min(1) })
+
+export const recapNoteSchema = z.object({ note: z.string().trim().max(200) })

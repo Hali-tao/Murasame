@@ -19,6 +19,7 @@ import {
   modelVerifySchema,
   petPositionSchema,
   petScaleSchema,
+  recapNoteSchema,
   sendMessageSchema,
   settingsPatchSchema,
   taskCreateSchema,
@@ -440,6 +441,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   handleCore<MemoryEntry[]>(IPC.core.clearMemories, z.undefined(), () => core.clearMemories())
   handleCore<MemoryRecallSource[]>(IPC.core.memoryRecallSources, z.undefined(), () => core.memoryRecallSources())
   handleCore<DailyRecap>(IPC.core.dailyRecap, z.undefined(), () => core.dailyRecap())
+  handleCore<string>(IPC.core.saveRecapNote, recapNoteSchema, (input) => core.saveRecapNote((input as { note: string }).note))
   handleCore<Task>(IPC.core.createTask, taskCreateSchema, (input) =>
     core.createTask((input as { title: string; root?: string }).title, (input as { root?: string }).root)
   )

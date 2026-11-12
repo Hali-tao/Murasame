@@ -378,6 +378,8 @@ export interface DailyRecap {
   tasksActive: number
   tasksCancelled: number
   hasActivity: boolean
+  /** 用户写给「明天」的一句话（只保存在本机，可为空）。 */
+  userNote?: string
 }
 
 export interface MurasameCore {
@@ -398,6 +400,7 @@ export interface MurasameCore {
   memoryRecallSources(): Promise<Result<MemoryRecallSource[]>>
   /** 今日回顾（事实版）：只读本地数据库汇总，不发网络请求。 */
   dailyRecap(): Promise<Result<DailyRecap>>
+  saveRecapNote(note: string): Promise<Result<string>>
   createTask(title: string, root?: string): Promise<Result<Task>>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Result<Task>>
   continueTask(id: string, answer: string): Promise<Result<Task>>

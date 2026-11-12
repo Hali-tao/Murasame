@@ -419,6 +419,11 @@ a:focus-visible {
 .active-task .btn { margin-top: 13px; }
 
 .affect-weather-line { margin: 10px 0 6px; }
+.recap-note { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+.recap-note > label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 10.5px; }
+.recap-note textarea { display: block; width: 100%; padding: 8px 10px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 8px; font: inherit; font-size: 11.5px; line-height: 1.6; resize: vertical; }
+.recap-note textarea:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
+.recap-note-foot { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
 .recap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .recap-list li { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; font-size: 11.5px; line-height: 1.5; }
 .recap-list li > span { color: var(--muted); }

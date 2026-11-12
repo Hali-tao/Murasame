@@ -20,7 +20,7 @@ import type { PerformanceIntent } from '../../shared/avatar/intent'
 import type { ModelRegistry, ResolvedModel } from '../model/registry'
 import type { SqliteDatabase } from '../data/sqlite-types'
 import { memoryReady, memoryStatusText } from '../local/memory-status'
-import { bumpRelationship, getSettings, readRelationship } from '../settings'
+import { bumpRelationship, getSettings, readRecapNote, readRelationship, writeRecapNote } from '../settings'
 import { chooseTool } from '../agent/executor'
 import { getActiveConversationId, rememberActiveConversation } from './active-conversation'
 import { broadcastPetPerformance } from '../windows'
@@ -540,9 +540,18 @@ export class MurasameCore implements CoreApi {
   async dailyRecap(): Promise<Result<DailyRecap>> {
     if (!this.db) return { ok: false, error: '本地数据库暂不可用，今天还无法生成回顾。' }
     try {
-      return { ok: true, data: queryDailyRecap(this.db, localDayWindow()) }
+      const window = localDayWindow()
+      return { ok: true, data: { ...queryDailyRecap(this.db, window), userNote: readRecapNote(window.date) } }
     } catch (error) {
       return { ok: false, error: `读取今日回顾失败：${error instanceof Error ? error.message : '本地数据库暂不可用'}` }
+    }
+  }
+
+  async saveRecapNote(note: string): Promise<Result<string>> {
+    try {
+      return { ok: true, data: writeRecapNote(localDayWindow().date, note.trim()) }
+    } catch (error) {
+      return { ok: false, error: `保存「留给明天」失败：${error instanceof Error ? error.message : '本地存储暂不可用'}` }
     }
   }
 

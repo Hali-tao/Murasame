@@ -1228,3 +1228,15 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 - 测试：`tests/unit/qa-memory-recall-source.test.ts`（7 用例，含次数统计与 recent 上限）、
   `tests/unit/memory-recall-ui.test.ts`（3 用例：显示次数/展开详情、未召回空状态、读取失败三态）。
 - 未实现（仍为设计）：房间视图与点亮动画、完整召回历史分页、按记忆查看隐私遮罩。
+
+
+### 已落地（2026-11-13）：F-02「留给明天」一句话增量
+
+- 仪表盘「今天」回顾底部新增 **留给明天的一句话**：最多 200 字、只保存在本机、可留空、可随时改写；
+  不评分、不打卡、不调用模型、不上传；保存失败如实显示失败提示。
+- 存储：electron-store 的 `recapNotes` 键（按本地日期 YYYY-MM-DD 一条，跨天互不影响），
+  不写入数据库 `daily_reviews` 表（该表/多版本日签仍为设计，未落地，不算交付）。
+- 接口：`core:daily-recap` 返回 `userNote`；新增 `core:save-recap-note`（zod 校验 ≤200 字、去除首尾空白）。
+- 测试：`tests/unit/recap-note.test.ts`（默认空/按日期隔离/覆盖不堆积/IPC 校验 3 用例）、
+  `tests/e2e/qa-daily-recap.spec.ts` 断言保存后切页回来仍能读回（主进程本地存储持久化）。
+- 未实现（仍为设计）：结构化 `daily_reviews` 表与多版本日签、模型润色（需外发授权）、历史日签浏览。

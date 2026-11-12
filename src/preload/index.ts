@@ -114,6 +114,8 @@ const api: MurasameApi = {
       ipcRenderer.invoke(IPC.core.memoryRecallSources),
     dailyRecap: (): Promise<Result<DailyRecap>> =>
       ipcRenderer.invoke(IPC.core.dailyRecap),
+    saveRecapNote: (note: string): Promise<Result<string>> =>
+      ipcRenderer.invoke(IPC.core.saveRecapNote, { note }),
     createTask: (title: string, root?: string): Promise<Result<Task>> =>
       ipcRenderer.invoke(IPC.core.createTask, { title, root }),
     approveTask: (id: string, scope?: 'once' | 'task'): Promise<Result<Task>> =>

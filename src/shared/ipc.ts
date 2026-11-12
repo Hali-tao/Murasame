@@ -70,6 +70,7 @@ export const IPC = {
     clearMemories: 'core:clear-memories',
     memoryRecallSources: 'core:memory-recall-sources',
     dailyRecap: 'core:daily-recap',
+    saveRecapNote: 'core:save-recap-note',
     createTask: 'core:create-task',
     approveTask: 'core:approve-task',
     continueTask: 'core:continue-task',
