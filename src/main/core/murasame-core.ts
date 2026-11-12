@@ -25,12 +25,14 @@ import { chooseTool } from '../agent/executor'
 import { getActiveConversationId, rememberActiveConversation } from './active-conversation'
 import { broadcastPetPerformance } from '../windows'
 import { performanceCue } from './performance-cue'
+import { localDayWindow, queryDailyRecap } from './services/daily-recap-service'
 import { reportClear } from '../history/search'
 import type { HistorySearchResult } from '../history/search'
 import type {
   BootstrapData,
   CharacterProfile,
   Conversation,
+  DailyRecap,
   DeleteScope,
   MemoryEntry,
   MemoryExtractionStatus,
@@ -123,7 +125,7 @@ export class MurasameCore implements CoreApi {
   constructor(
     private readonly conversations: ConversationService,
     private readonly modelService: ModelService,
-    db?: SqliteDatabase,
+    private readonly db?: SqliteDatabase,
     memory?: MemoryService,
     tasks?: TaskService,
     characterService?: CharacterService,
@@ -531,6 +533,16 @@ export class MurasameCore implements CoreApi {
       return { ok: true, data: this.conversations.recallSources() }
     } catch (error) {
       return { ok: false, error: `读取记忆召回来源失败：${error instanceof Error ? error.message : '本地数据库暂不可用'}` }
+    }
+  }
+
+  /** 今日回顾（事实版）：从本地数据库汇总今天真实发生的事，不调用模型。 */
+  async dailyRecap(): Promise<Result<DailyRecap>> {
+    if (!this.db) return { ok: false, error: '本地数据库暂不可用，今天还无法生成回顾。' }
+    try {
+      return { ok: true, data: queryDailyRecap(this.db, localDayWindow()) }
+    } catch (error) {
+      return { ok: false, error: `读取今日回顾失败：${error instanceof Error ? error.message : '本地数据库暂不可用'}` }
     }
   }
 

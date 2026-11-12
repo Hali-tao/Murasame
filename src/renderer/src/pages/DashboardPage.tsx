@@ -4,6 +4,7 @@ import { useAppStore } from '../store'
 import { greeting, weekdayLabel, dateLabel } from '../lib/utils'
 import { Button, Card, CardHead, Pill, StatTile } from '../components/ui'
 import { AffectWeatherCard } from '../components/AffectWeatherCard'
+import { DailyRecapCard } from '../components/DailyRecapCard'
 
 export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
@@ -118,6 +119,7 @@ export function DashboardPage(): React.JSX.Element {
           </Card>
 
           <AffectWeatherCard />
+          <DailyRecapCard />
         </div>
       </div>
 

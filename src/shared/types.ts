@@ -348,6 +348,22 @@ export interface MemoryRecallSource {
   at: string
 }
 
+/** 每日回顾（事实版）：只汇总今天真实发生的事，不做评分/打卡。 */
+export interface DailyRecap {
+  /** 本地日期 YYYY-MM-DD。 */
+  date: string
+  messages: number
+  conversations: number
+  memoriesAdded: number
+  /** 今天真正把记忆带进模型上下文的轮数（不是「提取」次数）。 */
+  memoryRecalls: number
+  tasksCompleted: number
+  tasksFailed: number
+  tasksActive: number
+  tasksCancelled: number
+  hasActivity: boolean
+}
+
 export interface MurasameCore {
   getBootstrap(): Promise<Result<BootstrapData>>
   createConversation(): Promise<Result<Conversation>>
@@ -364,6 +380,8 @@ export interface MurasameCore {
   clearMemories(): Promise<Result<MemoryEntry[]>>
   /** 每条记忆最近一次真正被召回进入对话的来源；从未被召回的记忆不会出现在结果里。 */
   memoryRecallSources(): Promise<Result<MemoryRecallSource[]>>
+  /** 今日回顾（事实版）：只读本地数据库汇总，不发网络请求。 */
+  dailyRecap(): Promise<Result<DailyRecap>>
   createTask(title: string, root?: string): Promise<Result<Task>>
   approveTask(id: string, scope?: 'once' | 'task'): Promise<Result<Task>>
   continueTask(id: string, answer: string): Promise<Result<Task>>

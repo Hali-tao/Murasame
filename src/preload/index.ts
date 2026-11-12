@@ -9,6 +9,7 @@ import type {
   ChatTurnStarted,
   CharacterProfile,
   Conversation,
+  DailyRecap,
   DeleteScope,
   MemoryEntry,
   MemoryRecallSource,
@@ -109,6 +110,8 @@ const api: MurasameApi = {
       ipcRenderer.invoke(IPC.core.clearMemories),
     memoryRecallSources: (): Promise<Result<MemoryRecallSource[]>> =>
       ipcRenderer.invoke(IPC.core.memoryRecallSources),
+    dailyRecap: (): Promise<Result<DailyRecap>> =>
+      ipcRenderer.invoke(IPC.core.dailyRecap),
     createTask: (title: string, root?: string): Promise<Result<Task>> =>
       ipcRenderer.invoke(IPC.core.createTask, { title, root }),
     approveTask: (id: string, scope?: 'once' | 'task'): Promise<Result<Task>> =>

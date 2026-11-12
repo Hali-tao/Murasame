@@ -68,6 +68,7 @@ export const IPC = {
     deleteMemory: 'core:delete-memory',
     clearMemories: 'core:clear-memories',
     memoryRecallSources: 'core:memory-recall-sources',
+    dailyRecap: 'core:daily-recap',
     createTask: 'core:create-task',
     approveTask: 'core:approve-task',
     continueTask: 'core:continue-task',

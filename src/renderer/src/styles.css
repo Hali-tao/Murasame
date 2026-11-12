@@ -418,6 +418,15 @@ a:focus-visible {
 .active-task p { margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.55; }
 .active-task .btn { margin-top: 13px; }
 
+.affect-weather-line { margin: 10px 0 6px; }
+.recap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.recap-list li { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; font-size: 11.5px; line-height: 1.5; }
+.recap-list li > span { color: var(--muted); }
+.recap-list li > strong { font-size: 12.5px; font-weight: 600; }
+.recap-list li > small { color: var(--faint); font-size: 9.5px; }
+.recap-list li.muted { margin-top: 2px; }
+.recap-list li.muted > small { color: var(--faint); }
+
 .runtime-list { padding: 0 20px 18px; }
 .runtime-list > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 10.5px; }
 .runtime-list > div:last-child { border-bottom: 0; }

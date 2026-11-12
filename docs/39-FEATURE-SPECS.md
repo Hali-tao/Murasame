@@ -1193,3 +1193,15 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 - 测试：`tests/unit/affect-weather.test.ts`（5 用例：基线/正向/负向/高唤醒/不出现数字与原因词）、`tests/e2e/qa-affect-weather.spec.ts`（仪表盘可见、无 PAD 数值）。
 - 未实现（仍为设计）：可解释的「为什么」事件链、桌面侧 hover 天气、情绪历史。原因追踪需要新的事件存储，
   在拿到独立数据前不做猜测。
+
+
+### 已落地（2026-11-13）：F-02 每日回顾（事实版）切片
+
+- 仪表盘新增「今天」回顾卡片：只从本地数据库汇总**真实发生的事**——消息句数/会话数、新记住的记忆、
+  记忆被真正带进上下文的次数、任务完成/失败/进行中/取消计数；没有活动时显示「今天还没有可回顾的记录」。
+- 硬规则：不做完成率/打卡/评分；读取失败显示「回顾暂时读不到」而不是编造；不调用任何模型/网络。
+- 实现：`src/main/core/services/daily-recap-service.ts`（`localDayWindow` + `queryDailyRecap`，按本地自然日聚合）、
+  IPC `core:daily-recap`、组件 `DailyRecapCard`。
+- 测试：`tests/unit/daily-recap.test.ts`（5 用例：空状态/时间窗/任务状态/真实召回计数/窗口边界）、
+  `tests/e2e/qa-daily-recap.spec.ts`（空状态诚实 → 新增记忆后显示真实计数）。
+- 未实现（仍为设计）：模型润色版回顾、回顾持久化与历史翻页、「留给明天」编辑、失败必出现的每日提醒。
