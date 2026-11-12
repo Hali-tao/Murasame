@@ -35,7 +35,7 @@ function configure(): boolean {
 }
 
 export async function checkForUpdates(): Promise<UpdateCheckResult> {
-  let ready = false
+  let ready: boolean
   try {
     ready = configure()
   } catch (error) {
