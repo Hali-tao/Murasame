@@ -46,6 +46,8 @@ test('[F-01-ROOM-01] 记忆房间视图默认遮蔽正文，Esc 可一次遮罩�
     await expect(page.getByTestId('memory-room-masked')).toBeVisible()
     // 遮罩状态下 DOM 中不应出现原文（F-01/AC-7）。
     await expect(page.getByText(phrase)).toHaveCount(0)
+    // 这条记忆从未被真正召回：房间视图不提供「来源详情」入口，也不伪造来源。
+    await expect(page.getByTestId('memory-room-sources')).toHaveCount(0)
 
     const roomCard = page.getByTestId('memory-room-card').filter({ hasText: '偏好' })
     await roomCard.getByTestId('memory-room-reveal').click()

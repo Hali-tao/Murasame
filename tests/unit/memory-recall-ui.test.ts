@@ -76,4 +76,32 @@ describe('[QA-MEMUI-00] 记忆房间来源链 UI（次数与最近来源详情�
     await waitFor(() => expect(screen.getByTestId('memory-recall-source').textContent).toBe('召回记录暂时读不到'))
     expect(screen.queryByTestId('memory-recall-count')).toBeNull()
   })
+
+  it('[QA-MEMUI-04] 房间视图可展开来源详情（会话 + 时间，不展示原文），未点亮没有来源按钮', async () => {
+    mountApi([source])
+    mountPage()
+    await waitFor(() => expect(screen.getByTestId('memory-view-room')).toBeTruthy())
+    fireEvent.click(screen.getByTestId('memory-view-room'))
+    const roomCard = screen.getByTestId('memory-room-card')
+    // 正文仍被遮罩，DOM 中不出现记忆原文。
+    expect(screen.queryByText('我喜欢早上喝温水')).toBeNull()
+    fireEvent.click(screen.getByTestId('memory-room-sources'))
+    const panel = screen.getByTestId('memory-sources-panel')
+    expect(panel.textContent).toContain('早上的对话')
+    expect(panel.textContent).toContain('昨晚的对话')
+    expect(panel.textContent).toContain('最近 2 次 / 共 3 次')
+    expect(panel.textContent).not.toContain('我喜欢早上喝温水')
+    fireEvent.click(screen.getByTestId('memory-room-sources'))
+    expect(screen.queryByTestId('memory-sources-panel')).toBeNull()
+    expect(roomCard).toBeTruthy()
+  })
+
+  it('[QA-MEMUI-05] 未点亮记忆在房间视图没有「来源详情」入口', async () => {
+    mountApi([])
+    mountPage()
+    await waitFor(() => expect(screen.getByTestId('memory-view-room')).toBeTruthy())
+    fireEvent.click(screen.getByTestId('memory-view-room'))
+    expect(screen.getByTestId('memory-room-card')).toBeTruthy()
+    expect(screen.queryByTestId('memory-room-sources')).toBeNull()
+  })
 })

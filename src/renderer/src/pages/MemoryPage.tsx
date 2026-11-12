@@ -37,6 +37,7 @@ export function MemoryPage(): React.JSX.Element {
   // F-01 房间视图：正文默认遮蔽（DOM 中不渲染原文），Esc 一次遮罩全部。
   const [view, setView] = useState<'list' | 'room'>('list')
   const [revealed, setRevealed] = useState<Set<string>>(() => new Set())
+  const [sourcePanel, setSourcePanel] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -236,20 +237,45 @@ export function MemoryPage(): React.JSX.Element {
                   {show ? <p data-testid="memory-room-text">{memory.text}</p> : <p className="muted small" data-testid="memory-room-masked">正文已遮罩</p>}
                   <footer>
                     <span className="muted small">{sources.has(memory.source) ? `来自：${sourceLabel(memory.source)}` : sourceLabel(memory.source)}</span>
-                    <button
-                      type="button"
-                      className="btn"
-                      data-testid="memory-room-reveal"
-                      onClick={() => setRevealed((previous) => {
-                        const next = new Set(previous)
-                        if (next.has(memory.id)) next.delete(memory.id)
-                        else next.add(memory.id)
-                        return next
-                      })}
-                    >
-                      {show ? '隐藏正文' : '显示正文'}
-                    </button>
+                    <span className="memory-room-actions">
+                      {recall ? (
+                        <button
+                          type="button"
+                          className="btn"
+                          data-testid="memory-room-sources"
+                          onClick={() => setSourcePanel(sourcePanel === memory.id ? null : memory.id)}
+                        >
+                          {sourcePanel === memory.id ? '收起来源' : '来源详情'}
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        className="btn"
+                        data-testid="memory-room-reveal"
+                        onClick={() => setRevealed((previous) => {
+                          const next = new Set(previous)
+                          if (next.has(memory.id)) next.delete(memory.id)
+                          else next.add(memory.id)
+                          return next
+                        })}
+                      >
+                        {show ? '隐藏正文' : '显示正文'}
+                      </button>
+                    </span>
                   </footer>
+                  {recall && sourcePanel === memory.id ? (
+                    <div className="memory-sources" data-testid="memory-sources-panel">
+                      <p className="muted small">只显示来源会话与时间；正文仍遵守遮罩规则，不展示原始消息全文。</p>
+                      <ul>
+                        {recall.recent.map((event) => (
+                          <li key={`${event.turnId}-${event.at}`}>
+                            {event.conversationTitle === '已删除的对话' ? '来源已删除' : event.conversationTitle} · {formatRecallTime(event.at)}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="muted small">最近 {recall.recent.length} 次 / 共 {recall.count} 次</p>
+                    </div>
+                  ) : null}
                 </article>
               )
             })}
