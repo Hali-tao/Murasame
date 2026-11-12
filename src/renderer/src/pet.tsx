@@ -8,6 +8,7 @@ import { petSpeech } from '@shared/pet-speech'
 import { derivePetWork, petWorkMotion } from '@shared/pet-work'
 import type { ActivityStatus, Conversation, PerformanceCue, PetChatLayout, PetState, Task } from '@shared/types'
 import { Live2DPet, type Live2DPetHandle } from './components/Live2DPet'
+import { MeshPet } from './components/MeshPet'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { allowHitSample, targetFps } from '@shared/render-budget'
 import { chooseLayer, idlePresentation, mouthEnvelope, type PerformanceLayer } from './avatar/orchestrator'
@@ -677,16 +678,29 @@ function PetApp(): React.JSX.Element {
           aria-label="拖动桌宠，单击互动，右键打开菜单"
         >
           <ErrorBoundary compact resetKey={`${preset.id}:${preset.modelUrl}`}>
-            <Live2DPet
-              key={`${preset.id}:${preset.modelUrl}`}
-              ref={live2dRef}
-              preset={preset}
-              paused={hidden}
-              fps={fps}
-              blinkMs={idle?.blinkMs ?? 4200}
-              breath={idleFromPad(pad, hidden)?.breath ?? 0.5}
-              activityMotion={activityMotion}
-            />
+            {preset.format.startsWith('Mesh') ? (
+              <MeshPet
+                key={`${preset.id}:${preset.modelUrl}`}
+                ref={live2dRef}
+                preset={preset}
+                paused={hidden}
+                fps={fps}
+                blinkMs={idle?.blinkMs ?? 4200}
+                breath={idleFromPad(pad, hidden)?.breath ?? 0.5}
+                activityMotion={activityMotion}
+              />
+            ) : (
+              <Live2DPet
+                key={`${preset.id}:${preset.modelUrl}`}
+                ref={live2dRef}
+                preset={preset}
+                paused={hidden}
+                fps={fps}
+                blinkMs={idle?.blinkMs ?? 4200}
+                breath={idleFromPad(pad, hidden)?.breath ?? 0.5}
+                activityMotion={activityMotion}
+              />
+            )}
           </ErrorBoundary>
         </div>
         <div className="pet-controls" data-pet-hit>

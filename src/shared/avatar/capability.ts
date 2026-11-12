@@ -31,6 +31,14 @@ export const AVATAR_CAPABILITIES: Record<string, AvatarCapability> = {
     expressions: ['dan', 'pengfu', 'sikao', 'expression1'],
     expressionFiles: 4,
     parameters: ['mouth', 'eye', 'head', 'breath']
+  },
+  nailong: {
+    id: 'nailong',
+    motions: ['Idle', 'Greet', 'Think', 'Agree', 'Confused', 'Working', 'Settle'],
+    motionFiles: 0,
+    expressions: [],
+    expressionFiles: 0,
+    parameters: ['mouth', 'eye', 'head', 'breath']
   }
 }
 

@@ -104,6 +104,9 @@ export function petWorkMotion(work: PetWorkState | null, presetId: string, impor
     case 'naiwa':
       motion = work.phase === 'working' ? 'WorkingLoop' : work.phase === 'ready' ? 'Agree' : work.phase === 'failed' ? 'Confused' : 'Think'
       break
+    case 'nailong':
+      motion = work.phase === 'working' ? 'Working' : work.phase === 'ready' ? 'Agree' : work.phase === 'failed' ? 'Confused' : 'Think'
+      break
     case 'tororo':
       motion = work.phase === 'ready' ? 'FlickUp' : work.phase === 'failed' ? 'FlickDown' : 'Idle'
       break

@@ -7,6 +7,7 @@ CON-05 仍按已确认的决定 **暂缓**。这份清单只记录已知事实�
 | tororo | Live2D 官方免费素材许可 | 内置形象 | 课程演示可随应用读取；公开分发前仍要核对 Cubism 发布条款 |
 | whale-girl | CC BY-NC-SA 4.0 | 内置形象 | 非商业、需署名、相同方式共享。署名见 `src/renderer/public/live2d/whale-girl/NOTICE.md` |
 | naiwa | 来源未确认，标注仅用于课程演示 | 内置形象 | **不得公开分发**。来源确认前，安装包如果要公开，必须先拿掉这个形象 |
+| nailong（官方网格形象） | 第七印象官网公开图片，官方版权 | 可选形象（`pets/nailong/`） | **仅课程演示，不得公开分发**。来源与处理记录见 `src/renderer/public/pets/nailong/NOTICE.md` 与 `artifacts/nailoong-official-2026-11-04/` |
 | Live2D Cubism Core | Cubism SDK 自身许可 | 运行时 | 公开或商用前必须单独确认，目前没有这个结论 |
 | 语音与向量模型 | 未随仓库分发 | 用户本机放置 | 不在安装包里，就不在这份分发清单里 |
 | Docker 基础镜像 | Debian 与各软件包许可 | 隔离桌面，需用户自行构建 | 镜像脚本不把宿主凭据写进镜像 |

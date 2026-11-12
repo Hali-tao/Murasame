@@ -1,4 +1,4 @@
-export const PET_PRESET_IDS = ['tororo', 'whale-girl', 'naiwa'] as const
+export const PET_PRESET_IDS = ['tororo', 'whale-girl', 'naiwa', 'nailong'] as const
 
 export type PetPresetId = (typeof PET_PRESET_IDS)[number]
 export type PetMotionAction = 'tap' | 'drag' | 'dragUp' | 'dragDown'
@@ -75,6 +75,26 @@ export const PET_PRESETS: readonly PetPreset[] = [
       drag: 'DragLeft',
       dragUp: 'Agree',
       dragDown: 'DragRight'
+    }
+  },
+  {
+    id: 'nailong',
+    name: '奶龙（官方形象）',
+    summary: '官方渲染外观的连续网格形象，呼吸、重心、眨眼与说话口型都跟随。',
+    modelUrl: 'pets/nailong/nailong_front_official_1000.png',
+    idleMotion: 'Idle',
+    motionCount: '网格待机 + 5 组反应动作',
+    expressionCount: '眨眼 · 说话口型',
+    format: 'Mesh 2D · 官方图',
+    source: '第七印象官方站 www.nailoong.com',
+    license: '官方素材 · 仅课程演示，不公开分发',
+    mark: '龙',
+    tone: 'amber',
+    motions: {
+      tap: 'Greet',
+      drag: 'Settle',
+      dragUp: 'Greet',
+      dragDown: 'Settle'
     }
   }
 ]

@@ -156,7 +156,7 @@ test('pet window is created and can be hidden or restored through IPC', async ()
   }
 })
 
-test('character page switches between the three bundled pet presets', async () => {
+test('character page switches between the four bundled pet presets', async () => {
   const testInfo = test.info()
   const app = await launchApp()
   try {
@@ -165,7 +165,7 @@ test('character page switches between the three bundled pet presets', async () =
     await page.getByTestId('nav-character').click()
     await page.screenshot({ path: testInfo.outputPath('character-presets.png'), fullPage: true })
 
-    for (const id of ['whale-girl', 'naiwa', 'tororo']) {
+    for (const id of ['whale-girl', 'naiwa', 'nailong', 'tororo']) {
       await page.getByTestId(`pet-preset-${id}`).click()
       await page.getByRole('button', { name: '确认更换', exact: true }).click()
       await expect(
