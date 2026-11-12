@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>murasame · 产品愿景原型（记忆房间 / 每日回顾 / 它的一天）</title>
+  <meta name="description" content="murasame 产品愿景的静态 HTML 原型：记忆房间、每日回顾、它的一天。演示数据，不接主程序。">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-screen="memory">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">m</div>
+        <div class="brand-copy">
+          <div class="brand-title">murasame</div>
+          <div class="brand-subtitle">A ROOM THAT REMEMBERS YOU</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="原型页面导航">
+        <div class="nav-label">房间</div>
+        <button class="nav-item active" data-target="memory" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 17.5h5M10.2 20.5h3.6M12 3.2a6.2 6.2 0 0 0-3.6 11.2c.6.5.9 1.1.9 1.8v.4h5.4v-.4c0-.7.3-1.3.9-1.8A6.2 6.2 0 0 0 12 3.2Z"/></svg>
+          <span>记忆房间</span>
+          <em>F-01</em>
+        </button>
+        <button class="nav-item" data-target="review" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5v3M17 3.5v3M4.5 9.5h15M6 5.5h12a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V7A1.5 1.5 0 0 1 6 5.5Z"/><path d="M8 13h3.2M8 16h6"/></svg>
+          <span>每日回顾</span>
+          <em>F-02</em>
+        </button>
+        <button class="nav-item" data-target="day" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
+          <span>它的一天</span>
+          <em>F-03/F-04</em>
+        </button>
+
+        <div class="nav-label nav-label-gap">本原型未演示</div>
+        <div class="nav-item is-disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5h15v11h-15z"/><path d="M8 10.5h8M8 13.5h5"/></svg>
+          <span>对话 / 任务 / 设置</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="profile-chip">
+          <div class="profile-avatar">满</div>
+          <div class="profile-copy">
+            <strong>小满</strong>
+            <span><i class="status-dot"></i>第 30 天 · 默契</span>
+          </div>
+        </div>
+        <div class="version-line">静态原型 · 不读写真实数据</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-heading">
+          <h1 id="screenTitle">记忆房间</h1>
+          <p id="screenSubtitle">它记得的事，每一件都有来源。</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="pill pill-blue">静态原型 · 演示数据</span>
+          <span class="topbar-time" id="clock">--:--</span>
+          <button class="btn btn-sm" id="notesButton" type="button">设计说明</button>
+        </div>
+      </header>
+
+      <div class="content" id="content">
+        <!-- ============ 记忆房间 ============ -->
+        <section class="screen is-active" id="screen-memory">
+          <div class="stats-row">
+            <div class="stat-chip"><strong id="statTotal">0</strong><span>条长期记忆</span></div>
+            <div class="stat-chip"><strong id="statLit">0</strong><span>今天被点亮</span></div>
+            <div class="stat-chip stat-chip-green"><i class="dot"></i><span id="statRecall">召回状态：完整</span></div>
+            <div class="stat-chip stat-chip-quiet">只在本机显示，不会上传</div>
+          </div>
+
+          <div class="panel lit-panel">
+            <div class="panel-head">
+              <div>
+                <h2>最近被点亮</h2>
+                <p class="panel-sub">只有真实召回并进入本轮上下文的记忆才会点亮。</p>
+              </div>
+              <span class="hint">没有召回，就没有灯</span>
+            </div>
+            <div class="lit-timeline" id="litTimeline"></div>
+          </div>
+
+          <div class="room-toolbar">
+            <label class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8"/><path d="m15.2 15.2 4 4"/></svg>
+              <input id="memorySearch" type="search" placeholder="搜索记忆内容…" aria-label="搜索记忆内容">
+            </label>
+            <div class="filter-chips" id="memoryFilters" role="group" aria-label="按类别筛选"></div>
+            <div class="toolbar-spacer"></div>
+            <button class="btn btn-sm" id="privacyButton" type="button">隐私遮罩 <kbd>Esc</kbd></button>
+            <button class="btn btn-sm btn-primary" id="simulateRecallButton" type="button">模拟一次对话召回</button>
+          </div>
+
+          <div class="room-grid" id="roomSections"></div>
+
+          <p class="footnote">
+            房间只是本地数据的另一种视图。每条记忆都有来源；删除后它不会再被想起，也不会出现在回顾里。
+            设计依据：<code>docs/38 §5.2</code>、<code>docs/39 F-01</code>。
+          </p>
+        </section>
+
+        <!-- ============ 每日回顾 ============ -->
+        <section class="screen" id="screen-review">
+          <div class="review-hero">
+            <div>
+              <span class="eyebrow" id="reviewDateLabel">2026 年 11 月 13 日 · 周五</span>
+              <h2>今天和它一起发生的事</h2>
+              <p class="muted" id="reviewMeta">正在读取今天的真实记录…</p>
+            </div>
+            <div class="review-actions">
+              <span class="pill pill-green" id="reviewStatusPill">已生成 · 本地</span>
+              <button class="btn btn-sm" id="regenButton" type="button">重新生成</button>
+              <button class="btn btn-sm btn-danger" id="deleteReviewButton" type="button">删除</button>
+            </div>
+          </div>
+
+          <div class="review-note">
+            这不是评分，也不是打卡。它只记录真实发生的事；做成的、没做成的都在这里。
+          </div>
+
+          <div class="review-grid" id="reviewSections"></div>
+          <div class="review-empty" id="reviewEmpty" hidden>
+            <div class="empty-symbol">日</div>
+            <strong>今天的回顾已删除</strong>
+            <p>它不会追问，也不会因此「不高兴」。你可以随时重新生成，或明天再说。</p>
+            <button class="btn btn-primary" id="undoDeleteReview" type="button">恢复演示数据</button>
+          </div>
+
+          <details class="review-sources" id="reviewSources">
+            <summary>这份回顾的依据</summary>
+            <div class="sources-body" id="sourcesBody"></div>
+          </details>
+
+          <p class="footnote">
+            回顾由程序先拼事实、再决定要不要让模型润色；没有来源的条目会被丢弃，并记录丢弃数量。
+            设计依据：<code>docs/38 §3.2 场景 D</code>、<code>docs/39 F-02</code>。
+          </p>
+        </section>
+
+        <!-- ============ 它的一天 ============ -->
+        <section class="screen" id="screen-day">
+          <div class="day-top">
+            <div class="panel time-panel">
+              <div class="panel-head">
+                <div>
+                  <h2>把它的一天拨到不同时刻</h2>
+                  <p class="panel-sub">同一天里，存在感应该不一样。</p>
+                </div>
+                <strong class="time-readout" id="timeReadout">08:40</strong>
+              </div>
+              <input class="time-slider" id="timeSlider" type="range" min="300" max="1439" step="10" value="520" aria-label="一天中的时间">
+              <div class="time-marks"><span>05:00</span><span>09:00</span><span>13:00</span><span>17:00</span><span>21:00</span><span>24:00</span></div>
+            </div>
+
+            <div class="panel presence-panel">
+              <div class="panel-head">
+                <div>
+                  <h2>三档存在感</h2>
+                  <p class="panel-sub">默认低存在感，介入需要理由。</p>
+                </div>
+                <span class="pill" id="presencePill">在场</span>
+              </div>
+              <div class="presence-modes">
+                <div class="presence-mode" data-mode="present">
+                  <strong>在场</strong><span>待机动作、呼吸、情绪影响姿态</span>
+                </div>
+                <div class="presence-mode" data-mode="reachable">
+                  <strong>可及</strong><span>点击、快捷键、右键菜单</span>
+                </div>
+                <div class="presence-mode" data-mode="intervene">
+                  <strong>介入</strong><span>有真实理由，且不打扰你</span>
+                </div>
+              </div>
+              <div class="relationship-strip" id="relationshipStrip" aria-label="关系阶段示意"></div>
+            </div>
+          </div>
+
+          <div class="day-stage">
+            <article class="scene-hero" id="sceneHero">
+              <div class="scene-visual" id="sceneVisual" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <span class="eyebrow" id="sceneTimeLabel">早晨 08:40</span>
+                <h2 id="sceneTitle">开机后，先说起你提过的事</h2>
+                <p id="sceneText"></p>
+                <div class="scene-bubble" id="sceneBubble">
+                  <span class="bubble-who" id="sceneBubbleWho">小满</span>
+                  <p id="sceneBubbleText"></p>
+                </div>
+              </div>
+              <div class="scene-aside" id="sceneAside"></div>
+            </article>
+          </div>
+
+          <div class="day-mid">
+            <div class="panel weather-card">
+              <div class="panel-head">
+                <div>
+                  <h2>情绪天气</h2>
+                  <p class="panel-sub">情绪状态的可读呈现，不是给你的任务。</p>
+                </div>
+                <span class="pill pill-gray" id="weatherUpdated">刚刚</span>
+              </div>
+              <div class="weather-main">
+                <div class="weather-icon" id="weatherIcon" aria-hidden="true"></div>
+                <div>
+                  <strong class="weather-label" id="weatherLabel">多云 · 微风</strong>
+                  <p class="weather-summary" id="weatherSummary"></p>
+                </div>
+              </div>
+              <ul class="cause-list" id="weatherCauses"></ul>
+              <p class="calm-note">它会自己平复，不需要你安慰。</p>
+              <p class="fineprint">重启后回到基线；不显示数值，也不作为对你的评价。</p>
+            </div>
+
+            <div class="panel judgment-card">
+              <div class="panel-head">
+                <div>
+                  <h2>此刻它会不会开口</h2>
+                  <p class="panel-sub">有理由 + 不打扰，才允许介入。</p>
+                </div>
+                <label class="switch-row">
+                  <span>勿扰</span>
+                  <input type="checkbox" id="dndToggle" class="switch-input">
+                  <span class="switch" aria-hidden="true"></span>
+                </label>
+              </div>
+              <div class="judgment" id="judgment"></div>
+              <div class="check-list" id="judgmentChecks"></div>
+            </div>
+          </div>
+
+          <div class="day-bottom">
+            <div class="panel theater-card">
+              <div class="panel-head">
+                <div>
+                  <h2>桌面小剧场</h2>
+                  <p class="panel-sub">真实事件才有幕；5–15 秒，演完就收起。</p>
+                </div>
+                <span class="pill pill-amber" id="theaterStatus">待播 · 1 幕</span>
+              </div>
+              <div class="theater-scene" id="theaterScene"></div>
+              <div class="theater-actions">
+                <button class="btn btn-sm btn-primary" id="playTheaterButton" type="button">演一幕</button>
+                <button class="btn btn-sm" id="skipTheaterButton" type="button">跳过</button>
+                <button class="btn btn-sm btn-ghost" id="openTheaterDetail" type="button">查看详情</button>
+              </div>
+            </div>
+
+            <div class="panel relation-card">
+              <div class="panel-head">
+                <div>
+                  <h2>关系不是进度条</h2>
+                  <p class="panel-sub">不显示百分比；用称呼和语气体现。</p>
+                </div>
+                <span class="pill pill-violet">第 30 天</span>
+              </div>
+              <div class="relation-history" id="relationHistory"></div>
+              <p class="fineprint">可查看、可重置、可追溯；换形象时可以选择延续这条关系线，或作为新角色重新开始。</p>
+            </div>
+          </div>
+
+          <p class="footnote">
+            时间、天气、判断与剧场均为演示数据；主动互动必须服从 D-01 的频率与抑制规则，情绪必须能自行平复（D-30）。
+            设计依据：<code>docs/38 §3</code>、<code>docs/39 F-03/F-04</code>。
+          </p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- 桌宠示意（静态原型占位形象，正式版为可换的 Live2D / 网格形象） -->
+  <div class="pet-dock" id="petDock">
+    <div class="pet-bubble" id="petBubble" hidden>
+      <div class="bubble-head"><span id="petBubbleName">小满</span><button class="bubble-close" id="bubbleClose" type="button" aria-label="收起气泡">×</button></div>
+      <p id="petBubbleText"></p>
+      <span class="bubble-hint">示意形象 · 正式版可换</span>
+    </div>
+    <button class="pet-body" id="petBody" type="button" aria-label="桌宠示意形象，点击互动">
+      <span class="weather-badge" id="petWeatherBadge">☁ 多云</span>
+      <svg class="pet-svg" viewBox="0 0 140 150" role="img" aria-label="桌宠示意形象">
+        <ellipse class="pet-shadow" cx="70" cy="140" rx="36" ry="7"></ellipse>
+        <ellipse class="pet-foot" cx="52" cy="134" rx="12" ry="7"></ellipse>
+        <ellipse class="pet-foot" cx="88" cy="134" rx="12" ry="7"></ellipse>
+        <ellipse class="pet-body-shape" cx="70" cy="96" rx="31" ry="34"></ellipse>
+        <ellipse class="pet-belly" cx="70" cy="103" rx="18" ry="21"></ellipse>
+        <path class="pet-arm" d="M40 82c-8-9-9-18-4-26 6 5 10 12 10 20Z"></path>
+        <path class="pet-arm" d="M100 82c8-9 9-18 4-26-6 5-10 12-10 20Z"></path>
+        <circle class="pet-head" cx="70" cy="53" r="41"></circle>
+        <circle class="pet-eye-ring" cx="54" cy="51" r="10.5"></circle>
+        <circle class="pet-eye-ring" cx="86" cy="51" r="10.5"></circle>
+        <circle class="pet-eye" cx="54" cy="51" r="7.5"></circle>
+        <circle class="pet-eye" cx="86" cy="51" r="7.5"></circle>
+        <circle class="pet-glint" cx="56.5" cy="48" r="2.2"></circle>
+        <circle class="pet-glint" cx="88.5" cy="48" r="2.2"></circle>
+        <path class="pet-brow" d="M46 39c3-3 8-3 11 0"></path>
+        <path class="pet-brow" d="M83 39c3-3 8-3 11 0"></path>
+        <path class="pet-mouth" d="M60 66c4 5 16 5 20 0"></path>
+        <ellipse class="pet-cheek" cx="40" cy="66" rx="6" ry="3.6"></ellipse>
+        <ellipse class="pet-cheek" cx="100" cy="66" rx="6" ry="3.6"></ellipse>
+      </svg>
+    </button>
+  </div>
+
+  <!-- 记忆详情侧栏 -->
+  <div class="sheet-overlay" id="sheetOverlay" hidden></div>
+  <aside class="detail-sheet" id="detailSheet" hidden aria-label="记忆详情">
+    <header class="sheet-head">
+      <div>
+        <span class="eyebrow">记忆详情</span>
+        <h2 id="sheetTitle">—</h2>
+      </div>
+      <button class="icon-btn" id="sheetClose" type="button" aria-label="关闭详情">×</button>
+    </header>
+    <div class="sheet-body" id="sheetBody"></div>
+  </aside>
+
+  <!-- 设计说明 -->
+  <div class="modal-overlay" id="notesOverlay" hidden></div>
+  <div class="modal" id="notesModal" hidden role="dialog" aria-modal="true" aria-labelledby="notesTitle">
+    <header class="modal-head">
+      <div>
+        <span class="eyebrow">关于这个原型</span>
+        <h2 id="notesTitle">它是演示，不是已完成的功能</h2>
+      </div>
+      <button class="icon-btn" id="notesClose" type="button" aria-label="关闭说明">×</button>
+    </header>
+    <div class="modal-body">
+      <p>本目录是一个 <strong>静态 HTML/CSS/JS 原型</strong>，直接双击 <code>index.html</code> 即可打开。它不接主程序、不读写真实数据、不调用模型，所有内容都是演示数据。</p>
+      <table class="notes-table">
+        <thead><tr><th>界面</th><th>演示的功能</th><th>对应文档</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>记忆房间</td><td>记忆点亮、来源链、更正/删除、隐私遮罩</td><td><code>docs/39 F-01</code></td><td><span class="pill pill-amber">设计未实现</span></td></tr>
+          <tr><td>每日回顾</td><td>真实事实聚合、失败如实呈现、可编辑的「留给明天」</td><td><code>docs/39 F-02</code></td><td><span class="pill pill-amber">设计未实现</span></td></tr>
+          <tr><td>它的一天</td><td>三档存在感、情绪天气、主动开口判断、桌面小剧场</td><td><code>docs/39 F-03/F-04</code></td><td><span class="pill pill-amber">设计未实现</span></td></tr>
+        </tbody>
+      </table>
+      <p>叙事与设计边界见 <code>docs/38-PRODUCT-VISION.md</code>；功能规格、索引与验收标准见 <code>docs/39-FEATURE-SPECS.md</code>。「奶龙」等正式形象素材受许可限制，本原型使用自绘示意形象，不代表最终外观。</p>
+      <p class="fineprint">可用键盘 <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd> 切换页面，<kbd>Esc</kbd> 关闭侧栏、说明或隐私遮罩。</p>
+    </div>
+    <footer class="modal-foot">
+      <button class="btn" id="notesDismiss" type="button">知道了</button>
+    </footer>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
