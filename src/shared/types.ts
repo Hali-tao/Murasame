@@ -289,6 +289,14 @@ export interface PerformanceCue {
   text?: string
 }
 
+/** 情绪变化事件：只记录「发生了什么」，不推断动机，不持久化。 */
+export interface AffectEvent {
+  id: number
+  at: string
+  reason: string
+  pad: { pleasure: number; arousal: number; dominance: number }
+}
+
 export interface PetChatLayout {
   open: boolean
   side: 'left' | 'right'
@@ -425,6 +433,7 @@ export interface MurasameApi {
     toggle(): Promise<PetState>
     getState(): Promise<PetState>
     getAffect(): Promise<PerformanceCue['pad']>
+    getAffectEvents(): Promise<AffectEvent[]>
     setScale(scale: number): Promise<PetState>
     setPosition(x: number, y: number): Promise<PetState>
     setIgnoreMouseEvents(ignore: boolean): Promise<void>

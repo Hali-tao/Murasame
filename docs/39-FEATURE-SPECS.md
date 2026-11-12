@@ -1205,3 +1205,14 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 - 测试：`tests/unit/daily-recap.test.ts`（5 用例：空状态/时间窗/任务状态/真实召回计数/窗口边界）、
   `tests/e2e/qa-daily-recap.spec.ts`（空状态诚实 → 新增记忆后显示真实计数）。
 - 未实现（仍为设计）：模型润色版回顾、回顾持久化与历史翻页、「留给明天」编辑、失败必出现的每日提醒。
+
+
+### 已落地（2026-11-13）：F-03 情绪原因链增量
+
+- 情绪天气卡片新增「刚刚：<发生了什么>」一行，原因来自真实事件：收到对话回复、回复后的情绪评价、任务完成、任务失败；
+  没有事件时显示「还没有值得解释的情绪变化」；只记录发生了什么，不推断用户动机、不显示 PAD 数值、不持久化。
+- 实现：`AffectService` 增加最多 5 条的事件环形缓冲（最新在前、返回副本）；IPC `pet:get-affect-events`；
+  `DailyRecapCard` 同页的 `AffectWeatherCard` 每 10 秒读取 pad 与事件。
+- 测试：`tests/unit/affect-events.test.ts`（4 用例：记录/无 reason 不记录/上限 5/返回副本）、
+  `tests/e2e/qa-affect-events.spec.ts`（空状态诚实 → 一次真实对话回复后显示原因）。
+- 未实现（仍为设计）：完整情绪历史/来源详情页、跨会话情绪趋势、可解释的模型侧原因（当前只记录事件名，不猜测原因）。

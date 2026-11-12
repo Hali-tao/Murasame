@@ -246,7 +246,7 @@ export class MurasameCore implements CoreApi {
           publish(poseIntent(pose))
           return
         }
-        affect.apply({ relevance: 0.4, consequence: 0, coping: 0.3, norm: 0 })
+        affect.apply({ relevance: 0.4, consequence: 0, coping: 0.3, norm: 0 }, { reason: '收到对话回复' })
         publish('思考')
         const model = models.getDefault()
         if (!model) return
@@ -264,7 +264,7 @@ export class MurasameCore implements CoreApi {
             consequence: judged.consequence,
             coping: judged.coping,
             norm: judged.norm
-          })
+          }, { reason: '回复后的情绪评价' })
           publish(judged.intent, false)
         }).catch((error) => {
           log.warn('表现意图结构化输出失败，退回思考', error)

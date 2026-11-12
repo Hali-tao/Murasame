@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { IPC } from '../shared/ipc'
 import type {
+  AffectEvent,
   AppInfo,
   AppSettings,
   BootstrapData,
@@ -61,6 +62,7 @@ const api: MurasameApi = {
     toggle: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.toggle),
     getState: (): Promise<PetState> => ipcRenderer.invoke(IPC.pet.getState),
     getAffect: () => ipcRenderer.invoke(IPC.pet.getAffect),
+    getAffectEvents: (): Promise<AffectEvent[]> => ipcRenderer.invoke(IPC.pet.getAffectEvents),
     setScale: (scale: number): Promise<PetState> => ipcRenderer.invoke(IPC.pet.setScale, { scale }),
     setPosition: (x: number, y: number): Promise<PetState> =>
       ipcRenderer.invoke(IPC.pet.setPosition, { x, y }),

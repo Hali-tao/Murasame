@@ -24,6 +24,7 @@ export const IPC = {
     toggle: 'pet:toggle',
     getState: 'pet:get-state',
     getAffect: 'pet:get-affect',
+    getAffectEvents: 'pet:get-affect-events',
     setScale: 'pet:set-scale',
     setPosition: 'pet:set-position',
     setIgnoreMouseEvents: 'pet:set-ignore-mouse-events',

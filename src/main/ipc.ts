@@ -201,6 +201,16 @@ export function registerIpcHandlers(core: DesktopCore): void {
     presentedTaskStates.set(task.id, task.status)
     if (presentedTaskStates.size > 100) presentedTaskStates.delete(presentedTaskStates.keys().next().value!)
     core.invalidatePresentation()
+    // 任务到达终态时记录情绪事件（只记录发生了什么，不做动机推断）。
+    if (task.status === '已完成' || task.status === '失败') {
+      const completed = task.status === '已完成'
+      core.affect.apply(
+        completed
+          ? { relevance: 0.6, consequence: 0.7, coping: 0.4, norm: 0.2 }
+          : { relevance: 0.6, consequence: -0.7, coping: -0.2, norm: 0 },
+        { reason: completed ? '任务完成' : '任务失败' }
+      )
+    }
     if (getSettings().doNotDisturb) return
     const intent = task.status === '已完成' ? '开心' : task.status === '失败' ? '困惑' : '思考'
     const preset = getSettings().petPreset
@@ -493,6 +503,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
 
   ipcMain.handle(IPC.pet.getAffect, () => core.affect.pad)
+  ipcMain.handle(IPC.pet.getAffectEvents, () => core.affect.recentEvents)
   const relationshipView = (record: RelationshipRecord) => ({
     stage: record.stage,
     since: record.since,
