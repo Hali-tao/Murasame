@@ -34,6 +34,9 @@ export function MemoryPage(): React.JSX.Element {
   const loadMemoryRecallSources = useAppStore((state) => state.loadMemoryRecallSources)
   // null = 读取失败（不能伪装成「从未被想起」）；空 Map = 确实都还没有被召回。
   const [recallSources, setRecallSources] = useState<Map<string, MemoryRecallSource> | null>(null)
+  // F-01 房间视图：正文默认遮蔽（DOM 中不渲染原文），Esc 一次遮罩全部。
+  const [view, setView] = useState<'list' | 'room'>('list')
+  const [revealed, setRevealed] = useState<Set<string>>(() => new Set())
 
   useEffect(() => {
     let cancelled = false
@@ -43,6 +46,15 @@ export function MemoryPage(): React.JSX.Element {
     })
     return () => { cancelled = true }
   }, [loadMemoryRecallSources, data.memories.length])
+
+  useEffect(() => {
+    if (view !== 'room' || revealed.size === 0) return
+    const hideAll = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') setRevealed(new Set())
+    }
+    window.addEventListener('keydown', hideAll)
+    return () => window.removeEventListener('keydown', hideAll)
+  }, [view, revealed])
 
   const categories = ['全部类别', ...Array.from(new Set(data.memories.map((memory) => memory.category)))]
   const sources = new Map(data.conversations.map(conversation => [conversation.id, conversation.title.trim() || '未命名会话']))
@@ -144,6 +156,10 @@ export function MemoryPage(): React.JSX.Element {
         <select className="select" value={category} onChange={(event) => setCategory(event.target.value)} aria-label="筛选类别">
           {categories.map((item) => <option key={item}>{item}</option>)}
         </select>
+        <div className="view-toggle" role="group" aria-label="记忆视图">
+          <button type="button" className={view === 'list' ? 'active' : ''} aria-pressed={view === 'list'} onClick={() => setView('list')} data-testid="memory-view-list">列表</button>
+          <button type="button" className={view === 'room' ? 'active' : ''} aria-pressed={view === 'room'} onClick={() => setView('room')} data-testid="memory-view-room">房间</button>
+        </div>
         <div className="toolbar-spacer" />
         <Button variant="danger" size="sm" onClick={() => setClearOpen(true)} disabled={!data.memories.length} icon={<Trash2 size={14} />}>
           清空…
@@ -153,7 +169,7 @@ export function MemoryPage(): React.JSX.Element {
         </Button>
       </div>
 
-      <div className="memory-grid">
+      {view === 'list' ? (<div className="memory-grid">
         {filtered.map((memory) => (
           <Card className="memory-card" key={memory.id} data-testid="memory-card">
             <div className="memory-card-head">
@@ -201,7 +217,46 @@ export function MemoryPage(): React.JSX.Element {
             </div>
           </Card>
         ))}
-      </div>
+      </div>) : (
+        <div className="memory-room" data-testid="memory-room">
+          <div className="memory-room-head">
+            <span className="muted small">房间只在本机显示，不会上传；记忆正文默认隐藏。</span>
+            <button type="button" className="btn" onClick={() => setRevealed(new Set())} data-testid="memory-room-mask-all">遮罩全部</button>
+          </div>
+          <div className="memory-room-grid">
+            {filtered.map((memory) => {
+              const recall = recallSources?.get(memory.id)
+              const show = revealed.has(memory.id)
+              return (
+                <article className="memory-room-card" key={memory.id} data-testid="memory-room-card">
+                  <header>
+                    <Pill tone="violet">{memory.category}</Pill>
+                    <span className="memory-recall-count">{recall ? `点亮 ${recall.count} 次` : '未点亮'}</span>
+                  </header>
+                  {show ? <p data-testid="memory-room-text">{memory.text}</p> : <p className="muted small" data-testid="memory-room-masked">正文已遮罩</p>}
+                  <footer>
+                    <span className="muted small">{sources.has(memory.source) ? `来自：${sourceLabel(memory.source)}` : sourceLabel(memory.source)}</span>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-testid="memory-room-reveal"
+                      onClick={() => setRevealed((previous) => {
+                        const next = new Set(previous)
+                        if (next.has(memory.id)) next.delete(memory.id)
+                        else next.add(memory.id)
+                        return next
+                      })}
+                    >
+                      {show ? '隐藏正文' : '显示正文'}
+                    </button>
+                  </footer>
+                </article>
+              )
+            })}
+          </div>
+          <p className="muted small">快捷键 Esc 可一次遮罩全部正文。</p>
+        </div>
+      )}
       {!filtered.length ? (
         <EmptyState
           title={data.memories.length ? '没有匹配的记忆' : '还没有长期记忆'}
