@@ -223,6 +223,8 @@ export interface AppSettings {
   minimizeToTray: boolean
   doNotDisturb: boolean
   taskNotifications: boolean
+  /** F-04：是否允许自动演出桌面小剧场（可在设置里随时关闭/恢复）。 */
+  theaterEnabled: boolean
   encryptLocalData: boolean
   closeBehavior: 'tray' | 'ask' | 'quit'
   logRetentionDays: number

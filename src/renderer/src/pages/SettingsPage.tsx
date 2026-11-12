@@ -193,6 +193,7 @@ export function SettingsPage(): React.JSX.Element {
             <ToggleRow title="忙时免打扰" description="全屏应用或正在输入时暂停主动互动。" checked={data.settings.doNotDisturb} onCheckedChange={(checked) => void update({ doNotDisturb: checked })} />
             <ToggleRow title="回复时朗读" description="桌宠说出回复。关掉后只显示文字。声音不可用时会说明原因。" checked={data.settings.speakReplies} onCheckedChange={(checked) => void update({ speakReplies: checked })} />
             <ToggleRow title="任务完成通知" description="任务失败、需要批准或结束时分别展示。" checked={data.settings.taskNotifications} onCheckedChange={(checked) => void update({ taskNotifications: checked })} />
+            <ToggleRow title="桌面小剧场" description="任务进入终态时在桌宠脚边演一句真实结果；可随时关闭，不弹独立窗口。" checked={data.settings.theaterEnabled} onCheckedChange={(checked) => void update({ theaterEnabled: checked })} />
             <Field label="关闭窗口时" className="settings-select-field">
               <select className="select" value={data.settings.closeBehavior} onChange={(event) => void update({ closeBehavior: event.target.value as 'tray' | 'ask' | 'quit' })}>
                 <option value="tray">最小化到托盘</option>

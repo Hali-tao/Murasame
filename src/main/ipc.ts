@@ -225,8 +225,8 @@ export function registerIpcHandlers(core: DesktopCore): void {
     broadcastPetPerformance({ ...cue, text: petSpeech('任务「' + task.title + '」' + task.status + '。' + (task.result.split('\n')[0] || task.summary)) })
     const scene = theaterSceneForTask(task)
     // F-04：用户选择「今天不再演」后，当天不再自动投递小剧场（置顶气泡仍在）。
-    const mutedToday = isTheaterMuted(readTheaterMuteDate(), localDayWindow().date)
-    if (scene && !mutedToday && !presentedTheater.has(scene.id)) {
+    const theaterAllowed = getSettings().theaterEnabled && !isTheaterMuted(readTheaterMuteDate(), localDayWindow().date)
+    if (scene && theaterAllowed && !presentedTheater.has(scene.id)) {
       presentedTheater.add(scene.id)
       if (presentedTheater.size > 100) presentedTheater.delete(presentedTheater.values().next().value!)
       broadcastTheater(scene)

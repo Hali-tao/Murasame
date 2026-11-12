@@ -59,7 +59,17 @@ test('[FR-02] body taps give tap feedback and the menu explicitly opens and clos
     // Let the native mouse passthrough sampling interval complete before tapping.
     await pet.waitForTimeout(80)
     await pet.mouse.down(); await pet.mouse.up()
-    await expect(pet.locator('.live2d-pet-host')).toHaveAttribute('data-motion-group', 'Tap')
+    const petHost = pet.locator('.live2d-pet-host')
+    try {
+      await expect(petHost).toHaveAttribute('data-motion-group', 'Tap', { timeout: 4_000 })
+    } catch {
+      // 满载时原生鼠标穿透采样可能晚一拍；同一坐标重试一次，仍然必须真的进入 Tap。
+      await pet.bringToFront()
+      await pet.mouse.move(point.x, point.y)
+      await pet.waitForTimeout(150)
+      await pet.mouse.down(); await pet.mouse.up()
+      await expect(petHost).toHaveAttribute('data-motion-group', 'Tap', { timeout: 6_000 })
+    }
     await expect(pet.locator('.pet-chat')).toHaveCount(0)
     await pet.locator('.pet-character').click({ button: 'right' })
     await pet.getByRole('button', { name: '打开对话', exact: true }).click()

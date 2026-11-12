@@ -68,6 +68,7 @@ export const settingsPatchSchema = z.object({
   minimizeToTray: z.boolean().optional(),
   doNotDisturb: z.boolean().optional(),
   taskNotifications: z.boolean().optional(),
+  theaterEnabled: z.boolean().optional(),
   encryptLocalData: z.boolean().optional(),
   closeBehavior: z.enum(['tray', 'ask', 'quit']).optional(),
   logRetentionDays: z.number().int().min(1).max(365).optional(),

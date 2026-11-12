@@ -56,4 +56,12 @@ describe('[QA-SET-00] 设置变更观察者的失败隔离', () => {
     expect(storage.writes).toHaveLength(1)
     expect(getSettings().petScale).toBe(1.2)
   })
+  it('[QA-SET-05] 小剧场默认开启，关闭后写入设置并可恢复', () => {
+    expect(getSettings().theaterEnabled).toBe(true)
+    updateSettings({ theaterEnabled: false })
+    expect(getSettings().theaterEnabled).toBe(false)
+    expect((storage.writes.at(-1) as { theaterEnabled: boolean }).theaterEnabled).toBe(false)
+    updateSettings({ theaterEnabled: true })
+    expect(getSettings().theaterEnabled).toBe(true)
+  })
 })

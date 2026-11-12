@@ -8,6 +8,7 @@ export const initialSettings: AppSettings = {
   minimizeToTray: true,
   doNotDisturb: false,
   taskNotifications: true,
+  theaterEnabled: true,
   encryptLocalData: true,
   closeBehavior: 'tray',
   logRetentionDays: 14,

@@ -60,7 +60,17 @@ export async function findMainPage(app: ElectronApplication, onboarding = false)
 export async function findPetPage(app: ElectronApplication): Promise<Page> {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     const found = app.windows().find((page) => page.url().includes('/pet.html'))
-    if (found) return found
+    if (found) {
+      // 满载整套运行时桌宠窗口容易被其它窗口遮挡；Chromium 会节流被遮挡渲染器，
+      // 让动画/眨眼/命中采样在测试里长时间停摆。仅对测试窗口关闭后台节流并置前（不改产品行为）。
+      await app.evaluate(({ BrowserWindow }) => {
+        const petWindow = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('/pet.html'))
+        petWindow?.webContents.setBackgroundThrottling(false)
+        petWindow?.moveTop()
+      }).catch(() => undefined)
+      await found.bringToFront().catch(() => undefined)
+      return found
+    }
     await wait(100)
   }
   throw new Error('桌宠窗口未在预期时间内创建')

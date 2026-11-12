@@ -14,7 +14,13 @@ test('official mesh pet loads, animates, blinks and keeps Live2D presets intact'
     const main = await findMainPage(app)
     await main.evaluate(() => window.murasame.settings.update({ petPreset: 'nailong', speakReplies: false }))
     const pet = await findPetPage(app)
-    // 满载整套运行时桌宠窗口可能被遮挡，WebGL 读回需要前台合成；先置前再断言。
+    // 满载整套运行时桌宠窗口可能被其它窗口遮挡；Chromium 会对被遮挡的渲染器做后台节流，
+    // 导致眨眼/动画在测试窗口里长时间停摆。这里仅对测试窗口关闭后台节流并置前（不改产品行为）。
+    await app.evaluate(({ BrowserWindow }) => {
+      const petWindow = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('/pet.html'))
+      petWindow?.webContents.setBackgroundThrottling(false)
+      petWindow?.moveTop()
+    })
     await pet.bringToFront()
     const host = pet.locator('[data-model-id="nailong"][data-live2d-state="ready"]')
     await expect(host).toBeVisible({ timeout: 60_000 })
