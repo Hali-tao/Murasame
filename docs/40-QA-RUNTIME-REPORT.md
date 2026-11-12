@@ -14,9 +14,9 @@
 
 ## 2. 结果总览
 
-- 全量单元测试：**80 文件 / 974 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、5 个记忆来源链、6 个数据库密钥恢复用例）。
+- 全量单元测试：**81 文件 / 981 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、5 个记忆来源链、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**49 passed / 5 skipped / 0 failed**（5.1 分钟；含渲染进程崩溃恢复与记忆来源链用例；5 个 skip 为需要离线语音模型或真实 Docker 的用例）。
+- 全量 E2E：**51 passed / 5 skipped / 0 failed**（4.8 分钟；含渲染崩溃恢复、记忆来源链、情绪天气、导入恢复用例；5 个 skip 为需要离线语音模型或真实 Docker 的用例）。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
 
@@ -84,6 +84,37 @@
 | `speech-responsive.spec.ts` 的 `async (_fixtures, info)` 违反 Playwright 参数解构要求，导致**整个 e2e 套件无法收集**（基线 0 用例可跑） | 改为解构空对象并注明原因 |
 | `flows.spec.ts` 第二个实例 spawn 继承了宿主的 `ELECTRON_RUN_AS_NODE=1`，Electron 以 Node 模式运行导致退出码非 0，单实例用例必失败 | 启动第二实例前删除该环境变量 |
 | 压测脚本把「非法输入被校验拒绝」误判为缺陷 | 明确为预期行为（结构化拒绝），只把超时/崩溃计为缺陷 |
+| 语音 e2e 在满载整套运行中偶发超时（单独运行稳定） | 增加 90s 测试超时、步骤时间线日志与 15s 软关闭兜底；全量复跑 51/51 通过。若再次复现按测试基础设施问题跟进，不伪装成产品缺陷 |
+
+### 3.6 数据包导入后界面不刷新（P2，修复）
+
+| 编号 | 严重度 | 问题 | 修复 |
+| --- | --- | --- | --- |
+| QA-IMPORT-01 | P2 | 在全新资料目录导入备份后，主进程内存中的记忆缓存没有重载、渲染层也未重新拉取 bootstrap：提示「导入成功 N 条」，但记忆页仍为空，要重启才出现（恢复备份看起来像失败） | `MemoryService.reloadFromStorage()` 在导入后从数据库重载缓存并广播 `memories:updated`；`store.reloadData()` 在设置页导入成功后重新拉取 bootstrap；失败时如实报错不假装成功 |
+
+**回归**：`tests/unit/store.test.ts`（[QA-IPC-11] reloadData 让恢复记忆立即出现、[QA-IPC-12] 失败如实提示）、`tests/e2e/qa-import-refresh.spec.ts`（设备 A 导出 → 全新资料目录导入 → 不重启立即出现）。
+
+### 3.7 主线程阻塞量化（「运行流畅」证据）
+
+脚本 `scripts/qa-main-thread.mjs`：800 条记忆 + 480 个会话，重操作期间从渲染进程持续 ping 主进程 IPC（20ms 间隔），并测渲染帧间隔与 longtask。
+
+| 操作 | 操作耗时 | 期间主线程最大阻塞 | 判定 |
+| --- | --- | --- | --- |
+| 基线 IPC（空转） | — | median 0.5ms / p95 1.6ms | OK |
+| getBootstrap（208KB 载荷） | 205ms | 196ms | P3 观察 |
+| 导出加密数据包（200 位口令 + 208KB） | 249ms | 224ms | P3 观察 |
+| 记忆页渲染 800 张卡片 | — | 帧最大间隔 62.7ms；longtask 支持=true 但 0 条 | OK |
+| 清空全部记忆 | 24ms | 3.6ms | OK |
+
+- 没有超过 500ms（P2 阈值）或 2000ms（P1 阈值）的主线程阻塞；800 张卡片渲染无 >1s 长任务。
+- **P3 观察（未修）**：① 一次性导出在 `scryptSync` + 208KB 序列化下会阻塞主线程约 0.2s（用户主动点击导出，可接受，但后续可改 worker 异步派生密钥）；② 批量写入呈超线性：200 条记忆 7.5s（约 38ms/条），800 条 69.6s（约 87ms/条）；480 个会话创建 61.1s（约 127ms/个）。正常单次交互无感，但脚本化批量导入/压力场景会明显变慢。
+- 证据：`artifacts/qa-runtime-2026-11-13/main-thread/`（`report.md` 为 800 规模，`report-200.md` 为 200 规模对比）。
+
+### 3.8 渲染进程连续崩溃的恢复上限（已知限制验证）
+
+- 单次崩溃约 525ms 自动恢复（桌宠/控制台均验证）。
+- 连续崩溃：60 秒内前 3 次自动重载，第 4 次起停止恢复（窗口保持 crashed），主进程 CPU 0%、仍可响应。这是**有意设计的防无限重载**，不是卡死；用户需要重启应用。
+- 证据：`scripts/qa-renderer-crash.mjs` 的 `crash-loop-cap` 场景（states=[恢复,恢复,停止,停止,停止]，verdict=OK_CAPPED）。
 
 ## 4. 复跑方式
 
@@ -119,3 +150,11 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 - 新增 IPC `core:memory-recall-sources`（主进程 `memoryRecallSources` → `ConversationService.recallSources` → 纯函数 `collectRecallSources`）。
 - 测试：`tests/unit/qa-memory-recall-source.test.ts`（5）、`tests/e2e/qa-memory-provenance.spec.ts`（1）。
 - 设计全文见 [docs/39-FEATURE-SPECS.md](39-FEATURE-SPECS.md) §12「实现状态」；未落地部分仍只算提案。
+
+
+## 8. 功能演进：F-03 情绪天气已落地切片
+
+- 仪表盘新增「它现在的心情」卡片：PAD → 定性天气（晴 / 多云转晴 / 小雨 / 起风），只显示状态与设计边界，不显示数值、不推断原因、不索取安慰；读取失败显示「暂时读不到心情」而不是伪造状态。
+- 纯函数 `src/shared/avatar/affect-weather.ts` + 组件 `AffectWeatherCard`；每 10 秒刷新，重启回基线。
+- 测试：`tests/unit/affect-weather.test.ts`（5）、`tests/e2e/qa-affect-weather.spec.ts`（1）。
+- 设计全文与未落地部分见 [docs/39-FEATURE-SPECS.md](39-FEATURE-SPECS.md) §12。

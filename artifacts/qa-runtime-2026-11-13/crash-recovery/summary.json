@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T18:02:46.932Z",
+  "at": "2026-11-12T19:10:25.018Z",
   "before": {
     "pet": {
       "windows": 2,
@@ -20,16 +20,16 @@
       "visible": false,
       "ready": "complete",
       "hasApi": true,
-      "bodyLength": 458
+      "bodyLength": 530
     }
   },
   "results": [
     {
       "target": "pet",
       "recovered": true,
-      "recoveryMs": 521,
+      "recoveryMs": 530,
       "finalState": {
-        "at": 521,
+        "at": 530,
         "windows": 2,
         "exists": true,
         "crashed": false,
@@ -38,11 +38,11 @@
         "ready": "complete",
         "hasApi": true,
         "bodyLength": 12,
-        "petOpaque": 0
+        "petOpaque": 51820
       },
       "firstFrames": [
         {
-          "at": 253,
+          "at": 260,
           "windows": 2,
           "exists": true,
           "crashed": true,
@@ -50,7 +50,7 @@
           "visible": true
         },
         {
-          "at": 521,
+          "at": 530,
           "windows": 2,
           "exists": true,
           "crashed": false,
@@ -59,7 +59,7 @@
           "ready": "complete",
           "hasApi": true,
           "bodyLength": 12,
-          "petOpaque": 0
+          "petOpaque": 51820
         }
       ],
       "windows": 2
@@ -67,9 +67,9 @@
     {
       "target": "main",
       "recovered": true,
-      "recoveryMs": 523,
+      "recoveryMs": 524,
       "finalState": {
-        "at": 523,
+        "at": 524,
         "windows": 2,
         "exists": true,
         "crashed": false,
@@ -77,7 +77,7 @@
         "visible": false,
         "ready": "complete",
         "hasApi": true,
-        "bodyLength": 458
+        "bodyLength": 530
       },
       "firstFrames": [
         {
@@ -89,7 +89,7 @@
           "visible": false
         },
         {
-          "at": 523,
+          "at": 524,
           "windows": 2,
           "exists": true,
           "crashed": false,
@@ -97,10 +97,43 @@
           "visible": false,
           "ready": "complete",
           "hasApi": true,
-          "bodyLength": 458
+          "bodyLength": 530
         }
       ],
       "windows": 2
+    },
+    {
+      "name": "crash-loop-cap",
+      "states": [
+        {
+          "attempt": 1,
+          "crashed": false,
+          "exists": true
+        },
+        {
+          "attempt": 2,
+          "crashed": false,
+          "exists": true
+        },
+        {
+          "attempt": 3,
+          "crashed": true,
+          "exists": true
+        },
+        {
+          "attempt": 4,
+          "crashed": true,
+          "exists": true
+        },
+        {
+          "attempt": 5,
+          "crashed": true,
+          "exists": true
+        }
+      ],
+      "mainReady": true,
+      "mainCpuPercent": 0,
+      "verdict": "OK_CAPPED"
     }
   ],
   "findings": []

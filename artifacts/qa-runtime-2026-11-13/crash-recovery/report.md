@@ -1,14 +1,18 @@
 # 渲染进程崩溃恢复探测
 
-- 时间：2026-11-12T18:02:46.932Z
+- 时间：2026-11-12T19:10:25.018Z
 
 | 崩溃目标 | 是否恢复 | 恢复耗时(ms) | 最终 crashed | 窗口数 |
 | --- | --- | --- | --- | --- |
-| pet | 是 | 521 | false | 2 |
-| main | 是 | 523 | false | 2 |
+| pet | 是 | 530 | false | 2 |
+| main | 是 | 524 | false | 2 |
+| undefined | 否 | - | - | undefined |
 
 ## 发现
 - 无
+
+## 连续崩溃上限
+- 连续崩溃 5 次（60 秒内）：OK_CAPPED；恢复上限后保持 crashed 且主进程可响应属于已知限制，不做无限重载。
 
 ## 崩溃后前 6 帧状态
 ```json
@@ -17,7 +21,7 @@
     "target": "pet",
     "frames": [
       {
-        "at": 253,
+        "at": 260,
         "windows": 2,
         "exists": true,
         "crashed": true,
@@ -25,7 +29,7 @@
         "visible": true
       },
       {
-        "at": 521,
+        "at": 530,
         "windows": 2,
         "exists": true,
         "crashed": false,
@@ -34,7 +38,7 @@
         "ready": "complete",
         "hasApi": true,
         "bodyLength": 12,
-        "petOpaque": 0
+        "petOpaque": 51820
       }
     ]
   },
@@ -50,7 +54,7 @@
         "visible": false
       },
       {
-        "at": 523,
+        "at": 524,
         "windows": 2,
         "exists": true,
         "crashed": false,
@@ -58,9 +62,10 @@
         "visible": false,
         "ready": "complete",
         "hasApi": true,
-        "bodyLength": 458
+        "bodyLength": 530
       }
     ]
-  }
+  },
+  {}
 ]
 ```

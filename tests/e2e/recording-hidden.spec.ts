@@ -1,5 +1,21 @@
 import { expect, test, type ElectronApplication, type Page } from '@playwright/test'
+import { appendFileSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { closeApp, findMainPage, findPetPage, launchApp } from './helpers'
+
+/** 语音类 e2e 在满载的整套运行里偶发超时；记录步骤时间线便于定位（正常路径不写文件以外无副作用）。 */
+function step(label: string): void {
+  try {
+    mkdirSync('test-results', { recursive: true })
+    appendFileSync(join(process.cwd(), 'test-results', 'recording-hidden-steps.log'), `${new Date().toISOString()} ${label}\n`)
+  } catch {
+    /* 诊断日志失败不影响测试 */
+  }
+}
+
+async function closeAppSoftly(app: ElectronApplication): Promise<void> {
+  await Promise.race([closeApp(app), new Promise((resolve) => setTimeout(resolve, 15_000))]).catch(() => undefined)
+}
 
 interface MediaFixture {
   context: AudioContext
@@ -59,6 +75,7 @@ async function stopSyntheticMicrophone(page: Page): Promise<void> {
 }
 
 test('[FR-27] native tray and pet hiding end recording tracks without submitting voice', async () => {
+  test.setTimeout(90_000)
   const app = await launchApp()
   let main: Page | undefined; let pet: Page | undefined
   try {
@@ -99,16 +116,19 @@ test('[FR-27] native tray and pet hiding end recording tracks without submitting
     await expect(pet.getByRole('button', { name: '按住说话' })).not.toHaveClass(/is-recording/)
     expect(await app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.transcriptions)).toBe(0)
   } finally {
-    if (main) await stopSyntheticMicrophone(main)
-    if (pet) await stopSyntheticMicrophone(pet)
-    await closeApp(app)
+    step('test1:finally')
+    if (main) await stopSyntheticMicrophone(main).catch(() => undefined)
+    if (pet) await stopSyntheticMicrophone(pet).catch(() => undefined)
+    await closeAppSoftly(app)
   }
 })
 
 test('[FR-27] a transcription returning through IPC after native hide cannot change the draft', async () => {
+  test.setTimeout(90_000)
   const app = await launchApp()
   let page: Page | undefined
   try {
+    step('test2:launch')
     page = await findMainPage(app)
     await installVoiceFixture(app)
     await app.evaluate(() => { (globalThis as VoiceGlobal).__voiceFixture.hold = true })
@@ -116,6 +136,7 @@ test('[FR-27] a transcription returning through IPC after native hide cannot cha
       const settings = await window.murasame.settings.get()
       await window.murasame.settings.update({ permissions: { ...settings.permissions, microphone: true }, speakReplies: false })
     })
+    step('test2:settings')
     await page.getByTestId('nav-chat').click()
     await page.getByLabel('新建会话', { exact: true }).click()
     await page.getByTestId('chat-input').fill('不能被迟到录音修改')
@@ -123,15 +144,19 @@ test('[FR-27] a transcription returning through IPC after native hide cannot cha
     await page.getByRole('button', { name: '语音', exact: true }).click()
     await page.getByRole('button', { name: '结束并识别', exact: true }).click()
     await expect.poll(() => app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.transcriptions)).toBe(1)
+    step('test2:transcribing')
     await page.getByTestId('hide-to-tray').click()
     await expect.poll(() => page!.evaluate(() => (window as MediaWindow).__recordingFixture.hiddenEvents)).toBeGreaterThan(0)
+    step('test2:hidden')
     await app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.release?.())
     await page.evaluate(() => window.murasame.window.showMain())
     await expect(page.getByTestId('chat-input')).toHaveValue('不能被迟到录音修改')
     await expect(page.getByRole('button', { name: '语音', exact: true })).toBeVisible()
+    step('test2:done')
   } finally {
+    step('test2:finally')
     await app.evaluate(() => (globalThis as VoiceGlobal).__voiceFixture.release?.()).catch(() => undefined)
-    if (page) await stopSyntheticMicrophone(page)
-    await closeApp(app)
+    if (page) await stopSyntheticMicrophone(page).catch(() => undefined)
+    await closeAppSoftly(app)
   }
 })

@@ -1,0 +1,86 @@
+{
+  "at": "2026-11-12T19:14:17.322Z",
+  "baseline": {
+    "count": 70,
+    "median": 0.5,
+    "p95": 1.7,
+    "max": 3.4
+  },
+  "seed": {
+    "added": 800,
+    "addMs": 69633,
+    "conversations": 480,
+    "conversationMs": 61128
+  },
+  "results": [
+    {
+      "label": "getBootstrap（含全部记忆/会话/任务）",
+      "opMs": 205,
+      "opOk": true,
+      "opError": null,
+      "opResult": {
+        "ok": true,
+        "ms": 198,
+        "jsonBytes": 208768
+      },
+      "pings": {
+        "count": 271,
+        "median": 0.5,
+        "p95": 1.6,
+        "max": 195.7
+      },
+      "blockSeverity": null,
+      "payloadBytes": 208768,
+      "bootstrapOk": true
+    },
+    {
+      "label": "memory-page-render",
+      "cards": 800,
+      "frames": {
+        "frames": 821,
+        "median": 4.2,
+        "p95": 5.5,
+        "max": 62.7
+      },
+      "longTaskSupported": true,
+      "longTaskTotal": 0,
+      "longTaskMax": 0
+    },
+    {
+      "label": "导出加密数据包（200 位口令，含全部记忆/会话）",
+      "opMs": 249,
+      "opOk": true,
+      "opError": null,
+      "pings": {
+        "count": 268,
+        "median": 0.5,
+        "p95": 1.4,
+        "max": 224
+      },
+      "blockSeverity": null
+    },
+    {
+      "label": "清空全部长期记忆",
+      "opMs": 24,
+      "opOk": true,
+      "opError": null,
+      "pings": {
+        "count": 279,
+        "median": 0.5,
+        "p95": 1.6,
+        "max": 3.6
+      },
+      "blockSeverity": null
+    },
+    {
+      "label": "memory-clear-result",
+      "remaining": 0
+    }
+  ],
+  "findings": [],
+  "thresholds": {
+    "mainBlockP1ms": 2000,
+    "mainBlockP2ms": 500,
+    "rendererLongTaskP2ms": 1000
+  }
+}

@@ -73,6 +73,32 @@ async function probe(app, target) {
   }, target)
 }
 
+
+/** 连续崩溃 5 次：恢复有上限（60 秒 3 次），到上限后窗口保持 crashed 但主进程必须可响应、不空转。 */
+async function crashLoopScenario(app) {
+  const record = { name: 'crash-loop-cap', states: [] }
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    await app.evaluate(({ BrowserWindow }) => {
+      const window = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('pet.html'))
+      if (window) window.webContents.forcefullyCrashRenderer()
+    })
+    await sleep(900)
+    const state = await probe(app, 'pet').catch(() => ({ crashed: null, exists: false }))
+    record.states.push({ attempt, crashed: state.crashed === true, exists: state.exists === true })
+  }
+  await sleep(1500)
+  record.mainReady = await app.evaluate(({ app }) => app.isReady()).catch(() => false)
+  record.mainCpuPercent = await app
+    .evaluate(({ app }) => Math.round(app.getAppMetrics().filter((item) => item.type === 'Browser').reduce((sum, item) => sum + item.cpu.percentCPUUsage, 0) * 10) / 10)
+    .catch(() => null)
+  const last = record.states[record.states.length - 1]
+  record.verdict = record.mainReady && last?.crashed === true && (record.mainCpuPercent ?? 0) < 50 ? 'OK_CAPPED' : 'UNEXPECTED'
+  results.push(record)
+  console.log(`[${record.verdict}] crash-loop: crashed=${JSON.stringify(record.states.map((state) => state.crashed))} cpu=${record.mainCpuPercent}%`)
+  if (record.verdict !== 'OK_CAPPED') add('P2', 'QA-CRASH-LOOP', '连续崩溃达到恢复上限后的行为不符合预期', JSON.stringify(record))
+  return record
+}
+
 async function main() {
   const app = await electron.launch({ args: ['.'], cwd: ROOT, env })
   let mainPage = null
@@ -141,6 +167,7 @@ async function main() {
     const mainAlive = await app.evaluate(({ app }) => app.isReady()).catch(() => false)
     if (!mainAlive) add('P0', 'QA-CRASH-MAIN-DEAD', '渲染进程崩溃后主进程不可用', '')
     await crash('main')
+    await crashLoopScenario(app)
   } finally {
     const summary = { at: new Date().toISOString(), before, results, findings }
     writeFileSync(join(OUT_DIR, 'summary.json'), JSON.stringify(summary, null, 2))
@@ -158,6 +185,8 @@ async function main() {
     lines.push('', '## 发现')
     if (findings.length === 0) lines.push('- 无')
     for (const finding of findings) lines.push(`- [${finding.severity}] ${finding.id} ${finding.title}`)
+    lines.push('', '## 连续崩溃上限')
+    lines.push(`- 连续崩溃 5 次（60 秒内）：${results.find((item) => item.name === 'crash-loop-cap')?.verdict ?? '未执行'}；恢复上限后保持 crashed 且主进程可响应属于已知限制，不做无限重载。`)
     lines.push('', '## 崩溃后前 6 帧状态')
     lines.push('```json')
     lines.push(JSON.stringify(results.map((item) => ({ target: item.target, frames: item.firstFrames })), null, 2))
