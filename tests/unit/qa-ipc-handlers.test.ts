@@ -84,6 +84,8 @@ vi.mock('../../src/main/settings', () => ({
   onSettingsChanged: vi.fn(),
   updateSettings: vi.fn((patch: Record<string, unknown>) => ({ ...h.settings, ...patch })),
   readRelationship: () => ({ stage: '初识', since: new Date(0).toISOString(), turns: 0, days: 0, history: [], lineId: 'line-1', archivedLines: [] }),
+  readTheaterMuteDate: () => '',
+  writeTheaterMuteDate: vi.fn(),
   writeRelationship: vi.fn((record: unknown) => record)
 }))
 vi.mock('../../src/main/logger', () => ({ default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() } }))

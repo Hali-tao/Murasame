@@ -473,6 +473,7 @@ export interface MurasameApi {
     onStateChanged(listener: (state: PetState) => void): () => void
     onPerformance(listener: (cue: PerformanceCue) => void): () => void
     onTheater(listener: (scene: TheaterScene) => void): () => void
+    muteTheaterToday(): Promise<boolean>
   }
   settings: {
     get(): Promise<AppSettings>

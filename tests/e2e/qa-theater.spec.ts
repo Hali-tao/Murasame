@@ -49,6 +49,30 @@ test('[F-04-THEATER-05] 任务取消后桌宠演出任务幕，点「跳过」�
     await expect(main.locator('.task-detail-titleline .pill')).toHaveText('已取消', { timeout: 20_000 })
     await pet.waitForTimeout(1500)
     await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
+
+    // 「今天不再演」：解除勿扰 → 新任务终态 → 出现小剧场 → 点「今天不再演」收起；
+    // 之后再发生终态事件，当天不再自动演。
+    await main.evaluate(() => window.murasame.settings.update({ doNotDisturb: false }))
+    await main.getByTestId('new-task').click()
+    await main.getByTestId('task-title-input').fill(`整理文件夹 ${root}`)
+    await main.getByRole('button', { name: '创建并开始', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText(/等待批准|待确认/, { timeout: 20_000 })
+    await main.getByTestId('cancel-task').click()
+    await main.getByRole('dialog').getByRole('button', { name: '取消任务', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText('已取消', { timeout: 20_000 })
+    await expect(pet.getByTestId('pet-theater')).toBeVisible({ timeout: 10_000 })
+    await pet.getByTestId('pet-theater-mute-today').click()
+    await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
+
+    await main.getByTestId('new-task').click()
+    await main.getByTestId('task-title-input').fill(`整理文件夹 ${root}`)
+    await main.getByRole('button', { name: '创建并开始', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText(/等待批准|待确认/, { timeout: 20_000 })
+    await main.getByTestId('cancel-task').click()
+    await main.getByRole('dialog').getByRole('button', { name: '取消任务', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText('已取消', { timeout: 20_000 })
+    await pet.waitForTimeout(1500)
+    await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
   } finally {
     await closeApp(app)
     await server.close()

@@ -707,7 +707,16 @@ function PetApp(): React.JSX.Element {
             <p>{theater.line}</p>
             <div className="pet-theater-foot">
               <span>{theater.status}</span>
-              <button type="button" data-testid="pet-theater-skip" onClick={dismissTheater}>跳过</button>
+              <span className="pet-theater-actions">
+                <button
+                  type="button"
+                  data-testid="pet-theater-mute-today"
+                  onClick={() => { void window.murasame.pet.muteTheaterToday().finally(dismissTheater) }}
+                >
+                  今天不再演
+                </button>
+                <button type="button" data-testid="pet-theater-skip" onClick={dismissTheater}>跳过</button>
+              </span>
             </div>
           </aside>
         ) : null}

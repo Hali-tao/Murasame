@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Task } from '../../src/shared/types'
-import { theaterSceneForTask } from '../../src/main/core/services/theater-service'
+import { isTheaterMuted, theaterSceneForTask } from '../../src/main/core/services/theater-service'
 
 const task = (status: Task['status'], title = '整理下载文件夹'): Task => ({
   id: 'task-1', title, status, tone: 'green', progress: 100, created: '2026-11-13 09:00', model: 'test-model',
@@ -38,6 +38,12 @@ describe('[F-04-THEATER-00] 任务幕（小剧场最小切片）', () => {
     for (const status of ['规划中', '执行中', '等待批准', '正在停止'] as const) {
       expect(theaterSceneForTask(task(status))).toBeNull()
     }
+  })
+
+  it('[F-04-THEATER-05] 「今天不再演」只对当天有效，跨天/未设置自动恢复', () => {
+    expect(isTheaterMuted('', '2026-11-13')).toBe(false)
+    expect(isTheaterMuted('2026-11-13', '2026-11-13')).toBe(true)
+    expect(isTheaterMuted('2026-11-12', '2026-11-13')).toBe(false)
   })
 
   it('[F-04-THEATER-04] 同一事件去重键稳定（同一任务同一终态只演一次的依据）', () => {

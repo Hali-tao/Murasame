@@ -35,3 +35,8 @@ export function theaterSceneForTask(task: Task, now: () => number = Date.now): T
     createdAt: new Date(now()).toISOString()
   }
 }
+
+/** F-04：「今天不再演」只对当天有效，跨天自动恢复。 */
+export function isTheaterMuted(muteDate: string, today: string): boolean {
+  return muteDate !== '' && muteDate === today
+}

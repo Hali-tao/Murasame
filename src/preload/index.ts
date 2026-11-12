@@ -81,7 +81,8 @@ const api: MurasameApi = {
     onPerformance: (listener: (cue: PerformanceCue) => void): (() => void) =>
       subscribe(IPC.pet.performance, listener),
     onTheater: (listener: (scene: TheaterScene) => void): (() => void) =>
-      subscribe(IPC.pet.theater, listener)
+      subscribe(IPC.pet.theater, listener),
+    muteTheaterToday: (): Promise<boolean> => ipcRenderer.invoke(IPC.pet.muteTheaterToday)
   },
   settings: {
     get: (): Promise<AppSettings> => ipcRenderer.invoke(IPC.settings.get),

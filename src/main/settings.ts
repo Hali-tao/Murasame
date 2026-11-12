@@ -19,6 +19,8 @@ interface PersistedShape {
   toolEnabled: Record<string, boolean>
   /** 每天一条「留给明天」；键为本地日期 YYYY-MM-DD。 */
   recapNotes: Record<string, string>
+  /** F-04：用户选择「今天不再演」的本地日期（YYYY-MM-DD）。 */
+  theaterMuteDate: string
 }
 
 let cached: Store<PersistedShape> | null = null
@@ -34,7 +36,8 @@ function store(): Store<PersistedShape> {
         windowBounds: null,
         relationship: null,
         toolEnabled: {},
-        recapNotes: {}
+        recapNotes: {},
+        theaterMuteDate: ''
       }
     })
   }
@@ -143,4 +146,13 @@ export function writeRecapNote(localDate: string, note: string): string {
   const notes = { ...(store().get('recapNotes') ?? {}), [localDate]: note }
   store().set('recapNotes', notes)
   return note
+}
+
+export function readTheaterMuteDate(): string {
+  const value = store().get('theaterMuteDate')
+  return typeof value === 'string' ? value : ''
+}
+
+export function writeTheaterMuteDate(localDate: string): void {
+  store().set('theaterMuteDate', localDate)
 }

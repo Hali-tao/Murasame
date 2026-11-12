@@ -37,6 +37,7 @@ export const IPC = {
     focusChat: 'pet:focus-chat',
     performance: 'pet:performance',
     theater: 'pet:theater',
+    muteTheaterToday: 'pet:mute-theater-today',
     stateChanged: 'pet:state-changed'
   },
   settings: {

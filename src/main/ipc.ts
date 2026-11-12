@@ -26,7 +26,8 @@ import {
   toolToggleSchema
 } from '../shared/schemas'
 import { MurasameCore as DesktopCore } from './core/murasame-core'
-import { theaterSceneForTask } from './core/services/theater-service'
+import { isTheaterMuted, theaterSceneForTask } from './core/services/theater-service'
+import { localDayWindow } from './core/services/daily-recap-service'
 import type { AutonomyState } from './core/services/autonomy-service'
 import type {
   AppInfo,
@@ -60,7 +61,7 @@ import { learnVerifiedImageSkill } from './agent/learn-verified-image-skill'
 import { performanceCue } from './core/performance-cue'
 import { petSpeech } from '../shared/pet-speech'
 import { checkForUpdates } from './updater'
-import { getSettings, onSettingsChanged, updateSettings } from './settings'
+import { getSettings, onSettingsChanged, readTheaterMuteDate, updateSettings, writeTheaterMuteDate } from './settings'
 import {
   getMainWindow,
   getPetBounds,
@@ -223,7 +224,9 @@ export function registerIpcHandlers(core: DesktopCore): void {
     if (preset === 'naiwa' && task.status === '执行中') { cue.motion = 'Working'; cue.expression = null }
     broadcastPetPerformance({ ...cue, text: petSpeech('任务「' + task.title + '」' + task.status + '。' + (task.result.split('\n')[0] || task.summary)) })
     const scene = theaterSceneForTask(task)
-    if (scene && !presentedTheater.has(scene.id)) {
+    // F-04：用户选择「今天不再演」后，当天不再自动投递小剧场（置顶气泡仍在）。
+    const mutedToday = isTheaterMuted(readTheaterMuteDate(), localDayWindow().date)
+    if (scene && !mutedToday && !presentedTheater.has(scene.id)) {
       presentedTheater.add(scene.id)
       if (presentedTheater.size > 100) presentedTheater.delete(presentedTheater.values().next().value!)
       broadcastTheater(scene)
@@ -515,6 +518,10 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
 
   ipcMain.handle(IPC.pet.getAffect, () => core.affect.pad)
+  ipcMain.handle(IPC.pet.muteTheaterToday, () => {
+    writeTheaterMuteDate(localDayWindow().date)
+    return true
+  })
   ipcMain.handle(IPC.pet.getAffectEvents, () => core.affect.recentEvents)
   const relationshipView = (record: RelationshipRecord) => ({
     stage: record.stage,
