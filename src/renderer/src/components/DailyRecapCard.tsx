@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { DailyRecap } from '@shared/types'
+import { useAppStore } from '../store'
 import { Card, CardHead } from './ui'
 
 /** F-02 每日回顾（事实版）：只汇总真实发生的事，不做评分/打卡，不调用模型。 */
@@ -7,6 +8,11 @@ export function DailyRecapCard(): React.JSX.Element {
   const [recap, setRecap] = useState<DailyRecap | null>(null)
   const [failed, setFailed] = useState(false)
   const [tick, setTick] = useState(0)
+  const memoriesCount = useAppStore((state) => state.data?.memories.length ?? 0)
+  const tasksCount = useAppStore((state) => state.data?.tasks.length ?? 0)
+  const conversationsCount = useAppStore((state) => state.data?.conversations.length ?? 0)
+  // 记忆/任务/会话变化时自动刷新回顾，不必等 30 秒轮询或重新挂载页面。
+  const refreshSignal = `${memoriesCount}:${tasksCount}:${conversationsCount}`
 
   useEffect(() => {
     let cancelled = false
@@ -27,7 +33,7 @@ export function DailyRecapCard(): React.JSX.Element {
     return () => {
       cancelled = true
     }
-  }, [tick])
+  }, [tick, refreshSignal])
 
   useEffect(() => {
     const timer = window.setInterval(() => setTick((value) => value + 1), 30_000)
