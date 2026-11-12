@@ -36,6 +36,7 @@ export const IPC = {
     endDrag: 'pet:end-drag',
     focusChat: 'pet:focus-chat',
     performance: 'pet:performance',
+    theater: 'pet:theater',
     stateChanged: 'pet:state-changed'
   },
   settings: {

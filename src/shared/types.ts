@@ -297,6 +297,21 @@ export interface AffectEvent {
   pad: { pleasure: number; arousal: number; dominance: number }
 }
 
+/** F-04 桌面小剧场（最小切片）：绑定一个真实任务终态的一幕。 */
+export interface TheaterScene {
+  /** 去重键：taskId + 终态（同一事件只演一次）。 */
+  id: string
+  kind: 'task'
+  taskId: string
+  status: TaskStatus
+  title: string
+  /** 事实槽位由程序填充（做了什么/结果如何），模型只改句式。 */
+  line: string
+  /** 表现姿态必须与真实状态对齐（失败不庆祝）。 */
+  intent: '开心' | '思考' | '困惑'
+  createdAt: string
+}
+
 export interface PetChatLayout {
   open: boolean
   side: 'left' | 'right'
@@ -457,6 +472,7 @@ export interface MurasameApi {
     onFocusChat(listener: () => void): () => void
     onStateChanged(listener: (state: PetState) => void): () => void
     onPerformance(listener: (cue: PerformanceCue) => void): () => void
+    onTheater(listener: (scene: TheaterScene) => void): () => void
   }
   settings: {
     get(): Promise<AppSettings>

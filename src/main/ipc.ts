@@ -26,6 +26,7 @@ import {
   toolToggleSchema
 } from '../shared/schemas'
 import { MurasameCore as DesktopCore } from './core/murasame-core'
+import { theaterSceneForTask } from './core/services/theater-service'
 import type { AutonomyState } from './core/services/autonomy-service'
 import type {
   AppInfo,
@@ -70,6 +71,7 @@ import {
   resetPetPosition,
   confirmQuit,
   broadcastPetPerformance,
+  broadcastTheater,
   focusPetChat,
   setPetChatOpen,
   beginPetDrag,
@@ -192,6 +194,8 @@ export function registerIpcHandlers(core: DesktopCore): void {
   core.memory.subscribeIndex(status => broadcast(IPC.core.memoryIndexStatus, status))
   core.onMemoryExtractionStatus = status => broadcast(IPC.core.memoryExtractionStatus, status)
 
+  // F-04：同一事件只演一次（进程内去重；重启后重演属已知限制，见 docs/39 §12）。
+  const presentedTheater = new Set<string>()
   const presentedTaskStates = new Map<string, string>()
   core.tasks.onChange((task) => {
     try { learnVerifiedImageSkill(app.getPath('userData'), task) } catch (error) { log.warn('任务已记录，可复用步骤未保存', error) }
@@ -218,6 +222,12 @@ export function registerIpcHandlers(core: DesktopCore): void {
     const cue = performanceCue(preset, intent, core.affect.pad)
     if (preset === 'naiwa' && task.status === '执行中') { cue.motion = 'Working'; cue.expression = null }
     broadcastPetPerformance({ ...cue, text: petSpeech('任务「' + task.title + '」' + task.status + '。' + (task.result.split('\n')[0] || task.summary)) })
+    const scene = theaterSceneForTask(task)
+    if (scene && !presentedTheater.has(scene.id)) {
+      presentedTheater.add(scene.id)
+      if (presentedTheater.size > 100) presentedTheater.delete(presentedTheater.values().next().value!)
+      broadcastTheater(scene)
+    }
   })
 
   onSettingsChanged(settings => {

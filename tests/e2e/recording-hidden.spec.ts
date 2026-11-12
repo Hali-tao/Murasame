@@ -91,7 +91,8 @@ test('[FR-27] native tray and pet hiding end recording tracks without submitting
     await installSyntheticMicrophone(main)
     await main.getByRole('button', { name: '语音', exact: true }).click()
     await expect(main.getByRole('button', { name: '结束并识别', exact: true })).toBeVisible()
-    await main.getByTestId('hide-to-tray').click()
+    // 点击会隐藏自身窗口的按钮在满载时会让 Playwright click 挂起；改为走同一 hide IPC 语义（按钮路径由 flows.spec 托盘用例覆盖）。
+    await main.evaluate(() => window.murasame.window.hideMain())
     await expect.poll(() => main!.evaluate(() => ({
       events: (window as MediaWindow).__recordingFixture.hiddenEvents,
       states: (window as MediaWindow).__recordingFixture.tracks.map((track) => track.readyState)

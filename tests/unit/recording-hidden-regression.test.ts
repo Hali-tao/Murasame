@@ -66,7 +66,7 @@ beforeEach(async () => {
     settings: { get: async () => data.settings, onChanged: listen('settings') },
     core: { getBootstrap: async () => ({ ok: true, data }), setActiveConversation: async () => ({ ok: true, data: 'hidden-chat' }), sendMessage: vi.fn() },
     voice: { readiness: vi.fn(async () => ({ stt: true, tts: false, detail: '' })), transcribe: vi.fn(async () => ({ text: '不应提交的录音', accepted: true, message: '' })), speak: vi.fn() },
-    pet: { getState: async () => pet, onStateChanged: listen('pet'), onFocusChat: listen('focus'), onPerformance: listen('performance'), getAffect: async () => ({ p: 0, a: 0, d: 0 }), setChatOpen: async () => ({ open: true, side: 'right' }), setIgnoreMouseEvents: async () => {} },
+    pet: { getState: async () => pet, onStateChanged: listen('pet'), onFocusChat: listen('focus'), onPerformance: listen('performance'), onTheater: listen('theater'), getAffect: async () => ({ p: 0, a: 0, d: 0 }), setChatOpen: async () => ({ open: true, side: 'right' }), setIgnoreMouseEvents: async () => {} },
     autonomy: { status: async () => ({ running: false, viewUrl: '', phase: 'idle', notes: [] }) },
     events: { onConversationUpdated: listen('updated'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'), onMessageDelta: listen('delta'), onActiveConversation: listen('active'), onTaskUpdated: listen('task'), onMemoriesUpdated: listen('memory'), onMemoryExtractionStatus: listen('extraction') }
   } as unknown as MurasameApi

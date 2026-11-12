@@ -24,6 +24,7 @@ import type {
   Result,
   ScreenAnalysis,
   Task,
+  TheaterScene,
   ToolCapability,
   HistorySearchResult,
   RelationshipView,
@@ -78,7 +79,9 @@ const api: MurasameApi = {
     onStateChanged: (listener: (state: PetState) => void): (() => void) =>
       subscribe(IPC.pet.stateChanged, listener),
     onPerformance: (listener: (cue: PerformanceCue) => void): (() => void) =>
-      subscribe(IPC.pet.performance, listener)
+      subscribe(IPC.pet.performance, listener),
+    onTheater: (listener: (scene: TheaterScene) => void): (() => void) =>
+      subscribe(IPC.pet.theater, listener)
   },
   settings: {
     get: (): Promise<AppSettings> => ipcRenderer.invoke(IPC.settings.get),

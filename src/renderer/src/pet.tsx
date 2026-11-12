@@ -6,7 +6,7 @@ import { listPetActivities, type PetActivity } from '@shared/pet-activity'
 import { petDimensions } from '@shared/pet-geometry'
 import { petSpeech } from '@shared/pet-speech'
 import { derivePetWork, petWorkMotion } from '@shared/pet-work'
-import type { ActivityStatus, Conversation, PerformanceCue, PetChatLayout, PetState, Task } from '@shared/types'
+import type { ActivityStatus, Conversation, PerformanceCue, PetChatLayout, PetState, Task, TheaterScene } from '@shared/types'
 import { Live2DPet, type Live2DPetHandle } from './components/Live2DPet'
 import { MeshPet } from './components/MeshPet'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -58,6 +58,8 @@ function PetApp(): React.JSX.Element {
   const [streaming, setStreaming] = useState('')
   const [pendingUser, setPendingUser] = useState('')
   const [proactiveText, setProactiveText] = useState('')
+  const [theater, setTheater] = useState<TheaterScene | null>(null)
+  const theaterTimerRef = useRef<number | null>(null)
   const [bubbleExpanded, setBubbleExpanded] = useState(false)
   const [dimmedText, setDimmedText] = useState('')
   const [chat, setChat] = useState<PetChatLayout>({ open: false, side: 'right' })
@@ -300,6 +302,39 @@ function PetApp(): React.JSX.Element {
       }
       layerRef.current = 'idle'
     })
+  }, [])
+
+  const dismissTheater = useCallback((): void => {
+    if (theaterTimerRef.current) {
+      window.clearTimeout(theaterTimerRef.current)
+      theaterTimerRef.current = null
+    }
+    setTheater(null)
+  }, [])
+
+  useEffect(() => {
+    if (!window.murasame) return
+    return window.murasame.pet.onTheater((scene) => {
+      setTheater(scene)
+      if (theaterTimerRef.current) window.clearTimeout(theaterTimerRef.current)
+      theaterTimerRef.current = window.setTimeout(() => {
+        theaterTimerRef.current = null
+        setTheater(null)
+      }, 8000)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!theater) return
+    const skipOnEscape = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') dismissTheater()
+    }
+    window.addEventListener('keydown', skipOnEscape)
+    return () => window.removeEventListener('keydown', skipOnEscape)
+  }, [theater, dismissTheater])
+
+  useEffect(() => () => {
+    if (theaterTimerRef.current) window.clearTimeout(theaterTimerRef.current)
   }, [])
 
   useEffect(() => {
@@ -666,6 +701,16 @@ function PetApp(): React.JSX.Element {
   return (
     <div className={`pet-stage${dragging ? ' dragging' : ''}${chat.open ? ` chat-open side-${chat.side}` : ''}`} data-work-phase={work?.phase ?? 'idle'} data-work-source={work?.source ?? 'none'} style={{ '--pet-column-width': `${dimensions.columnWidth}px`, '--pet-height': `${dimensions.height}px`, '--character-width': `${dimensions.characterWidth}px`, '--character-height': `${dimensions.characterHeight}px` } as React.CSSProperties}>
       <div className="pet-column">
+        {theater ? (
+          <aside className="pet-theater" data-testid="pet-theater" data-pet-hit role="status" aria-live="polite">
+            <span className="pet-theater-tag">任务</span>
+            <p>{theater.line}</p>
+            <div className="pet-theater-foot">
+              <span>{theater.status}</span>
+              <button type="button" data-testid="pet-theater-skip" onClick={dismissTheater}>跳过</button>
+            </div>
+          </aside>
+        ) : null}
         {bubbleText ? (
           <button
             type="button"

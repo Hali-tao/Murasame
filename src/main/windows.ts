@@ -353,6 +353,12 @@ export function broadcastPetPerformance(cue: unknown): void {
   safeSend(getPetWindow(), IPC.pet.performance, cue)
 }
 
+/** F-04：只在桌宠可见时投递小剧场；不弹独立窗口、不抢焦点。 */
+export function broadcastTheater(scene: unknown): void {
+  if (isPetHidden()) return
+  safeSend(getPetWindow(), IPC.pet.theater, scene)
+}
+
 export function isPetHidden(): boolean {
   const window = getPetWindow()
   return !window || !window.isVisible()

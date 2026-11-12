@@ -38,7 +38,7 @@ beforeEach(() => {
     core: { getBootstrap: vi.fn(async () => ({ ok: true, data })) },
     window: { onHidden: listen('hidden'), openPath: vi.fn(async () => {}) },
     settings: { onChanged: listen('settings') },
-    pet: { getState: async () => pet, onStateChanged: listen('pet'), onFocusChat: listen('focus'), onPerformance: listen('performance'), getAffect: async () => ({ p: 0, a: 0, d: 0 }), setIgnoreMouseEvents: async () => {}, setChatOpen: async (open: boolean) => ({ open, side: 'left' }) },
+    pet: { getState: async () => pet, onStateChanged: listen('pet'), onFocusChat: listen('focus'), onPerformance: listen('performance'), onTheater: listen('theater'), getAffect: async () => ({ p: 0, a: 0, d: 0 }), setIgnoreMouseEvents: async () => {}, setChatOpen: async (open: boolean) => ({ open, side: 'left' }) },
     autonomy: { status: vi.fn(async () => active), onStatusChanged: listen('autonomy'), stop: vi.fn(async () => ({ ok: false, error: '清理失败，可以重试' })) },
     events: { onConversationDeleted: listen('deleted'), onConversationUpdated: listen('updated'), onActiveConversation: listen('active'), onMessageDelta: listen('delta'), onMessageStarted: listen('started'), onMessageFailed: listen('failed'), onTaskUpdated: listen('task') }
   } as unknown as MurasameApi
