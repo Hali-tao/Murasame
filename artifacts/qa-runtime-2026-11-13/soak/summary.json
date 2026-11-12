@@ -1,0 +1,116 @@
+{
+  "at": "2026-11-12T17:04:56.989Z",
+  "quick": false,
+  "durations": {
+    "warmup": 8,
+    "stress": 60,
+    "idle": 120
+  },
+  "samples": 127,
+  "idleMemoryStartMB": 236.7,
+  "idleMemoryEndMB": 268.9,
+  "idleMemoryGrowthMB": 32.2,
+  "idleMemoryGrowthMBPerMinute": 16.1,
+  "maxMainLatencyMS": 9,
+  "maxTotalCpuPercent": 3.4,
+  "crashes": [],
+  "unexpectedExit": false,
+  "consoleErrorCount": 0,
+  "consoleErrorSamples": [],
+  "findings": [
+    {
+      "severity": "P2",
+      "id": "QA-SOAK-FUZZ-REJECT",
+      "title": "非法输入抛出异常：setScale NaN",
+      "detail": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
+    },
+    {
+      "severity": "P2",
+      "id": "QA-SOAK-FUZZ-REJECT",
+      "title": "非法输入抛出异常：setScale 负数",
+      "detail": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
+    }
+  ],
+  "ipcBefore": {
+    "count": 40,
+    "median": 0.3,
+    "p95": 1,
+    "max": 1.7
+  },
+  "ipcAfter": {
+    "count": 40,
+    "median": 1.1,
+    "p95": 3.3,
+    "max": 3.7
+  },
+  "fuzz": [
+    {
+      "name": "sendMessage null",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "sendMessage 超长",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "setScale NaN",
+      "ok": false,
+      "error": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
+    },
+    {
+      "name": "setScale 负数",
+      "ok": false,
+      "error": "Error: Error invoking remote method 'pet:set-scale': Error: 请求参数无效：scale"
+    },
+    {
+      "name": "setPosition 越界",
+      "ok": true,
+      "result": {
+        "visible": false,
+        "scale": 1.2000000000000002,
+        "x": 1110,
+        "y": -864,
+        "preset": "tororo",
+        "importedModelUrl": ""
+      }
+    },
+    {
+      "name": "addMemory 空",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "addMemory 超长",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "updateMemory null",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "deleteMemory 未知 id",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "cancelTask 未知 id",
+      "ok": true,
+      "result": false
+    },
+    {
+      "name": "setActiveConversation 未知",
+      "ok": true,
+      "result": true
+    },
+    {
+      "name": "deleteConversation 未知",
+      "ok": true,
+      "result": false
+    }
+  ],
+  "stressRounds": 7
+}
