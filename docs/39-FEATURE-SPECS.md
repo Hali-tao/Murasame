@@ -1182,3 +1182,14 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 | 日期 | 变更 |
 | --- | --- |
 | 2026-11-13 | F-01 落地来源链切片（IPC + 服务 + 记忆卡片 + 单测/e2e）；其余仍为设计 |
+
+
+### 已落地（2026-11-13）：F-03 情绪天气的最小切片
+
+- 仪表盘新增「它现在的心情」卡片：把 PAD 状态映射为定性天气（晴 / 多云转晴 / 小雨 / 起风），
+  只展示状态与设计边界，**不显示任何数值**、**不推断原因**、**不索取安慰**。
+- 数据来源：既有 `pet:get-affect`（会话内 PAD，重启回基线），每 10 秒刷新一次；读取失败显示「暂时读不到心情」，不伪造状态。
+- 纯函数 `src/shared/avatar/affect-weather.ts` 可单测；渲染组件 `AffectWeatherCard`。
+- 测试：`tests/unit/affect-weather.test.ts`（5 用例：基线/正向/负向/高唤醒/不出现数字与原因词）、`tests/e2e/qa-affect-weather.spec.ts`（仪表盘可见、无 PAD 数值）。
+- 未实现（仍为设计）：可解释的「为什么」事件链、桌面侧 hover 天气、情绪历史。原因追踪需要新的事件存储，
+  在拿到独立数据前不做猜测。

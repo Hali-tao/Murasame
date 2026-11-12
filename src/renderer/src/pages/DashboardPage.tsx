@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '../store'
 import { greeting, weekdayLabel, dateLabel } from '../lib/utils'
 import { Button, Card, CardHead, Pill, StatTile } from '../components/ui'
+import { AffectWeatherCard } from '../components/AffectWeatherCard'
 
 export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
@@ -115,6 +116,8 @@ export function DashboardPage(): React.JSX.Element {
               <div><span><CheckCircle2 size={14} />屏幕采集</span><strong>{data.settings.permissions.screen ? '已授权 · 单次分析' : '已关闭'}</strong></div>
             </div>
           </Card>
+
+          <AffectWeatherCard />
         </div>
       </div>
 
