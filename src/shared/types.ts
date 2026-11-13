@@ -311,6 +311,8 @@ export interface TheaterScene {
   line: string
   /** 表现姿态必须与真实状态对齐（失败不庆祝）。 */
   intent: '开心' | '思考' | '困惑'
+  /** 同屏冲突时的优先级：失败/部分完成 > 中断 > 取消/见闻 > 完成。 */
+  priority: number
   /** 「查看」打开的路径；任务幕为任务页，见闻幕为自主活动页。 */
   viewPath?: string
   createdAt: string

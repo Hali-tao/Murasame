@@ -148,6 +148,7 @@ test('[F-04-THEATER-06] 见闻幕：桌宠显示「见闻」标签，「查看�
         title: '浏览测试',
         line: '刚在隔离桌面里看了一会儿：浏览测试。共有 1 条观察记录。',
         intent: '思考',
+        priority: 2,
         viewPath: '/autonomy',
         createdAt: new Date().toISOString()
       }
@@ -242,5 +243,32 @@ test('[F-04-THEATER-08] 无空格超长任务名不会让小剧场水平溢出�
     await closeApp(app)
     await server.close()
     rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('[F-04-THEATER-09] 同一时段低优先级一幕不打断高优先级一幕', async () => {
+  const app = await launchApp()
+  try {
+    const main = await findMainPage(app)
+    const pet = await findPetPage(app)
+    await main.evaluate(() => window.murasame.pet.show())
+    const sendScene = (scene: Record<string, unknown>) => app.evaluate(({ BrowserWindow }, payload) => {
+      const petWindow = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('/pet.html'))
+      petWindow?.webContents.send(payload.channel, payload.scene)
+    }, { channel: IPC.pet.theater, scene })
+
+    await sendScene({ id: 'low-1', kind: 'task', taskId: 'task-low', status: '已完成', title: '低优先级', line: '低优先级的一幕', intent: '开心', priority: 1, createdAt: new Date().toISOString() })
+    await expect(pet.getByTestId('pet-theater')).toContainText('低优先级的一幕')
+
+    await sendScene({ id: 'high-1', kind: 'task', taskId: 'task-high', status: '失败', title: '高优先级', line: '高优先级的一幕（失败必须压过完成）', intent: '困惑', priority: 5, createdAt: new Date().toISOString() })
+    await expect(pet.getByTestId('pet-theater')).toContainText('高优先级的一幕')
+
+    // 高优先级播放期间，低优先级事件不应替换当前一幕。
+    await sendScene({ id: 'low-2', kind: 'task', taskId: 'task-low-2', status: '已完成', title: '低优先级 2', line: '不该出现的低优先级', intent: '开心', priority: 1, createdAt: new Date().toISOString() })
+    await pet.waitForTimeout(300)
+    await expect(pet.getByTestId('pet-theater')).toContainText('高优先级的一幕')
+    await expect(pet.getByTestId('pet-theater')).not.toContainText('不该出现的低优先级')
+  } finally {
+    await closeApp(app)
   }
 })

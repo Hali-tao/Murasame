@@ -60,6 +60,7 @@ function PetApp(): React.JSX.Element {
   const [proactiveText, setProactiveText] = useState('')
   const [theater, setTheater] = useState<TheaterScene | null>(null)
   const theaterTimerRef = useRef<number | null>(null)
+  const theaterPriorityRef = useRef(0)
   const [bubbleExpanded, setBubbleExpanded] = useState(false)
   const [dimmedText, setDimmedText] = useState('')
   const [chat, setChat] = useState<PetChatLayout>({ open: false, side: 'right' })
@@ -309,16 +310,21 @@ function PetApp(): React.JSX.Element {
       window.clearTimeout(theaterTimerRef.current)
       theaterTimerRef.current = null
     }
+    theaterPriorityRef.current = 0
     setTheater(null)
   }, [])
 
   useEffect(() => {
     if (!window.murasame) return
     return window.murasame.pet.onTheater((scene) => {
+      // 同一时段只保留最高优先级的一幕：低优先级事件不打断正在播放的高优先级事件。
+      if (theaterTimerRef.current !== null && scene.priority < theaterPriorityRef.current) return
+      theaterPriorityRef.current = scene.priority
       setTheater(scene)
       if (theaterTimerRef.current) window.clearTimeout(theaterTimerRef.current)
       theaterTimerRef.current = window.setTimeout(() => {
         theaterTimerRef.current = null
+        theaterPriorityRef.current = 0
         setTheater(null)
       }, 8000)
     })

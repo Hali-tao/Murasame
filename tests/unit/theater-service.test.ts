@@ -110,3 +110,23 @@ describe('[QA-THEATER-00] 小剧场气泡内容有界（超长任务名的交互
     expect(scene!.line).not.toContain('\n')
   })
 })
+
+
+describe('[F-04-PRIORITY-00] 小剧场优先级（同一时段只保留最高优先级一幕）', () => {
+  it('[F-04-PRIORITY-01] 失败/部分完成高于中断/取消/完成，见闻幕居中', () => {
+    expect(theaterSceneForTask(task('失败'))!.priority).toBe(5)
+    expect(theaterSceneForTask(task('部分完成'))!.priority).toBe(5)
+    expect(theaterSceneForTask(task('已中断'))!.priority).toBe(3)
+    expect(theaterSceneForTask(task('已取消'))!.priority).toBe(2)
+    expect(theaterSceneForTask(task('已完成'))!.priority).toBe(1)
+    const observation = theaterSceneForObservation({
+      activityId: 'activity-priority',
+      status: 'completed',
+      goal: '看点什么',
+      observations: [{ text: '观察' }],
+      finishedAt: '2026-11-13T08:00:00.000Z'
+    })
+    expect(observation!.priority).toBe(2)
+    expect(observation!.priority).toBeLessThan(theaterSceneForTask(task('失败'))!.priority)
+  })
+})

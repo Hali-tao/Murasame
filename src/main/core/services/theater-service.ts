@@ -14,6 +14,15 @@ const clipText = (value: string, max: number): string => {
   return clean.length > max ? `${clean.slice(0, max)}…` : clean
 }
 
+/** 同一时段只保留最高优先级的一幕：失败/部分完成必须压过完成与见闻。 */
+const PRIORITIES: Partial<Record<TaskStatus, number>> = {
+  已完成: 1,
+  部分完成: 5,
+  失败: 5,
+  已取消: 2,
+  已中断: 3
+}
+
 const INTENTS: Partial<Record<TaskStatus, TheaterScene['intent']>> = {
   已完成: '开心',
   部分完成: '思考',
@@ -39,6 +48,7 @@ export function theaterSceneForTask(task: Task, now: () => number = Date.now): T
     title,
     line: clipText(template(title), 160),
     intent: INTENTS[task.status] ?? '思考',
+    priority: PRIORITIES[task.status] ?? 1,
     createdAt: new Date(now()).toISOString()
   }
 }
@@ -70,6 +80,7 @@ export function theaterSceneForObservation(
     title: goal || '自主活动',
     line,
     intent: '思考',
+    priority: 2,
     viewPath: '/autonomy',
     createdAt: new Date(now()).toISOString()
   }
