@@ -61,6 +61,10 @@ function PetApp(): React.JSX.Element {
   const [theater, setTheater] = useState<TheaterScene | null>(null)
   const theaterTimerRef = useRef<number | null>(null)
   const theaterPriorityRef = useRef(0)
+  // F-04 事件队列：高优先级播放期间，低优先级事件最多排队 3 条，当前一幕结束后继续播。
+  const theaterQueueRef = useRef<TheaterScene[]>([])
+  const theaterShownRef = useRef<Set<string>>(new Set())
+  const theaterAdvanceRef = useRef<(() => void) | null>(null)
   const [bubbleExpanded, setBubbleExpanded] = useState(false)
   const [dimmedText, setDimmedText] = useState('')
   const [chat, setChat] = useState<PetChatLayout>({ open: false, side: 'right' })
@@ -312,13 +316,23 @@ function PetApp(): React.JSX.Element {
     }
     theaterPriorityRef.current = 0
     setTheater(null)
+    theaterAdvanceRef.current?.()
   }, [])
 
   useEffect(() => {
     if (!window.murasame) return
-    return window.murasame.pet.onTheater((scene) => {
-      // 同一时段只保留最高优先级的一幕：低优先级事件不打断正在播放的高优先级事件。
-      if (theaterTimerRef.current !== null && scene.priority < theaterPriorityRef.current) return
+    const queue = theaterQueueRef.current
+    const shown = theaterShownRef.current
+    const enqueue = (scene: TheaterScene): void => {
+      if (shown.has(scene.id) || queue.some((item) => item.id === scene.id)) return
+      queue.push(scene)
+      queue.sort((left, right) => right.priority - left.priority)
+      if (queue.length > 3) queue.pop()
+    }
+    const play = (scene: TheaterScene): void => {
+      if (shown.has(scene.id)) return
+      shown.add(scene.id)
+      if (shown.size > 100) shown.delete(shown.values().next().value!)
       theaterPriorityRef.current = scene.priority
       setTheater(scene)
       if (theaterTimerRef.current) window.clearTimeout(theaterTimerRef.current)
@@ -326,8 +340,30 @@ function PetApp(): React.JSX.Element {
         theaterTimerRef.current = null
         theaterPriorityRef.current = 0
         setTheater(null)
+        const next = queue.shift()
+        if (next) play(next)
       }, 8000)
+    }
+    theaterAdvanceRef.current = () => {
+      const next = queue.shift()
+      if (next) play(next)
+    }
+    const stop = window.murasame.pet.onTheater((scene) => {
+      // 播放中：更高优先级替换当前一幕；更低优先级进入队列，不打断、不丢弃。
+      if (theaterTimerRef.current === null || scene.priority > theaterPriorityRef.current) {
+        play(scene)
+        return
+      }
+      enqueue(scene)
     })
+    return () => {
+      stop()
+      theaterAdvanceRef.current = null
+      if (theaterTimerRef.current) {
+        window.clearTimeout(theaterTimerRef.current)
+        theaterTimerRef.current = null
+      }
+    }
   }, [])
 
   useEffect(() => {

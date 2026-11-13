@@ -272,3 +272,33 @@ test('[F-04-THEATER-09] 同一时段低优先级一幕不打断高优先级一�
     await closeApp(app)
   }
 })
+
+test('[F-04-THEATER-10] 高优先级播放期间的较低优先级事件排队，结束后继续播', async () => {
+  const app = await launchApp()
+  try {
+    const main = await findMainPage(app)
+    const pet = await findPetPage(app)
+    await main.evaluate(() => window.murasame.pet.show())
+    const sendScene = (scene: Record<string, unknown>) => app.evaluate(({ BrowserWindow }, payload) => {
+      const petWindow = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('/pet.html'))
+      petWindow?.webContents.send(payload.channel, payload.scene)
+    }, { channel: IPC.pet.theater, scene })
+
+    await sendScene({ id: 'queued-low-1', kind: 'task', taskId: 'task-low-1', status: '已完成', title: '低', line: '第一幕·低优先级', intent: '开心', priority: 1, createdAt: new Date().toISOString() })
+    await expect(pet.getByTestId('pet-theater')).toContainText('第一幕·低优先级')
+    await sendScene({ id: 'queued-high', kind: 'task', taskId: 'task-high', status: '失败', title: '高', line: '第二幕·失败高优先级', intent: '困惑', priority: 5, createdAt: new Date().toISOString() })
+    await expect(pet.getByTestId('pet-theater')).toContainText('第二幕·失败高优先级')
+    await sendScene({ id: 'queued-low-2', kind: 'task', taskId: 'task-low-2', status: '已完成', title: '低 2', line: '第三幕·排队中的低优先级', intent: '开心', priority: 1, createdAt: new Date().toISOString() })
+    // 高优先级仍在播放，排队中的低优先级不抢镜。
+    await pet.waitForTimeout(300)
+    await expect(pet.getByTestId('pet-theater')).toContainText('第二幕·失败高优先级')
+
+    // 跳过当前一幕 → 队列里的下一幕继续播放；再跳过 → 清空。
+    await pet.getByTestId('pet-theater-skip').click()
+    await expect(pet.getByTestId('pet-theater')).toContainText('第三幕·排队中的低优先级')
+    await pet.getByTestId('pet-theater-skip').click()
+    await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
+  } finally {
+    await closeApp(app)
+  }
+})
