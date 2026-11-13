@@ -474,6 +474,17 @@
 - 结论：最终交付文档在**可追溯性、链接、计数**上与仓库真实状态一致；无文档级阻塞。
 - 说明：本轮不修改产品代码，仅做交付质量核对与文档补记。
 
+### 3.41 最终 DoD 复核（第 37 轮）
+
+| 检查 | 命令 | 结果 |
+| --- | --- | --- |
+| typecheck + lint + 单元 + 追溯（项目 DoD） | `npm run verify` | **通过**：unit 89 文件 / 1024 用例；trace 74/74 covered，missing 0 |
+| 全量 E2E | `npx playwright test --reporter=line` | **76 passed / 5 skipped / 0 failed**（6.5 分钟） |
+| 已知限制 | docs/40 §5 | 5 个 skip 为真实语音/真实 Docker 场景，已如实记录、不计为交付 |
+
+- 结论：项目 DoD 与最终 QA 目标在本轮 HEAD 上**全部通过**；无新增缺陷。
+- 交付索引：[docs/41-QA-DELIVERABLES.md](41-QA-DELIVERABLES.md)。
+
 ## 4. 复跑方式
 
 ```powershell
