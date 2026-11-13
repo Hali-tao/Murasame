@@ -9,9 +9,10 @@
 
 | 交付 | 位置 | 说明 |
 | --- | --- | --- |
+| 全量覆盖矩阵 | [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md) | 页面/IPC/服务/安全/打包 × 现有覆盖 × 缺口 × 状态 |
 | 可重复运行的 QA 报告 | [docs/40-QA-RUNTIME-REPORT.md](40-QA-RUNTIME-REPORT.md) | 范围/方法、已修复缺陷（含验证）、性能测量、已知限制、复跑方式 |
 | 缺陷清单（含严重度/复现/修复状态） | 本文 §2 + docs/40 §3 各表 | 每条含严重度、问题、修复/状态；复现步骤见对应测试与 §3 证据 |
-| 新增自动化测试 | `tests/unit/**`、`tests/e2e/qa-*.spec.ts` | 单元 89 文件 / 1024 用例；E2E 76 passed / 5 skipped |
+| 新增自动化测试 | `tests/unit/**`、`tests/e2e/qa-*.spec.ts` | 单元 89 文件 / 1025 用例；默认 E2E 76 passed / 5 skipped；`test:e2e:all` 81 passed / 0 skipped |
 | 可复跑 QA 探测脚本 | `scripts/qa-*.mjs` | soak / adversarial / kill-restart / renderer-crash / main-thread / ipc-payload / ui-memory / ipc-shapes / memory-perf |
 | 功能提案文档 | [docs/38-PRODUCT-VISION.md](38-PRODUCT-VISION.md)、[docs/39-FEATURE-SPECS.md](39-FEATURE-SPECS.md) | 完整叙事 + F-01..F-04 规格、验收标准、风险与降级 |
 | 功能落地切片 | 见 §4 | F-01/F-02/F-03/F-04 均有可验证增量 |
@@ -27,6 +28,7 @@
 | --- | --- | --- | --- | --- |
 | QA-CRASH-02 | P0 | 控制台渲染进程崩溃后永久白屏（主进程存活但无 UI，属卡死类） | 已修复：自动 reload + 10s 内最多 3 次上限 | docs/40 §3.3；qa-renderer-crash e2e |
 | QA-DBKEY-01 | P0 | 首启约 10s 内强杀导致数据库密钥永久不可解密，只能删数据 | 已修复：耐久化重加密 + 备份/恢复标记 + 中文告警 | docs/40 §3.5；qa-db-key-recovery 单测 |
+| QA-VOICE-01 | P1（性能/实现缺失） | 语音"专用 utilityProcess"设计只有调度器与单测，没有 worker/构建入口/接线：真实模型下首次朗读阻塞主进程约 3 秒，且不存在 `Murasame Local Speech` 进程（此前测试 env-gated 被跳过） | 已修复：拆出 `synthesizePhonemes` + 新增 `speech-worker.ts` + electron-vite 多入口 + VoiceService 注入 `utilityProcess` 工厂 + 退出释放；语音 e2e 2/2、单测 18 个、全量 81/0 skip | docs/40 §3.42 |
 | QA-MAIN-01 | P1 | `app.whenReady()` 链无 catch，初始化失败后无窗口/托盘/IPC 挂起进程 | 已修复：记录日志 + 中文错误框 + exit(1) | docs/40 §3.1 |
 | QA-MAIN-02 | P1 | 导入时消息 ID 冲突被 INSERT OR IGNORE 静默丢弃却报成功 | 已修复：冲突 ID 加序号/哈希 + skippedMessages 计数 | docs/40 §3.1 |
 | QA-CRASH-01 | P1 | 桌宠渲染进程崩溃后窗口永久空白 | 已修复：与 QA-CRASH-02 同一恢复机制 | docs/40 §3.3 |
@@ -57,6 +59,9 @@
 | 编号 | 内容 | 结果 |
 | --- | --- | --- |
 | QA-CRASH-08 / 11 | 可见窗口崩溃恢复；隐藏到托盘时崩溃静默恢复且不自动弹出 | PASS（e2e） |
+| QA-VOICE-02 | 真实本地语音：冷/热朗读、控制响应 <500ms、专用进程被 kill 后文字回退与下次恢复 | PASS（e2e，需真实模型 + `MURASAME_E2E_SPEECH=1`） |
+| QA-ISO-01 | 真实 Docker 隔离创作（office/code）与外部活动跟随/停止 | PASS（e2e，需 `murasame-isolation:local` 镜像 + `MURASAME_E2E_ISOLATION=1`） |
+| QA-BGE-01 | 真实 BGE 资产召回、清空/更正来源链 | PASS（e2e，需 `build/bundled-models`） |
 | QA-WINLIFE-01..06 | 托盘显隐、最小化到托盘、最小尺寸、非法快捷键、桌宠显隐、模型不可达 | PASS（e2e，未发现缺陷） |
 | QA-SEARCH-10 | 60 会话长历史搜索、通配符回归、清空恢复 | PASS（e2e） |
 | QA-STREAMKILL-01 | 流式中途强杀后数据库可读、无半截/重复消息 | PASS（e2e；整轮原子提交的丢失语义见 §3） |
@@ -66,8 +71,8 @@
 
 完整列表见 [docs/40 §5](40-QA-RUNTIME-REPORT.md)。重点：
 
-1. **真实 Docker 隔离活动**：自主浏览/创作的真实端到端仍依赖用户本机 Docker，e2e 只覆盖到门禁与合成事件；不算已交付验证。
-2. **真实语音**：5 个 e2e skip（离线语音模型/引擎），未在无人值守环境验证。
+1. **真实 Docker 隔离活动**：已能在本机 Docker + `murasame-isolation:local` 镜像下自动跑通（3/3）；仍是 opt-in 环境依赖，默认套件在无 Docker 机器会 skip，并有 `npm run test:e2e:all` 自动检测入口。
+2. **真实语音**：已用本机真实 whisper/kokoro + 专用 utilityProcess 跑通 2/2；仍需真实模型与中文音素器，缺依赖时默认套件 skip（不冒充已验证）。
 3. **流式中途崩溃的丢轮语义**：对话回合是整轮原子提交，强杀会丢失整轮（含用户消息），但不会产生半截/重复数据；改为先落用户消息会改变既有失败语义，待决策。
 4. **首次启动 10 秒内强杀的旧数据库**：已自动备份并重开新库，但旧加密数据无法恢复（已在应用内中文告警）。
 5. **崩溃循环上限**：10 秒内 3 次崩溃后停止自动恢复，需重启应用（有意的防无限重载）。
@@ -88,8 +93,9 @@
 ## 5. 测试与证据复跑
 
 ```bash
-npm run typecheck && npm run lint && npm test     # 单元：89 文件 / 1024 用例
-npx playwright test --reporter=line               # E2E：76 passed / 5 skipped / 0 failed
+npm run typecheck && npm run lint && npm test     # 单元：89 文件 / 1025 用例
+npx playwright test --reporter=line               # 默认 E2E：76 passed / 5 skipped / 0 failed
+npm run test:e2e:all                              # 依赖齐全时全量：81 passed / 0 skipped / 0 failed
 npm run qa:ipc-shapes                             # IPC 错误形态审计（69 通道，0 挂起/0 裸英文）
 node scripts/qa-adversarial.mjs                   # 启动/退出对抗场景
 node scripts/qa-soak.mjs                          # 运行时 soak（CPU/内存/IPC 延迟）
@@ -109,7 +115,7 @@ npm run trace                                     # 需求可追溯性（74/74 c
 | 目标要求 | 交付情况 |
 | --- | --- |
 | 系统性挖掘并复现漏洞（崩溃/卡死/内存/CPU/IPC/数据/交互） | 覆盖崩溃恢复、主线程阻塞、soak、IPC 大载荷、数据密钥恢复、导入一致性、交互死角；关键缺陷均有复现证据 |
-| 构造测试用例并留下可复现证据 | 单元 1024 用例 + E2E 76 passed + 9 个可复跑探测脚本 + artifacts |
+| 构造测试用例并留下可复现证据 | 单元 1025 用例 + 默认 E2E 76 passed、依赖齐全全量 E2E 81 passed/0 skip + 9 个可复跑探测脚本 + artifacts |
 | 能修的修掉并补测试 | 见 §2.1（含 P0×2、P1×3、P2 多条）；每条有回归测试 |
 | 修不掉的明确记录、不算交付 | 见 §3 与 docs/40 §5；未包装为已完成 |
 | 结构完整、有创意的功能扩展方案 | docs/38 视觉叙事 + docs/39 F-01..F-04 规格（验收标准/风险/降级） |
@@ -119,4 +125,4 @@ npm run trace                                     # 需求可追溯性（74/74 c
 
 ---
 
-*最后更新：2026-11-13（第 37 轮：`npm run verify` 通过，单元 89 文件/1024 用例、trace 74/74；全量 E2E 76 passed/5 skipped/0 failed；探测复核见 docs/40 §3.39，DoD 复核见 §3.41）。*
+*最后更新：2026-11-13（全量测试第 1 轮）：修复 QA-VOICE-01（语音专用进程缺失），`npm run test:e2e:all` 在真实 Docker + 真实语音模型下 **81 passed / 0 skipped / 0 failed**；单元 89 文件/1025 用例，trace 74/74。覆盖矩阵见 [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md)。*

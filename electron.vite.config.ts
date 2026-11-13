@@ -11,7 +11,15 @@ const rendererAlias = {
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
-    resolve: { alias: sharedAlias }
+    resolve: { alias: sharedAlias },
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve('src/main/index.ts'),
+          'speech-worker': resolve('src/main/local/speech-worker.ts')
+        }
+      }
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()],

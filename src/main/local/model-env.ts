@@ -2,6 +2,7 @@ import { existsSync, statSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 let configured = false
+let configuredRoot = ''
 let bundledRoot = ''
 
 /**
@@ -44,9 +45,16 @@ export function localModelDirectory(userDataDir: string, modelId: string, files:
  * 否则模型缺失时会悄悄连外网下载。
  */
 export async function configureLocalModels(userDataDir: string): Promise<void> {
-  if (configured) return
+  await configureLocalModelsFromRoot(modelsRoot(userDataDir))
+}
+
+/** utilityProcess 里显式拿到模型根目录时使用（不依赖主进程的 bundledRoot 状态）。 */
+export async function configureLocalModelsFromRoot(modelRoot: string): Promise<void> {
+  if (configured && configuredRoot === modelRoot) return
   const { env } = await import('@huggingface/transformers')
   env.allowRemoteModels = false
-  env.localModelPath = modelsRoot(userDataDir)
+  env.localModelPath = modelRoot
   configured = true
+  configuredRoot = modelRoot
 }
+

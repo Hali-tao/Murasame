@@ -165,4 +165,5 @@ npm run inspect:pet
 - 最终交付索引：[docs/41-QA-DELIVERABLES.md](docs/41-QA-DELIVERABLES.md)
 - 可重复运行的 QA 报告：[docs/40-QA-RUNTIME-REPORT.md](docs/40-QA-RUNTIME-REPORT.md)
 - 功能提案与规格：[docs/38-PRODUCT-VISION.md](docs/38-PRODUCT-VISION.md)、[docs/39-FEATURE-SPECS.md](docs/39-FEATURE-SPECS.md)
-- 快速复核：`npm run verify`（typecheck/lint/单元/追溯）与 `npx playwright test --reporter=line`（全量 E2E）；运行时探测脚本见 docs/41 §5
+- 快速复核：`npm run verify`（typecheck/lint/单元/追溯）与 `npx playwright test --reporter=line`（全量 E2E）；依赖齐全时用 `npm run test:e2e:all` 跑零跳过全量；运行时探测脚本见 docs/41 §5
+- 全量覆盖矩阵：[docs/42-FULL-QA-COVERAGE-MATRIX.md](docs/42-FULL-QA-COVERAGE-MATRIX.md)

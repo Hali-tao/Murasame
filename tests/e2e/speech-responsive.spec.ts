@@ -1,5 +1,23 @@
 import { test, expect } from '@playwright/test'
+import { cpSync, existsSync, mkdirSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import { launchApp, closeApp, findMainPage } from './helpers'
+
+/**
+ * 开发态（非打包）下把本机 build/bundled-models 里的真实 whisper/kokoro 复制进隔离 userData。
+ * 打包验收（MURASAME_E2E_EXECUTABLE）使用应用自带模型，不需要复制。
+ */
+function prepareSpeechModels(userData: string): void {
+  if (process.env.MURASAME_E2E_EXECUTABLE) return
+  const bundled = resolve('build/bundled-models')
+  for (const id of ['whisper', 'kokoro']) {
+    const source = join(bundled, id)
+    if (!existsSync(source)) continue
+    const target = join(userData, 'models', id)
+    mkdirSync(target, { recursive: true })
+    cpSync(source, target, { recursive: true, force: true })
+  }
+}
 
 test.describe('real local speech responsiveness', () => {
   test.skip(process.env.MURASAME_E2E_SPEECH !== '1', 'Requires packaged offline speech models and Chinese phonemizer')
@@ -7,7 +25,7 @@ test.describe('real local speech responsiveness', () => {
   // eslint-disable-next-line no-empty-pattern
   test('cold and warm speech preserve control responses and actual audio', async ({}, info) => {
     test.setTimeout(90_000)
-    const app = await launchApp()
+    const app = await launchApp(true, prepareSpeechModels)
     try {
       const page = await findMainPage(app)
       const measurements = []
@@ -44,7 +62,7 @@ test.describe('real local speech responsiveness', () => {
   })
   test('speech process failure preserves text fallback and the next request recovers', async () => {
     test.setTimeout(90_000)
-    const app = await launchApp()
+    const app = await launchApp(true, prepareSpeechModels)
     try {
       const page = await findMainPage(app)
       const pending = page.evaluate(() => window.murasame.voice.speak('这是一条进程异常测试。'))

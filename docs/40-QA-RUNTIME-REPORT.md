@@ -16,9 +16,10 @@
 
 ## 2. 结果总览
 
-- 全量单元测试：**89 文件 / 1024 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限用例）。
+- 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**76 passed / 5 skipped / 0 failed**（6.4 分钟；含渲染崩溃恢复、流式中途强杀数据一致性、记忆来源链与房间遮罩（含无空格长文本）、情绪天气与原因链、任务幕/见闻幕小剧场（含超长任务名气泡有界、无空格长 token 不溢出、优先级与队列）、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键生命周期用例；5 个 skip 为需要离线语音模型或真实 Docker 的用例）。
+- 全量 E2E：**默认套件 76 passed / 5 skipped / 0 failed**（6.4 分钟）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**81 passed / 0 skipped / 0 failed（9.3 分钟）**。
+  覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
 
@@ -528,3 +529,36 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 - 纯函数 `src/shared/avatar/affect-weather.ts` + 组件 `AffectWeatherCard`；每 10 秒刷新，重启回基线。
 - 测试：`tests/unit/affect-weather.test.ts`（5）、`tests/e2e/qa-affect-weather.spec.ts`（1）。
 - 设计全文与未落地部分见 [docs/39-FEATURE-SPECS.md](39-FEATURE-SPECS.md) §12。
+
+
+### 3.42 全量测试第 1 轮：语音专用进程缺失修复（QA-VOICE-01，P1）与零跳过套件
+
+**发现方式**：全量测试矩阵（docs/42）建立后，尝试消除默认套件的 5 个 skip。真实语音用例一启用即失败：
+- 冷启动后第一次 `voice.speak` 让主进程心跳最大停顿 **2989.5ms**（设计目标 <500ms）；
+- app metrics 中找不到 `Murasame Local Speech` 专用进程（期望 1，实际 0）。
+
+**根因**：语音响应性设计（docs/superpowers/specs/2026-10-30-speech-responsiveness-design.md）只有 `SpeechProcessClient` 调度器，
+没有 worker 入口、没有 electron-vite 条目、`VoiceService` 仍直接在主进程跑 Kokoro 推理——即"专用进程"从未接上。
+因为测试是 env-gated（默认 skip），此前 37 轮 QA 没暴露。
+
+**修复**：
+1. `tts.ts` 拆出 `synthesizePhonemes(modelRoot, phonemes, voice)`；音素转换仍在主进程异步执行；
+2. 新增 `src/main/local/speech-worker.ts`（`process.parentPort` 协议：{id,modelDirectory,phonemes,voice}→{id,result}）；
+3. `electron.vite.config.ts` 主进程多入口，构建 `out/main/speech-worker.js`；
+4. `VoiceService` 注入 `SpeechProcessClient` 工厂（生产用 `utilityProcess.fork(..., { serviceName: 'Murasame Local Speech' })`），退出时 `dispose`；
+5. 开发态真实语音 e2e 自动把 `build/bundled-models` 的 whisper/kokoro 复制进隔离 userData；
+6. 新增 `npm run test:e2e:all`（`scripts/run-full-e2e.mjs`）：自动检测 Docker 镜像与真实语音模型/中文音素器，齐全时自动设 env 跑全量。
+
+**验证**：
+| 项 | 结果 |
+| --- | --- |
+| 语音 e2e（冷/热朗读 + 进程崩溃恢复） | **2/2 通过**（31.3s），冷/热控制响应 <500ms，专用进程存在且被杀后下次请求恢复 |
+| 语音单测 | 18 个（SpeechProcessClient 13 + VoiceService 5，含"音素与模型根目录交给子进程"新用例） |
+| Docker 隔离 e2e | **3/3 通过**（1.8m，office/code 真实容器与外部状态跟随） |
+| 真实 BGE 记忆 e2e | **6/6 通过**（34.7s） |
+| 全量套件（`npm run test:e2e:all`） | **81 passed / 0 skipped / 0 failed（9.3 分钟）** |
+| 单元 + 追溯 | 89 文件 / 1025 用例；trace 74/74 |
+
+> 默认 `npm run test:e2e` 仍保持无 Docker/无模型机器可运行（76 passed / 5 skipped）；`test:e2e:all` 是"本机依赖齐全时的零跳过"入口，缺依赖会明确打印哪类会 skip，而不是假装全绿。
+
+**下一步（docs/42 矩阵）**：屏幕感知、工具页、设置全开关矩阵、角色校验、更新器 UI、安装包/打包形态、出站图片同意与日志脱敏端到端仍待补。

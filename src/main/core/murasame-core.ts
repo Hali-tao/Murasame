@@ -115,6 +115,7 @@ export class MurasameCore implements CoreApi {
   }
   invalidatePresentation(): number { return ++this.presentationVersion }
   setLocked(locked: boolean): void { this.locked = locked; if (locked) this.cancelSensitiveRequests() }
+  shutdownVoice(): void { this.voice.dispose() }
   cancelSensitiveRequests(): void { for (const controller of this.imageRequests) controller.abort(new Error('隐私设置变化，已停止本次图像请求')) }
   syncMemoryPolicy(): void {
     const settings = getSettings()
@@ -130,7 +131,8 @@ export class MurasameCore implements CoreApi {
     tasks?: TaskService,
     characterService?: CharacterService,
     userDataDir = '',
-    affect = new AffectService()
+    affect = new AffectService(),
+    voice?: import('./services/voice-service').VoiceService
   ) {
     this.affect = affect
     this.skillDirectory = userDataDir
@@ -138,7 +140,7 @@ export class MurasameCore implements CoreApi {
     this.tasks = tasks ?? new TaskService(db)
     this.characterService = characterService ?? new CharacterService(db)
     this.tools = new ToolService(db)
-    this.voice = new VoiceService(userDataDir)
+    this.voice = voice ?? new VoiceService(userDataDir)
     this.tasks.setIsolatedRunner(createTaskRunner())
     this.tasks.setCopyImage(approval => executeImageCopy({ hostPath: approval.hostPath ?? '', taskId: approval.taskId, signal: approval.signal, assertAllowed: () => this.tools.assertCallable('filesystem') }))
     this.syncMemoryPolicy()
@@ -188,7 +190,7 @@ export class MurasameCore implements CoreApi {
     })
   }
 
-  static create(db: SqliteDatabase, models: ModelRegistry, userDataDir = ''): MurasameCore {
+  static create(db: SqliteDatabase, models: ModelRegistry, userDataDir = '', voice?: import('./services/voice-service').VoiceService): MurasameCore {
     const memory = new MemoryService(db, userDataDir)
     const characterService = new CharacterService(db)
     const gateway = new ModelGateway()
@@ -299,7 +301,7 @@ export class MurasameCore implements CoreApi {
         }, conversationId).then((outcome) => publishStatus(outcome.status, outcome.reason)).catch(() => publishStatus('failed', '提取失败，已有记忆未更改'))
       }
     })
-    const core = new MurasameCore(conversations, new ModelService(models), db, memory, taskService, characterService, userDataDir, affect)
+    const core = new MurasameCore(conversations, new ModelService(models), db, memory, taskService, characterService, userDataDir, affect, voice)
     bridge.core = core
     bridge.handle = (userText, route) => core.dispatchTeammate(userText, route)
     return core

@@ -1,4 +1,4 @@
-import { app, dialog, globalShortcut, powerMonitor, protocol, session } from 'electron'
+import { app, dialog, globalShortcut, powerMonitor, protocol, session, utilityProcess } from 'electron'
 import { createHash } from 'node:crypto'
 import { cleanupOwnedContainersAsync, configureContainerOwner } from './isolation/docker-runtime'
 import { readFile } from 'node:fs/promises'
@@ -18,6 +18,8 @@ import { contentSecurityPolicy } from './security/hardening'
 import { broadcastPetPerformance, focusPetChat, hideMain, initializeWindows, isPetHidden, showMain } from './windows'
 import { refreshMemoryStatus } from './local/memory-status'
 import { setBundledModelsRoot } from './local/model-env'
+import { VoiceService } from './core/services/voice-service'
+import type { SpeechChild } from './local/speech-process'
 import { applyHotkey } from './hotkey-status'
 import { logExpired } from './privacy/redact'
 import { statSync } from 'node:fs'
@@ -133,7 +135,14 @@ if (!gotSingleInstanceLock) {
     if (capacityWarning) log.warn(capacityWarning)
     const settings = getSettings()
     configureContainerOwner(createHash('sha256').update(app.getPath('userData')).digest('hex').slice(0, 24))
-    const core = MurasameCore.create(getDatabase(), new ModelRegistry(), app.getPath('userData'))
+    // 本地语音推理放到专用 utilityProcess：主进程只做音素转换和调度，避免首句朗读阻塞心跳。
+    const voice = new VoiceService(app.getPath('userData'), {
+      childFactory: () => utilityProcess.fork(join(__dirname, 'speech-worker.js'), [], {
+        serviceName: 'Murasame Local Speech'
+      }) as unknown as SpeechChild
+    })
+    const core = MurasameCore.create(getDatabase(), new ModelRegistry(), app.getPath('userData'), voice)
+    app.on('will-quit', () => core.shutdownVoice())
     // 打包后随附的插件在 resources/plugins，asar 里没有这个目录。
     core.tools.loadDirectory(
       app.isPackaged ? join(process.resourcesPath, 'plugins') : join(app.getAppPath(), 'plugins')
