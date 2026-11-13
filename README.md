@@ -159,3 +159,10 @@ npm run inspect:pet
 ```
 
 `test:e2e` 会启动 Electron 和本地模拟模型服务，覆盖 10 页导航、真实流式聊天、任务审批、桌宠、托盘与单实例行为。
+
+## 质量与交付（QA）
+
+- 最终交付索引：[docs/41-QA-DELIVERABLES.md](docs/41-QA-DELIVERABLES.md)
+- 可重复运行的 QA 报告：[docs/40-QA-RUNTIME-REPORT.md](docs/40-QA-RUNTIME-REPORT.md)
+- 功能提案与规格：[docs/38-PRODUCT-VISION.md](docs/38-PRODUCT-VISION.md)、[docs/39-FEATURE-SPECS.md](docs/39-FEATURE-SPECS.md)
+- 快速复核：`npm run verify`（typecheck/lint/单元/追溯）与 `npx playwright test --reporter=line`（全量 E2E）；运行时探测脚本见 docs/41 §5
