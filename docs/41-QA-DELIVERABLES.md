@@ -99,6 +99,7 @@ node scripts/qa-main-thread.mjs                   # 主线程阻塞量化
 node scripts/qa-ipc-payload.mjs                   # IPC 大载荷/循环引用/内存
 node scripts/qa-ui-memory.mjs                     # 重复导航内存平台期
 npm run qa:memory-perf                            # 500 记忆 / 300 会话本地性能基准
+npm run trace                                     # 需求可追溯性（74/74 covered，missing 0）
 ```
 
 产物在 `artifacts/qa-runtime-2026-11-13/{soak,adversarial,kill-restart,crash-recovery,main-thread,ipc-payload,ui-memory,ipc-shapes,memory-perf,e2e,reviews}`。
@@ -113,6 +114,7 @@ npm run qa:memory-perf                            # 500 记忆 / 300 会话本�
 | 修不掉的明确记录、不算交付 | 见 §3 与 docs/40 §5；未包装为已完成 |
 | 结构完整、有创意的功能扩展方案 | docs/38 视觉叙事 + docs/39 F-01..F-04 规格（验收标准/风险/降级） |
 | 落地可验证的部分 | F-01..F-04 均有切片、测试与文档；未落地部分逐项标注 |
+| 需求可追溯性 | `npm run trace`：74/74 covered，missing 0；文档内部链接 15/15 有效 |
 | 最终交付 PDF/文档/测试/提案 | 本文件 + docs/40 + docs/38/39 + tests/ + artifacts/ |
 
 ---
