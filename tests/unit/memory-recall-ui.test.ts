@@ -105,3 +105,22 @@ describe('[QA-MEMUI-00] 记忆房间来源链 UI（次数与最近来源详情�
     expect(screen.queryByTestId('memory-room-sources')).toBeNull()
   })
 })
+
+
+describe('[QA-MEMUI-06] 来源对话已删除时的显示', () => {
+  it('[QA-MEMUI-07] 房间来源详情把「已删除的对话」显示为「来源已删除」，不伪造会话名', async () => {
+    const deletedSource = {
+      ...source,
+      conversationTitle: '已删除的对话',
+      recent: [{ conversationId: 'chat-gone', conversationTitle: '已删除的对话', turnId: 'turn-gone', at: '2026-11-12T10:00:00.000Z' }]
+    }
+    mountApi([deletedSource])
+    mountPage()
+    await waitFor(() => expect(screen.getByTestId('memory-view-room')).toBeTruthy())
+    fireEvent.click(screen.getByTestId('memory-view-room'))
+    fireEvent.click(screen.getByTestId('memory-room-sources'))
+    const panel = screen.getByTestId('memory-sources-panel')
+    expect(panel.textContent).toContain('来源已删除')
+    expect(panel.textContent).not.toContain('已删除的对话')
+  })
+})

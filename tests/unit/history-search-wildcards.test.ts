@@ -67,3 +67,11 @@ describe('[QA-SEARCH-00] 历史搜索的 SQL 通配符处理', () => {
     expect(normal.status === 'ok' ? normal.items.map((hit) => hit.id).sort() : []).toEqual(['chat-2'])
   })
 })
+
+
+describe('[QA-SEARCH-03] 反斜杠查询', () => {
+  it('反斜杠是 ESCAPE 自身，必须被正确转义且不报错', () => {
+    const conversations = service()
+    expect(conversations.search('\\').status).toBe('empty')
+  })
+})

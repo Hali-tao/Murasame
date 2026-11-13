@@ -10,7 +10,9 @@ const LINES: Partial<Record<TaskStatus, (title: string) => string>> = {
 }
 
 const clipText = (value: string, max: number): string => {
-  const clean = value.replace(/\s+/g, ' ').trim()
+  // 去掉 C0/C1 控制符、零宽字符与双向控制符：气泡是单行摘要，不应被 Unicode 控制符重排/隐藏内容。
+  // eslint-disable-next-line no-control-regex
+  const clean = value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069\u061c]/g, '').replace(/\s+/g, ' ').trim()
   return clean.length > max ? `${clean.slice(0, max)}…` : clean
 }
 

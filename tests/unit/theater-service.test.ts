@@ -130,3 +130,18 @@ describe('[F-04-PRIORITY-00] 小剧场优先级（同一时段只保留最高优
     expect(observation!.priority).toBeLessThan(theaterSceneForTask(task('失败'))!.priority)
   })
 })
+
+
+describe('[QA-THEATER-10] 气泡文本的 Unicode 控制符清洗（显示层加固）', () => {
+  it('双向/零宽/控制字符不会进入气泡文本，正常中文与 emoji 保留', () => {
+    const raw = '整理文件夹 \u202Eevil\u202C \u200B隐藏 \u0007提示 \u2066隔离\u2069 📁'
+    const scene = theaterSceneForTask(task('失败', raw))
+    expect(scene).not.toBeNull()
+    const text = scene!.title + scene!.line
+    for (const forbidden of ['\u202E', '\u202C', '\u200B', '\u0007', '\u2066', '\u2069']) {
+      expect(text).not.toContain(forbidden)
+    }
+    expect(text).toContain('整理文件夹')
+    expect(text).toContain('📁')
+  })
+})
