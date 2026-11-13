@@ -85,3 +85,28 @@ describe('[F-04-OBS-00] 见闻幕（自主活动完成）', () => {
     expect(theaterSceneForObservation({ ...result, status: 'partial' })).not.toBeNull()
   })
 })
+
+describe('[QA-THEATER-00] 小剧场气泡内容有界（超长任务名的交互死角）', () => {
+  it('[QA-THEATER-01] 数千字符/带换行的任务名被压平并截断，不会撑爆气泡', () => {
+    const longTitle = '整理文件夹 ' + '超长任务描述\n第二行'.repeat(200)
+    const scene = theaterSceneForTask(task('已取消', longTitle))
+    expect(scene).not.toBeNull()
+    expect(scene!.line.length).toBeLessThanOrEqual(161)
+    expect(scene!.title.length).toBeLessThanOrEqual(81)
+    expect(scene!.line).not.toContain('\n')
+    expect(scene!.line).toContain('…')
+  })
+
+  it('[QA-THEATER-02] 见闻幕的目标摘要同样有界并压平换行', () => {
+    const scene = theaterSceneForObservation({
+      activityId: 'activity-long',
+      status: 'completed',
+      goal: '目标'.repeat(2000) + '\n换行',
+      observations: [{ text: '观察记录' }],
+      finishedAt: '2026-11-13T08:00:00.000Z'
+    })
+    expect(scene).not.toBeNull()
+    expect(scene!.line.length).toBeLessThanOrEqual(161)
+    expect(scene!.line).not.toContain('\n')
+  })
+})

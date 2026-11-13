@@ -9,6 +9,11 @@ const LINES: Partial<Record<TaskStatus, (title: string) => string>> = {
   已中断: (title) => `任务「${title}」中途停了，当前状态已保存。`
 }
 
+const clipText = (value: string, max: number): string => {
+  const clean = value.replace(/\s+/g, ' ').trim()
+  return clean.length > max ? `${clean.slice(0, max)}…` : clean
+}
+
 const INTENTS: Partial<Record<TaskStatus, TheaterScene['intent']>> = {
   已完成: '开心',
   部分完成: '思考',
@@ -22,15 +27,17 @@ const INTENTS: Partial<Record<TaskStatus, TheaterScene['intent']>> = {
  * 表现姿态与真实状态对齐：失败/取消不庆祝。
  */
 export function theaterSceneForTask(task: Task, now: () => number = Date.now): TheaterScene | null {
-  const line = LINES[task.status]
-  if (!line) return null
+  const template = LINES[task.status]
+  if (!template) return null
+  // 气泡是桌宠脚边的一句摘要：任务名可能长达数千字符，必须有界，否则会撑出窗口。
+  const title = clipText(task.title, 80)
   return {
     id: `${task.id}:${task.status}`,
     kind: 'task',
     taskId: task.id,
     status: task.status,
-    title: task.title,
-    line: line(task.title),
+    title,
+    line: clipText(template(title), 160),
     intent: INTENTS[task.status] ?? '思考',
     createdAt: new Date(now()).toISOString()
   }
@@ -51,10 +58,10 @@ export function theaterSceneForObservation(
 ): TheaterScene | null {
   if (!result || result.observations.length === 0) return null
   if (result.status !== 'completed' && result.status !== 'partial' && result.status !== 'limited') return null
-  const goal = result.goal.trim().replace(/\s+/g, ' ').slice(0, 60)
-  const line = goal
+  const goal = clipText(result.goal, 60)
+  const line = clipText(goal
     ? `刚在隔离桌面里看了一会儿：${goal}。共有 ${result.observations.length} 条观察记录。`
-    : `刚在隔离桌面里看了一会儿，共有 ${result.observations.length} 条观察记录。`
+    : `刚在隔离桌面里看了一会儿，共有 ${result.observations.length} 条观察记录。`, 160)
   return {
     id: `observation-${result.activityId}-${result.finishedAt}`,
     kind: 'observation',

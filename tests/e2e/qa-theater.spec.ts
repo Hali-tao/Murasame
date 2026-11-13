@@ -163,3 +163,38 @@ test('[F-04-THEATER-06] 见闻幕：桌宠显示「见闻」标签，「查看�
     await closeApp(app)
   }
 })
+
+
+test('[F-04-THEATER-07] 超长任务名不会撑爆小剧场气泡，跳过按钮仍在窗口内', async () => {
+  test.setTimeout(120_000)
+  const root = mkdtempSync(join(tmpdir(), 'qa-theater-long-'))
+  writeFileSync(join(root, 'example.txt'), 'long title fixture')
+  const server = await startModelServer({ taskRoot: root })
+  const app = await launchApp()
+  try {
+    const main = await findMainPage(app)
+    const pet = await findPetPage(app)
+    await configureTestModel(main, server.url)
+    await main.evaluate(() => window.murasame.pet.show())
+    const longTitle = `整理文件夹 ${root} ${'超长任务描述'.repeat(80)}`
+    expect(longTitle.length).toBeGreaterThan(300)
+    await main.getByTestId('nav-tasks').click()
+    await main.getByTestId('new-task').click()
+    await main.getByTestId('task-title-input').fill(longTitle)
+    await main.getByRole('button', { name: '创建并开始', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText(/等待批准|待确认/, { timeout: 20_000 })
+    await main.getByTestId('cancel-task').click()
+    await main.getByRole('dialog').getByRole('button', { name: '取消任务', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText('已取消', { timeout: 20_000 })
+    const scene = pet.getByTestId('pet-theater')
+    await expect(scene).toBeVisible({ timeout: 10_000 })
+    const rendered = await scene.innerText()
+    // 气泡只展示有界摘要，不把 300+ 字任务名原样塞进桌宠窗口。
+    expect(rendered.length).toBeLessThan(300)
+    await expect(pet.getByTestId('pet-theater-skip')).toBeInViewport()
+  } finally {
+    await closeApp(app)
+    await server.close()
+    rmSync(root, { recursive: true, force: true })
+  }
+})
