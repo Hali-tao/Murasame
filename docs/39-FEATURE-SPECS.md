@@ -1397,3 +1397,11 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
 - 修复：`clipText` 在压平空白前先移除 C0/C1、零宽与双向控制符；正常中文/emoji 保留。
 - 测试：单测验证 RTL override、零宽、BEL、隔离符不进入气泡文本，正常文字与 emoji 保留。
 - 说明：这是显示安全加固，不夸大为用户可见缺陷修复。
+
+
+### 已验证（2026-11-13）：长历史搜索端到端（60 会话）
+
+- 60 个会话下历史页搜索：标题关键词命中 60、无匹配关键词为 0、`%`/`_` 按字面处理返回 0（回归第 30 轮 SQL 加固）、
+  清空恢复 60 且列表仍可点击；页面无崩溃/卡死。
+- 搜索为服务端 `core:search-history` + 本地兜底；测试记录输入耗时 annotation，作为本地基线（非硬阈值）。
+- 测试：`tests/e2e/qa-history-search.spec.ts`。
