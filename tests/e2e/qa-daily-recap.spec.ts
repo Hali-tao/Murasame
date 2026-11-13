@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test'
-import { closeApp, findMainPage, launchApp } from './helpers'
+import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
 
 /**
  * F-02 每日回顾（事实版）：
  * 没活动时诚实显示空状态；有真实活动后只汇总真实事实，不评分、不打卡、不调用模型。
  */
 test('[FR-RECAP-06] 仪表盘今日回顾：空状态诚实，新增记忆后显示真实计数', async () => {
+  const server = await startModelServer()
   const app = await launchApp()
   try {
     const page = await findMainPage(app)
@@ -33,7 +34,25 @@ test('[FR-RECAP-06] 仪表盘今日回顾：空状态诚实，新增记忆后显
     await page.getByTestId('nav-memory').click()
     await page.getByTestId('nav-overview').click()
     await expect(page.getByTestId('recap-note-input')).toHaveValue('明天先做最重要的一件事。')
+    // 真实消息到达（例如桌宠聊天）时，停在同一仪表盘也要刷新「聊了 N 句」。
+    await configureTestModel(page, server.url)
+    await page.getByTestId('nav-overview').click()
+    const conversationId = await page.evaluate(async () => {
+      const created = await window.murasame.core.createConversation()
+      if (!created.ok) throw new Error(created.error)
+      return created.data.id
+    })
+    await page.evaluate(async (id) => {
+      const sent = await window.murasame.core.sendMessage(id, '回顾测试：聊一句')
+      if (!sent.ok) throw new Error(sent.error)
+    }, conversationId)
+    const liveFacts = page.getByTestId('daily-recap-facts')
+    await expect(liveFacts).toContainText('聊了', { timeout: 15_000 })
+    // 新建会话自带一条问候，加上用户消息与助手回复 = 3 句。
+    await expect(liveFacts).toContainText('3 句')
+    await expect(liveFacts).toContainText('1 个会话')
   } finally {
     await closeApp(app)
+    await server.close()
   }
 })

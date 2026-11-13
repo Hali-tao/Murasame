@@ -14,8 +14,10 @@ export function DailyRecapCard(): React.JSX.Element {
   const memoriesCount = useAppStore((state) => state.data?.memories.length ?? 0)
   const tasksCount = useAppStore((state) => state.data?.tasks.length ?? 0)
   const conversationsCount = useAppStore((state) => state.data?.conversations.length ?? 0)
-  // 记忆/任务/会话变化时自动刷新回顾，不必等 30 秒轮询或重新挂载页面。
-  const refreshSignal = `${memoriesCount}:${tasksCount}:${conversationsCount}`
+  const messagesCount = useAppStore((state) => state.data?.conversations.reduce((sum, item) => sum + item.messages.length, 0) ?? 0)
+  // 记忆/任务/会话/消息数变化时自动刷新回顾，不必等 30 秒轮询或重新挂载页面
+  // （桌宠聊天与控制台同时打开时，消息数不会改变会话条数，必须单独作为刷新信号）。
+  const refreshSignal = `${memoriesCount}:${tasksCount}:${conversationsCount}:${messagesCount}`
 
   useEffect(() => {
     let cancelled = false
