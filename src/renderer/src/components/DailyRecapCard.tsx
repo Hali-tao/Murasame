@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DailyRecap } from '@shared/types'
 import { useAppStore } from '../store'
 import { Card, CardHead } from './ui'
@@ -11,6 +11,8 @@ export function DailyRecapCard(): React.JSX.Element {
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaving, setNoteSaving] = useState(false)
   const [noteStatus, setNoteStatus] = useState<'idle' | 'saved' | 'failed'>('idle')
+  // 用户正在输入但未保存时，自动刷新不得把草稿覆盖成已保存内容。
+  const noteDirtyRef = useRef(false)
   const memoriesCount = useAppStore((state) => state.data?.memories.length ?? 0)
   const tasksCount = useAppStore((state) => state.data?.tasks.length ?? 0)
   const conversationsCount = useAppStore((state) => state.data?.conversations.length ?? 0)
@@ -31,7 +33,7 @@ export function DailyRecapCard(): React.JSX.Element {
         }
         setFailed(false)
         setRecap(result.data)
-        setNoteDraft(result.data.userNote ?? '')
+        if (!noteDirtyRef.current) setNoteDraft(result.data.userNote ?? '')
         setNoteStatus('idle')
       })
       .catch(() => {
@@ -57,6 +59,7 @@ export function DailyRecapCard(): React.JSX.Element {
         setNoteStatus('failed')
         return
       }
+      noteDirtyRef.current = false
       setNoteDraft(result.data)
       setRecap((previous) => (previous ? { ...previous, userNote: result.data } : previous))
       setNoteStatus('saved')
@@ -102,6 +105,7 @@ export function DailyRecapCard(): React.JSX.Element {
             value={noteDraft}
             placeholder="只保存在本机，不评分、不会上传。"
             onChange={(event) => {
+              noteDirtyRef.current = true
               setNoteDraft(event.target.value)
               setNoteStatus('idle')
             }}
