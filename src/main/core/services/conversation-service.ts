@@ -142,9 +142,11 @@ export class ConversationService {
           preview: item.messages.map((message) => message.text).join(' ')
         })), keyword)
       }
-      const like = `%${needle.replace(/[%_]/g, '')}%`
+      // % 和 _ 是 SQL LIKE 通配符：转义后按字面匹配，避免「只输入 %」被当成全匹配。
+      const escapeLike = (value: string): string => value.replace(/[\\%_]/g, (match) => `\\${match}`)
+      const like = `%${escapeLike(needle)}%`
       const hits = this.db.prepare(
-        `SELECT conversation_id AS id, text AS preview FROM messages WHERE lower(text) LIKE ?`
+        `SELECT conversation_id AS id, text AS preview FROM messages WHERE lower(text) LIKE ? ESCAPE '\\'`
       ).all(like) as Array<{ id: string; preview: string }>
       const ids = new Set(hits.map((hit) => hit.id))
       const matched = conversations.filter((item) => ids.has(item.id) || item.title.toLowerCase().includes(needle))
