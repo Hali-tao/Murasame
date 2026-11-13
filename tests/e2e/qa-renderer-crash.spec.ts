@@ -87,4 +87,52 @@ test.describe('[QA-CRASH-10] 渲染进程崩溃恢复', () => {
       await closeApp(app)
     }
   })
+
+  test('[QA-CRASH-11] 隐藏到托盘的主窗口渲染进程崩溃后静默恢复，不自动弹出', async () => {
+    test.setTimeout(120_000)
+    const app = await launchApp()
+    try {
+      const main = await findMainPage(app)
+      await findPetPage(app)
+      await main.evaluate(() => window.murasame.window.hideMain())
+      const mainVisibility = () => app.evaluate(({ BrowserWindow }) => {
+        const window = BrowserWindow.getAllWindows().find((item) => !item.webContents.getURL().includes('/pet.html'))
+        return window ? { visible: window.isVisible(), minimized: window.isMinimized() } : null
+      })
+      await expect.poll(mainVisibility).toMatchObject({ visible: false })
+
+      await crashRenderer(app, 'main')
+      await waitRecovered(app, 'main')
+
+      // 崩溃恢复不应把托盘里的窗口弹出来抢焦点。
+      expect(await mainVisibility()).toMatchObject({ visible: false })
+      expect(await app.evaluate(({ app }) => app.isReady())).toBe(true)
+
+      // 恢复后从托盘唤出，控制台仍可交互（不是白屏壳）。
+      await app.evaluate(({ BrowserWindow }) => {
+        const window = BrowserWindow.getAllWindows().find((item) => !item.webContents.getURL().includes('/pet.html'))
+        window?.show()
+      })
+      await expect.poll(mainVisibility).toMatchObject({ visible: true })
+      // 渲染进程崩溃后 Playwright 的 Page 句柄不可再用；恢复后的交互验证走主进程 executeJavaScript。
+      const interactive = await app.evaluate(async ({ BrowserWindow }) => {
+        const window = BrowserWindow.getAllWindows().find((item) => !item.webContents.getURL().includes('/pet.html'))
+        if (!window) return null
+        const contents = window.webContents
+        const bodyLength = await contents.executeJavaScript('document.body ? document.body.innerText.length : 0')
+        await contents.executeJavaScript("document.querySelector('[data-testid=\"nav-memory\"]')?.click()")
+        await new Promise((resolve) => setTimeout(resolve, 600))
+        const hash = await contents.executeJavaScript('window.location.hash')
+        const memoryText = await contents.executeJavaScript('document.body ? document.body.innerText.includes("记忆") : false')
+        return { visible: window.isVisible(), bodyLength, hash, memoryText }
+      })
+      expect(interactive).not.toBeNull()
+      expect(interactive!.visible).toBe(true)
+      expect(interactive!.bodyLength ?? 0).toBeGreaterThan(10)
+      expect(interactive!.hash).toContain('/memory')
+      expect(interactive!.memoryText).toBe(true)
+    } finally {
+      await closeApp(app)
+    }
+  })
 })
