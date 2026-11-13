@@ -72,7 +72,7 @@ export function ToolsPage(): React.JSX.Element {
                   <button type="button" className="text-button" onClick={() => setDetail(tool)}>详情</button>
                   <ToggleSwitch
                     checked={tool.enabled}
-                    disabled={Boolean(busy[`tool:${tool.id}`])}
+                    disabled={Boolean(busy[`tool:${tool.id}`]) || tool.permission === '不可用'}
                     onCheckedChange={(checked) => void toggle(tool, checked)}
                     label={`${tool.enabled ? '停用' : '启用'}${tool.name}`}
                   />

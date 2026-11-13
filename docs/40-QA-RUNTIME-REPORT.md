@@ -18,7 +18,7 @@
 
 - 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**默认套件 76 passed / 5 skipped / 0 failed**（6.4 分钟）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**81 passed / 0 skipped / 0 failed（9.3 分钟）**。
+- 全量 E2E：**默认套件 84 passed / 5 skipped / 0 failed**（约 6.9 分钟）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**89 passed / 0 skipped / 0 failed（9.2 分钟）**。
   覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
@@ -469,7 +469,7 @@
 | --- | --- | --- |
 | 需求可追溯性 | `npm run trace` | **74/74 covered，missing 0** |
 | 文档内部链接 | 本地链接检查脚本（38/39/40/41） | **15/15 有效，0 断链** |
-| 关键计数一致性 | 对比最近一次全量验证 | 单元 89 文件/1024 用例、E2E 76 passed/5 skipped 与文档一致 |
+| 关键计数一致性 | 对比最近一次全量验证 | 单元 89 文件/1024 用例、E2E 76 passed/5 skipped（第 36 轮数值；最新见 §3.43） |
 | 测试与证据索引 | docs/41 §1/§5 | 全部指向存在的文件与可复跑命令 |
 
 - 结论：最终交付文档在**可追溯性、链接、计数**上与仓库真实状态一致；无文档级阻塞。
@@ -480,11 +480,35 @@
 | 检查 | 命令 | 结果 |
 | --- | --- | --- |
 | typecheck + lint + 单元 + 追溯（项目 DoD） | `npm run verify` | **通过**：unit 89 文件 / 1024 用例；trace 74/74 covered，missing 0 |
-| 全量 E2E | `npx playwright test --reporter=line` | **76 passed / 5 skipped / 0 failed**（6.5 分钟） |
+| 全量 E2E | `npx playwright test --reporter=line` | **76 passed / 5 skipped / 0 failed**（6.5 分钟；第 37 轮数值，最新见 §2/§3.43） |
 | 已知限制 | docs/40 §5 | 5 个 skip 为真实语音/真实 Docker 场景，已如实记录、不计为交付 |
 
 - 结论：项目 DoD 与最终 QA 目标在本轮 HEAD 上**全部通过**；无新增缺陷。
 - 交付索引：[docs/41-QA-DELIVERABLES.md](41-QA-DELIVERABLES.md)。
+
+### 3.43 全量测试第 2 轮：屏幕感知页与工具页覆盖 + 不可用工具开关修复（QA-TOOLS-01，P3）
+
+**新增** `tests/e2e/qa-screen-tools.spec.ts`（8 用例，全部通过，24.7s）：
+
+| 用例 | 覆盖 | 结果 |
+| --- | --- | --- |
+| [SCREEN-01] | 未授权时分析按钮禁用、占位与隐私文案、管理权限跳转设置 | PASS |
+| [SCREEN-02] | 已授权但无可用模型：分析诚实失败（红字/模型提示），忙碌状态释放，页面可继续交互 | PASS |
+| [SCREEN-03] | 持续观察开关/间隔文案跟随设置，关闭后回到单次截取文案 | PASS |
+| [SCREEN-04] | 「允许截图发给模型」与默认模型名称联动到第三方模型边界文案 | PASS |
+| [TOOLS-01] | 工具开关生效、IPC/bootstrap 状态一致、切页后持久化 | PASS |
+| [TOOLS-02] | 停用 filesystem 后创建任务被中文拒绝（"未启用的能力不参与执行"），重新启用恢复 | PASS |
+| [TOOLS-03] | 未实现能力（Obsidian/日历）显示「不可用/尚未实现」，开关禁用，不假装可启用 | PASS（修复后） |
+| [TOOLS-04] | 工具详情弹窗内容可读、Esc 关闭 | PASS |
+
+**修复 QA-TOOLS-01（P3）**：不可用能力（尚未实现的插件）的开关此前仍可点击——点击后只会弹「该能力尚未实现，不能启用」错误提示，属交互死角。
+修复：开关对 `permission === '不可用'` 的能力禁用；e2e 断言不可用工具开关为 disabled 且页面如实显示「不可用/尚未实现」。
+说明：真实屏幕捕获/OCR/UIA 依赖前台窗口与隐私环境，仍由 `npm run verify:perception` 验收（自动 E2E 覆盖的是门禁、错误、隐私文案与持续观察设置）。
+
+**验证**：
+- 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
+- 默认 E2E：**84 passed / 5 skipped / 0 failed**
+- 依赖齐全全量 E2E（`npm run test:e2e:all`）：**89 passed / 0 skipped / 0 failed（9.2 分钟）**
 
 ## 4. 复跑方式
 
@@ -556,9 +580,9 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 | 语音单测 | 18 个（SpeechProcessClient 13 + VoiceService 5，含"音素与模型根目录交给子进程"新用例） |
 | Docker 隔离 e2e | **3/3 通过**（1.8m，office/code 真实容器与外部状态跟随） |
 | 真实 BGE 记忆 e2e | **6/6 通过**（34.7s） |
-| 全量套件（`npm run test:e2e:all`） | **81 passed / 0 skipped / 0 failed（9.3 分钟）** |
+| 全量套件（`npm run test:e2e:all`） | **81 passed / 0 skipped / 0 failed（9.3 分钟；第 2 轮补屏/工具用例后 89/0，见 §3.43）** |
 | 单元 + 追溯 | 89 文件 / 1025 用例；trace 74/74 |
 
-> 默认 `npm run test:e2e` 仍保持无 Docker/无模型机器可运行（76 passed / 5 skipped）；`test:e2e:all` 是"本机依赖齐全时的零跳过"入口，缺依赖会明确打印哪类会 skip，而不是假装全绿。
+> 默认 `npm run test:e2e` 仍保持无 Docker/无模型机器可运行（第 2 轮补用例后 84 passed / 5 skipped）；`test:e2e:all` 是"本机依赖齐全时的零跳过"入口，缺依赖会明确打印哪类会 skip，而不是假装全绿。
 
 **下一步（docs/42 矩阵）**：屏幕感知、工具页、设置全开关矩阵、角色校验、更新器 UI、安装包/打包形态、出站图片同意与日志脱敏端到端仍待补。

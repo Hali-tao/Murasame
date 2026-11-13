@@ -11,12 +11,12 @@
 | 启动 / 单实例 / Onboarding | app.spec、adversarial（损坏设置/数据库/重启循环）、qa-window-lifecycle | Onboarding 首次流程细节、托盘首次引导 | 🟡 |
 | 仪表盘 Dashboard | app.spec、qa-daily-recap、qa-affect-weather/events | 快捷入口/统计交互深度 | 🟡 |
 | 对话 Chat | app.spec、qa-chat-stress、model-lifecycle/status-sync、local-memory、memory-*、recording-hidden、speech-responsive | 停止/重试/复制/编辑消息、长历史滚动、附件/图片外发同意 | 🟡 |
-| 屏幕感知 Screen | app.spec 冒烟、scripts/verify-perception.mjs（手动） | 权限门禁、不可用错误、持续观察节奏、OCR/UIA 私密窗口排除、截图外发同意 | ⬜ |
+| 屏幕感知 Screen | app.spec 冒烟、**qa-screen-tools.spec 5 用例（门禁/无模型诚实失败/持续观察/外发文案）**、scripts/verify-perception.mjs（手动） | 真实 OCR/UIA 私密窗口排除与截图外发时机仍需手动/环境验收 | 🟡 |
 | 自主活动 Autonomy | autonomy-external-status、isolated-creation×2（真实 Docker，3/3 通过）；`test:e2e:all` 自动检测 | preview/watch/look、停止中、容器清理失败、Docker 不可用提示 | 🟡 |
 | 任务 Tasks | task-directory、task-directory-checkpoints、task-continuation、grounded-summary、qa-task-memory、qa-theater | 失败/部分完成/中断状态矩阵、删除/清空、并发任务 | 🟡 |
 | 历史 History | qa-history-search、memory-clear-ui、flows、app.spec | 单条删除与桌宠同步、清空范围组合、导出 | 🟡 |
 | 记忆 Memory | local-memory、memory-clear-ui、memory-correction-source、memory-degraded-context、qa-memory-provenance、qa-memory-recall-source（单测）、qa-a11y | 真实召回的正向来源详情（已由单测覆盖 UI；e2e 真实召回路径由 local-memory 覆盖注入） | ✅ |
-| 工具 Tools | app.spec 冒烟、tool 单测 | 开关持久化、禁用工具 IPC 拒绝、插件目录坏文件 | ⬜/🟡 |
+| 工具 Tools | app.spec 冒烟、tool 单测、**qa-screen-tools.spec 4 用例（开关持久化/禁用拒绝任务/不可用禁用/详情弹窗）** | 插件目录坏文件加载错误 | ✅（核心）/🟡（插件坏文件） |
 | 模型 Models | model-lifecycle、model-status-sync、notifications、qa-a11y、qa-window-lifecycle | 删除默认模型、密钥遮罩、并发保存、离线错误矩阵 | 🟡 |
 | 角色 Character | app.spec、mesh-pet*、qa-theater（角色页恢复入口） | 设定保存校验、导入非法资产、关系重置、形象切换保留数据 | 🟡 |
 | 设置 Settings | qa-settings-observers（单测）、flows（导入导出）、notifications、qa-theater、qa-a11y | 全开关矩阵、开机自启、日志保留、更新检查、DND 组合 | 🟡 |
@@ -57,16 +57,16 @@
 
 ## 4.1 当前总状态（全量测试第 1 轮）
 
-- 默认套件：单元 89 文件 / 1025 用例；E2E 76 passed / 5 skipped（无 Docker/无语音模型的机器）。
-- 依赖齐全（真实 Docker 镜像 + 真实 whisper/kokoro + python misaki）：`npm run test:e2e:all` → **81 passed / 0 skipped / 0 failed（9.3 分钟）**。
-- 已修复的首个全量测试发现：QA-VOICE-01（语音专用进程缺失，P1，见 docs/40 §3.42）。
-- 剩余 ⬜/🟡 项见上表；按轮推进。
+- 默认套件：单元 89 文件 / 1025 用例；E2E **84 passed / 5 skipped**（无 Docker/无语音模型的机器）。
+- 依赖齐全（真实 Docker 镜像 + 真实 whisper/kokoro + python misaki）：`npm run test:e2e:all` → **89 passed / 0 skipped / 0 failed（9.2 分钟）**。
+- 已修复：QA-VOICE-01（语音专用进程缺失，P1，§3.42）、QA-TOOLS-01（不可用工具开关，P3，§3.43）。
+- 剩余 ⬜/🟡 项见上表（设置矩阵、角色校验、更新器 UI、安装包、安全同意、真实屏幕感知等）；按轮推进。
 
 ## 5. 复跑入口
 
 ```bash
 npm run verify             # typecheck + lint + 单元 + 追溯
-npm run test:e2e:all       # 自动检测 Docker/真实语音模型后跑全量 E2E（本机实测 81 passed / 0 skipped）
+npm run test:e2e:all       # 自动检测 Docker/真实语音模型后跑全量 E2E（本机实测 89 passed / 0 skipped）
 node scripts/qa-*.mjs      # 9 个运行时探测
 npm run qa:memory-perf     # 500 记忆 / 300 会话性能基准
 ```
