@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Task } from '../../src/shared/types'
-import { isTheaterMuted, theaterSceneForTask } from '../../src/main/core/services/theater-service'
+import { isTheaterMuted, theaterSceneForObservation, theaterSceneForTask } from '../../src/main/core/services/theater-service'
 
 const task = (status: Task['status'], title = '整理下载文件夹'): Task => ({
   id: 'task-1', title, status, tone: 'green', progress: 100, created: '2026-11-13 09:00', model: 'test-model',
@@ -51,5 +51,37 @@ describe('[F-04-THEATER-00] 任务幕（小剧场最小切片）', () => {
     const second = theaterSceneForTask(task('失败'), () => 1_800_000_000_000)
     expect(first!.id).toBe(second!.id)
     expect(first!.createdAt).toBe(new Date(1_700_000_000_000).toISOString())
+  })
+})
+
+describe('[F-04-OBS-00] 见闻幕（自主活动完成）', () => {
+  const result = {
+    activityId: 'activity-1',
+    status: 'completed',
+    goal: '看看离线模型的文章',
+    observations: [
+      { text: '原始网页正文：这是一篇关于离线模型的文章全文，不应原样进入气泡。' },
+      { text: '另一条观察记录' }
+    ],
+    finishedAt: '2026-11-13T08:00:00.000Z'
+  }
+
+  it('[F-04-OBS-01] 有真实观察时产生见闻幕：本地模板陈述目标与观察数，不包含网页原文', () => {
+    const scene = theaterSceneForObservation(result, () => 1_700_000_000_000)
+    expect(scene).not.toBeNull()
+    expect(scene!.kind).toBe('observation')
+    expect(scene!.viewPath).toBe('/autonomy')
+    expect(scene!.line).toContain('看看离线模型的文章')
+    expect(scene!.line).toContain('2 条观察记录')
+    expect(scene!.line).not.toContain('这是关于离线模型的文章全文')
+    expect(scene!.id).toBe('observation-activity-1-2026-11-13T08:00:00.000Z')
+  })
+
+  it('[F-04-OBS-02] 失败/取消/无观察/没有结果时都不演（不把失败包装成见闻）', () => {
+    expect(theaterSceneForObservation({ ...result, status: 'failed' })).toBeNull()
+    expect(theaterSceneForObservation({ ...result, status: 'cancelled' })).toBeNull()
+    expect(theaterSceneForObservation({ ...result, observations: [] })).toBeNull()
+    expect(theaterSceneForObservation(undefined)).toBeNull()
+    expect(theaterSceneForObservation({ ...result, status: 'partial' })).not.toBeNull()
   })
 })

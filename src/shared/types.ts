@@ -301,9 +301,9 @@ export interface AffectEvent {
 
 /** F-04 桌面小剧场（最小切片）：绑定一个真实任务终态的一幕。 */
 export interface TheaterScene {
-  /** 去重键：taskId + 终态（同一事件只演一次）。 */
+  /** 去重键：事件 id + 终态/完成时间（同一事件只演一次）。 */
   id: string
-  kind: 'task'
+  kind: 'task' | 'observation'
   taskId: string
   status: TaskStatus
   title: string
@@ -311,6 +311,8 @@ export interface TheaterScene {
   line: string
   /** 表现姿态必须与真实状态对齐（失败不庆祝）。 */
   intent: '开心' | '思考' | '困惑'
+  /** 「查看」打开的路径；任务幕为任务页，见闻幕为自主活动页。 */
+  viewPath?: string
   createdAt: string
 }
 

@@ -703,7 +703,7 @@ function PetApp(): React.JSX.Element {
       <div className="pet-column">
         {theater ? (
           <aside className="pet-theater" data-testid="pet-theater" data-pet-hit role="status" aria-live="polite">
-            <span className="pet-theater-tag">任务</span>
+            <span className="pet-theater-tag">{theater.kind === 'observation' ? '见闻' : '任务'}</span>
             <p>{theater.line}</p>
             <div className="pet-theater-foot">
               <span>{theater.status}</span>
@@ -712,7 +712,8 @@ function PetApp(): React.JSX.Element {
                   type="button"
                   data-testid="pet-theater-view"
                   onClick={() => {
-                    void window.murasame.window.openPath(`/tasks?focus=${encodeURIComponent(theater.taskId)}`)
+                    if (theater.viewPath) void window.murasame.window.openPath(theater.viewPath)
+                    else void window.murasame.window.openPath(`/tasks?focus=${encodeURIComponent(theater.taskId)}`)
                     dismissTheater()
                   }}
                 >

@@ -40,3 +40,30 @@ export function theaterSceneForTask(task: Task, now: () => number = Date.now): T
 export function isTheaterMuted(muteDate: string, today: string): boolean {
   return muteDate !== '' && muteDate === today
 }
+
+/**
+ * F-04 见闻幕：自主活动结束且有真实观察时，用本地模板陈述「发生了什么」。
+ * 隐私边界：不展示网页原文/截图内容，只给出目标摘要与观察数量；失败/取消不演。
+ */
+export function theaterSceneForObservation(
+  result: { activityId: string; status: string; goal: string; observations: Array<{ text: string }>; finishedAt: string } | undefined,
+  now: () => number = Date.now
+): TheaterScene | null {
+  if (!result || result.observations.length === 0) return null
+  if (result.status !== 'completed' && result.status !== 'partial' && result.status !== 'limited') return null
+  const goal = result.goal.trim().replace(/\s+/g, ' ').slice(0, 60)
+  const line = goal
+    ? `刚在隔离桌面里看了一会儿：${goal}。共有 ${result.observations.length} 条观察记录。`
+    : `刚在隔离桌面里看了一会儿，共有 ${result.observations.length} 条观察记录。`
+  return {
+    id: `observation-${result.activityId}-${result.finishedAt}`,
+    kind: 'observation',
+    taskId: result.activityId,
+    status: '已完成',
+    title: goal || '自主活动',
+    line,
+    intent: '思考',
+    viewPath: '/autonomy',
+    createdAt: new Date(now()).toISOString()
+  }
+}

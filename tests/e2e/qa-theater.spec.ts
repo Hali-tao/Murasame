@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { closeApp, configureTestModel, findMainPage, findPetPage, launchApp, startModelServer } from './helpers'
+import { IPC } from '../../src/shared/ipc'
 
 /**
  * F-04 桌面小剧场（任务幕最小切片）：
@@ -123,5 +124,42 @@ test('[F-04-THEATER-05] 任务取消后桌宠演出任务幕，点「跳过」�
     await closeApp(app)
     await server.close()
     rmSync(root, { recursive: true, force: true })
+  }
+})
+
+
+test('[F-04-THEATER-06] 见闻幕：桌宠显示「见闻」标签，「查看」打开自主活动页', async () => {
+  const app = await launchApp()
+  try {
+    const main = await findMainPage(app)
+    const pet = await findPetPage(app)
+    await main.evaluate(() => window.murasame.pet.show())
+    // 真实见闻幕由主进程在自主活动完成时投递；隔离桌面依赖 Docker，这里直接投递同一 IPC 事件验证桌宠侧行为。
+    await app.evaluate(({ BrowserWindow }, payload) => {
+      const petWindow = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('/pet.html'))
+      petWindow?.webContents.send(payload.channel, payload.scene)
+    }, {
+      channel: IPC.pet.theater,
+      scene: {
+        id: 'observation-qa-1',
+        kind: 'observation',
+        taskId: 'activity-qa-1',
+        status: '已完成',
+        title: '浏览测试',
+        line: '刚在隔离桌面里看了一会儿：浏览测试。共有 1 条观察记录。',
+        intent: '思考',
+        viewPath: '/autonomy',
+        createdAt: new Date().toISOString()
+      }
+    })
+    const scene = pet.getByTestId('pet-theater')
+    await expect(scene).toBeVisible({ timeout: 10_000 })
+    await expect(scene).toContainText('见闻')
+    await expect(scene).toContainText('1 条观察记录')
+    await pet.getByTestId('pet-theater-view').click()
+    await expect(main).toHaveURL(/\/autonomy/, { timeout: 10_000 })
+    await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
+  } finally {
+    await closeApp(app)
   }
 })

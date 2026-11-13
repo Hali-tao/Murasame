@@ -26,7 +26,7 @@ import {
   toolToggleSchema
 } from '../shared/schemas'
 import { MurasameCore as DesktopCore } from './core/murasame-core'
-import { isTheaterMuted, theaterSceneForTask } from './core/services/theater-service'
+import { isTheaterMuted, theaterSceneForObservation, theaterSceneForTask } from './core/services/theater-service'
 import { localDayWindow } from './core/services/daily-recap-service'
 import type { AutonomyState } from './core/services/autonomy-service'
 import type {
@@ -180,9 +180,19 @@ export function registerIpcHandlers(core: DesktopCore): void {
       phase: cancelling ? 'stopping' : 'preparing', canStop: true, busy: true,
       reason: cancelling ? '正在取消隔离环境准备。' : '正在准备隔离环境，离开页面不会中断；可停止准备。' }
   }
+  const presentedObservationTheater = new Set<string>()
   const publishAutonomy = (state = core.autonomy.status()): void => {
-    try { broadcast(IPC.autonomy.updated, autonomyViewState(state)) }
-    catch { /* A renderer may close while a state update is being delivered. */ }
+    try {
+      broadcast(IPC.autonomy.updated, autonomyViewState(state))
+      // F-04 见闻幕：自主活动结束且有真实观察时演一幕（同一活动完成事件只演一次）。
+      const scene = theaterSceneForObservation(state.result)
+      const theaterAllowed = getSettings().theaterEnabled && !isTheaterMuted(readTheaterMuteDate(), localDayWindow().date)
+      if (scene && theaterAllowed && !presentedObservationTheater.has(scene.id)) {
+        presentedObservationTheater.add(scene.id)
+        if (presentedObservationTheater.size > 100) presentedObservationTheater.delete(presentedObservationTheater.values().next().value!)
+        broadcastTheater(scene)
+      }
+    } catch { /* A renderer may close while a state update is being delivered. */ }
   }
   core.autonomy.subscribe(publishAutonomy)
   const privacyKey = (): string => JSON.stringify([getSettings().permissions.screen, getSettings().outboundImages, getSettings().doNotDisturb, getSettings().screenWatchEnabled])
