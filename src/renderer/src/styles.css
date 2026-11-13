@@ -665,7 +665,7 @@ a:focus-visible {
 .memory-room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
 .memory-room-card { display: grid; gap: 8px; padding: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
 .memory-room-card header, .memory-room-card footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.memory-room-card p { margin: 0; font-size: 11.5px; line-height: 1.6; }
+.memory-room-card p { margin: 0; font-size: 11.5px; line-height: 1.6; overflow-wrap: anywhere; word-break: break-word; }
 .memory-room-card .btn { padding: 3px 8px; font-size: 10.5px; }
 .memory-room-actions { display: inline-flex; gap: 6px; }
 .memory-sources { padding-top: 8px; border-top: 1px solid var(--line-soft); }
@@ -904,7 +904,7 @@ a:focus-visible {
 .pet-art-breathe { transform-origin: 160px 380px; animation: pet-breathe 4.2s ease-in-out infinite; }
 .pet-theater { position: absolute; z-index: 9; top: 16px; left: 50%; width: max-content; max-width: 250px; padding: 9px 12px 8px; color: #f3efe9; background: rgba(30,33,42,.95); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; box-shadow: 0 10px 28px rgba(13,15,20,.26); transform: translateX(-50%); font-size: 12px; line-height: 1.5; text-align: left; }
 .pet-theater-tag { display: inline-block; padding: 1px 6px; margin-bottom: 4px; color: #1e212a; background: #e8b96a; border-radius: 999px; font-size: 9.5px; }
-.pet-theater p { margin: 0; }
+.pet-theater p { margin: 0; overflow-wrap: anywhere; word-break: break-word; }
 .pet-theater-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; color: rgba(243,239,233,.65); font-size: 10px; }
 .pet-theater-actions { display: inline-flex; gap: 6px; }
 .pet-theater-foot button { padding: 2px 8px; color: #f3efe9; background: rgba(255,255,255,.12); border: 0; border-radius: 6px; font-size: 10px; cursor: pointer; }

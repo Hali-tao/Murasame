@@ -198,3 +198,49 @@ test('[F-04-THEATER-07] 超长任务名不会撑爆小剧场气泡，跳过按�
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+
+test('[F-04-THEATER-08] 无空格超长任务名不会让小剧场水平溢出桌宠窗口', async () => {
+  test.setTimeout(120_000)
+  const root = mkdtempSync(join(tmpdir(), 'qa-theater-token-'))
+  writeFileSync(join(root, 'example.txt'), 'token fixture')
+  const server = await startModelServer({ taskRoot: root })
+  const app = await launchApp()
+  try {
+    const main = await findMainPage(app)
+    const pet = await findPetPage(app)
+    await configureTestModel(main, server.url)
+    await main.evaluate(() => window.murasame.pet.show())
+    const unbrokenTitle = `整理文件夹 ${root} ${'A'.repeat(120)}`
+    await main.getByTestId('nav-tasks').click()
+    await main.getByTestId('new-task').click()
+    await main.getByTestId('task-title-input').fill(unbrokenTitle)
+    await main.getByRole('button', { name: '创建并开始', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText(/等待批准|待确认/, { timeout: 20_000 })
+    await main.getByTestId('cancel-task').click()
+    await main.getByRole('dialog').getByRole('button', { name: '取消任务', exact: true }).click()
+    await expect(main.locator('.task-detail-titleline .pill')).toHaveText('已取消', { timeout: 20_000 })
+    const scene = pet.getByTestId('pet-theater')
+    await expect(scene).toBeVisible({ timeout: 10_000 })
+    const layout = await pet.evaluate(() => {
+      const element = document.querySelector('[data-testid="pet-theater"]') as HTMLElement | null
+      const body = document.body
+      return {
+        documentScrollWidth: document.documentElement.scrollWidth,
+        innerWidth: window.innerWidth,
+        sceneScrollWidth: element?.scrollWidth ?? 0,
+        sceneClientWidth: element?.clientWidth ?? 0,
+        bodyScrollWidth: body.scrollWidth
+      }
+    })
+    // 桌宠窗口不应出现水平溢出，气泡文本应在气泡宽度内换行。
+    expect(layout.documentScrollWidth).toBeLessThanOrEqual(layout.innerWidth + 1)
+    expect(layout.bodyScrollWidth).toBeLessThanOrEqual(layout.innerWidth + 1)
+    expect(layout.sceneScrollWidth).toBeLessThanOrEqual(layout.sceneClientWidth + 1)
+    await expect(pet.getByTestId('pet-theater-skip')).toBeInViewport()
+  } finally {
+    await closeApp(app)
+    await server.close()
+    rmSync(root, { recursive: true, force: true })
+  }
+})

@@ -58,6 +58,26 @@ test('[F-01-ROOM-01] 记忆房间视图默认遮蔽正文，Esc 可一次遮罩�
     await expect(page.getByText(phrase)).toHaveCount(0)
     await expect(page.getByTestId('memory-room-masked')).toBeVisible()
 
+    // 房间写入了无空格超长正文：卡片必须强制换行，窗口不得水平溢出。
+    const unbroken = 'B'.repeat(300)
+    await page.evaluate((text) => window.murasame.core.addMemory('偏好', text), unbroken)
+    await expect(page.getByTestId('memory-room-card')).toHaveCount(2, { timeout: 10_000 })
+    // 两卡都显示正文，确保无空格超长正文真的参与布局后再测溢出。
+    const reveals = page.getByTestId('memory-room-reveal')
+    const revealCount = await reveals.count()
+    for (let index = 0; index < revealCount; index += 1) await reveals.nth(index).click()
+    await expect(page.getByTestId('memory-room-text')).toHaveCount(2)
+    const overflow = await page.evaluate(() => {
+      const cards = Array.from(document.querySelectorAll('[data-testid="memory-room-card"]')) as HTMLElement[]
+      return {
+        documentScrollWidth: document.documentElement.scrollWidth,
+        innerWidth: window.innerWidth,
+        cardOverflow: cards.some((card) => card.scrollWidth > card.clientWidth + 1)
+      }
+    })
+    expect(overflow.documentScrollWidth).toBeLessThanOrEqual(overflow.innerWidth + 1)
+    expect(overflow.cardOverflow).toBe(false)
+
     // 切回列表视图仍可正常阅读（房间只是视图，不改数据）。
     await page.getByTestId('memory-view-list').click()
     await expect(page.getByTestId('memory-card').filter({ hasText: '周末喜欢去江边散步' })).toContainText(phrase)

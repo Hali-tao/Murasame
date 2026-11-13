@@ -1342,3 +1342,12 @@ preload 只暴露 `getState/next/skip/dismissToday/onScene/onState`；`enqueue` 
   见闻幕目标 ≤60、台词 ≤160，气泡内不再出现换行。
 - 测试：e2e 用 300+ 字符任务名复现（修复前渲染 580 字符 → 失败；修复后通过且跳过按钮在视口内）；
   单测覆盖数千字符/换行标题与超长观察目标的有界性。
+
+
+### 已修复（2026-11-13）：超长无空格文本的水平溢出（QA-THEATER-02）
+
+- 问题：任务名可包含数百字符的连续无空格文本（URL/哈希/长英文）；气泡固定 max-width 但默认换行规则不拆长 token，
+  实测气泡 scrollWidth 266 > clientWidth 250，文本横向溢出气泡与桌宠窗口；记忆房间卡片同样存在风险。
+- 修复：桌宠小剧场文本与记忆房间卡片正文增加 `overflow-wrap: anywhere; word-break: break-word`。
+- 测试：e2e [F-04-THEATER-08] 无空格 120 字符任务名（修复前失败：sceneScrollWidth 266 > 250，修复后通过，
+  并断言文档/窗口无水平溢出）；记忆房间 e2e 增加 300 字符无空格记忆（显示正文后断言卡片与窗口无水平溢出）。
