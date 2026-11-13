@@ -55,8 +55,12 @@ test('[F-04-THEATER-05] 任务取消后桌宠演出任务幕，点「跳过」�
     await pet.waitForTimeout(1500)
     await expect(pet.getByTestId('pet-theater')).toHaveCount(0)
 
-    await main.getByTestId('nav-settings').click()
-    await main.getByRole('switch', { name: '桌面小剧场' }).click()
+    // 角色页的恢复入口（设计里恢复入口在角色页，而不是设置页）。
+    await main.getByTestId('nav-character').click()
+    const restoreSwitch = main.getByRole('switch', { name: '桌面小剧场' })
+    await expect(restoreSwitch).toHaveAttribute('aria-checked', 'false')
+    await restoreSwitch.click()
+    await expect(restoreSwitch).toHaveAttribute('aria-checked', 'true')
     await main.getByTestId('nav-tasks').click()
     await main.getByTestId('new-task').click()
     await main.getByTestId('task-title-input').fill(`整理文件夹 ${root}`)

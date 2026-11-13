@@ -11,6 +11,7 @@ const keywordSuggestions = ['温柔克制', '冷静专业', '简洁', '少量俏
 export function CharacterPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
   const saveCharacter = useAppStore((state) => state.saveCharacter)
+  const updateSettings = useAppStore((state) => state.updateSettings)
   const notify = useAppStore((state) => state.notify)
   const busy = useAppStore((state) => Boolean(state.busy['character:save']))
   const [draft, setDraft] = useState<CharacterProfile>(data.character)
@@ -241,6 +242,15 @@ export function CharacterPage(): React.JSX.Element {
           </div>
         </Card>
       </div>
+      <Card className="character-theater">
+        <CardHead title="表现与打扰" subtitle="这些开关立即生效，不需要保存角色设定" />
+        <ToggleRow
+          title="桌面小剧场"
+          description="任务进入终态时在桌宠脚边演一句真实结果；关闭后不再自动演出，可随时恢复。"
+          checked={data.settings.theaterEnabled}
+          onCheckedChange={(checked) => void updateSettings({ theaterEnabled: checked })}
+        />
+      </Card>
       <ConfirmDialog open={resetOpen} onOpenChange={setResetOpen} title="重置当前关系？" description="回到初识。原有对话、记忆和演变记录会保留。" confirmLabel="确认重置" onConfirm={confirmReset} busy={relationshipBusy} />
       <Modal open={Boolean(appearance)} onOpenChange={(open) => { if (!open && !switching) setAppearance(null) }} title="更换形象" description="选择新形象如何承接当前的相处。已有对话和长期记忆都会保留。" footer={<><Button disabled={switching} onClick={() => setAppearance(null)}>取消</Button><Button variant="primary" disabled={switching} onClick={() => void confirmAppearance()}>确认更换</Button></>}>
         <fieldset className="relationship-choice">
