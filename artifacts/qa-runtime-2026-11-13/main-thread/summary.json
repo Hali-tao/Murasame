@@ -1,46 +1,46 @@
 {
-  "at": "2026-11-12T19:14:17.322Z",
+  "at": "2026-11-13T02:02:12.389Z",
   "baseline": {
     "count": 70,
-    "median": 0.5,
-    "p95": 1.7,
-    "max": 3.4
+    "median": 0.6,
+    "p95": 1.6,
+    "max": 2
   },
   "seed": {
-    "added": 800,
-    "addMs": 69633,
-    "conversations": 480,
-    "conversationMs": 61128
+    "added": 200,
+    "addMs": 6467,
+    "conversations": 120,
+    "conversationMs": 4832
   },
   "results": [
     {
       "label": "getBootstrap（含全部记忆/会话/任务）",
-      "opMs": 205,
+      "opMs": 60,
       "opOk": true,
       "opError": null,
       "opResult": {
         "ok": true,
-        "ms": 198,
-        "jsonBytes": 208768
+        "ms": 54,
+        "jsonBytes": 53630
       },
       "pings": {
-        "count": 271,
-        "median": 0.5,
+        "count": 278,
+        "median": 0.6,
         "p95": 1.6,
-        "max": 195.7
+        "max": 50
       },
       "blockSeverity": null,
-      "payloadBytes": 208768,
+      "payloadBytes": 53630,
       "bootstrapOk": true
     },
     {
       "label": "memory-page-render",
-      "cards": 800,
+      "cards": 200,
       "frames": {
-        "frames": 821,
+        "frames": 831,
         "median": 4.2,
-        "p95": 5.5,
-        "max": 62.7
+        "p95": 5.4,
+        "max": 22
       },
       "longTaskSupported": true,
       "longTaskTotal": 0,
@@ -48,27 +48,27 @@
     },
     {
       "label": "导出加密数据包（200 位口令，含全部记忆/会话）",
-      "opMs": 249,
+      "opMs": 98,
       "opOk": true,
       "opError": null,
       "pings": {
-        "count": 268,
-        "median": 0.5,
-        "p95": 1.4,
-        "max": 224
+        "count": 274,
+        "median": 0.7,
+        "p95": 2.1,
+        "max": 88.4
       },
       "blockSeverity": null
     },
     {
       "label": "清空全部长期记忆",
-      "opMs": 24,
+      "opMs": 14,
       "opOk": true,
       "opError": null,
       "pings": {
         "count": 279,
-        "median": 0.5,
-        "p95": 1.6,
-        "max": 3.6
+        "median": 0.7,
+        "p95": 1.8,
+        "max": 9.7
       },
       "blockSeverity": null
     },

@@ -1,13 +1,19 @@
 {
-  "at": "2026-11-12T23:48:05.211Z",
+  "at": "2026-11-13T02:02:33.583Z",
   "memCount": 500,
   "convCount": 300,
   "measurements": {
-    "seedMemoriesTotalMs": 4664,
+    "seedMemoriesTotalMs": 4790,
     "seedBatches": [
       {
         "size": 50,
-        "ms": 372,
+        "ms": 367,
+        "failed": 0,
+        "firstError": ""
+      },
+      {
+        "size": 50,
+        "ms": 406,
         "failed": 0,
         "firstError": ""
       },
@@ -19,61 +25,55 @@
       },
       {
         "size": 50,
-        "ms": 376,
+        "ms": 401,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 450,
+        "ms": 443,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 445,
+        "ms": 505,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 462,
+        "ms": 540,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 522,
+        "ms": 584,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 518,
+        "ms": 571,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 555,
-        "failed": 0,
-        "firstError": ""
-      },
-      {
-        "size": 50,
-        "ms": 589,
+        "ms": 598,
         "failed": 0,
         "firstError": ""
       }
     ],
-    "memoryFirstCardMs": 29,
-    "memoryAllCardsMs": 116,
-    "memorySearchFirstResultMs": 76,
+    "memoryFirstCardMs": 8,
+    "memoryAllCardsMs": 122,
+    "memorySearchFirstResultMs": 64,
     "roomFirstCardMs": 2,
     "roomAllCardsMs": 83,
-    "createConversationsTotalMs": 23504,
+    "createConversationsTotalMs": 24409,
     "bootstrapMs": {
-      "elapsed": 122.8,
+      "elapsed": 138.7,
       "ok": true,
       "sizes": {
         "conversations": 300,
@@ -82,7 +82,7 @@
     },
     "historyFirstItemMs": 273,
     "rendererHeapMB": 8.7,
-    "mainHeapMB": 270.5
+    "mainHeapMB": 270.2
   },
   "counts": {
     "seedFailures": 0,

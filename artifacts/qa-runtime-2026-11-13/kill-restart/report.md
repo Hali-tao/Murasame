@@ -1,10 +1,10 @@
 # 强杀/重启韧性探测
 
-- 时间：2026-11-12T18:39:03.768Z
+- 时间：2026-11-13T02:01:25.313Z
 
 | 场景 | 结论 | 关键证据 |
 | --- | --- | --- |
-| 首次启动早期强杀（Local State 未落盘） | OK_RECOVERED | 恢复标记=safe-storage-key-unreadable-and-local-state-missing, 备份文件=2, 重启={"bootstrapOk":true,"bootstrapError":null,"memoryPersisted":false,"writeAfterRestart":true,"exportOk":true,"quit":{"quitMs":441,"hung":false}} |
+| 首次启动早期强杀（Local State 未落盘） | OK_RECOVERED | 恢复标记=safe-storage-key-unreadable-and-local-state-missing, 备份文件=2, 重启={"bootstrapOk":true,"bootstrapError":null,"memoryPersisted":false,"writeAfterRestart":true,"exportOk":true,"quit":{"quitMs":227,"hung":false}} |
 | 耐久化完成后强杀 | OK | Local State=true, 记忆保留=true |
 | 连续强杀/重启 3 轮 | OK | 见 summary.json |
 

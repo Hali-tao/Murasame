@@ -1,12 +1,12 @@
 {
-  "at": "2026-11-13T00:29:28.347Z",
+  "at": "2026-11-13T02:00:09.302Z",
   "channelCount": 69,
   "results": [
     {
       "channel": "app:get-info",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 1
+      "elapsed": 0
     },
     {
       "channel": "app:hide-to-tray",
@@ -18,7 +18,7 @@
       "channel": "app:hotkey",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 0
+      "elapsed": 1
     },
     {
       "channel": "core:active-changed",
@@ -34,7 +34,7 @@
       "channel": "core:approve-task",
       "status": "resolved",
       "shape": "result",
-      "elapsed": 1
+      "elapsed": 0
     },
     {
       "channel": "core:cancel-task",
@@ -46,7 +46,7 @@
       "channel": "core:clear-memories",
       "status": "resolved",
       "shape": "result",
-      "elapsed": 4
+      "elapsed": 6
     },
     {
       "channel": "core:continue-task",
@@ -66,13 +66,13 @@
       "channel": "core:create-conversation",
       "status": "resolved",
       "shape": "result",
-      "elapsed": 18
+      "elapsed": 17
     },
     {
       "channel": "core:create-model",
       "status": "resolved",
       "shape": "result",
-      "elapsed": 4
+      "elapsed": 3
     },
     {
       "channel": "core:create-task",
@@ -114,7 +114,7 @@
       "channel": "core:get-bootstrap",
       "status": "resolved",
       "shape": "result",
-      "elapsed": 3
+      "elapsed": 4
     },
     {
       "channel": "core:memories-updated",
@@ -132,7 +132,7 @@
       "channel": "core:memory-recall-sources",
       "status": "resolved",
       "shape": "result",
-      "elapsed": 1
+      "elapsed": 0
     },
     {
       "channel": "core:message-delta",
@@ -240,19 +240,19 @@
       "channel": "pet:get-state",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 0
+      "elapsed": 1
     },
     {
       "channel": "pet:hide",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 7
+      "elapsed": 3
     },
     {
       "channel": "pet:mute-theater-today",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 4
+      "elapsed": 2
     },
     {
       "channel": "pet:performance",
@@ -262,7 +262,7 @@
       "channel": "pet:reset-position",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 17
+      "elapsed": 14
     },
     {
       "channel": "pet:set-chat-open",
@@ -306,13 +306,13 @@
       "channel": "pet:toggle",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 8
+      "elapsed": 9
     },
     {
       "channel": "relationship:change-appearance",
       "status": "rejected",
       "message": "请求参数无效",
-      "elapsed": 1
+      "elapsed": 0
     },
     {
       "channel": "relationship:changed",
@@ -344,7 +344,7 @@
       "channel": "settings:update",
       "status": "rejected",
       "message": "请求参数无效",
-      "elapsed": 1
+      "elapsed": 0
     },
     {
       "channel": "task:progress",
@@ -364,7 +364,7 @@
       "channel": "window:minimize",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 19
+      "elapsed": 18
     },
     {
       "channel": "window:navigated",
@@ -374,7 +374,7 @@
       "channel": "window:show-main",
       "status": "resolved",
       "shape": "value",
-      "elapsed": 22
+      "elapsed": 10
     }
   ],
   "findings": []

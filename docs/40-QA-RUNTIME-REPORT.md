@@ -443,6 +443,25 @@
 - 结论：长历史搜索**未发现缺陷**，属验证性覆盖；与第 30 轮单元级加固互补（一个测 SQL 语义，一个测真实 UI 端到端）。
 - 证据：`tests/e2e/qa-history-search.spec.ts`。
 
+### 3.39 最终证据复核（第 35 轮，同一 HEAD 全量刷新）
+
+在最终 HEAD 上按交付文档命令重跑全部可复跑探测，结果与既有结论一致：
+
+| 探测 | 本轮实测 | 判定 |
+| --- | --- | --- |
+| soak（8s 预热 + 60s 压力 + 120s 空闲，127 采样） | 崩溃 0 / 未响应 0 / 非预期退出 0 / 控制台错误 0；主进程最大延迟 **10ms**；CPU 峰值 **4.6%**；空闲内存 1288.9→883.8MB（GC 回收，无单调增长） | OK |
+| adversarial | 损坏设置/数据库按设计弹中文错误框；未知形象、非法缩放/位置、第二实例、重启循环全部符合预期 | OK |
+| kill-restart | 早期强杀 → OK_RECOVERED（2 个备份 + 恢复标记，重启后 bootstrap/写入/导出/退出正常）；耐久化后强杀记忆保留；连续 3 轮强杀/重启均正常 | OK |
+| renderer-crash | 控制台崩溃 **525ms** 自动恢复；崩溃循环 10s 内 3 次后停止自动恢复（crashed=[false,false,true,true,true]），CPU 0% | OK_CAPPED |
+| main-thread | getBootstrap 60ms（max ping 50ms）；导出 98ms（88.4ms）；清空记忆 14ms（9.7ms）；记忆页 200 卡片帧间隔 max 22ms、longtask 0ms | OK |
+| ipc-payload | 8MB/4MB 大载荷结构化拒绝；200 万样本有界拒绝；循环引用不崩；200 条恢复 op 77ms（max ping 64.7ms） | OK |
+| ui-memory | 导航 240 次总增长 135.7MB、**尾部增长 7MB（有界）**；桌宠聊天 150 次尾部 1.4MB；隐藏/显示 150 次尾部 0.3MB；DOM 节点稳定 253 | OK_BOUNDED |
+| memory-perf | 500 记忆 + 300 会话：首屏/房间/搜索/bootstrap 与上轮同量级，渲染堆 8.7MB，计数全对 | OK |
+| ipc-shapes | 69 通道：业务通道全部结构化 Result、值通道中文 rejection、0 挂起/0 裸英文错误 | OK |
+
+- 结论：**无可复跑性回归**；safety/韧性与性能指标均维持在既有结论范围内。
+- 产物已刷新：`artifacts/qa-runtime-2026-11-13/{soak,adversarial,kill-restart,crash-recovery,main-thread,ipc-payload,ui-memory,ipc-shapes,memory-perf}`。
+
 ## 4. 复跑方式
 
 ```powershell

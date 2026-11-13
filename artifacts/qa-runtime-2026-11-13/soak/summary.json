@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T17:54:27.265Z",
+  "at": "2026-11-13T02:07:48.332Z",
   "quick": false,
   "durations": {
     "warmup": 8,
@@ -7,12 +7,12 @@
     "idle": 120
   },
   "samples": 127,
-  "idleMemoryStartMB": 1278.5,
-  "idleMemoryEndMB": 878.4,
-  "idleMemoryGrowthMB": -400.1,
-  "idleMemoryGrowthMBPerMinute": -200,
-  "maxMainLatencyMS": 9,
-  "maxTotalCpuPercent": 4.9,
+  "idleMemoryStartMB": 1288.9,
+  "idleMemoryEndMB": 883.8,
+  "idleMemoryGrowthMB": -405.1,
+  "idleMemoryGrowthMBPerMinute": -202.6,
+  "maxMainLatencyMS": 10,
+  "maxTotalCpuPercent": 4.6,
   "crashes": [],
   "unexpectedExit": false,
   "consoleErrorCount": 0,
@@ -20,15 +20,15 @@
   "findings": [],
   "ipcBefore": {
     "count": 40,
-    "median": 0.2,
-    "p95": 0.3,
-    "max": 0.4
+    "median": 0.4,
+    "p95": 0.8,
+    "max": 2.2
   },
   "ipcAfter": {
     "count": 40,
     "median": 0.2,
-    "p95": 0.6,
-    "max": 0.8
+    "p95": 0.3,
+    "max": 0.4
   },
   "fuzz": [
     {
@@ -102,5 +102,5 @@
     }
   ],
   "expectedRejections": 2,
-  "stressRounds": 60
+  "stressRounds": 70
 }

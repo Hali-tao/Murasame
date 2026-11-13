@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T19:38:01.642Z",
+  "at": "2026-11-13T02:02:33.222Z",
   "findings": [],
   "results": [
     {
@@ -9,13 +9,13 @@
         "resolved": true,
         "ok": false,
         "error": "请求参数无效：text",
-        "ms": 12
+        "ms": 15
       },
-      "memoryBefore": 539.1,
-      "memoryAfter": 621.4,
+      "memoryBefore": 547.2,
+      "memoryAfter": 630.4,
       "responsiveness": {
         "median": 0.5,
-        "max": 1.8
+        "max": 1.2
       }
     },
     {
@@ -27,11 +27,11 @@
         "error": "请求参数无效：text",
         "ms": 4
       },
-      "memoryBefore": 622.4,
-      "memoryAfter": 623.6,
+      "memoryBefore": 631.9,
+      "memoryAfter": 633.8,
       "responsiveness": {
-        "median": 0.5,
-        "max": 1.4
+        "median": 0.7,
+        "max": 2.7
       }
     },
     {
@@ -41,13 +41,13 @@
         "resolved": true,
         "ok": false,
         "error": "",
-        "ms": 241
+        "ms": 212
       },
-      "memoryBefore": 623.9,
-      "memoryAfter": 690.4,
+      "memoryBefore": 634.3,
+      "memoryAfter": 700.1,
       "responsiveness": {
-        "median": 0.5,
-        "max": 0.9
+        "median": 0.6,
+        "max": 1.3
       }
     },
     {
@@ -58,11 +58,11 @@
         "thrown": "Error: Error invoking remote method 'settings:update': Error: 请求参数无效：userName",
         "ms": 6
       },
-      "memoryBefore": 690.7,
-      "memoryAfter": 699,
+      "memoryBefore": 700.5,
+      "memoryAfter": 709.5,
       "responsiveness": {
         "median": 0.5,
-        "max": 0.7
+        "max": 1.2
       }
     },
     {
@@ -72,60 +72,60 @@
       },
       "responsiveness": {
         "median": 0.5,
-        "max": 2
+        "max": 0.7
       }
     },
     {
       "kind": "navigation-memory",
-      "startMemory": 699.6,
-      "endMemory": 894.2,
-      "growthMB": 194.6,
+      "startMemory": 709.2,
+      "endMemory": 884.4,
+      "growthMB": 175.2,
       "samples": [
         {
           "round": 1,
-          "at": 1794512265357,
-          "memoryMB": 730.8
+          "at": 1794535337418,
+          "memoryMB": 733.3
         },
         {
           "round": 5,
-          "at": 1794512266677,
-          "memoryMB": 781.2
+          "at": 1794535338722,
+          "memoryMB": 780.7
         },
         {
           "round": 9,
-          "at": 1794512267943,
-          "memoryMB": 826.9
+          "at": 1794535340055,
+          "memoryMB": 823.5
         },
         {
           "round": 13,
-          "at": 1794512269440,
-          "memoryMB": 868.2
+          "at": 1794535341417,
+          "memoryMB": 862.5
         },
         {
           "round": 17,
-          "at": 1794512271061,
-          "memoryMB": 906.5
+          "at": 1794535342774,
+          "memoryMB": 902
         },
         {
           "round": 20,
-          "at": 1794512272121,
-          "memoryMB": 894.2
+          "at": 1794535343748,
+          "memoryMB": 884.4
         }
       ]
     },
     {
       "kind": "restore-import",
-      "seedMs": 1592,
+      "seedMs": 1788,
       "exported": true,
       "opMs": 77,
       "pings": {
-        "median": 0.6,
-        "max": 56.2
+        "median": 0.5,
+        "max": 64.7
       },
       "importedOk": true,
       "memoriesAfter": 200,
-      "memoryBefore": 538.7,
-      "memoryAfter": 617.4
+      "memoryBefore": 539.9,
+      "memoryAfter": 621.7
     }
   ]
 }
