@@ -18,7 +18,7 @@
 
 - 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**默认套件 107 passed / 5 skipped / 0 failed**；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**112 passed / 0 skipped / 0 failed（14.5 分钟，测试机同时运行较多后台程序）**。
+- 全量 E2E：**默认套件 107 passed / 7 skipped / 0 failed**（新增 2 个打包态用例在未指定安装包时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**112 passed / 2 skipped / 0 failed（15.0 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
   覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
@@ -641,3 +641,32 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 - 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
 - 默认 E2E：**107 passed / 5 skipped / 0 failed**
 - 全量 `npm run test:e2e:all`：**112 passed / 0 skipped / 0 failed**
+
+### 3.46 全量测试第 6 轮：安装包形态验收
+
+**构建**：`npm run package:win` 成功（electron-builder + NSIS，本地 Electron 发行版，无代码签名）。
+- `Murasame-Setup-0.9.0.exe` **293,004,350 bytes**；`win-unpacked/Murasame.exe` 可用。
+- `resources/app.asar` 179,522,140 bytes；asar 清单确认包含 `out/main/speech-worker.js`。
+- `resources/models` 含真实 whisper / kokoro / bge-small-zh-v1.5；`plugins`、`isolation` 均打入。
+
+**打包态 E2E（新增 `npm run test:e2e:packaged`，9/9 通过，约 2 分钟）**
+
+| 用例 | 验证 |
+| --- | --- |
+| [PACKAGED-01] | 打包应用可启动、`app.isPackaged=true`、版本 0.9.0、11 个页面可导航、真实模型服务对话、记忆可写入 |
+| [PACKAGED-02] | 打包资源含真实模型与 speech-worker（asar 清单检查）、设置跨重启持久化 |
+| app.spec（4） | 打包形态下首启引导、页面可达、桌宠窗口、角色预设仍通过 |
+| speech-responsive（2） | **打包形态真实语音**：utilityProcess 专用进程 + 内置真实模型，冷/热朗读与进程崩溃恢复 |
+| local-memory（1） | **打包形态真实 BGE**：资源内置向量模型召回偏好并进入对话请求 |
+
+**测试基建修复（非产品缺陷）**
+- 打包进程退出清理是异步的：重启前等待旧进程真正退出（单实例锁释放），超时才 taskkill。
+- 手动 relaunch 需删除宿主 `ELECTRON_RUN_AS_NODE`，否则安装包以 Node 模式启动即退出（表现为 Process failed to launch）。
+
+**已知限制**：本轮未在干净机器执行真实安装器安装/升级/卸载；NSIS 钩子行为由 native uninstall 单测与 verify-uninstall-hook 覆盖，系统级安装/卸载需人工验收（见 §5）。
+
+**累计计数（本机真实依赖）**
+- 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
+- 默认 E2E：107 passed / 7 skipped / 0 failed
+- `test:e2e:all`：112 passed / 2 skipped / 0 failed（15.0 分钟；2 个 skip 为打包态用例）
+- `test:e2e:packaged`：9 passed / 0 failed（安装包形态）

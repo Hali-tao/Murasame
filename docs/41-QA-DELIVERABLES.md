@@ -12,7 +12,7 @@
 | 全量覆盖矩阵 | [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md) | 页面/IPC/服务/安全/打包 × 现有覆盖 × 缺口 × 状态 |
 | 可重复运行的 QA 报告 | [docs/40-QA-RUNTIME-REPORT.md](40-QA-RUNTIME-REPORT.md) | 范围/方法、已修复缺陷（含验证）、性能测量、已知限制、复跑方式 |
 | 缺陷清单（含严重度/复现/修复状态） | 本文 §2 + docs/40 §3 各表 | 每条含严重度、问题、修复/状态；复现步骤见对应测试与 §3 证据 |
-| 新增自动化测试 | `tests/unit/**`、`tests/e2e/qa-*.spec.ts` | 单元 89 文件 / 1025 用例；默认 E2E 107 passed / 5 skipped；`test:e2e:all` 112 passed / 0 skipped |
+| 新增自动化测试 | `tests/unit/**`、`tests/e2e/qa-*.spec.ts` | 单元 89 文件 / 1025 用例；默认 E2E 107 passed / 7 skipped；`test:e2e:all` 112 passed / 2 skipped；`test:e2e:packaged` 9 passed |
 | 可复跑 QA 探测脚本 | `scripts/qa-*.mjs` | soak / adversarial / kill-restart / renderer-crash / main-thread / ipc-payload / ui-memory / ipc-shapes / memory-perf |
 | 功能提案文档 | [docs/38-PRODUCT-VISION.md](38-PRODUCT-VISION.md)、[docs/39-FEATURE-SPECS.md](39-FEATURE-SPECS.md) | 完整叙事 + F-01..F-04 规格、验收标准、风险与降级 |
 | 功能落地切片 | 见 §4 | F-01/F-02/F-03/F-04 均有可验证增量 |
@@ -67,6 +67,7 @@
 | QA-SCREEN-TOOLS-01 | 屏幕页门禁/隐私文案/持续观察/外发文案；工具页开关持久化、禁用工具拒绝任务、不可用工具不可操作、详情弹窗（8 用例） | PASS（e2e） |
 | QA-SETTINGS-CHAR-01 | 设置页 10 用例（开关/权限/热键/更新检查/帮助/退出/清除/导出/加密）+ 角色页 6 用例（保存/校验/非法导入/重置/形象/开关） | PASS（e2e） |
 | QA-MODEL-DATA-SEC-01 | 模型页边界 4 用例（密钥不暴露/不回填/删除默认/预设自动填充）+ 数据包与密钥安全 3 用例（加密包无明文、错误口令中文拒绝、损坏包拒绝、API Key 不落明文） | PASS（e2e） |
+| QA-PACKAGED-01 | 安装包形态：构建成功、11 页面/真实模型对话/记忆、资源含真实模型与 speech-worker、设置跨重启持久化、打包态真实语音与真实 BGE | PASS（`npm run test:e2e:packaged`，9 用例） |
 | QA-WINLIFE-01..06 | 托盘显隐、最小化到托盘、最小尺寸、非法快捷键、桌宠显隐、模型不可达 | PASS（e2e，未发现缺陷） |
 | QA-SEARCH-10 | 60 会话长历史搜索、通配符回归、清空恢复 | PASS（e2e） |
 | QA-STREAMKILL-01 | 流式中途强杀后数据库可读、无半截/重复消息 | PASS（e2e；整轮原子提交的丢失语义见 §3） |
@@ -86,6 +87,7 @@
 8. **F-02 daily_reviews 多版本表**：未实现；「留给明天」存于本地设置（electron-store），不是数据库多版本日签。
 9. **7 天冷却**：设计取舍为「显式开关 + 角色页恢复」替代自动 7 天冷却（见 docs/39 §12），不作为待实现项。
 10. **重负载下的测试时序抖动**：全量套件在测试机高负载时曾出现 1 次 notifications.spec 超时（单独与后续全量通过），属测试环境抖动，持续观察；不视为产品缺陷。
+11. **安装器系统级行为**：本轮完成 NSIS 构建与打包态运行验收，但未在干净机器执行真实安装/升级/卸载；NSIS 钩子由 native uninstall 单测覆盖，系统级行为需人工验收。
 
 ## 4. 功能提案与落地状态
 
@@ -100,8 +102,9 @@
 
 ```bash
 npm run typecheck && npm run lint && npm test     # 单元：89 文件 / 1025 用例
-npx playwright test --reporter=line               # 默认 E2E：107 passed / 5 skipped / 0 failed
-npm run test:e2e:all                              # 依赖齐全时全量：112 passed / 0 skipped / 0 failed
+npx playwright test --reporter=line               # 默认 E2E：107 passed / 7 skipped / 0 failed
+npm run test:e2e:all                              # 依赖齐全时全量：112 passed / 2 skipped / 0 failed（2 个为打包态用例）
+npm run test:e2e:packaged                         # 安装包形态：9 passed（含打包态真实语音/BGE）
 npm run qa:ipc-shapes                             # IPC 错误形态审计（69 通道，0 挂起/0 裸英文）
 node scripts/qa-adversarial.mjs                   # 启动/退出对抗场景
 node scripts/qa-soak.mjs                          # 运行时 soak（CPU/内存/IPC 延迟）
@@ -121,7 +124,7 @@ npm run trace                                     # 需求可追溯性（74/74 c
 | 目标要求 | 交付情况 |
 | --- | --- |
 | 系统性挖掘并复现漏洞（崩溃/卡死/内存/CPU/IPC/数据/交互） | 覆盖崩溃恢复、主线程阻塞、soak、IPC 大载荷、数据密钥恢复、导入一致性、交互死角；关键缺陷均有复现证据 |
-| 构造测试用例并留下可复现证据 | 单元 1025 用例 + 默认 E2E 107 passed、依赖齐全全量 E2E 112 passed/0 skip + 9 个可复跑探测脚本 + artifacts |
+| 构造测试用例并留下可复现证据 | 单元 1025 用例 + 默认 E2E 107 passed、依赖齐全全量 E2E 112 passed/2 skip + 安装包形态 9 passed + 9 个可复跑探测脚本 + artifacts |
 | 能修的修掉并补测试 | 见 §2.1（含 P0×2、P1×3、P2 多条）；每条有回归测试 |
 | 修不掉的明确记录、不算交付 | 见 §3 与 docs/40 §5；未包装为已完成 |
 | 结构完整、有创意的功能扩展方案 | docs/38 视觉叙事 + docs/39 F-01..F-04 规格（验收标准/风险/降级） |
@@ -131,4 +134,4 @@ npm run trace                                     # 需求可追溯性（74/74 c
 
 ---
 
-*最后更新：2026-11-15（全量测试第 5 轮）：新增模型页边界 4 用例 + 数据包/密钥安全 3 用例；`npm run test:e2e:all` **112 passed / 0 skipped / 0 failed**；单元 89 文件/1025 用例，trace 74/74。覆盖矩阵见 [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md)。*
+*最后更新：2026-11-15（全量测试第 6 轮）：安装包构建 + 打包态 E2E 9 passed；`test:e2e:all` 112 passed / 2 skipped（打包态用例单列）；单元 89 文件/1025 用例，trace 74/74。覆盖矩阵见 [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md)。*

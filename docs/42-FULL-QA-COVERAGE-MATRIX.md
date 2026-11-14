@@ -27,7 +27,7 @@
 | 数据导入导出 / 加密 | merge/portability/migrate/key 单测、qa-import-refresh、qa-ipc-payload、adversarial、kill-restart、**qa-data-security（加密包无明文/错误口令/损坏包）** | 超大数据包/极慢磁盘、跨版本包 | 🟡（核心已覆盖） |
 | 安全 / 隐私 | IPC 大载荷、qa-ipc-shapes、模型 scheme、日志脱敏单测、**qa-data-security（API Key 不落明文、加密包边界）** | 出站图片同意的实际发送路径、敏感窗口截图排除（需真实桌面） | 🟡（核心已覆盖） |
 | 性能 / 稳定性 | 9 个探测脚本（soak/adversarial/kill-restart/renderer-crash/main-thread/ipc-payload/ui-memory/ipc-shapes/memory-perf） | 无（持续复核） | ✅ |
-| 打包 / 安装 | npm run package:win（待执行），打包形态 E2E 用 MURASAME_E2E_EXECUTABLE | 安装器流程、升级保留数据、签名/卸载 | ⬜ |
+| 打包 / 安装 | **npm run package:win 构建成功**（Setup 293MB + win-unpacked；asar 含 speech-worker、resources/models 含真实模型）；**npm run test:e2e:packaged 9 用例通过**（打包态启动/页面/模型对话/记忆/真实语音/BGE/设置跨重启） | 真实安装/升级/卸载系统级行为需人工验收 | ✅（构建+运行）/🟡（安装器流程） |
 
 ## 2. IPC 通道（按域）
 
@@ -57,8 +57,9 @@
 
 ## 4.1 当前总状态（全量测试第 1 轮）
 
-- 默认套件：单元 89 文件 / 1025 用例；E2E **107 passed / 5 skipped**（无 Docker/无语音模型的机器）。
-- 依赖齐全（真实 Docker 镜像 + 真实 whisper/kokoro + python misaki）：`npm run test:e2e:all` → **112 passed / 0 skipped / 0 failed**。
+- 默认套件：单元 89 文件 / 1025 用例；E2E **107 passed / 7 skipped**（无 Docker/无语音模型/未打包的机器）。
+- 依赖齐全：`npm run test:e2e:all` → **112 passed / 2 skipped / 0 failed**（2 个 skip 为打包态用例）。
+- 安装包形态：`npm run package:win` + `npm run test:e2e:packaged` → **9 passed**（含打包态真实语音与真实 BGE）。
 - 已修复：QA-VOICE-01（语音专用进程缺失，P1）、QA-TOOLS-01（不可用工具开关，P3）、QA-WINLIFE-05（桌宠快速切换状态分叉，P3）。
 - 测试稳定性加固：stream-kill 合法完成态契约、mesh-pet 眨眼 MutationObserver、重负载原生单测超时。
 - 剩余 ⬜/🟡 项见上表（安装包/升级、更新器深度、真实屏幕感知、出站图片实际发送、多 DPI、托盘原生菜单等）；按轮推进。
@@ -67,7 +68,9 @@
 
 ```bash
 npm run verify             # typecheck + lint + 单元 + 追溯
-npm run test:e2e:all       # 自动检测 Docker/真实语音模型后跑全量 E2E（本机实测 89 passed / 0 skipped）
+npm run test:e2e:all       # 自动检测 Docker/真实语音模型后跑全量 E2E（本机实测 112 passed / 2 skipped：2 个为打包态用例）
+npm run package:win        # 构建安装包（NSIS）
+npm run test:e2e:packaged  # 安装包形态验收（本机实测 9 passed）
 node scripts/qa-*.mjs      # 9 个运行时探测
 npm run qa:memory-perf     # 500 记忆 / 300 会话性能基准
 ```

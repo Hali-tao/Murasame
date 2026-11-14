@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:all": "node scripts/run-full-e2e.mjs",
+    "test:e2e:packaged": "node scripts/run-packaged-e2e.mjs",
     "inspect:pet": "npm run build && node scripts/inspect-pet.mjs",
     "package:win": "npm run build && node scripts/package-win.mjs",
     "rebuild:native": "electron-rebuild -f -w better-sqlite3-multiple-ciphers",
