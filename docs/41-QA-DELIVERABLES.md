@@ -125,6 +125,13 @@ npm run trace                                     # 需求可追溯性（74/74 c
 
 产物在 `artifacts/qa-runtime-2026-11-13/{soak,adversarial,kill-restart,crash-recovery,main-thread,ipc-payload,ui-memory,ipc-shapes,memory-perf,e2e,reviews}`。
 
+## 5.1 全量测试收尾声明（2026-11-15）
+
+- 覆盖矩阵 [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md) 已审计：所有页面/功能行均有自动化证据，或明确归入 §3 已知限制；无 ⬜ 功能面缺口。
+- 最终复核：单元 89 文件/1025 用例；trace 74/74；默认 E2E **113 passed / 7 skipped / 0 failed**；依赖齐全 `test:e2e:all` **118 passed / 2 skipped / 0 failed**；安装包形态 `test:e2e:packaged` **9 passed**。
+- 最终 HEAD 运行时探测：9 项全绿（0 崩溃/0 未响应/0 异常退出；soak CPU 峰值 5.2%、主进程延迟 max 10ms）。
+- 证据：docs/40 §3.42–§3.49、artifacts/qa-runtime-2026-11-13/、tests/unit 与 tests/e2e。
+
 ## 6. 目标达成核对
 
 | 目标要求 | 交付情况 |
@@ -140,4 +147,4 @@ npm run trace                                     # 需求可追溯性（74/74 c
 
 ---
 
-*最后更新：2026-11-15（全量测试第 9 轮 · 收尾）：9 项运行时探测最终 HEAD 复核 + 仪表盘 2 个 e2e；`test:e2e:all` 118 passed / 2 skipped；打包态 9 passed；单元 89 文件/1025 用例，trace 74/74。覆盖矩阵见 [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md)。*
+*最后更新：2026-11-15（全量测试收尾）：9 项运行时探测最终 HEAD 复核全绿 + 仪表盘 2 个 e2e；`test:e2e:all` 118 passed / 2 skipped；打包态 9 passed；单元 89 文件/1025 用例，trace 74/74。覆盖矩阵见 [docs/42-FULL-QA-COVERAGE-MATRIX.md](42-FULL-QA-COVERAGE-MATRIX.md)。*
