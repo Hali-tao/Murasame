@@ -18,7 +18,7 @@
 
 - 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**默认套件 107 passed / 7 skipped / 0 failed**（新增 2 个打包态用例在未指定安装包时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**112 passed / 2 skipped / 0 failed（15.0 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
+- 全量 E2E：**默认套件 108 passed / 7 skipped / 0 failed**（2 个打包态 + 5 个真实依赖用例在缺依赖时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**113 passed / 2 skipped / 0 failed（14.7 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
   覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
@@ -670,3 +670,27 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 - 默认 E2E：107 passed / 7 skipped / 0 failed
 - `test:e2e:all`：112 passed / 2 skipped / 0 failed（15.0 分钟；2 个 skip 为打包态用例）
 - `test:e2e:packaged`：9 passed / 0 failed（安装包形态）
+
+### 3.47 全量测试第 7 轮：原生加密/感知验收与屏幕外发边界
+
+**项目自带原生验收脚本（本轮实跑）**
+
+| 脚本 | 结果 |
+| --- | --- |
+| `npm run verify:native` | **PASS**：SQLCipher legacy=4；错误口令无法读取（file is not a database）；文件中无明文；正确口令可回读。清理临时目录时遇到一次 EPERM（退出码仍 0），记录为环境清理噪声。 |
+| `npm run verify:perception` | **PASS**：真实前台窗口标题/控件树可读；Windows OCR 识别到屏幕文字。说明 UIA/OCR 感知栈在本机可用。 |
+
+**新增 e2e [SCREEN-05] 屏幕外发同意边界**
+
+在 Playwright Electron 隐藏窗口的测试环境中，产品按设计拒绝「整屏采集」并返回中文错误「未找到可采集的目标窗口，没有改为整屏采集」。
+该用例因此验证**降级路径**：不崩溃、返回中文错误、**未向模型发送任何图像**（服务端图像请求计数不变）、页面继续可用；若真实桌面环境下采集可用，则继续断言：
+- `outboundImages=false`：真实采集成功但图像不发给模型（服务端无图像请求），分析如实显示「未授权将截图发给模型」；
+- `outboundImages=true`：图像请求 +1，视觉模型摘要进入分析结果。
+
+**已知限制（新增）**：真实窗口截图路径无法在 Playwright 隐藏窗口测试环境稳定复现（UIA/OCR 已由 verify:perception 覆盖；截图采集与去隐私窗口排除仍需真实桌面人工验收）。SCREEN-05 用注释记录了 capture-unavailable 环境事实，不以通过冒充「真实采集已验证」。
+
+**累计计数（本轮全量复核）**
+- 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
+- 默认 E2E：**108 passed / 7 skipped / 0 failed**
+- `test:e2e:all`：**113 passed / 2 skipped / 0 failed（14.7 分钟）**（2 个 skip 为打包态用例）
+- `test:e2e:packaged`：9 passed（上一轮构建产物）
