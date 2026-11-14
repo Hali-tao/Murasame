@@ -1,21 +1,21 @@
 # 大量记忆 / 长历史本地性能基准
 
-- 时间：2026-11-13T02:02:33.583Z
+- 时间：2026-11-14T20:17:20.397Z
 - 记忆数：500；会话数：300
 
 ## 测量
 
-- seedMemoriesTotalMs: 4790
-- memoryFirstCardMs: 8
-- memoryAllCardsMs: 122
-- memorySearchFirstResultMs: 64
-- roomFirstCardMs: 2
-- roomAllCardsMs: 83
-- createConversationsTotalMs: 24409
-- bootstrapMs: {"elapsed":138.7,"ok":true,"sizes":{"conversations":300,"memories":500}}
-- historyFirstItemMs: 273
-- rendererHeapMB: 8.7
-- mainHeapMB: 270.2
+- seedMemoriesTotalMs: 16097
+- memoryFirstCardMs: 12
+- memoryAllCardsMs: 218
+- memorySearchFirstResultMs: 141
+- roomFirstCardMs: 7
+- roomAllCardsMs: 157
+- createConversationsTotalMs: 58412
+- bootstrapMs: {"elapsed":280.1,"ok":true,"sizes":{"conversations":300,"memories":500}}
+- historyFirstItemMs: 552
+- rendererHeapMB: 8.6
+- mainHeapMB: 265.5
 
 ## 计数
 

@@ -1,11 +1,11 @@
 # 渲染进程崩溃恢复探测
 
-- 时间：2026-11-13T02:01:37.720Z
+- 时间：2026-11-14T20:16:09.235Z
 
 | 崩溃目标 | 是否恢复 | 恢复耗时(ms) | 最终 crashed | 窗口数 |
 | --- | --- | --- | --- | --- |
-| pet | 是 | 533 | false | 2 |
-| main | 是 | 525 | false | 2 |
+| pet | 是 | 572 | false | 2 |
+| main | 是 | 559 | false | 2 |
 | undefined | 否 | - | - | undefined |
 
 ## 发现
@@ -21,7 +21,7 @@
     "target": "pet",
     "frames": [
       {
-        "at": 264,
+        "at": 272,
         "windows": 2,
         "exists": true,
         "crashed": true,
@@ -29,7 +29,7 @@
         "visible": true
       },
       {
-        "at": 533,
+        "at": 572,
         "windows": 2,
         "exists": true,
         "crashed": false,
@@ -37,8 +37,8 @@
         "visible": true,
         "ready": "complete",
         "hasApi": true,
-        "bodyLength": 12,
-        "petOpaque": 51820
+        "bodyLength": 28,
+        "petOpaque": 0
       }
     ]
   },
@@ -46,7 +46,7 @@
     "target": "main",
     "frames": [
       {
-        "at": 257,
+        "at": 269,
         "windows": 2,
         "exists": true,
         "crashed": true,
@@ -54,7 +54,7 @@
         "visible": false
       },
       {
-        "at": 525,
+        "at": 559,
         "windows": 2,
         "exists": true,
         "crashed": false,

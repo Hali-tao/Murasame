@@ -1,88 +1,88 @@
 {
-  "at": "2026-11-13T02:02:33.583Z",
+  "at": "2026-11-14T20:17:20.397Z",
   "memCount": 500,
   "convCount": 300,
   "measurements": {
-    "seedMemoriesTotalMs": 4790,
+    "seedMemoriesTotalMs": 16097,
     "seedBatches": [
       {
         "size": 50,
-        "ms": 367,
+        "ms": 752,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 406,
+        "ms": 989,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 375,
+        "ms": 1068,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 401,
+        "ms": 865,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 443,
+        "ms": 966,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 505,
+        "ms": 1868,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 540,
+        "ms": 1838,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 584,
+        "ms": 2215,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 571,
+        "ms": 2625,
         "failed": 0,
         "firstError": ""
       },
       {
         "size": 50,
-        "ms": 598,
+        "ms": 2911,
         "failed": 0,
         "firstError": ""
       }
     ],
-    "memoryFirstCardMs": 8,
-    "memoryAllCardsMs": 122,
-    "memorySearchFirstResultMs": 64,
-    "roomFirstCardMs": 2,
-    "roomAllCardsMs": 83,
-    "createConversationsTotalMs": 24409,
+    "memoryFirstCardMs": 12,
+    "memoryAllCardsMs": 218,
+    "memorySearchFirstResultMs": 141,
+    "roomFirstCardMs": 7,
+    "roomAllCardsMs": 157,
+    "createConversationsTotalMs": 58412,
     "bootstrapMs": {
-      "elapsed": 138.7,
+      "elapsed": 280.1,
       "ok": true,
       "sizes": {
         "conversations": 300,
         "memories": 500
       }
     },
-    "historyFirstItemMs": 273,
-    "rendererHeapMB": 8.7,
-    "mainHeapMB": 270.2
+    "historyFirstItemMs": 552,
+    "rendererHeapMB": 8.6,
+    "mainHeapMB": 265.5
   },
   "counts": {
     "seedFailures": 0,

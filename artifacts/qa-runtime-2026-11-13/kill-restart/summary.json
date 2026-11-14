@@ -1,13 +1,13 @@
 {
-  "at": "2026-11-13T02:01:25.313Z",
+  "at": "2026-11-14T20:15:55.929Z",
   "results": [
     {
       "name": "early-kill-first-run",
-      "startedAt": "2026-11-13T02:00:55.119Z",
+      "startedAt": "2026-11-14T20:15:13.728Z",
       "memoryAdded": true,
       "killed": {
         "killed": true,
-        "killedMs": 849
+        "killedMs": 1708
       },
       "localStateAfterKill": false,
       "databaseBeforeRestart": true,
@@ -18,7 +18,7 @@
         "writeAfterRestart": true,
         "exportOk": true,
         "quit": {
-          "quitMs": 227,
+          "quitMs": 761,
           "hung": false
         }
       },
@@ -28,12 +28,12 @@
     },
     {
       "name": "durable-kill-after-local-state",
-      "startedAt": "2026-11-13T02:00:59.725Z",
+      "startedAt": "2026-11-14T20:15:22.091Z",
       "memoryAdded": true,
       "localState": true,
       "killed": {
         "killed": true,
-        "killedMs": 987
+        "killedMs": 1840
       },
       "restart": {
         "bootstrapOk": true,
@@ -42,7 +42,7 @@
         "writeAfterRestart": true,
         "exportOk": true,
         "quit": {
-          "quitMs": 219,
+          "quitMs": 554,
           "hung": false
         }
       },
@@ -53,19 +53,19 @@
       "runs": [
         {
           "run": 1,
-          "launchMs": 2242,
+          "launchMs": 3751,
           "alive": true,
           "killed": true
         },
         {
           "run": 2,
-          "launchMs": 2116,
+          "launchMs": 3771,
           "alive": true,
           "killed": true
         },
         {
           "run": 3,
-          "launchMs": 2238,
+          "launchMs": 3694,
           "alive": true,
           "killed": true
         }

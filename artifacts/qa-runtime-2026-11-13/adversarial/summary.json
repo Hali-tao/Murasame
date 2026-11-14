@@ -1,9 +1,9 @@
 {
-  "at": "2026-11-13T02:00:49.629Z",
+  "at": "2026-11-14T20:15:08.230Z",
   "results": [
     {
       "name": "corrupt-settings-json",
-      "startedAt": "2026-11-13T02:00:14.492Z",
+      "startedAt": "2026-11-14T20:14:25.532Z",
       "exit": null,
       "verdict": "EXPECTED_MODAL_BLOCK",
       "aliveAfter10s": true,
@@ -11,9 +11,9 @@
       "exitAfterKill": {
         "code": 1,
         "signal": null,
-        "at": 11230
+        "at": 12194
       },
-      "durationMs": 11438
+      "durationMs": 12361
     },
     {
       "name": "unknown-preset",
@@ -22,8 +22,8 @@
         "petPreset": "not-a-real-preset"
       },
       "extraFiles": [],
-      "startedAt": "2026-11-13T02:00:26.012Z",
-      "launchMs": 790,
+      "startedAt": "2026-11-14T20:14:37.913Z",
+      "launchMs": 1042,
       "windows": [
         "murasame://app/index.html",
         "murasame://app/pet.html"
@@ -35,10 +35,10 @@
         "hasApi": true,
         "bodyChars": 28
       },
-      "quitMs": 329,
+      "quitMs": 626,
       "quitHung": false,
       "verdict": "OK",
-      "durationMs": 2143
+      "durationMs": 3137
     },
     {
       "name": "invalid-scale-and-position",
@@ -48,8 +48,8 @@
         "petHotkey": "Definitely-Not-A-Key"
       },
       "extraFiles": [],
-      "startedAt": "2026-11-13T02:00:28.158Z",
-      "launchMs": 730,
+      "startedAt": "2026-11-14T20:14:41.051Z",
+      "launchMs": 1009,
       "windows": [
         "murasame://app/index.html",
         "murasame://app/pet.html"
@@ -61,14 +61,14 @@
         "hasApi": true,
         "bodyChars": 28
       },
-      "quitMs": 316,
+      "quitMs": 635,
       "quitHung": false,
       "verdict": "OK",
-      "durationMs": 1738
+      "durationMs": 2606
     },
     {
       "name": "corrupt-database",
-      "startedAt": "2026-11-13T02:00:29.900Z",
+      "startedAt": "2026-11-14T20:14:43.659Z",
       "exit": null,
       "verdict": "EXPECTED_MODAL_BLOCK",
       "aliveAfter10s": true,
@@ -76,18 +76,18 @@
       "exitAfterKill": {
         "code": 1,
         "signal": null,
-        "at": 11303
+        "at": 11872
       },
-      "durationMs": 11527
+      "durationMs": 12164
     },
     {
       "name": "second-instance",
-      "startedAt": "2026-11-13T02:00:41.506Z",
+      "startedAt": "2026-11-14T20:14:55.867Z",
       "secondExitCode": 0,
-      "secondInstanceMs": 2901,
+      "secondInstanceMs": 3630,
       "verdict": "OK",
       "firstStillResponsive": true,
-      "quitMs": 630,
+      "quitMs": 628,
       "quitHung": false
     },
     {
@@ -95,14 +95,14 @@
       "runs": [
         {
           "run": 1,
-          "totalMs": 1589,
-          "quitMs": 319,
+          "totalMs": 2903,
+          "quitMs": 637,
           "quitHung": false
         },
         {
           "run": 2,
-          "totalMs": 1408,
-          "quitMs": 168,
+          "totalMs": 3046,
+          "quitMs": 625,
           "quitHung": false
         }
       ],

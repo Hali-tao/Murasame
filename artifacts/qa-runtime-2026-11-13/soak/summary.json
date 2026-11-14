@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-13T02:07:48.332Z",
+  "at": "2026-11-14T20:23:37.372Z",
   "quick": false,
   "durations": {
     "warmup": 8,
@@ -7,12 +7,12 @@
     "idle": 120
   },
   "samples": 127,
-  "idleMemoryStartMB": 1288.9,
-  "idleMemoryEndMB": 883.8,
-  "idleMemoryGrowthMB": -405.1,
-  "idleMemoryGrowthMBPerMinute": -202.6,
+  "idleMemoryStartMB": 1073.1,
+  "idleMemoryEndMB": 841.1,
+  "idleMemoryGrowthMB": -232,
+  "idleMemoryGrowthMBPerMinute": -116,
   "maxMainLatencyMS": 10,
-  "maxTotalCpuPercent": 4.6,
+  "maxTotalCpuPercent": 5.2,
   "crashes": [],
   "unexpectedExit": false,
   "consoleErrorCount": 0,
@@ -20,15 +20,15 @@
   "findings": [],
   "ipcBefore": {
     "count": 40,
-    "median": 0.4,
-    "p95": 0.8,
-    "max": 2.2
+    "median": 0.3,
+    "p95": 1.9,
+    "max": 3.3
   },
   "ipcAfter": {
     "count": 40,
-    "median": 0.2,
-    "p95": 0.3,
-    "max": 0.4
+    "median": 1,
+    "p95": 4.2,
+    "max": 4.4
   },
   "fuzz": [
     {
@@ -59,8 +59,8 @@
       "result": {
         "visible": true,
         "scale": 1.2000000000000002,
-        "x": 1110,
-        "y": -864,
+        "x": 1281,
+        "y": 0,
         "preset": "tororo",
         "importedModelUrl": ""
       }
@@ -102,5 +102,5 @@
     }
   ],
   "expectedRejections": 2,
-  "stressRounds": 70
+  "stressRounds": 34
 }

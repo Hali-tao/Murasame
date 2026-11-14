@@ -18,7 +18,7 @@
 
 - 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**默认套件 111 passed / 7 skipped / 0 failed**（2 个打包态 + 5 个真实依赖用例在缺依赖时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**116 passed / 2 skipped / 0 failed（15.0 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
+- 全量 E2E：**默认套件 113 passed / 7 skipped / 0 failed**（2 个打包态 + 5 个真实依赖用例在缺依赖时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**118 passed / 2 skipped / 0 failed（约 15 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
   覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
@@ -711,4 +711,34 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 - 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
 - 默认 E2E：**111 passed / 7 skipped / 0 failed**
 - `test:e2e:all`：**116 passed / 2 skipped / 0 failed（15.0 分钟）**（2 个 skip 为打包态用例）
+- `test:e2e:packaged`：9 passed（安装包形态）
+
+### 3.49 全量测试收尾（第 9 轮）：最终 HEAD 探测复核 + 仪表盘覆盖 + 矩阵审计
+
+**9 项运行时探测在最终 HEAD 全量刷新（与既有结论一致）**
+
+| 探测 | 本轮实测 | 判定 |
+| --- | --- | --- |
+| soak（8s 预热 + 60s 压力 + 120s 空闲，127 采样） | 崩溃 0 / 未响应 0 / 非预期退出 0 / 控制台错误 0；主进程最大延迟 **10ms**；CPU 峰值 **5.2%**；空闲内存 1073.1→841.1MB（GC 回收，无单调增长） | OK |
+| adversarial | 第二实例、重启循环（2 轮 quit 均未挂起）符合预期 | OK |
+| kill-restart | 耐久化后强杀记忆保留；3 轮强杀/重启均正常 | OK |
+| renderer-crash | 控制台崩溃 **559ms** 自动恢复；崩溃循环 3/10s 后停止自动恢复（CPU 0%） | OK_CAPPED |
+| main-thread | getBootstrap 193ms（max ping 180.9ms）；导出 229ms（214.9ms）；清空记忆 23ms（16.3ms）；记忆页 200 卡片帧间隔 max 49.4ms、longtask 0ms | OK（负载机器略高，仍在可接受范围） |
+| ipc-payload | 120 次导航+开关 706.4→853.8MB（有界预热）；200 条恢复 op 117ms（max ping 94.6ms） | OK |
+| ui-memory | 桌宠聊天 150 次尾部增长 1.6MB；隐藏/显示 150 次尾部 0MB；DOM 稳定 253 | OK |
+| memory-perf | 500 记忆 + 300 会话：记忆首卡 12ms / 全卡 218ms、搜索首结果 141ms、房间 7/157ms、bootstrap 280.1ms、历史首条 552ms、渲染堆 8.6MB、主进程堆 265.5MB | OK |
+| ipc-shapes | 69 invoke 通道：业务通道全部结构化 Result、值通道中文 rejection、0 挂起/0 裸英文错误 | OK |
+
+**新增仪表盘覆盖（qa-dashboard.spec.ts，2 用例，通过）**
+- [DASH-10] 「继续交流」→ /chat、「查看今日任务」→ /tasks 真实跳转；
+- [DASH-11] 统计卡展示真实计数：长期记忆条数、可用能力 N / M 与 bootstrap 一致。
+
+**矩阵审计结论（docs/42）**
+- 所有页面/功能行均已有自动化证据，或已明确归入已知限制（原生托盘菜单、真实窗口截图、真实更新服务器、混合 DPI/多显示器、安装器系统级流程）。
+- 主进程服务：proactive 有单测（ProactiveLoop / proactiveDecision），真实空闲触发时长依赖使用节奏，记录为 🟡；screen 真实截图 📌；其余 ✅。
+
+**累计计数（最终复核）**
+- 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
+- 默认 E2E：**113 passed / 7 skipped / 0 failed**
+- `test:e2e:all`：**118 passed / 2 skipped / 0 failed**（2 个 skip 为打包态用例）
 - `test:e2e:packaged`：9 passed（安装包形态）
