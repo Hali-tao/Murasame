@@ -18,7 +18,7 @@
 
 - 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**默认套件 108 passed / 7 skipped / 0 failed**（2 个打包态 + 5 个真实依赖用例在缺依赖时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**113 passed / 2 skipped / 0 failed（14.7 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
+- 全量 E2E：**默认套件 111 passed / 7 skipped / 0 failed**（2 个打包态 + 5 个真实依赖用例在缺依赖时跳过）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**116 passed / 2 skipped / 0 failed（15.0 分钟）**；安装包形态另由 `npm run test:e2e:packaged` 单独验证 **9 passed**。
   覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
@@ -694,3 +694,21 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 - 默认 E2E：**108 passed / 7 skipped / 0 failed**
 - `test:e2e:all`：**113 passed / 2 skipped / 0 failed（14.7 分钟）**（2 个 skip 为打包态用例）
 - `test:e2e:packaged`：9 passed（上一轮构建产物）
+
+### 3.48 全量测试第 8 轮：自主活动页 / 聊天操作 / 任务取消
+
+**新增 `tests/e2e/qa-autonomy-chat-task.spec.ts`（3 用例，全部通过）**
+
+| 用例 | 验证 |
+| --- | --- |
+| [AUTONOMY-10] | 未勾选确认时「开始活动」禁用；勾选后点击 → 真实 Docker 下活动进入 running → 「停止活动」→ 回到非运行态；运行前后 `docker ps` 无残留容器 |
+| [CHAT-10] | 无语音模型时点「朗读」→ 中文 amber 提示且保留文字；上下文按钮 `aria-expanded` 两态切换；快捷「总结这段对话」真实发送一轮并落库（消息数 +2） |
+| [TASK-10] | 以绝对目录创建任务 → UI「取消任务」确认对话框 → bootstrap 状态「已取消」→ 筛选「已取消」可见该任务 |
+
+**测试基建注意**：假模型的 `plan_task` 也必须返回绝对目录，否则产品会按设计拒绝“驱动器相对路径/进程工作目录”；已在用例里通过 `startModelServer({ taskRoot })` 提供。
+
+**累计计数（本轮全量复核）**
+- 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
+- 默认 E2E：**111 passed / 7 skipped / 0 failed**
+- `test:e2e:all`：**116 passed / 2 skipped / 0 failed（15.0 分钟）**（2 个 skip 为打包态用例）
+- `test:e2e:packaged`：9 passed（安装包形态）

@@ -10,10 +10,10 @@
 | --- | --- | --- | --- |
 | 启动 / 单实例 / Onboarding | app.spec、adversarial（损坏设置/数据库/重启循环）、qa-window-lifecycle | Onboarding 首次流程细节、托盘首次引导 | 🟡 |
 | 仪表盘 Dashboard | app.spec、qa-daily-recap、qa-affect-weather/events | 快捷入口/统计交互深度 | 🟡 |
-| 对话 Chat | app.spec、qa-chat-stress、model-lifecycle/status-sync、local-memory、memory-*、recording-hidden、speech-responsive | 停止/重试/复制/编辑消息、长历史滚动、附件/图片外发同意 | 🟡 |
+| 对话 Chat | app.spec、qa-chat-stress、model-lifecycle/status-sync、local-memory、memory-*、recording-hidden、speech-responsive、**qa-autonomy-chat-task [CHAT-10]（朗读降级/上下文面板/快捷总结）** | 停止/重试/复制/编辑消息（当前产品无这些入口）、长历史滚动、附件上传 | 🟡（核心已覆盖；缺失功能不作为缺陷） |
 | 屏幕感知 Screen | app.spec 冒烟、**qa-screen-tools 5 用例**、**qa-screen-capture 1 用例（采集不可用降级 + 外发边界；采集可用时断言发送）**、**verify:perception 实跑 PASS（UIA/OCR）** | 真实截图链路在 Playwright 隐藏窗口环境不可稳定复现（已记录）；敏感窗口排除需真实桌面人工验收 | 🟡/📌（真实截图需人工） |
-| 自主活动 Autonomy | autonomy-external-status、isolated-creation×2（真实 Docker，3/3 通过）；`test:e2e:all` 自动检测 | preview/watch/look、停止中、容器清理失败、Docker 不可用提示 | 🟡 |
-| 任务 Tasks | task-directory、task-directory-checkpoints、task-continuation、grounded-summary、qa-task-memory、qa-theater | 失败/部分完成/中断状态矩阵、删除/清空、并发任务 | 🟡 |
+| 自主活动 Autonomy | autonomy-external-status、isolated-creation×2（真实 Docker 3/3）、**qa-autonomy-chat-task [AUTONOMY-10]（UI 未确认禁用 + 真实开始/停止 + 无残留容器）** | preview/watch/look、容器清理失败注入、Docker 不可用提示文案 | 🟡（核心已覆盖） |
+| 任务 Tasks | task-directory、task-directory-checkpoints、task-continuation、grounded-summary、qa-task-memory、qa-theater、**qa-autonomy-chat-task [TASK-10]（取消与筛选一致）** | 失败/部分完成/中断状态矩阵、并发任务 | 🟡（核心已覆盖） |
 | 历史 History | qa-history-search、memory-clear-ui、flows、app.spec | 单条删除与桌宠同步、清空范围组合、导出 | 🟡 |
 | 记忆 Memory | local-memory、memory-clear-ui、memory-correction-source、memory-degraded-context、qa-memory-provenance、qa-memory-recall-source（单测）、qa-a11y | 真实召回的正向来源详情（已由单测覆盖 UI；e2e 真实召回路径由 local-memory 覆盖注入） | ✅ |
 | 工具 Tools | app.spec 冒烟、tool 单测、**qa-screen-tools.spec 4 用例（开关持久化/禁用拒绝任务/不可用禁用/详情弹窗）** | 插件目录坏文件加载错误 | ✅（核心）/🟡（插件坏文件） |
@@ -57,8 +57,8 @@
 
 ## 4.1 当前总状态（全量测试第 1 轮）
 
-- 默认套件：单元 89 文件 / 1025 用例；E2E **108 passed / 7 skipped**（无 Docker/无语音模型/未打包的机器）。
-- 依赖齐全：`npm run test:e2e:all` → **113 passed / 2 skipped / 0 failed**（2 个 skip 为打包态用例）。
+- 默认套件：单元 89 文件 / 1025 用例；E2E **111 passed / 7 skipped**（无 Docker/无语音模型/未打包的机器）。
+- 依赖齐全：`npm run test:e2e:all` → **116 passed / 2 skipped / 0 failed**（2 个 skip 为打包态用例）。
 - 原生验收：`verify:native` PASS（SQLCipher）、`verify:perception` PASS（UIA/OCR）。
 - 安装包形态：`npm run package:win` + `npm run test:e2e:packaged` → **9 passed**（含打包态真实语音与真实 BGE）。
 - 已修复：QA-VOICE-01（语音专用进程缺失，P1）、QA-TOOLS-01（不可用工具开关，P3）、QA-WINLIFE-05（桌宠快速切换状态分叉，P3）。
