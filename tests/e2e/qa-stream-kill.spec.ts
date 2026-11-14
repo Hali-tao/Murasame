@@ -88,14 +88,22 @@ test('[QA-STREAMKILL-01] 流式中途强杀：重启后数据可打开，消息�
     // 完整性断言：不允许出现半截/重复消息。当前实现是「整轮原子提交」——
     // 模型完成前不落库，因此崩溃后消息数应与强杀前基线一致（可能只多一条问候）；
     // 若未来改为先落用户消息，允许最多一条用户消息，但绝不允许半截助手消息。
-    expect(messages.length).toBeLessThanOrEqual(baselineMessages + 1)
+    // 强杀时机存在竞争：要么整轮未提交（最多多一条问候），要么整轮已完整提交（user+assistant）。
+    // 两种都合法；绝不接受半截/重复。
+    expect(messages.length, JSON.stringify(messages.map(item => ({ role: item.role, text: item.text.slice(0, 40) })))).toBeLessThanOrEqual(baselineMessages + 2)
+    expect(new Set(messages.map((item) => item.id)).size).toBe(messages.length)
     const userMessages = messages.filter((item) => item.role === 'user')
     expect(userMessages.length).toBeLessThanOrEqual(1)
     if (userMessages.length === 1) expect(userMessages[0].text).toBe('崩溃测试：流式中途强杀')
     const greeting = messages.filter((item) => item.role === 'assistant' && item.text.endsWith('在。'))
     const otherAssistant = messages.filter((item) => item.role === 'assistant' && !item.text.endsWith('在。'))
     expect(greeting.length).toBeLessThanOrEqual(1)
-    expect(otherAssistant).toHaveLength(0)
+    expect(otherAssistant.length).toBeLessThanOrEqual(1)
+    if (otherAssistant.length === 1) {
+      // 完整一轮已落库：必须有一条对应 user 消息，且 assistant 文本完整、不是半截。
+      expect(userMessages.length).toBe(1)
+      expect(otherAssistant[0].text).toBe('这是来自测试模型的真实流式回复。')
+    }
 
     // 应用仍可交互。
     await page.getByTestId('nav-memory').click()

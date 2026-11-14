@@ -1,4 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+// 打包/原生模型校验会真实复制 GB 级模型并调用 electron-builder；给足超时避免负载下误报。
+vi.setConfig({ testTimeout: 120_000 })
 import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'

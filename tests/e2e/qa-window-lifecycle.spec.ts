@@ -110,11 +110,12 @@ test.describe('[QA-WINLIFE-00] 窗口与托盘生命周期', () => {
       expect(result.states.every((visible) => typeof visible === 'boolean')).toBe(true)
       // 偶数次 toggle 回到初始可见状态。
       expect(result.finalState.visible).toBe(true)
-      const actualVisible = await app.evaluate(({ BrowserWindow }) => {
+      // showInactive/hide 是异步窗口操作：等实际窗口收敛到最终逻辑状态，而不是立即读一次。
+      await expect.poll(() => app.evaluate(({ BrowserWindow }) => {
         const window = BrowserWindow.getAllWindows().find((item) => item.webContents.getURL().includes('/pet.html'))
         return window?.isVisible() ?? null
-      })
-      expect(actualVisible).toBe(true)
+      }), { timeout: 10_000 }).toBe(result.finalState.visible)
+      expect(result.finalState.visible).toBe(true)
     } finally {
       await closeApp(app)
     }

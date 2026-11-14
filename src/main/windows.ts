@@ -441,7 +441,9 @@ export function hidePet(): PetState {
 }
 
 export function togglePet(): PetState {
-  return getPetWindow()?.isVisible() ? hidePet() : showPet()
+  // 以持久化意图为准，而不是瞬时 isVisible()：show/hide 是异步窗口操作，
+  // 连续快速切换时 isVisible 可能滞后，导致奇偶次翻转错位（状态与窗口分叉）。
+  return getSettings().petVisible ? hidePet() : showPet()
 }
 
 export function getPetStateSafe(): PetState {

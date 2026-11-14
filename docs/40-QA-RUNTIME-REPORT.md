@@ -18,7 +18,7 @@
 
 - 全量单元测试：**89 文件 / 1025 用例全部通过**（含 30 个主进程/IPC 回归、7 个渲染崩溃恢复、7 个记忆来源链、5 个记忆来源链 UI（含房间来源详情）、6 个数据库密钥恢复、2 个导入刷新、5 个情绪天气、5 个每日回顾、3 个「留给明天」本地持久化、11 个任务幕/见闻幕小剧场（内容有界、Unicode 清洗、优先级、今天不再演、默认开关、见闻边界）、3 个历史搜索通配符（字面匹配/反斜杠）、3 个模型地址 scheme、4 个情绪事件、3 个页面错误边界、2 个通知上限、18 个本地语音进程用例）。
 - `npm run typecheck`、`npm run lint`：通过。
-- 全量 E2E：**默认套件 84 passed / 5 skipped / 0 failed**（约 6.9 分钟）；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**89 passed / 0 skipped / 0 failed（9.2 分钟）**。
+- 全量 E2E：**默认套件 100 passed / 5 skipped / 0 failed**；`npm run test:e2e:all` 在依赖齐全的本机自动启用 Docker 隔离与真实语音后：**105 passed / 0 skipped / 0 failed（12.8 分钟，测试机同时运行较多后台程序；空闲机器约 10–11 分钟）**。
   覆盖渲染崩溃恢复、流式中途强杀、记忆来源链与房间遮罩（含真实 BGE 召回）、情绪天气、任务幕/见闻幕小剧场、导入恢复、每日回顾与「留给明天」、隐藏态崩溃恢复、长历史搜索、键盘可达性、通知风暴、窗口/托盘/快捷键、**真实 Docker 隔离创作（office/code）**、**真实本地语音（专用 utilityProcess）**。
 - 运行时压测（标准 18s 压力 + 120s 空闲，以及 10 分钟空闲长跑）：**0 崩溃、0 未响应、0 异常退出、0 控制台错误**；主进程最大响应延迟 13ms；空闲 CPU < 1%；10 分钟空闲内存 337–388MB 波动（GC 回收，无单调增长）。
 - 对抗启动场景：损坏设置 JSON / 未知形象 / 非法缩放 / 第二实例 / 重启循环 均按预期启动或退出；损坏数据库场景见 §5 已知限制。
@@ -580,9 +580,40 @@ npx vitest run tests/unit/qa-*.test.ts                # 30 个 QA 回归用例
 | 语音单测 | 18 个（SpeechProcessClient 13 + VoiceService 5，含"音素与模型根目录交给子进程"新用例） |
 | Docker 隔离 e2e | **3/3 通过**（1.8m，office/code 真实容器与外部状态跟随） |
 | 真实 BGE 记忆 e2e | **6/6 通过**（34.7s） |
-| 全量套件（`npm run test:e2e:all`） | **81 passed / 0 skipped / 0 failed（9.3 分钟；第 2 轮补屏/工具用例后 89/0，见 §3.43）** |
+| 全量套件（`npm run test:e2e:all`） | **81 passed / 0 skipped / 0 failed（第 1 轮；第 2 轮屏/工具后 89/0，第 3–4 轮再加设置/角色后 105/0，见 §3.43/§3.44）** |
 | 单元 + 追溯 | 89 文件 / 1025 用例；trace 74/74 |
 
 > 默认 `npm run test:e2e` 仍保持无 Docker/无模型机器可运行（第 2 轮补用例后 84 passed / 5 skipped）；`test:e2e:all` 是"本机依赖齐全时的零跳过"入口，缺依赖会明确打印哪类会 skip，而不是假装全绿。
 
 **下一步（docs/42 矩阵）**：屏幕感知、工具页、设置全开关矩阵、角色校验、更新器 UI、安装包/打包形态、出站图片同意与日志脱敏端到端仍待补。
+
+### 3.44 全量测试第 3–4 轮：设置/角色覆盖、桌宠快速切换状态分叉修复、重负载测试加固
+
+**新增覆盖（16 个 e2e，全部通过）**
+
+| 文件 | 用例 | 覆盖 |
+| --- | --- | --- |
+| `qa-settings-matrix.spec.ts` | 10 | 运行行为开关与关闭行为持久化、系统权限申请/撤销、持续观察选项联动、非法快捷键回滚、检查更新诚实结果、使用说明弹窗、退出取消、清除数据取消、导出未加密 JSON 取消、加密开关不可关闭 |
+| `qa-character-validation.spec.ts` | 6 | 名称/风格/关键词保存持久化、空名称拦截且不破坏档案、非法形象路径中文拒绝、重置关系取消、更换形象取消、主动互动/记忆参考开关保存 |
+
+**缺陷修复 QA-WINLIFE-05（P3，状态一致性）**
+
+全量负载下复现：桌宠连续快速显示/隐藏 20 次后，`pet.getState().visible` 为 true 而 `BrowserWindow.isVisible()` 仍为 false。
+根因：`togglePet()` 用瞬时的 `window.isVisible()` 决定翻转；`showInactive()/hide()` 是异步窗口操作，连续切换时 isVisible 滞后会让奇偶次翻转错位。
+修复：`togglePet()` 改为以持久化意图 `getSettings().petVisible` 为准（`src/main/windows.ts`）；回归测试改为轮询实际窗口收敛到最终逻辑状态。
+验证：`qa-window-lifecycle.spec.ts --repeat-each=5` → **30/30 通过**。
+
+**测试稳定性加固（非产品缺陷）**
+
+| 问题 | 加固 |
+| --- | --- |
+| `qa-stream-kill.spec.ts` 偶发失败：强杀时机竞争下，整轮可能在 kill 前完整提交（合法结果） | 契约改为接受"整轮未提交"或"整轮完整提交"两种合法结果；新增消息 ID 唯一性断言；完整提交时校验 user/assistant 文本完整；3 次重复通过 |
+| `mesh-pet.spec.ts` 眨眼在重负载下 rAF 采样稀疏，250ms 轮询会漏掉短暂 blink 帧 | 页面内 MutationObserver 捕获 60s 窗口；不再依赖轮询间隔；3 次重复通过（若机器长时间无渲染帧仍属环境限制，见 §5） |
+| 89 文件单元套件在负载机器上让原生/打包用例误超时（DB recovery 35s、uninstall 40s、packaging 默认 5s） | `database-recovery` 150s/子进程 90s、`uninstall-policy-native` 120s/子进程 90s、`packaging-model-integrity` vi.setConfig(testTimeout=120s)；单测 1025 全绿 |
+
+**最终验证（本机真实依赖：Docker 镜像 + 真实 whisper/kokoro + 中文音素器）**
+- 单元 89 文件 / 1025 用例；trace 74/74；typecheck/lint 通过
+- 默认 E2E：**100 passed / 5 skipped / 0 failed**
+- 全量 `npm run test:e2e:all`：**105 passed / 0 skipped / 0 failed（12.8 分钟）**
+
+> 观察项：一次全量运行中 `notifications.spec` 曾偶发超时（单独与后续全量均通过），已记录为负载相关测试抖动风险，继续在后续轮次观察；不计为产品缺陷。

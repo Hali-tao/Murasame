@@ -58,13 +58,13 @@ it.each([
   delete env.ELECTRON_RUN_AS_NODE
   try {
     const output = execFileSync(require('electron') as string, [entry, scenario], {
-      cwd: root, encoding: 'utf8', timeout: 30_000, env
+      cwd: root, encoding: 'utf8', timeout: 90_000, env
     })
     expect(output).toContain(`PASS database-recovery ${scenario}`)
     if (scenario === 'fresh-restart' || scenario === 'scoped-clear-restart' || scenario === 'scoped-partial-clear-restart') {
       const savedKey = readFileSync(join(fixture, 'murasame-db-key.json'))
       const restarted = execFileSync(require('electron') as string, [entry, `${scenario}-verify`], {
-        cwd: root, encoding: 'utf8', timeout: 30_000, env
+        cwd: root, encoding: 'utf8', timeout: 90_000, env
       })
       expect(restarted).toContain(`PASS database-recovery ${scenario}-verify`)
       expect(readFileSync(join(fixture, 'murasame-db-key.json'))).toEqual(savedKey)
@@ -76,7 +76,7 @@ it.each([
           copyProfile(fixture, restored)
           expect(profileContents(restored)).toEqual(originalContents)
           const restoredOutput = execFileSync(require('electron') as string, [entry, 'fresh-restart-verify'], {
-            cwd: root, encoding: 'utf8', timeout: 30_000,
+            cwd: root, encoding: 'utf8', timeout: 90_000,
             env: { ...env, MURASAME_DATABASE_FIXTURE: restored }
           })
           expect(restoredOutput).toContain('PASS database-recovery fresh-restart-verify')
@@ -94,4 +94,4 @@ it.each([
     expect(fixture).toContain('murasame-database-recovery-')
     rmSync(fixture, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
   }
-}, 35_000)
+}, 150_000)

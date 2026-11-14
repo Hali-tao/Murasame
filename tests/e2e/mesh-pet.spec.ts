@@ -52,9 +52,20 @@ test('official mesh pet loads, animates, blinks and keeps Live2D presets intact'
     })
     expect(diff).toBeGreaterThan(2)
 
-    // 眨眼由 data-blink 暴露两端状态；一个周期最长约 25 秒。
-    await expect.poll(async () => host.getAttribute('data-blink'), { timeout: 30_000, intervals: [250] }).toBe('1')
-    await expect.poll(async () => host.getAttribute('data-blink'), { timeout: 5_000, intervals: [100] }).toBe('0')
+    // 眨眼由 data-blink 暴露两端状态。负载高时 rAF 采样可能跳过短暂的 blink 帧，
+    // 因此在页面内用 MutationObserver 捕获整个窗口，而不是每 250ms 轮询一次。
+    const sawBlink = await pet.evaluate(() => new Promise<boolean>((resolve) => {
+      const host = document.querySelector('[data-model-id="nailong"]')
+      if (!host) return resolve(false)
+      if (host.getAttribute('data-blink') === '1') return resolve(true)
+      const observer = new MutationObserver(() => {
+        if (host.getAttribute('data-blink') === '1') { observer.disconnect(); resolve(true) }
+      })
+      observer.observe(host, { attributes: true, attributeFilter: ['data-blink'] })
+      setTimeout(() => { observer.disconnect(); resolve(false) }, 60_000)
+    }))
+    expect(sawBlink, '60s 内应至少观察到一次眨眼帧（若机器负载导致 rAF 长时间停摆，见 docs/40 已知限制）').toBe(true)
+    await expect.poll(async () => host.getAttribute('data-blink'), { timeout: 10_000, intervals: [100] }).toBe('0')
 
     await pet.screenshot({ path: test.info().outputPath('mesh-pet-nailong.png') })
 

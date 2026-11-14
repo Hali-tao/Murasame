@@ -13,10 +13,10 @@ it.each([
   ['upgrade', ['--updated']]
 ] as const)('[OR-02][OR-03] native uninstall hook preserves all data during %s without prompting', (scenario, args) => {
   const fixture = `check-${scenario}-${randomUUID()}`
-  const run = (...parameters: string[]): string => execFileSync(process.execPath, [script, ...parameters], { cwd: root, encoding: 'utf8', timeout: 30_000 })
+  const run = (...parameters: string[]): string => execFileSync(process.execPath, [script, ...parameters], { cwd: root, encoding: 'utf8', timeout: 90_000 })
   expect(run('build', fixture)).toContain('"compiled":true')
   expect(run('run', fixture, ...args)).toContain('"timedOut":false')
   expect(run('check', fixture)).toContain('"preserved":true')
   const receipt = JSON.parse(readFileSync(join(root, 'previews/uninstall-policy-2026-10-29', fixture, 'receipt.json'), 'utf8'))
   expect(receipt.files).toHaveLength(4)
-}, 40_000)
+}, 120_000)
