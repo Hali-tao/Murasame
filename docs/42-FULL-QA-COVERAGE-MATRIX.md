@@ -17,15 +17,15 @@
 | 历史 History | qa-history-search、memory-clear-ui、flows、app.spec | 单条删除与桌宠同步、清空范围组合、导出 | 🟡 |
 | 记忆 Memory | local-memory、memory-clear-ui、memory-correction-source、memory-degraded-context、qa-memory-provenance、qa-memory-recall-source（单测）、qa-a11y | 真实召回的正向来源详情（已由单测覆盖 UI；e2e 真实召回路径由 local-memory 覆盖注入） | ✅ |
 | 工具 Tools | app.spec 冒烟、tool 单测、**qa-screen-tools.spec 4 用例（开关持久化/禁用拒绝任务/不可用禁用/详情弹窗）** | 插件目录坏文件加载错误 | ✅（核心）/🟡（插件坏文件） |
-| 模型 Models | model-lifecycle、model-status-sync、notifications、qa-a11y、qa-window-lifecycle | 删除默认模型、密钥遮罩、并发保存、离线错误矩阵 | 🟡 |
+| 模型 Models | model-lifecycle、model-status-sync、notifications、qa-a11y、qa-window-lifecycle、**qa-model-edges 4 用例（密钥不暴露/不回填/删除默认/预设填充）** | 并发保存/并发验证长尾 | ✅（核心）/🟡（并发长尾） |
 | 角色 Character | app.spec、mesh-pet*、qa-theater（角色页恢复入口）、**qa-character-validation 6 用例（保存/校验/非法导入/重置/形象取消/开关）** | 多形象资产矩阵、关系演进长期路径 | ✅（核心）/🟡（长期路径） |
 | 设置 Settings | **qa-settings-matrix 10 用例（开关/权限/持续观察/热键/更新检查/帮助/退出/清除/导出/加密）**、qa-settings-observers（单测）、flows（导入导出）、notifications、qa-theater、qa-a11y | 开机自启的真实系统行为、DND 组合触发 | ✅（核心）/🟡（系统级行为） |
 | 桌宠窗口 Pet | pet-history-sync、pet-work、mesh-pet*、qa-pet-stress、qa-theater、recording-hidden、speech-responsive | 拖拽边界多 DPI、消息气泡长文本、多实例（单例已测） | 🟡 |
 | 托盘 / 全局快捷键 / 窗口 | qa-window-lifecycle、flows（单实例）、qa-notification-hotkey | 原生托盘菜单项（无法用 Playwright 驱动，📌）、关闭行为 ask 对话框、真实快捷键触发 | 🟡/📌 |
 | 语音 Voice | recording-hidden、speech-responsive（真实模型 + utilityProcess 专用进程，2/2 通过）、18 个语音单测 | 识别质量、朗读长文本边界、权限拒绝 | ✅（朗读路径）/🟡（识别质量） |
 | 更新 Updater | qa-updater-timer（单测） | UI 检查更新状态、离线错误、下载/安装流程 | ⬜ |
-| 数据导入导出 / 加密 | merge/portability/migrate/key 单测、qa-import-refresh、qa-ipc-payload、adversarial、kill-restart | 大数据包/极慢磁盘、口令错误矩阵、跨版本包 | 🟡 |
-| 安全 / 隐私 | IPC 大载荷、qa-ipc-shapes、模型 scheme、轨迹/日志隐私单测 | 出站图片同意流程、日志脱敏端到端、敏感窗口截图排除 E2E | 🟡 |
+| 数据导入导出 / 加密 | merge/portability/migrate/key 单测、qa-import-refresh、qa-ipc-payload、adversarial、kill-restart、**qa-data-security（加密包无明文/错误口令/损坏包）** | 超大数据包/极慢磁盘、跨版本包 | 🟡（核心已覆盖） |
+| 安全 / 隐私 | IPC 大载荷、qa-ipc-shapes、模型 scheme、日志脱敏单测、**qa-data-security（API Key 不落明文、加密包边界）** | 出站图片同意的实际发送路径、敏感窗口截图排除（需真实桌面） | 🟡（核心已覆盖） |
 | 性能 / 稳定性 | 9 个探测脚本（soak/adversarial/kill-restart/renderer-crash/main-thread/ipc-payload/ui-memory/ipc-shapes/memory-perf） | 无（持续复核） | ✅ |
 | 打包 / 安装 | npm run package:win（待执行），打包形态 E2E 用 MURASAME_E2E_EXECUTABLE | 安装器流程、升级保留数据、签名/卸载 | ⬜ |
 
@@ -57,11 +57,11 @@
 
 ## 4.1 当前总状态（全量测试第 1 轮）
 
-- 默认套件：单元 89 文件 / 1025 用例；E2E **100 passed / 5 skipped**（无 Docker/无语音模型的机器）。
-- 依赖齐全（真实 Docker 镜像 + 真实 whisper/kokoro + python misaki）：`npm run test:e2e:all` → **105 passed / 0 skipped / 0 failed（12.8 分钟，重负载测试机）**。
+- 默认套件：单元 89 文件 / 1025 用例；E2E **107 passed / 5 skipped**（无 Docker/无语音模型的机器）。
+- 依赖齐全（真实 Docker 镜像 + 真实 whisper/kokoro + python misaki）：`npm run test:e2e:all` → **112 passed / 0 skipped / 0 failed**。
 - 已修复：QA-VOICE-01（语音专用进程缺失，P1）、QA-TOOLS-01（不可用工具开关，P3）、QA-WINLIFE-05（桌宠快速切换状态分叉，P3）。
 - 测试稳定性加固：stream-kill 合法完成态契约、mesh-pet 眨眼 MutationObserver、重负载原生单测超时。
-- 剩余 ⬜/🟡 项见上表（模型边界、安全同意、安装包、真实屏幕感知、多 DPI、托盘原生菜单等）；按轮推进。
+- 剩余 ⬜/🟡 项见上表（安装包/升级、更新器深度、真实屏幕感知、出站图片实际发送、多 DPI、托盘原生菜单等）；按轮推进。
 
 ## 5. 复跑入口
 
