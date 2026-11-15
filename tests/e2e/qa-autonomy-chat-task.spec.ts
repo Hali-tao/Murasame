@@ -1,15 +1,17 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
 
 test.describe('[FULL-QA] 自主活动 / 聊天操作 / 任务取消', () => {
-  test('[AUTONOMY-10] 自主活动页：未确认不可开始；真实 Docker 下可开始并停止', async () => {
+  test('[FR-29/FR-30][AUTONOMY-10] 自主活动页：确认范围、准备中取消与就绪后停止', async () => {
     test.setTimeout(300_000)
     const app = await launchApp()
+    let cleanupPage: Page | undefined
     try {
       const page = await findMainPage(app)
+      cleanupPage = page
       await page.getByTestId('nav-autonomy').click()
       const start = page.getByTestId('autonomy-start')
       await expect(start).toBeDisabled()
@@ -18,9 +20,25 @@ test.describe('[FULL-QA] 自主活动 / 聊天操作 / 任务取消', () => {
       await expect(start).toBeEnabled()
       await start.click()
       if (!environment.docker || !environment.image) {
-        // 环境未就绪：只要求诚实中文失败，不伪造开始。
-        const notice = page.getByRole('status')
-        await expect(notice).toContainText(/[\u4e00-\u9fff]/, { timeout: 60_000 })
+        // 缺镜像时会自动准备，不应要求尚未发生的失败提示。
+        await expect(page.locator('.autonomy-status')).toContainText(/[\u4e00-\u9fff]/)
+        const pending = await page.evaluate(() => window.murasame.autonomy.status())
+        await test.info().attach('unprepared-environment-state', { body: JSON.stringify({ environment, pending }), contentType: 'application/json' })
+        if (pending.busy || pending.running || pending.canStop) {
+          const stop = page.getByTestId('autonomy-stop')
+          await expect(stop).toBeEnabled()
+          await stop.click()
+          await expect.poll(async () => {
+            const status = await page.evaluate(() => window.murasame.autonomy.status())
+            return { running: status.running, busy: Boolean(status.busy), canStop: Boolean(status.canStop) }
+          }, { timeout: 15_000 }).toEqual({ running: false, busy: false, canStop: false })
+          await expect(start).toBeEnabled()
+          await expect(stop).toBeDisabled()
+        } else {
+          await expect(page.getByRole('status')).toContainText(/[\u4e00-\u9fff]/)
+          expect(pending.running).toBe(false)
+        }
+        await page.screenshot({ path: test.info().outputPath('unprepared-environment-stopped.png') })
         return
       }
       // 真实 Docker 可用：等待活动进入 running，再停止并等待回到非运行态。
@@ -37,6 +55,8 @@ test.describe('[FULL-QA] 自主活动 / 聊天操作 / 任务取消', () => {
       }, { timeout: 120_000, intervals: [1000] }).toMatchObject({ running: false })
       await expect(page.getByTestId('nav-autonomy')).toBeVisible()
     } finally {
+      // 断言失败时也必须取消本用例触发的环境准备。
+      if (cleanupPage && !cleanupPage.isClosed()) await cleanupPage.evaluate(() => window.murasame.autonomy.stop()).catch(() => {})
       await closeApp(app)
     }
   })
