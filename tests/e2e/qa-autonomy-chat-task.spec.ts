@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
 
 test.describe('[FULL-QA] 自主活动 / 聊天操作 / 任务取消', () => {
-  test('[FR-29/FR-30][AUTONOMY-10] 自主活动页：确认范围、准备中取消与就绪后停止', async () => {
+  test('[FR-29] [FR-30] [AUTONOMY-10] 自主活动页：确认范围、准备中取消与就绪后停止', async () => {
     test.setTimeout(300_000)
     const app = await launchApp()
     let cleanupPage: Page | undefined
