@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 import { writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
+import { listenHttp } from '../helpers/http-server'
 
 test('[FR-25] verified service status survives a completed chat and renderer reload', async () => {
   const server = await startModelServer(), app = await launchApp()
@@ -46,7 +47,7 @@ test('[FR-25] real chat failure and recovery update the current service without 
         .catch(() => { response.writeHead(500); response.end('fixture proxy failure') })
     })
   })
-  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
+  await listenHttp(server)
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('No local listener')
   const app = await launchApp()

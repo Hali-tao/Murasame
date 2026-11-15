@@ -1,4 +1,5 @@
 import { createServer, type ServerResponse } from 'node:http'
+import { listenHttp } from '../helpers/http-server'
 
 /**
  * QA 压力用例专用的可控模型服务。
@@ -139,10 +140,7 @@ export async function startControlledModelServer(): Promise<ControlledModelServe
     })
   })
 
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', reject)
-    server.listen(0, '127.0.0.1', () => resolve())
-  })
+  await listenHttp(server)
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('QA 模型服务启动失败')
 

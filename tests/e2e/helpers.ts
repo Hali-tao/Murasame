@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { listenHttp } from '../helpers/http-server'
 
 const root = join(__dirname, '..', '..')
 const userDataByApp = new WeakMap<ElectronApplication, string>()
@@ -148,10 +149,7 @@ export async function startModelServer(options: { taskRoot?: string; onMessages?
     })
   })
 
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', reject)
-    server.listen(0, '127.0.0.1', () => resolve())
-  })
+  await listenHttp(server)
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('测试模型服务启动失败')
   return {

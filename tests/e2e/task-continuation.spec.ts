@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
+import { listenHttp } from '../helpers/http-server'
 
 test('[FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复审批或更换任务', async () => {
   test.setTimeout(90_000)
@@ -30,7 +31,7 @@ test('[FR-16/FR-18] 取消待规划任务后，晚到的模型计划不能恢复
       })().catch(() => { if (!response.writableEnded) { response.writeHead(500); response.end('controlled server failure') } })
     })
   })
-  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
+  await listenHttp(server)
   const address = server.address(); if (!address || typeof address === 'string') throw new Error('No test server')
   const app = await launchApp()
   try {

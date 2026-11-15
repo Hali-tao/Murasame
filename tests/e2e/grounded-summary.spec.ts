@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createHash, randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import { closeApp, configureTestModel, findMainPage, findPetPage, launchApp } from './helpers'
+import { listenHttp } from '../helpers/http-server'
 
 async function summaryServer(root: string) {
   const received: string[] = []; const pending: Array<() => void> = []; let slow = false
@@ -34,7 +35,7 @@ async function summaryServer(root: string) {
       respond(response, undefined, null)
     })
   })
-  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
+  await listenHttp(server)
   const address = server.address(); if (!address || typeof address === 'string') throw new Error('fixture server failed')
   return { url: `http://127.0.0.1:${address.port}/v1`, received, setSlow: (value: boolean) => { slow = value }, release: () => pending.splice(0).forEach(reply => reply()), close: () => new Promise<void>((resolve, reject) => { server.closeAllConnections(); server.close(error => error ? reject(error) : resolve()) }) }
 }

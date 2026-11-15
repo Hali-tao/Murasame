@@ -3,6 +3,7 @@ import { createServer } from 'node:http'
 import { expect, test } from '@playwright/test'
 import type { ScreenAnalysis } from '../../src/shared/types'
 import { closeApp, findMainPage, launchApp } from './helpers'
+import { listenHttp } from '../helpers/http-server'
 
 interface CapturedRequest {
   hasImage: boolean
@@ -45,7 +46,7 @@ async function startVisionServer() {
       response.end(JSON.stringify({ choices: [{ message: { role: 'assistant', content: 'OK' } }] }))
     })
   })
-  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
+  await listenHttp(server)
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('No vision listener')
   return {

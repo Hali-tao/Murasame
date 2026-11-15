@@ -209,7 +209,7 @@
 | NFR-C01 | tests/unit/embedding-runtime.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-C02 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/embedding-runtime.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-M01 | tests/unit/errors.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
-| NFR-M02 | tests/unit/p0-finish.test.ts<br>tests/unit/traceability.test.ts |
+| NFR-M02 | tests/unit/http-server.test.ts<br>tests/unit/model-fixture-port.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/traceability.test.ts |
 | OR-01 | tests/unit/murasame-core.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
 | OR-02 | tests/unit/capacity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/uninstall-policy-native.test.ts |
 | OR-03 | tests/unit/p7-p8.test.ts<br>tests/unit/uninstall-policy-native.test.ts |
