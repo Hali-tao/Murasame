@@ -58,6 +58,7 @@ export function MemoryPage(): React.JSX.Element {
   }, [view, revealed])
 
   const categories = ['全部类别', ...Array.from(new Set(data.memories.map((memory) => memory.category)))]
+  if (!categories.includes(category)) setCategory('全部类别')
   const sources = new Map(data.conversations.map(conversation => [conversation.id, conversation.title.trim() || '未命名会话']))
   const sourceLabel = (source: string): string => sources.get(source) ?? (source.startsWith('chat-') ? '来源会话已删除' : source || '长期记忆')
   const filtered = data.memories.filter((memory) => {
