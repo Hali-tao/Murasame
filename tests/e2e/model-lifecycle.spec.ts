@@ -1,6 +1,7 @@
 import { createServer, type ServerResponse } from 'node:http'
 import { expect, test } from '@playwright/test'
 import { closeApp, configureTestModel, findMainPage, launchApp, startModelServer } from './helpers'
+import { listenHttp } from '../helpers/http-server'
 
 async function controlledServer() {
   const upstream = await startModelServer({ toolResponse: tool => tool === 'get_color' ? { color: '蓝色' } : undefined })
@@ -21,7 +22,7 @@ async function controlledServer() {
       })().catch(() => { if (!response.writableEnded) { response.writeHead(500); response.end('fixture failure') } })
     })
   })
-  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve))
+  await listenHttp(server)
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('No test listener')
   return {
