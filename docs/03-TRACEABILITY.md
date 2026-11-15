@@ -173,8 +173,8 @@
 | FR-26 | tests/unit/p7-p8.test.ts |
 | FR-27 | tests/e2e/recording-hidden.spec.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/recording-hidden-regression.test.ts<br>tests/unit/window-hidden-event.test.ts |
 | FR-28 | tests/unit/autonomy-lifecycle-regression.test.ts<br>tests/unit/autonomy-status-bridge.test.ts<br>tests/unit/autonomy-status-events.test.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/p4-p6.test.ts |
-| FR-29 | tests/unit/isolated-creation.test.ts<br>tests/unit/p4-p6.test.ts |
-| FR-30 | tests/unit/autonomy-lifecycle-regression.test.ts<br>tests/unit/autonomy-status-bridge.test.ts<br>tests/unit/autonomy-status-events.test.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/p4-p6.test.ts |
+| FR-29 | tests/e2e/qa-autonomy-chat-task.spec.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/p4-p6.test.ts |
+| FR-30 | tests/e2e/qa-autonomy-chat-task.spec.ts<br>tests/unit/autonomy-lifecycle-regression.test.ts<br>tests/unit/autonomy-status-bridge.test.ts<br>tests/unit/autonomy-status-events.test.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/p4-p6.test.ts |
 | UC-01 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/model-maturity-regression.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
 | UC-02 | tests/unit/p4-p6.test.ts |
 | UC-03 | tests/unit/p1-p3.test.ts |
