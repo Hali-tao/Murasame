@@ -14,7 +14,7 @@ const pad = (value: number): string => String(value).padStart(2, '0')
 /** 本轮回顾只统计「本地自然日」内的真实事实。 */
 export function localDayWindow(now: Date = new Date()): DailyWindow {
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000)
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
   return {
     date: `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`,
     startIso: start.toISOString(),
