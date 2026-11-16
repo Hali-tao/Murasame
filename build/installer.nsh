@@ -23,6 +23,13 @@
   MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "要删除 Murasame 保存在这台电脑上的数据吗？$\n$\n包括对话、记忆和数据库密钥。删除后无法恢复。$\n选「否」会保留数据，下次安装可以继续用。" /SD IDNO IDYES removeData IDNO keepData
   Goto keepData
   removeData:
-    RMDir /r "$APPDATA\murasame-desktop"
+    InitPluginsDir
+    File /oname=$PLUGINSDIR\remove-profile.ps1 "${BUILD_RESOURCES_DIR}\remove-profile.ps1"
+    nsExec::ExecToStack 'powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$PLUGINSDIR\remove-profile.ps1"'
+    Pop $0
+    Pop $1
+    ${If} $0 != 0
+      MessageBox MB_OK|MB_ICONEXCLAMATION "本地数据未能完整清理。请关闭 Murasame 后重试；如已生成备份，请保留备份。$\n$\n$1"
+    ${EndIf}
   keepData:
 !macroend

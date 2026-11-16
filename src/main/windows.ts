@@ -188,7 +188,7 @@ export function createMainWindow(): BrowserWindow {
   mainWindow.setMenuBarVisibility(false)
 
   mainWindow.once('ready-to-show', () => {
-    if (!getSettings().onboardingDone) mainWindow?.show()
+    if (!app.isPackaged || !getSettings().onboardingDone) mainWindow?.show()
   })
 
   const rememberBounds = (): void => {
