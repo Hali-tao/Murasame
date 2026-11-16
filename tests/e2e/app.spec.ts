@@ -9,8 +9,14 @@ test('first launch leads through model verification to a real first conversation
   const app = await launchApp(false)
   try {
     const page = await findMainPage(app, true)
-    for (let step = 0; step < 3; step++) await page.getByRole('button', { name: '下一步', exact: true }).click()
-    await page.getByRole('button', { name: '配置模型并开始聊天', exact: true }).click()
+    const titles = ['先看看，你可以在这里做什么', '你们想怎么称呼彼此？', '连接模型后，伙伴才能回答你', '屏幕和麦克风，由你决定是否开启']
+    for (let step = 0; step < titles.length; step++) {
+      await expect(page.getByRole('heading', { name: titles[step], exact: true })).toBeVisible()
+      await expect(page.locator('[aria-current="step"]')).toContainText(String(step + 1))
+      await page.screenshot({ path: test.info().outputPath(`onboarding-${step + 1}.png`), fullPage: true })
+      if (step < 3) await page.getByRole('button', { name: /^下一步：/ }).click()
+    }
+    await page.getByRole('button', { name: '前往模型配置', exact: true }).click()
     await expect(page).toHaveURL(/models\?setup=1/)
     await configureTestModel(page, server.url)
     await page.getByRole('button', { name: '开始第一次对话', exact: true }).click()
@@ -21,6 +27,26 @@ test('first launch leads through model verification to a real first conversation
     expect(settings.permissions.screen).toBe(false)
     expect(settings.permissions.microphone).toBe(false)
   } finally { await closeApp(app); await server.close() }
+})
+
+test('[OR-01] onboarding preserves names when going back and skipping does not enable permissions', async () => {
+  const app = await launchApp(false)
+  try {
+    const page = await findMainPage(app, true)
+    await page.getByRole('button', { name: '下一步：设置称呼', exact: true }).click()
+    await page.getByRole('textbox', { name: '伙伴的名字（可选）' }).fill('小雨')
+    await page.getByRole('textbox', { name: '希望伙伴怎么称呼你（可选）' }).fill('小林')
+    await page.getByRole('button', { name: '下一步：了解模型服务', exact: true }).click()
+    await page.getByRole('button', { name: '上一步', exact: true }).click()
+    await expect(page.getByRole('textbox', { name: '伙伴的名字（可选）' })).toHaveValue('小雨')
+    await expect(page.getByRole('textbox', { name: '希望伙伴怎么称呼你（可选）' })).toHaveValue('小林')
+    await page.getByRole('button', { name: '跳过引导，进入概览', exact: true }).click()
+    await expect(page.locator('.topbar h1')).toHaveText('概览')
+    const settings = await page.evaluate(() => window.murasame.settings.get())
+    expect(settings).toMatchObject({ onboardingDone: true, userName: '小林', permissions: { screen: false, microphone: false } })
+    const state = await page.evaluate(() => window.murasame.core.getBootstrap())
+    expect(state.ok && state.data.character.name).toBe('小雨')
+  } finally { await closeApp(app) }
 })
 
 test('console starts and all ten pages are reachable', async () => {

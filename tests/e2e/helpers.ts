@@ -51,7 +51,7 @@ export async function findMainPage(app: ElectronApplication, onboarding = false)
         await page.evaluate(() => window.murasame.window.showMain())
         return page
       }
-      if (onboarding && await page.getByRole('button', { name: '跳过', exact: true }).count()) return page
+      if (onboarding && await page.getByRole('button', { name: '跳过引导，进入概览', exact: true }).count()) return page
     }
     await wait(100)
   }
