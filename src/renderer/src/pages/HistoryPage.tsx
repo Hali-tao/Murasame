@@ -5,6 +5,7 @@ import { ClearScopeDialog } from '../components/dialogs'
 import { Button, Card, CardHead, EmptyState, Pill } from '../components/ui'
 import { searchHistory } from '@shared/history-search'
 import { useAppStore } from '../store'
+import { MessageMarkdown } from '../components/MessageMarkdown'
 
 export function HistoryPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
@@ -101,7 +102,7 @@ export function HistoryPage(): React.JSX.Element {
                     <div className="message-wrap">
                       <div className="message-meta"><strong>{message.role === 'assistant' ? (data.character.name.trim() || '桌宠') : (data.settings.userName.trim() || '你')}</strong><time>{message.time}</time></div>
                       <div className="message-bubble">
-                        {message.text.split('\n').map((line, index) => <span key={`${message.id}-${index}`}>{line || '\u00A0'}</span>)}
+                        <MessageMarkdown text={message.text} />
                       </div>
                     </div>
                   </div>

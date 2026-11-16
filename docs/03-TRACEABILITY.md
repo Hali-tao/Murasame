@@ -145,8 +145,8 @@
 <!-- TRACE:BEGIN -->
 | 需求 | 测试 |
 | --- | --- |
-| FR-01 | tests/unit/mesh-pet.test.ts<br>tests/unit/p4-p6.test.ts |
-| FR-02 | tests/e2e/pet-history-sync.spec.ts<br>tests/unit/mesh-pet.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
+| FR-01 | tests/e2e/message-markdown.spec.ts<br>tests/unit/mesh-pet.test.ts<br>tests/unit/message-markdown.test.ts<br>tests/unit/p4-p6.test.ts |
+| FR-02 | tests/e2e/message-markdown.spec.ts<br>tests/e2e/pet-history-sync.spec.ts<br>tests/unit/mesh-pet.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
 | FR-03 | tests/unit/p4-p6.test.ts |
 | FR-04 | tests/unit/p4-p6.test.ts |
 | FR-05 | tests/unit/memory-extraction.test.ts<br>tests/unit/p4-p6.test.ts |
@@ -197,7 +197,7 @@
 | NFR-P01 | tests/unit/embedding-runtime.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-P02 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p7-p8.test.ts |
 | NFR-P03 | tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |
-| NFR-S01 | tests/electron/migrate-entry.ts<br>tests/unit/model-maturity-regression.test.ts<br>tests/unit/native-encryption.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/traceability.test.ts |
+| NFR-S01 | tests/electron/migrate-entry.ts<br>tests/unit/message-markdown.test.ts<br>tests/unit/model-maturity-regression.test.ts<br>tests/unit/native-encryption.test.ts<br>tests/unit/p0-finish.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts<br>tests/unit/traceability.test.ts |
 | NFR-S02 | tests/unit/p1-p3.test.ts |
 | NFR-S03 | tests/integration/isolation.spec.ts<br>tests/unit/p4-p6.test.ts |
 | NFR-R01 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/gateway-contract.test.ts<br>tests/unit/isolated-creation.test.ts<br>tests/unit/model-maturity-regression.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/p7-p8.test.ts |

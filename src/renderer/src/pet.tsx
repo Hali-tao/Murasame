@@ -10,6 +10,7 @@ import type { ActivityStatus, Conversation, PerformanceCue, PetChatLayout, PetSt
 import { Live2DPet, type Live2DPetHandle } from './components/Live2DPet'
 import { MeshPet } from './components/MeshPet'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { MessageMarkdown } from './components/MessageMarkdown'
 import { allowHitSample, targetFps } from '@shared/render-budget'
 import { chooseLayer, idlePresentation, mouthEnvelope, type PerformanceLayer } from './avatar/orchestrator'
 import { idleFromPad, baselinePad } from '@shared/avatar/pad'
@@ -145,7 +146,7 @@ function PetApp(): React.JSX.Element {
   }, [pet.importedModelUrl, pet.preset])
 
   const lastAssistant = [...(conversation?.messages ?? [])].reverse().find((item) => item.role === 'assistant')
-  const bubbleText = streaming || proactiveText || petSpeech(lastAssistant?.text || '')
+  const bubbleText = streaming ? '正在回复，打开对话查看内容。' : proactiveText || petSpeech(lastAssistant?.text || '')
   useEffect(() => {
     lastInteraction.current = Date.now()
     const touched = (): void => { lastInteraction.current = Date.now(); setIdleMs(0) }
@@ -918,10 +919,10 @@ function PetApp(): React.JSX.Element {
           </header>
           <div className="pet-chat-log" ref={logRef}>
             {recent.map((message) => (
-              <p key={message.id} className={`pet-chat-line ${message.role}`}>{message.text}</p>
+              <div key={message.id} className={`pet-chat-line ${message.role}`}><MessageMarkdown text={message.text} /></div>
             ))}
             {pendingUser ? <p className="pet-chat-line user">{pendingUser}</p> : null}
-            {streaming ? <p className="pet-chat-line assistant">{streaming}</p> : null}
+            {streaming ? <div className="pet-chat-line assistant"><MessageMarkdown text={streaming} streaming /></div> : null}
             {!recent.length && !pendingUser && !streaming ? <p className="pet-chat-empty">说点什么。</p> : null}
           </div>
           {notice ? <p className="pet-chat-notice">{notice}</p> : null}

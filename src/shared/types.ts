@@ -447,6 +447,7 @@ export interface MurasameCore {
 export interface MurasameApi {
   app: {
     getInfo(): Promise<AppInfo>
+    copyText(text: string): Promise<void>
     checkMemoryModel(): Promise<MemoryModelStatus>
     installMemoryModel(): Promise<MemoryModelStatus>
     quit(): Promise<void>

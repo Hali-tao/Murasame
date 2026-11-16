@@ -6,6 +6,7 @@ import { TaskCreateDialog } from '../components/dialogs'
 import { Button, Card, CardHead, EmptyState, Pill, Spinner } from '../components/ui'
 import { StatusPill } from '../components/StatusPill'
 import { MemoryRecallStatus } from '../components/MemoryRecallStatus'
+import { MessageMarkdown } from '../components/MessageMarkdown'
 import { clockLabel } from '../lib/utils'
 import { playSamples, startRecording, type Recording } from '../lib/audio'
 import { onWindowHidden } from '../lib/window-visibility'
@@ -267,9 +268,7 @@ export function ChatPage(): React.JSX.Element {
                         ) : null}
                       </div>
                       <div className="message-bubble">
-                        {message.text.split('\n').map((line, index) => (
-                          <span key={`${message.id}-${index}`}>{line || '\u00A0'}</span>
-                        ))}
+                        <MessageMarkdown text={message.text} />
                       </div>
                     </div>
                   </div>
@@ -280,9 +279,7 @@ export function ChatPage(): React.JSX.Element {
                     <div className="message-wrap">
                       <div className="message-meta"><strong>{data.character.name}</strong><time>正在回复</time></div>
                       <div className="message-bubble">
-                        {streamingText.split('\n').map((line, index) => (
-                          <span key={`stream-${index}`}>{line || '\u00A0'}</span>
-                        ))}
+                        <MessageMarkdown text={streamingText} streaming />
                         <span className="streaming-cursor" />
                       </div>
                     </div>

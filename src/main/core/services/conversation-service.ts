@@ -260,9 +260,10 @@ export class ConversationService {
     const startedAt = Date.now()
     notify(() => this.context.onRecall?.(conversationId, { turnId, ids: [...recalled.ids] }))
     try {
-      // 闲聊也不把模型原文一个字一个字流进气泡，等这一句完整回来。
-      reply = await this.gateway.chat(model, messages, undefined, system)
-      void onDelta
+      // Stream into conversation views only; history and the short pet line still publish after completion.
+      reply = await this.gateway.chat(model, messages, delta => {
+        if (this.findRow(conversationId)) notify(() => onDelta?.(delta))
+      }, system)
     } catch (error) {
       notify(() => this.models.markOffline(model.id, model))
       return fail(error instanceof Error ? error.message : '模型请求失败，请稍后重试')

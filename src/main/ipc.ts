@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, clipboard, dialog, ipcMain, shell } from 'electron'
 import { copyFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { z } from 'zod'
@@ -262,6 +262,10 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
 
   ipcMain.handle(IPC.app.quit, () => confirmQuit())
+  ipcMain.handle(IPC.app.copyText, (_event, text: unknown) => {
+    if (typeof text !== 'string' || text.length > 2_000_000) throw new Error('复制内容无效或过长，请选择较短的代码。')
+    clipboard.writeText(text)
+  })
   ipcMain.handle(IPC.app.checkMemoryModel, () => checkMemoryModel(app.getPath('userData')))
   ipcMain.handle(IPC.app.installMemoryModel, () => checkMemoryModel(app.getPath('userData'), true))
 

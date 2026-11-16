@@ -1,6 +1,7 @@
 export const IPC = {
   app: {
     getInfo: 'app:get-info',
+    copyText: 'app:copy-text',
     checkMemoryModel: 'app:check-memory-model',
     installMemoryModel: 'app:install-memory-model',
     quit: 'app:quit',

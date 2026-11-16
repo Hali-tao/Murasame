@@ -52,12 +52,17 @@ describe('conversation data integrity', () => {
     const spoken: string[] = []
     const deltas: string[] = []
     const full = '可以。下面是三个具体步骤。\n```ts\nconst answer = 42\n```\n最后还有限制条件。'
-    const service = new ConversationService(db, models, { chat: async () => full }, { onReply: (text) => spoken.push(text) })
+    const service = new ConversationService(db, models, { chat: async (_model, _messages, onDelta) => {
+      onDelta?.(full.slice(0, 8)); onDelta?.(full.slice(8))
+      expect(service.list()[0].messages).toHaveLength(1)
+      expect(spoken).toEqual([])
+      return full
+    } }, { onReply: (text) => spoken.push(text) })
     const chat = service.create()
     await service.send(chat.id, '详细解释', (delta) => deltas.push(delta))
     expect(service.list()[0].messages.at(-1)?.text).toBe(full)
     expect(spoken).toEqual(['可以。'])
-    expect(deltas).toEqual([])
+    expect(deltas.join('')).toBe(full)
   })
 
   it('serializes context construction for the same conversation and preserves turn chronology', async () => {
