@@ -21,6 +21,8 @@ test('[NFR-U03] unusable local model does not silently become a successful empty
     const page = await findMainPage(app)
     await configureTestModel(page, server.url, '记忆降级独立测试')
     await page.getByTestId('nav-memory').click()
+    await expect(page.getByTestId('memory-model-status')).toContainText('异常')
+    await expect(page.getByRole('button', { name: '重新下载修复' })).toBeEnabled()
     await page.getByTestId('add-memory').click()
     await page.getByTestId('memory-category').fill('偏好')
     await page.getByTestId('memory-text').fill('我喜欢白茶，长期保留这条独立测试偏好。')

@@ -8,6 +8,14 @@ Murasame 的 Windows 桌面伙伴。文字对话、历史、长期记忆、任�
 - 需本机准备：语音模型（见下）与隔离镜像（`node scripts/build-isolation.mjs`，需 Docker）。
 - 未公开分发：来源未确认的 naiwa 形象不得放进面向公众的安装包，见 `docs/05-LICENSES.md`。
 
+## 长期记忆检索模型
+
+在「长期记忆」页面查看「记忆检索模型」状态。点击「下载并准备模型」会从 Hugging Face 下载约 25 MB 的固定版本文件，校验完整性并实际运行一次本地推理；只有推理成功才显示「可用」。异常时可「重新下载修复」，手动补齐文件后可「重新检查」。下载不上传对话或记忆，不会开启记忆开关。
+
+未安装或异常时仍可添加、查看、编辑和删除记忆，但无法进行语义召回；保存成功不代表已经用于聊天。模型可用且长期记忆已开启后，相关记忆会进入你配置的聊天模型上下文，可在聊天上下文面板核对实际使用记录。
+
+使用的资产为 [Xenova/bge-small-zh-v1.5](https://huggingface.co/Xenova/bge-small-zh-v1.5)，固定版本 `75c43b069aac4d136ba6bc1122f995fedcfd2781`。检索在本机运行，不依赖额外后台服务。开发时也可执行 `node scripts/fetch-memory-model.mjs <用户资料目录>` 安装；真实模型测试读取 `build/bundled-models/bge-small-zh-v1.5`，模型二进制不提交 Git。
+
 ## 本地语音模型
 
 语音不走云端，也不使用系统语音兜底。模型放在 `userData/models` 下：

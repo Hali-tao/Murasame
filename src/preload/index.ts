@@ -40,6 +40,8 @@ function subscribe<T>(channel: string, listener: (payload: T) => void): () => vo
 const api: MurasameApi = {
   app: {
     getInfo: (): Promise<AppInfo> => ipcRenderer.invoke(IPC.app.getInfo),
+    checkMemoryModel: () => ipcRenderer.invoke(IPC.app.checkMemoryModel),
+    installMemoryModel: () => ipcRenderer.invoke(IPC.app.installMemoryModel),
     quit: (): Promise<void> => ipcRenderer.invoke(IPC.app.quit),
     hideToTray: (): Promise<void> => ipcRenderer.invoke(IPC.app.hideToTray),
     openLogs: (): Promise<void> => ipcRenderer.invoke(IPC.app.openLogs),

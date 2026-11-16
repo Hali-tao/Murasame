@@ -5,6 +5,7 @@ import type { MemoryEntry, MemoryExtractionStatus, MemoryRecallSource } from '@s
 import { MemoryEditDialog } from '../components/dialogs'
 import { Button, Card, ConfirmDialog, EmptyState, Pill, StatTile, ToggleSwitch } from '../components/ui'
 import { useAppStore } from '../store'
+import { MemoryModelCard } from '../components/MemoryModelCard'
 
 function formatRecallTime(value: string): string {
   const date = new Date(value)
@@ -112,6 +113,8 @@ export function MemoryPage(): React.JSX.Element {
           <ToggleSwitch checked={data.settings.memoryEnabled} onCheckedChange={(checked) => void toggleMemory(checked)} label="启用长期记忆" />
         </div>
       </div>
+
+      <MemoryModelCard enabled={data.settings.memoryEnabled} />
 
       {index && (index.total > 0 || index.state !== 'idle') ? (
         <Card className="memory-index-status" role="status" aria-live="polite">

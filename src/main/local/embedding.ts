@@ -96,6 +96,8 @@ type Extractor = (
 
 let extractor: { directory: string; pending: Promise<Extractor> } | null = null
 
+export function resetEmbeddingRuntime(): void { extractor = null }
+
 async function load(userDataDir: string): Promise<Extractor> {
   const directory = localModelDirectory(userDataDir, EMBEDDING_MODEL_ID, EMBEDDING_FILES)
   if (extractor?.directory === directory) return extractor.pending

@@ -16,7 +16,7 @@ import { initializeUpdater, stopUpdater } from './updater'
 import { allowMicrophone } from './security/media-permission'
 import { contentSecurityPolicy } from './security/hardening'
 import { broadcastPetPerformance, focusPetChat, hideMain, initializeWindows, isPetHidden, showMain } from './windows'
-import { refreshMemoryStatus } from './local/memory-status'
+import { refreshMemoryStatus, checkMemoryModel } from './local/memory-status'
 import { setBundledModelsRoot } from './local/model-env'
 import { VoiceService } from './core/services/voice-service'
 import type { SpeechChild } from './local/speech-process'
@@ -183,6 +183,7 @@ if (!gotSingleInstanceLock) {
     }
     const hotkey = applyHotkey(getSettings().petHotkey, () => focusPetChat())
     refreshMemoryStatus(app.getPath('userData'))
+    void checkMemoryModel(app.getPath('userData'))
     if (!hotkey.ok) log.warn(hotkey.message)
     try {
       const file = log.transports.file.getFile()

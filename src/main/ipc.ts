@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { AppError } from '../shared/errors'
 import { NotImplementedError } from './core/errors'
 import { IPC } from '../shared/ipc'
+import { checkMemoryModel } from './local/memory-status'
 import {
   characterImportSchema,
   characterSchema,
@@ -261,6 +262,8 @@ export function registerIpcHandlers(core: DesktopCore): void {
   })
 
   ipcMain.handle(IPC.app.quit, () => confirmQuit())
+  ipcMain.handle(IPC.app.checkMemoryModel, () => checkMemoryModel(app.getPath('userData')))
+  ipcMain.handle(IPC.app.installMemoryModel, () => checkMemoryModel(app.getPath('userData'), true))
 
   ipcMain.handle(IPC.app.hideToTray, () => hideMain())
 

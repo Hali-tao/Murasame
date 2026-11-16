@@ -258,6 +258,11 @@ export interface MemoryIndexStatus {
   message: string
 }
 
+export interface MemoryModelStatus {
+  state: 'missing' | 'preparing' | 'ready' | 'error'
+  message: string
+}
+
 export interface BootstrapData {
   conversations: Conversation[]
   memories: MemoryEntry[]
@@ -442,6 +447,8 @@ export interface MurasameCore {
 export interface MurasameApi {
   app: {
     getInfo(): Promise<AppInfo>
+    checkMemoryModel(): Promise<MemoryModelStatus>
+    installMemoryModel(): Promise<MemoryModelStatus>
     quit(): Promise<void>
     hideToTray(): Promise<void>
     openLogs(): Promise<void>
