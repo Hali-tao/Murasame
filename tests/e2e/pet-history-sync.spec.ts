@@ -40,13 +40,15 @@ test('[FR-02] body taps give tap feedback and the menu explicitly opens and clos
           return await pet.evaluate(async () => {
             const canvas = document.querySelector<HTMLCanvasElement>('canvas')!
             const bitmap = await createImageBitmap(canvas), rect = canvas.getBoundingClientRect()
-            const copy = new OffscreenCanvas(bitmap.width, bitmap.height), context = copy.getContext('2d')!
+            const { width, height } = bitmap
+            const copy = new OffscreenCanvas(width, height), context = copy.getContext('2d')!
             context.drawImage(bitmap, 0, 0)
-            const pixels = context.getImageData(0, 0, bitmap.width, bitmap.height).data
-            const y = Math.floor(bitmap.height * 0.7), xs: number[] = []
-            for (let x = 0; x < bitmap.width; x++) if (pixels[(y * bitmap.width + x) * 4 + 3] > 200) xs.push(x)
+            bitmap.close()
+            const pixels = context.getImageData(0, 0, width, height).data
+            const y = Math.floor(height * 0.7), xs: number[] = []
+            for (let x = 0; x < width; x++) if (pixels[(y * width + x) * 4 + 3] > 200) xs.push(x)
             if (!xs.length) throw new Error('No opaque body pixels in the real default model')
-            return { x: rect.left + xs[Math.floor(xs.length / 2)] / bitmap.width * rect.width, y: rect.top + y / bitmap.height * rect.height }
+            return { x: rect.left + xs[Math.floor(xs.length / 2)] / width * rect.width, y: rect.top + y / height * rect.height }
           })
         } catch (error) {
           if (attempt === 19) throw error

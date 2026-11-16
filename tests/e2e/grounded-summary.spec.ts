@@ -41,7 +41,7 @@ async function summaryServer(root: string) {
 }
 async function createSummary(page: Page, root: string, output: string) {
   await page.getByTestId('nav-tasks').click(); await page.getByTestId('new-task').click()
-  await page.getByTestId('task-title-input').fill(`请总结 ${root} 内 source.md，保存到 ${output}`)
+  await page.getByTestId('task-title-input').fill(`请总结 "${root}" 内 source.md，保存到 ${output}`)
   await page.getByRole('button', { name: '创建并开始', exact: true }).click()
   await expect(page.getByTestId('task-title-input')).toHaveCount(0)
   await expect(page.locator('.task-detail-titleline .pill')).toHaveText('等待批准')

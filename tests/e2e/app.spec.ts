@@ -26,7 +26,8 @@ test('first launch leads through model verification to a real first conversation
 test('console starts and all ten pages are reachable', async () => {
   test.setTimeout(90_000)
   const testInfo = test.info()
-  const server = await startModelServer()
+  const input = testInfo.outputPath('organize-input')
+  const server = await startModelServer({ taskRoot: input })
   const app = await launchApp()
   try {
     const page = await findMainPage(app)
@@ -59,11 +60,10 @@ test('console starts and all ten pages are reachable', async () => {
     await expect(page.getByText('这是来自测试模型的真实流式回复。', { exact: false }).last()).toBeVisible({ timeout: 10_000 })
 
     await page.getByTestId('nav-tasks').click()
-    const input = testInfo.outputPath('organize-input')
     mkdirSync(input, { recursive: true })
     writeFileSync(join(input, 'example.txt'), 'e2e real file')
     await page.getByTestId('new-task').click()
-    await page.getByTestId('task-title-input').fill('整理文件夹 ' + input)
+    await page.getByTestId('task-title-input').fill(`整理文件夹 "${input}"`)
     await page.getByRole('button', { name: '创建并开始', exact: true }).click()
     await expect(page.getByTestId('task-item')).toHaveCount(1)
     await page.getByTestId('approve-task').click()
