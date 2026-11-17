@@ -5,6 +5,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { MessageMarkdown } from '../../src/renderer/src/components/MessageMarkdown'
 import { MessageCopy } from '../../src/renderer/src/components/MessageCopy'
+import { normalizeMathDelimiters } from '../../src/renderer/src/components/math-markdown'
 
 const copyText = vi.fn()
 beforeEach(() => {
@@ -13,6 +14,64 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 const draw = (text: string, streaming = false) => createElement(MessageMarkdown, { text, streaming })
+
+it('renders model LaTeX and dollar delimiters, preserving exact source', () => {
+  const source = String.raw`渲染方程：
+\[
+L_o(x,\omega_o)=L_e(x,\omega_o)+\int_{\Omega} f_r(x,\omega_i,\omega_o)L_i(x,\omega_i)\cos\theta_i\,d\omega_i
+\]
+
+行内 \(x_i^2\) 与 $E=mc^2$。
+
+$$
+\frac{a}{b}
+$$`
+  const { container } = render(draw(source))
+  expect(container.querySelectorAll('.katex')).toHaveLength(4)
+  expect(container.querySelectorAll('.katex-display')).toHaveLength(2)
+  expect(container.querySelectorAll('.katex-error')).toHaveLength(0)
+  expect(container.querySelector('math')).not.toBeNull()
+  fireEvent.click(screen.getByRole('button', { name: '查看原文' }))
+  expect(container.querySelector('.message-source pre')?.textContent).toBe(source)
+})
+
+it('keeps LaTeX examples in code literal and copies them unchanged', async () => {
+  const code = String.raw`\[x_i\] and \(y\) and $z$`
+  const source = '`' + code + '`\n\n~~~tex\n' + code + '\n~~~\n\n    ' + code
+  expect(normalizeMathDelimiters(source)).toBe(source)
+  const { container } = render(draw(source))
+  expect(container.querySelectorAll('.katex')).toHaveLength(0)
+  await act(async () => { fireEvent.click(screen.getAllByRole('button', { name: '复制代码' })[0]) })
+  expect(copyText).toHaveBeenCalledWith(code)
+  expect(normalizeMathDelimiters('```tex\n' + code)).toBe('```tex\n' + code)
+})
+
+it('handles incomplete streaming math and invalid expressions without breaking the reply', () => {
+  const view = render(draw(String.raw`公式 \[\frac{a`, true))
+  expect(view.container.querySelectorAll('.katex')).toHaveLength(0)
+  view.rerender(draw(String.raw`公式 \[\frac{a}{b}\]`, false))
+  expect(view.container.querySelectorAll('.katex-display')).toHaveLength(1)
+  view.rerender(draw('$\\frac{a$\n\n后续正文', true))
+  expect(view.container.querySelector('.katex-error')).toBeInTheDocument()
+  expect(screen.getByText('后续正文')).toBeVisible()
+})
+
+it('does not enable HTML, remote resources or unsafe links through math', () => {
+  const { container } = render(draw(String.raw`$\href{javascript:alert(1)}{click}$
+
+$\includegraphics{https://example.com/track.png}$
+
+$\htmlStyle{background:url(https://example.com/track.png)}{x}$`))
+  expect(container.querySelectorAll('a, img, script, iframe')).toHaveLength(0)
+  expect(container.querySelector('[style*="example.com"]')).toBeNull()
+})
+
+it('preserves escaped delimiters and math nested inside blockquotes and lists', () => {
+  expect(normalizeMathDelimiters(String.raw`\\[literal\\]`)).toBe(String.raw`\\[literal\\]`)
+  const { container } = render(draw('> \\[\n> x_i\n> \\]\n\n- 公式\n\n  \\[\n  y_i\n  \\]'))
+  expect(container.querySelectorAll('.katex-display')).toHaveLength(2)
+  expect(container.querySelectorAll('.katex-error')).toHaveLength(0)
+})
 
 it('copies complete message source, reports failures, and resets feedback when content changes', async () => {
   const text = '**重点**\n\n```js\n\tconst x = 1;  \n```'

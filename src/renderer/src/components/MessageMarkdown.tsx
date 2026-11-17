@@ -1,6 +1,10 @@
 import { createContext, memo, useContext, useRef, useState, type ReactNode } from 'react'
 import Markdown, { type Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import { normalizeMathDelimiters } from './math-markdown'
+import 'katex/dist/katex.min.css'
 
 const Streaming = createContext(false)
 
@@ -55,7 +59,7 @@ export const MessageMarkdown = memo(function MessageMarkdown({ text, streaming =
   const [sourceOpen, setSourceOpen] = useState(false)
   return <Streaming.Provider value={streaming}>
     <div className="message-markdown" data-streaming={streaming || undefined}>
-      <Markdown remarkPlugins={[remarkGfm]} components={components}>{text}</Markdown>
+      <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[[rehypeKatex, { trust: false, maxExpand: 1000, maxSize: 20 }]]} components={components}>{normalizeMathDelimiters(text)}</Markdown>
     </div>
     {showSource ? <div className="message-source"><button type="button" aria-expanded={sourceOpen} onClick={() => setSourceOpen(value => !value)}>{sourceOpen ? '收起原文' : '查看原文'}</button>{sourceOpen ? <pre>{text}</pre> : null}</div> : null}
   </Streaming.Provider>
