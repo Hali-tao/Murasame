@@ -122,15 +122,6 @@ export function ScreenPage(): React.JSX.Element {
         </Card>
       </div>
 
-      <Card className="usage-boundaries">
-        <CardHead title="读取范围与数据处理" subtitle="每次分析都由你选择并确认范围" />
-        <div className="boundary-grid">
-          <div><Pill tone="blue">画面读取</Pill><p>只分析你手动框选并确认后的区域，不包含选区外的窗口文字。截图仅在内存中临时保留，不写入磁盘；确认后将识别文字发给当前模型分析。</p></div>
-          <div><Pill tone="violet">长期记忆</Pill><p>不会记进长期记忆。想记住的内容需要你自己添加。</p></div>
-          <div><Pill tone="amber">模型服务</Pill><p>仅将 OCR 文字发送给当前模型服务（{defaultModel?.name ?? '未配置'}），不会发送截图；只需支持文字对话。图片外发设置不影响本页的文字分析。</p></div>
-        </div>
-      </Card>
-
       {preview && <Modal open={previewOpen} onOpenChange={setPreviewOpen} title="框选截图" description="仅保留在内存中，关闭应用后清除。" width="min(1200px, 94vw)">
         <div className="screen-image-expanded"><img src={preview} alt="放大的框选截图" /></div>
       </Modal>}
