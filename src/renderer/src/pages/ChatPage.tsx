@@ -7,6 +7,7 @@ import { Button, Card, CardHead, EmptyState, Pill, Spinner } from '../components
 import { StatusPill } from '../components/StatusPill'
 import { MemoryRecallStatus } from '../components/MemoryRecallStatus'
 import { MessageMarkdown } from '../components/MessageMarkdown'
+import { MessageCopy } from '../components/MessageCopy'
 import { clockLabel } from '../lib/utils'
 import { playSamples, startRecording, type Recording } from '../lib/audio'
 import { onWindowHidden } from '../lib/window-visibility'
@@ -268,8 +269,9 @@ export function ChatPage(): React.JSX.Element {
                         ) : null}
                       </div>
                       <div className="message-bubble">
-                        <MessageMarkdown text={message.text} />
+                        <MessageMarkdown text={message.text} showSource={false} />
                       </div>
+                      <MessageCopy text={message.text} role={message.role} />
                     </div>
                   </div>
                 ))}
@@ -279,7 +281,7 @@ export function ChatPage(): React.JSX.Element {
                     <div className="message-wrap">
                       <div className="message-meta"><strong>{data.character.name}</strong><time>正在回复</time></div>
                       <div className="message-bubble">
-                        <MessageMarkdown text={streamingText} streaming />
+                        <MessageMarkdown text={streamingText} streaming showSource={false} />
                         <span className="streaming-cursor" />
                       </div>
                     </div>

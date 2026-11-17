@@ -6,6 +6,7 @@ import { Button, Card, CardHead, EmptyState, Pill } from '../components/ui'
 import { searchHistory } from '@shared/history-search'
 import { useAppStore } from '../store'
 import { MessageMarkdown } from '../components/MessageMarkdown'
+import { MessageCopy } from '../components/MessageCopy'
 
 export function HistoryPage(): React.JSX.Element {
   const data = useAppStore((state) => state.data)!
@@ -102,8 +103,9 @@ export function HistoryPage(): React.JSX.Element {
                     <div className="message-wrap">
                       <div className="message-meta"><strong>{message.role === 'assistant' ? (data.character.name.trim() || '桌宠') : (data.settings.userName.trim() || '你')}</strong><time>{message.time}</time></div>
                       <div className="message-bubble">
-                        <MessageMarkdown text={message.text} />
+                        <MessageMarkdown text={message.text} showSource={false} />
                       </div>
+                      <MessageCopy text={message.text} role={message.role} />
                     </div>
                   </div>
                 ))}

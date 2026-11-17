@@ -51,12 +51,12 @@ const components: Components = {
 }
 
 /** Formatting is display-only. The original text remains available and is never rewritten for streaming. */
-export const MessageMarkdown = memo(function MessageMarkdown({ text, streaming = false }: { text: string; streaming?: boolean }): React.JSX.Element {
+export const MessageMarkdown = memo(function MessageMarkdown({ text, streaming = false, showSource = true }: { text: string; streaming?: boolean; showSource?: boolean }): React.JSX.Element {
   const [sourceOpen, setSourceOpen] = useState(false)
   return <Streaming.Provider value={streaming}>
     <div className="message-markdown" data-streaming={streaming || undefined}>
       <Markdown remarkPlugins={[remarkGfm]} components={components}>{text}</Markdown>
     </div>
-    <div className="message-source"><button type="button" aria-expanded={sourceOpen} onClick={() => setSourceOpen(value => !value)}>{sourceOpen ? '收起原文' : '查看原文'}</button>{sourceOpen ? <pre>{text}</pre> : null}</div>
+    {showSource ? <div className="message-source"><button type="button" aria-expanded={sourceOpen} onClick={() => setSourceOpen(value => !value)}>{sourceOpen ? '收起原文' : '查看原文'}</button>{sourceOpen ? <pre>{text}</pre> : null}</div> : null}
   </Streaming.Provider>
 })

@@ -169,7 +169,8 @@ describe('conversation UI isolation', () => {
     expect(screen.getByRole('button', { name: '展开上下文' }).getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(screen.getByRole('button', { name: '展开上下文' }))
     fireEvent.click(screen.getByText('会话b'))
-    expect(screen.getByText('本轮未注入长期记忆')).toBeTruthy()
+    expect(screen.getByTestId('memory-recall-status').textContent).toContain('尚无检索记录')
+    expect(screen.queryByText('实际注入的白茶偏好')).toBeNull()
   })
 })
 

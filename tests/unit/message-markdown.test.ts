@@ -4,6 +4,7 @@ import { createElement } from 'react'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { MessageMarkdown } from '../../src/renderer/src/components/MessageMarkdown'
+import { MessageCopy } from '../../src/renderer/src/components/MessageCopy'
 
 const copyText = vi.fn()
 beforeEach(() => {
@@ -12,6 +13,25 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 const draw = (text: string, streaming = false) => createElement(MessageMarkdown, { text, streaming })
+
+it('copies complete message source, reports failures, and resets feedback when content changes', async () => {
+  const text = '**重点**\n\n```js\n\tconst x = 1;  \n```'
+  const view = render(createElement(MessageCopy, { text, role: 'assistant' }))
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '复制回复' })) })
+  expect(copyText).toHaveBeenCalledWith(text)
+  expect(screen.getByRole('status')).toHaveTextContent('已复制')
+  view.rerender(createElement(MessageCopy, { text: '用户消息', role: 'user' }))
+  expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  copyText.mockRejectedValue(new Error('clipboard unavailable'))
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '复制消息' })) })
+  expect(screen.getByRole('status')).toHaveTextContent('复制失败')
+})
+
+it('can render console messages without the source toggle', () => {
+  render(createElement(MessageMarkdown, { text: '**内容**', showSource: false }))
+  expect(screen.queryByRole('button', { name: '查看原文' })).not.toBeInTheDocument()
+  expect(screen.getByText('内容')).toBeVisible()
+})
 
 it('[FR-01] formats headings, emphasis, lists, links and tables while keeping exact source available', () => {
   const source = '# 标题\n\n**重点** 与 *强调*\n\n- 第一项\n- 第二项\n\n[文档](https://example.com/docs)\n\n| 名称 | 值 |\n| --- | --- |\n| 项目 | 1 |'
