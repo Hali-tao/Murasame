@@ -1172,3 +1172,5 @@ a:focus-visible {
 .task-clarification { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; margin: 12px 0; }
 .task-clarification label { width: 100%; font-weight: 600; }
 .task-clarification textarea { flex: 1 1 300px; min-height: 72px; padding: 10px; }
+
+.settings-page .storage-backup-note { overflow-wrap: anywhere; }

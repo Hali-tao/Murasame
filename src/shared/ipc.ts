@@ -1,6 +1,8 @@
 export const IPC = {
   app: {
     getInfo: 'app:get-info',
+    changeStorageLocation: 'app:change-storage-location',
+    openStorageBackup: 'app:open-storage-backup',
     copyText: 'app:copy-text',
     checkMemoryModel: 'app:check-memory-model',
     installMemoryModel: 'app:install-memory-model',

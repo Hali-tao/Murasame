@@ -13,6 +13,13 @@ export function SettingsPage(): React.JSX.Element {
   const info = useAppStore((state) => state.info)
   const updateSettings = useAppStore((state) => state.updateSettings)
   const notify = useAppStore((state) => state.notify)
+  const [movingStorage, setMovingStorage] = useState(false)
+  const changeStorage = async (): Promise<void> => {
+    setMovingStorage(true)
+    try { await window.murasame.app.changeStorageLocation() }
+    catch (error) { notify(String(error), 'amber') }
+    finally { setMovingStorage(false) }
+  }
   const [clearOpen, setClearOpen] = useState(false)
   const [plainOpen, setPlainOpen] = useState(false)
   const [bundle, setBundle] = useState<null | { mode: 'export' | 'import'; path: string; passphrase: string }>(null)
@@ -294,7 +301,11 @@ export function SettingsPage(): React.JSX.Element {
               <div><span>数据位置</span><strong className="path-text">{info?.userDataPath ?? '加载中…'}</strong></div>
               <div><span>日志位置</span><strong className="path-text">{info?.logsPath ?? '加载中…'}</strong></div>
             </div>
+            <p className="muted">可将应用数据移到其他磁盘，日志和下载的模型会随数据目录一起迁移，重启后生效。安装程序本身的位置不变。</p>
+            {info?.previousStoragePath && <p className="muted storage-backup-note">旧数据备份：{info.previousStoragePath}。确认新位置使用正常后，可在文件管理器中清理旧数据；请保留默认目录中的 storage-location.json。</p>}
             <div className="about-actions">
+              <Button size="sm" onClick={() => void changeStorage()} disabled={movingStorage}>{movingStorage ? '正在准备…' : '更改存储位置…'}</Button>
+              {info?.previousStoragePath && <Button size="sm" onClick={() => void window.murasame.app.openStorageBackup().catch(error => notify(String(error), 'amber'))}>打开旧数据备份</Button>}
               <Button size="sm" onClick={() => void openPath('userData')}>打开数据目录</Button>
               <Button size="sm" onClick={() => void openPath('logs')}>打开日志</Button>
               <Button size="sm" onClick={() => setHelpOpen(true)} icon={<HelpCircle size={14} />}>使用说明</Button>

@@ -39,6 +39,8 @@ function subscribe<T>(channel: string, listener: (payload: T) => void): () => vo
 
 const api: MurasameApi = {
   app: {
+    openStorageBackup: (): Promise<void> => ipcRenderer.invoke(IPC.app.openStorageBackup),
+    changeStorageLocation: (): Promise<void> => ipcRenderer.invoke(IPC.app.changeStorageLocation),
     getInfo: (): Promise<AppInfo> => ipcRenderer.invoke(IPC.app.getInfo),
     copyText: (text): Promise<void> => ipcRenderer.invoke(IPC.app.copyText, text),
     checkMemoryModel: () => ipcRenderer.invoke(IPC.app.checkMemoryModel),

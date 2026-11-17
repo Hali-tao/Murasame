@@ -4,6 +4,7 @@ import { cleanupOwnedContainersAsync, configureContainerOwner } from './isolatio
 import { readFile } from 'node:fs/promises'
 import { extname, join, resolve, sep } from 'node:path'
 import log from './logger'
+import { confirmStorageStartup, initializeStorage, rollbackStorageStartup } from './data/storage-location'
 import { markQuitting } from './app-state'
 import { getDatabase, databaseCapacityWarning } from './data/db'
 import { consumeKeyRecoveryNotice } from './data/keys'
@@ -111,6 +112,15 @@ function hardenSession(): void {
 if (!gotSingleInstanceLock) {
   app.quit()
 } else {
+  try {
+    const storagePath = initializeStorage(app.getPath('userData'))
+    app.setPath('userData', storagePath)
+    app.setPath('sessionData', storagePath)
+    app.setAppLogsPath(join(storagePath, 'logs'))
+  } catch (error) {
+    dialog.showErrorBox('无法打开存储位置', String(error))
+    app.exit(1)
+  }
   app.setAppUserModelId('com.murasame.desktop')
 
   app.on('second-instance', () => {
@@ -124,8 +134,10 @@ if (!gotSingleInstanceLock) {
     if (app.isPackaged) setBundledModelsRoot(join(process.resourcesPath, 'models'))
     try {
       getDatabase()
+      confirmStorageStartup()
     } catch (error) {
-      const message = error instanceof Error ? error.message : '本地数据库无法打开'
+      const rolledBack = rollbackStorageStartup()
+      const message = (error instanceof Error ? error.message : '本地数据库无法打开') + (rolledBack ? '\n迁移后的数据库未能正常打开，已恢复原存储位置，请重新启动。' : '')
       log.error('Startup failed before the window opened', error)
       dialog.showErrorBox('Murasame 无法启动', message)
       app.exit(1)

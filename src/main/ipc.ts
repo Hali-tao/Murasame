@@ -1,3 +1,4 @@
+import { previousStoragePath, scheduleStorageMove } from './data/storage-location'
 import { app, BrowserWindow, clipboard, dialog, ipcMain, shell } from 'electron'
 import { copyFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -257,10 +258,30 @@ export function registerIpcHandlers(core: DesktopCore): void {
       platform: process.platform,
       isPackaged: app.isPackaged,
       logsPath: app.getPath('logs'),
-      userDataPath: app.getPath('userData')
+      userDataPath: app.getPath('userData'),
+      previousStoragePath: previousStoragePath()
     }
   })
 
+  ipcMain.handle(IPC.app.openStorageBackup, async () => {
+    const previous = previousStoragePath()
+    if (!previous) throw new Error('没有旧数据备份。')
+    const failure = await shell.openPath(previous)
+    if (failure) throw new Error(failure)
+  })
+  ipcMain.handle(IPC.app.changeStorageLocation, async () => {
+    const choice = await dialog.showOpenDialog({ title: '选择数据存储文件夹', properties: ['openDirectory', 'createDirectory'] })
+    if (choice.canceled || !choice.filePaths[0]) return
+    const target = join(choice.filePaths[0], 'murasame-desktop')
+    const result = await dialog.showMessageBox({ type: 'question', title: '迁移数据并重启',
+      message: '将全部应用数据迁移到新位置？',
+      detail: `当前位置：${app.getPath('userData')}\n新位置：${target}\n\n聊天历史、长期记忆、下载的模型、角色资源和日志都会迁移。应用将重启，数据较多时启动可能需要几分钟。旧数据会保留为备份，确认正常后可手动清理；默认目录中的 storage-location.json 必须保留。卸载时请单独处理自定义目录。`,
+      buttons: ['取消', '迁移并重启'], defaultId: 0, cancelId: 0 })
+    if (result.response !== 1) return
+    scheduleStorageMove(target)
+    app.relaunch()
+    app.quit()
+  })
   ipcMain.handle(IPC.app.quit, () => confirmQuit())
   ipcMain.handle(IPC.app.copyText, (_event, text: unknown) => {
     if (typeof text !== 'string' || text.length > 2_000_000) throw new Error('复制内容无效或过长，请选择较短的代码。')

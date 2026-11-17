@@ -285,6 +285,7 @@ export interface AppInfo {
   isPackaged: boolean
   logsPath: string
   userDataPath: string
+  previousStoragePath?: string
 }
 
 export interface PerformanceCue {
@@ -447,6 +448,8 @@ export interface MurasameCore {
 export interface MurasameApi {
   app: {
     getInfo(): Promise<AppInfo>
+    changeStorageLocation(): Promise<void>
+    openStorageBackup(): Promise<void>
     copyText(text: string): Promise<void>
     checkMemoryModel(): Promise<MemoryModelStatus>
     installMemoryModel(): Promise<MemoryModelStatus>
