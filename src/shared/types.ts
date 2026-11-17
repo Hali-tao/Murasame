@@ -235,6 +235,7 @@ export interface AppSettings {
   petPreset: PetPresetId
   /** 唤起桌宠对话的全局快捷键，Electron accelerator 写法。 */
   petHotkey: string
+  screenHotkey: string
   importedModelUrl: string
   importedCharacterName: string
   screenWatchEnabled: boolean
@@ -461,6 +462,7 @@ export interface MurasameApi {
     pickOpen(options?: { title?: string; directory?: boolean; filters?: Array<{ name: string; extensions: string[] }> }): Promise<string | null>
     pickSave(options?: { title?: string; defaultPath?: string }): Promise<string | null>
     hotkey(): Promise<string>
+    screenHotkey(): Promise<string>
   }
   window: {
     showMain(): Promise<void>

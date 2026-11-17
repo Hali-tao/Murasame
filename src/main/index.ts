@@ -1,3 +1,4 @@
+import { applyScreenHotkey, runScreenShortcut } from './screen-hotkey'
 import { app, dialog, globalShortcut, powerMonitor, protocol, session, utilityProcess } from 'electron'
 import { createHash } from 'node:crypto'
 import { cleanupOwnedContainersAsync, configureContainerOwner } from './isolation/docker-runtime'
@@ -194,6 +195,8 @@ if (!gotSingleInstanceLock) {
         .catch((error) => log.warn('展示密钥恢复提示失败', error))
     }
     const hotkey = applyHotkey(getSettings().petHotkey, () => focusPetChat())
+    const screenHotkey = applyScreenHotkey(getSettings().screenHotkey, () => { void runScreenShortcut(core) })
+    if (!screenHotkey.ok) log.warn(screenHotkey.message)
     refreshMemoryStatus(app.getPath('userData'))
     void checkMemoryModel(app.getPath('userData'))
     if (!hotkey.ok) log.warn(hotkey.message)

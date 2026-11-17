@@ -27,12 +27,16 @@ export function SettingsPage(): React.JSX.Element {
   const [helpOpen, setHelpOpen] = useState(false)
   const [busyClear, setBusyClear] = useState(false)
   const [hotkey, setHotkey] = useState('正在读取快捷键')
+  const [screenHotkey, setScreenHotkey] = useState('正在读取快捷键')
+  const [screenHotkeyDraft, setScreenHotkeyDraft] = useState(data.settings.screenHotkey)
+  const [savingScreenHotkey, setSavingScreenHotkey] = useState(false)
   const [hotkeyDraft, setHotkeyDraft] = useState(data.settings.petHotkey)
   const [voiceDetail, setVoiceDetail] = useState('')
   const [checkingUpdate, setCheckingUpdate] = useState(false)
   const runningTasks = data.tasks.filter((task) => task.status === '执行中' || task.status === '等待批准')
 
   useEffect(() => {
+    void window.murasame.app.screenHotkey().then(setScreenHotkey)
     void window.murasame.app.hotkey().then(setHotkey)
     void window.murasame.voice.readiness().then((ready) => setVoiceDetail(ready.detail))
   }, [])
@@ -52,6 +56,21 @@ export function SettingsPage(): React.JSX.Element {
       await updateSettings({ petHotkey: current.petHotkey })
       notify(status, 'amber')
     }
+  }
+
+  const applyScreenHotkeyDraft = async (): Promise<void> => {
+    setSavingScreenHotkey(true)
+    try {
+      const wanted = screenHotkeyDraft.trim()
+      const saved = await updateSettings({ screenHotkey: wanted })
+      const status = await window.murasame.app.screenHotkey()
+      setScreenHotkey(status)
+      if (saved) {
+        const current = await window.murasame.settings.get()
+        setScreenHotkeyDraft(current.screenHotkey)
+        notify(current.screenHotkey === wanted ? '屏幕辅助快捷键已更换' : status, current.screenHotkey === wanted ? 'green' : 'amber')
+      }
+    } finally { setSavingScreenHotkey(false) }
   }
 
   const updatePermission = async (key: keyof Permissions, value: boolean): Promise<void> => {
@@ -297,6 +316,12 @@ export function SettingsPage(): React.JSX.Element {
                   <Button size="sm" onClick={() => void applyHotkeyDraft()} disabled={!hotkeyDraft.trim() || hotkeyDraft.trim() === data.settings.petHotkey}>应用</Button>
                 </strong>
               </div>
+              <div><span>屏幕辅助快捷键</span><strong>{screenHotkey}</strong></div>
+              <div><span>修改屏幕辅助快捷键</span><strong className="hotkey-edit">
+                <input className="input" value={screenHotkeyDraft} onChange={event => setScreenHotkeyDraft(event.target.value)} aria-label="屏幕辅助的快捷键" placeholder="例如 Ctrl+Alt+Q" maxLength={40} />
+                <Button size="sm" onClick={() => void applyScreenHotkeyDraft()} disabled={savingScreenHotkey || !screenHotkeyDraft.trim() || screenHotkeyDraft.trim() === data.settings.screenHotkey}>应用屏幕快捷键</Button>
+              </strong></div>
+              <div><span>使用方式</span><strong>停留在目标窗口按快捷键，分析后打开结果。未授权时会引导到设置。</strong></div>
               <div><span>语音</span><strong>{voiceDetail || '正在检查本地语音文件'}</strong></div>
               <div><span>数据位置</span><strong className="path-text">{info?.userDataPath ?? '加载中…'}</strong></div>
               <div><span>日志位置</span><strong className="path-text">{info?.logsPath ?? '加载中…'}</strong></div>

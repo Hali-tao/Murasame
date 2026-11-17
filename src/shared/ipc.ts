@@ -13,6 +13,7 @@ export const IPC = {
     clearLogs: 'app:clear-logs',
     pickOpen: 'app:pick-open',
     pickSave: 'app:pick-save',
+    screenHotkey: 'app:screen-hotkey',
     hotkey: 'app:hotkey'
   },
   window: {

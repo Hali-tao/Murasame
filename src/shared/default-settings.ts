@@ -18,6 +18,7 @@ export const initialSettings: AppSettings = {
   petScale: 0.9,
   petPreset: DEFAULT_PET_PRESET,
   petHotkey: DEFAULT_PET_HOTKEY,
+  screenHotkey: 'Ctrl+Alt+Q',
   importedModelUrl: '',
   importedCharacterName: '',
   screenWatchEnabled: false,

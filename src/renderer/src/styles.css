@@ -1233,3 +1233,21 @@ a:focus-visible {
   .tools-page .call-row { grid-template-columns: minmax(0, 1fr) auto; }
   .tools-page .call-row time { grid-column: 1 / -1; }
 }
+
+/* Keep screen input and analysis side by side, with preparation before capture. */
+.screen-page .screen-setup { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 12px; margin: 16px 0; }
+.screen-setup > div { display: flex; align-items: flex-start; flex-direction: column; gap: 8px; padding: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.screen-setup span { color: var(--muted); font-size: 11px; }
+.screen-setup strong { font-size: 13px; overflow-wrap: anywhere; }
+.screen-page .screen-columns { align-items: start; }
+.screen-page .screen-toolbar { flex-wrap: wrap; }
+.screen-page .screen-toolbar > div { flex: 1 1 180px; }
+.screen-page .screen-preview.filled { min-height: 240px; max-height: 420px; overflow-wrap: anywhere; }
+.screen-page .permission-banner { flex-wrap: wrap; }
+.screen-page .permission-banner > div:nth-child(2) { min-width: 180px; }
+.screen-page .analysis-summary { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.screen-result-note { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.screen-feedback { margin: 0 0 16px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--amber-soft); font-size: 12px; overflow-wrap: anywhere; }
+.screen-feedback p { margin: 8px 0; }
+.screen-feedback span { color: var(--muted); }
+@media (max-width: 900px) { .screen-page .screen-setup { grid-template-columns: minmax(0, 1fr); } }

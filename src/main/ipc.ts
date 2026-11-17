@@ -1,3 +1,4 @@
+import { applyScreenHotkey, readScreenHotkey, runScreenShortcut } from './screen-hotkey'
 import { previousStoragePath, scheduleStorageMove } from './data/storage-location'
 import { app, BrowserWindow, clipboard, dialog, ipcMain, shell } from 'electron'
 import { copyFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -334,6 +335,7 @@ export function registerIpcHandlers(core: DesktopCore): void {
     }
   })
 
+  ipcMain.handle(IPC.app.screenHotkey, () => readScreenHotkey())
   ipcMain.handle(IPC.app.hotkey, () => readHotkey())
 
   ipcMain.handle(IPC.app.pickSave, async (_event, raw: unknown) => {
@@ -420,6 +422,13 @@ export function registerIpcHandlers(core: DesktopCore): void {
           // 先注册再持久化：注册失败时不留下不可用的快捷键，其余设置照常保存。
           log.warn(`快捷键注册失败：${result.message}`)
           delete patch.petHotkey
+        }
+      }
+      if (patch.screenHotkey && patch.screenHotkey !== previous.screenHotkey) {
+        const result = applyScreenHotkey(patch.screenHotkey, () => { void runScreenShortcut(core) })
+        if (!result.ok) {
+          log.warn(result.message)
+          delete patch.screenHotkey
         }
       }
       const next = updateSettings(patch)

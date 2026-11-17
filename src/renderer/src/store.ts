@@ -652,7 +652,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         if (!analysis) return null
         const data = get().data
         if (data) set({ data: { ...data, screenAnalysis: analysis } })
-        get().notify('当前画面分析完成')
+        get().notify(analysis.refusal || analysis.confidence === '未理解' ? '本次画面分析未完成，请查看原因' : '当前画面分析完成', analysis.refusal || analysis.confidence === '未理解' ? 'amber' : 'green')
         return analysis
       })
     }

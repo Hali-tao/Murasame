@@ -12,9 +12,18 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
       const page = await findMainPage(app)
       await page.getByTestId('nav-screen').click()
       await expect(page.getByText('屏幕读取尚未授权')).toBeVisible()
+      const panels = await page.locator('.screen-columns > .card').evaluateAll(cards => cards.map(card => {
+        const rect = card.getBoundingClientRect()
+        return { left: rect.left, right: rect.right, top: rect.top }
+      }))
+      expect(panels).toHaveLength(2)
+      expect(panels[1].left).toBeGreaterThanOrEqual(panels[0].right)
+      expect(Math.abs(panels[0].top - panels[1].top)).toBeLessThan(1)
+      await expect(page.getByRole('button', { name: '配置模型服务' })).toBeVisible()
+      await page.screenshot({ path: test.info().outputPath('screen-workflow.png') })
       const analyze = page.getByRole('button', { name: '尚未授权' })
       await expect(analyze).toBeDisabled()
-      await expect(page.getByText('还没有截取。点下面的按钮，读取你当前正在看的窗口。')).toBeVisible()
+      await expect(page.getByText('还没有读取内容。授权后点击「分析当前画面」，读取前台窗口。')).toBeVisible()
       await expect(page.getByText(/截图不会发给模型/)).toBeVisible()
       await page.getByRole('button', { name: '管理权限' }).click()
       await expect(page).toHaveURL(/\/settings/)
@@ -30,7 +39,7 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
       const page = await findMainPage(app)
       await page.evaluate(() => window.murasame.settings.update({ permissions: { screen: true, microphone: false, accessibility: false } }))
       await page.getByTestId('nav-screen').click()
-      await expect(page.getByText(/已授权 · 屏幕读取仅用于当前问题/)).toBeVisible()
+      await expect(page.getByText(/已授权 · 单次读取/)).toBeVisible()
       const analyze = page.getByRole('button', { name: '分析当前画面' })
       await expect(analyze).toBeEnabled()
       await analyze.click()
@@ -38,7 +47,7 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
       await expect.poll(async () => {
         const busy = await page.getByRole('button', { name: '正在分析…' }).count()
         const toast = await page.locator('.toast-red').count()
-        const placeholder = await page.getByText(/还没有截取/).count()
+        const placeholder = await page.getByText(/还没有读取内容/).count()
         return { busy, toast, placeholder }
       }, { timeout: 30_000 }).toMatchObject({ busy: 0 })
       const state = await page.evaluate(async () => {

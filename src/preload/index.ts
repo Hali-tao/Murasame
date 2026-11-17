@@ -52,6 +52,7 @@ const api: MurasameApi = {
     clearLogs: (): Promise<void> => ipcRenderer.invoke(IPC.app.clearLogs),
     pickOpen: (options): Promise<string | null> => ipcRenderer.invoke(IPC.app.pickOpen, options),
     pickSave: (options): Promise<string | null> => ipcRenderer.invoke(IPC.app.pickSave, options),
+    screenHotkey: (): Promise<string> => ipcRenderer.invoke(IPC.app.screenHotkey),
     hotkey: (): Promise<string> => ipcRenderer.invoke(IPC.app.hotkey)
   },
   window: {
