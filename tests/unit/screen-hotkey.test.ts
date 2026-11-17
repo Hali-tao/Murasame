@@ -49,3 +49,10 @@ it('releases the guard after errors so the user can retry', async () => {
   await runScreenShortcut({ analyzeScreen }); await runScreenShortcut({ analyzeScreen })
   expect(analyzeScreen).toHaveBeenCalledTimes(2)
 })
+
+it('cancelling region selection does not open the results page', async () => {
+  const { runScreenShortcut } = await import('../../src/main/screen-hotkey')
+  await runScreenShortcut({ analyzeScreen: vi.fn().mockResolvedValue({ ok: true, data: { cancelled: true } }) })
+  expect(h.open).not.toHaveBeenCalled()
+  expect(h.dialog).not.toHaveBeenCalled()
+})

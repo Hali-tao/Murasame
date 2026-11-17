@@ -14,6 +14,7 @@ const chatQueue = new RequestQueue()
 const workQueue = new RequestQueue()
 
 export interface RequestControl {
+  lane?: 'chat' | 'work'
   signal?: AbortSignal
   beforeSend?: () => void
   onDispatch?: (waitMs: number) => void
@@ -96,7 +97,7 @@ export class ModelGateway {
     system?: string,
     control: RequestControl = {}
   ): Promise<string> {
-    const text = await execute(model, prepare(model, messages, system), true, onDelta ?? (() => undefined), undefined, 120_000, 'chat', control)
+    const text = await execute(model, prepare(model, messages, system), true, onDelta ?? (() => undefined), undefined, 120_000, control.lane ?? 'chat', control)
     if (!text.trim()) throw new Error('模型返回了空内容，请检查模型名称或服务兼容性')
     return text
   }

@@ -20,7 +20,7 @@ export function applyScreenHotkey(accelerator: string, onPress: () => void): { o
   }
   if (current) globalShortcut.unregister(current)
   current = next
-  message = `${next} 已注册，可分析当前窗口`
+  message = `${next} 已注册，可触发屏幕辅助`
   return { ok: true, message }
 }
 
@@ -31,6 +31,7 @@ export async function runScreenShortcut(core: { analyzeScreen(): Promise<Result<
   running = true
   try {
     const result = await core.analyzeScreen()
+    if (result.ok && result.data.cancelled) return
     openMainPath('/screen')
     if (!result.ok) await dialog.showMessageBox({ type: 'warning', title: '屏幕辅助未完成', message: result.error })
   } catch (error) {

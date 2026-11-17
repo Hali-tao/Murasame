@@ -69,6 +69,7 @@ vi.mock('../../src/main/data/portability', () => ({
 vi.mock('../../src/main/core/services/asset-service', () => ({ importCharacterDirectory: vi.fn(() => ({ ok: false, reason: '没有可导入的角色目录' })) }))
 vi.mock('../../src/main/hotkey-status', () => ({ applyHotkey: vi.fn(() => ({ ok: true, message: '' })), readHotkey: vi.fn(() => 'Alt+Space') }))
 vi.mock('../../src/main/isolation/docker-runtime', () => ({
+  runCommandAsync: vi.fn(async () => { throw new Error('unexpected subprocess in IPC unit test') }),
   buildIsolationImage: vi.fn(async () => ({ ok: true, detail: '' })),
   ensureDocker: vi.fn(async () => ({ ok: true, detail: '' })),
   friendlyBuildLine: (line: string) => line,

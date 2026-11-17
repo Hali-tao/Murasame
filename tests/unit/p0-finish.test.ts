@@ -27,12 +27,12 @@ describe('[FR-24] 能力探测失败分类', () => {
   })
 
   it('[OR-01] 未验证能力不得显示为可用', () => {
-    expect(featureState([{ id: 'vision.image-input', status: 'declared', detail: '', probedAt: '' }], 'screen').available).toBe(false)
-    expect(featureState([{ id: 'vision.image-input', status: 'verified', detail: '', probedAt: '' }], 'screen').available).toBe(true)
+    expect(featureState([{ id: 'text.chat', status: 'declared', detail: '', probedAt: '' }], 'screen').available).toBe(false)
+    expect(featureState([{ id: 'text.chat', status: 'verified', detail: '', probedAt: '' }], 'screen').available).toBe(true)
   })
 
   it('[NFR-C02] 配置能说明其支持能力', () => {
-    const blocked = featureState([{ id: 'vision.image-input', status: 'unsupported', detail: '', probedAt: '' }], 'screen')
+    const blocked = featureState([{ id: 'text.chat', status: 'unsupported', detail: '', probedAt: '' }], 'screen')
     expect(blocked.label).toContain('不支持')
   })
 })

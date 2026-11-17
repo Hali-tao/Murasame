@@ -11,7 +11,7 @@ const bridge = vi.hoisted(() => ({
   listeners: new Map<string, Set<(event: unknown, payload: unknown) => void>>()
 }))
 vi.mock('electron', () => ({
-  app: { getAppPath: () => process.cwd(), isPackaged: false }, dialog: {}, shell: {}, safeStorage: {}, globalShortcut: {}, nativeImage: {}, screen: {},
+  app: { getAppPath: () => process.cwd(), getPath: () => process.cwd(), isPackaged: false }, dialog: {}, shell: {}, safeStorage: {}, globalShortcut: {}, nativeImage: {}, screen: {},
   BrowserWindow: { getAllWindows: () => [
     { isDestroyed: () => false, webContents: { send: (channel: string, payload: unknown) => { for (const listener of bridge.listeners.get(channel) ?? []) listener({}, structuredClone(payload)) } } },
     { isDestroyed: () => true, webContents: { send: () => { throw new Error('destroyed window cannot receive events') } } }

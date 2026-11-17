@@ -8,6 +8,7 @@ import { AppError } from '../shared/errors'
 import { NotImplementedError } from './core/errors'
 import { IPC } from '../shared/ipc'
 import { checkMemoryModel } from './local/memory-status'
+import { configureScreenOcr } from './local/screen-ocr'
 import {
   characterImportSchema,
   characterSchema,
@@ -172,6 +173,10 @@ function syncPetSettings(previous: AppSettings, next: AppSettings): void {
 export function registerIpcHandlers(core: DesktopCore): void {
   if (registered) return
   registered = true
+  const ocr = configureScreenOcr(app.getPath('userData'), app.isPackaged ? join(process.resourcesPath, 'resources') : join(app.getAppPath(), 'resources'))
+  ipcMain.handle(IPC.app.ocrStatus, () => ocr.getStatus())
+  ipcMain.handle(IPC.app.checkOcrModel, () => ocr.check())
+  ipcMain.handle(IPC.app.installOcrModel, () => ocr.install())
   let isolationPrepare: Promise<{ ok: boolean; detail: string }> | null = null
   let prepareController: AbortController | null = null
   let prepareGeneration = 0

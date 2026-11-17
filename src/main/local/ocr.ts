@@ -5,6 +5,8 @@ import { join } from 'node:path'
 const powershell = join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe')
 
 const script = `
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+$OutputEncoding = [Console]::OutputEncoding
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
 $null = [Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime]
 $null = [Windows.Media.Ocr.OcrEngine,Windows.Media.Ocr,ContentType=WindowsRuntime]
@@ -15,14 +17,28 @@ function Await($op, $type) {
   $task.Wait(-1) | Out-Null
   $task.Result
 }
-$path = $env:MURASAME_OCR_IMAGE
-$file = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($path)) ([Windows.Storage.StorageFile])
-$stream = Await ($file.OpenAsync([Windows.Storage.FileAccessMode]::Read)) ([Windows.Storage.Streams.IRandomAccessStream])
+if ($env:MURASAME_OCR_STDIN -eq '1') {
+  $null = [Windows.Storage.Streams.InMemoryRandomAccessStream,Windows.Storage.Streams,ContentType=WindowsRuntime]
+  $null = [Windows.Storage.Streams.DataWriter,Windows.Storage.Streams,ContentType=WindowsRuntime]
+  $stream = New-Object Windows.Storage.Streams.InMemoryRandomAccessStream
+  $writer = New-Object Windows.Storage.Streams.DataWriter($stream)
+  $writer.WriteBytes([Convert]::FromBase64String([Console]::In.ReadToEnd()))
+  $null = Await ($writer.StoreAsync()) ([uint32])
+  $null = $writer.DetachStream()
+  $writer.Dispose()
+  $stream.Seek(0)
+} else {
+  $path = $env:MURASAME_OCR_IMAGE
+  $file = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($path)) ([Windows.Storage.StorageFile])
+  $stream = Await ($file.OpenAsync([Windows.Storage.FileAccessMode]::Read)) ([Windows.Storage.Streams.IRandomAccessStream])
+}
+try {
 $decoder = Await ([Windows.Graphics.Imaging.BitmapDecoder]::CreateAsync($stream)) ([Windows.Graphics.Imaging.BitmapDecoder])
 $bitmap = Await ($decoder.GetSoftwareBitmapAsync()) ([Windows.Graphics.Imaging.SoftwareBitmap])
 $engine = [Windows.Media.Ocr.OcrEngine]::TryCreateFromUserProfileLanguages()
 $result = Await ($engine.RecognizeAsync($bitmap)) ([Windows.Media.Ocr.OcrResult])
 $result.Text
+} finally { if ($bitmap) { $bitmap.Dispose() }; $stream.Dispose() }
 `
 
 export function recognizeImage(imagePath: string, run: (command: string, args: string[], env: NodeJS.ProcessEnv) => string = defaultRun): string {
@@ -36,5 +52,12 @@ function defaultRun(command: string, args: string[], env: NodeJS.ProcessEnv): st
 export async function recognizeImageAsync(imagePath: string, run: DockerRunner = runCommandAsync, signal?: AbortSignal): Promise<string> {
   return (await run(powershell, ['-NoProfile', '-NonInteractive', '-Command', script], {
     env: { ...process.env, MURASAME_OCR_IMAGE: imagePath }, timeoutMs: 20000, signal
+  })).trim()
+}
+
+/** Send screenshot bytes through stdin; never create an OCR image on disk. */
+export async function recognizePngAsync(png: Buffer, run: DockerRunner = runCommandAsync, signal?: AbortSignal): Promise<string> {
+  return (await run(powershell, ['-NoProfile', '-NonInteractive', '-Command', script], {
+    env: { ...process.env, MURASAME_OCR_STDIN: '1' }, input: png.toString('base64'), timeoutMs: 20000, signal
   })).trim()
 }

@@ -1,5 +1,8 @@
 export const IPC = {
   app: {
+    ocrStatus: 'app:ocr-status',
+    checkOcrModel: 'app:check-ocr-model',
+    installOcrModel: 'app:install-ocr-model',
     getInfo: 'app:get-info',
     changeStorageLocation: 'app:change-storage-location',
     openStorageBackup: 'app:open-storage-backup',

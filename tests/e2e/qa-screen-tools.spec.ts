@@ -23,8 +23,8 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
       await page.screenshot({ path: test.info().outputPath('screen-workflow.png') })
       const analyze = page.getByRole('button', { name: '尚未授权' })
       await expect(analyze).toBeDisabled()
-      await expect(page.getByText('还没有读取内容。授权后点击「分析当前画面」，读取前台窗口。')).toBeVisible()
-      await expect(page.getByText(/截图不会发给模型/)).toBeVisible()
+      await expect(page.getByText('拖动框选同一显示器内的区域，确认后只分析选中部分。Esc 可取消。')).toBeVisible()
+      await expect(page.getByText(/图片外发设置不影响本页的文字分析/)).toBeVisible()
       await page.getByRole('button', { name: '管理权限' }).click()
       await expect(page).toHaveURL(/\/settings/)
     } finally {
@@ -32,20 +32,21 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
     }
   })
 
-  test('[SCREEN-02] 授权但没有可用模型时分析诚实失败，忙碌状态能释放且页面可继续交互', async () => {
+  test('[SCREEN-02] 采集失败时不伪造结果，忙碌状态释放且页面可继续交互', async () => {
     test.setTimeout(90_000)
     const app = await launchApp()
     try {
       const page = await findMainPage(app)
       await page.evaluate(() => window.murasame.settings.update({ permissions: { screen: true, microphone: false, accessibility: false } }))
       await page.getByTestId('nav-screen').click()
-      await expect(page.getByText(/已授权 · 单次读取/)).toBeVisible()
-      const analyze = page.getByRole('button', { name: '分析当前画面' })
+      await expect(page.getByText(/已授权 · 框选区域/)).toBeVisible()
+      const analyze = page.getByRole('button', { name: '框选区域并分析' })
       await expect(analyze).toBeEnabled()
+      await app.evaluate(({ desktopCapturer }) => { desktopCapturer.getSources = async () => { throw new Error('受控采集失败') } })
       await analyze.click()
       // 没有可用模型时：要么红字错误提示，要么保持占位（不伪造分析结果）；两者都必须在有限时间内结束忙碌。
       await expect.poll(async () => {
-        const busy = await page.getByRole('button', { name: '正在分析…' }).count()
+        const busy = await page.getByRole('button', { name: '正在选择或分析…' }).count()
         const toast = await page.locator('.toast-red').count()
         const placeholder = await page.getByText(/还没有读取内容/).count()
         return { busy, toast, placeholder }
@@ -64,27 +65,30 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
     }
   })
 
-  test('[SCREEN-03] 持续观察开关与间隔文案跟随设置变化', async () => {
+  test('[SCREEN-03] 忽略旧的持续观察和窗口模式设置，只允许手动框选', async () => {
     const app = await launchApp()
     try {
       const page = await findMainPage(app)
       await page.evaluate(() => window.murasame.settings.update({
         permissions: { screen: true, microphone: false, accessibility: false },
         screenWatchEnabled: true,
-        screenWatchSeconds: 5
+        screenWatchSeconds: 5,
+        screenCaptureMode: 'window'
       }))
       await page.getByTestId('nav-screen').click()
-      await expect(page.getByText(/持续观察已打开，每 5 秒截取一次/)).toBeVisible()
-      await page.evaluate(() => window.murasame.settings.update({ screenWatchEnabled: false }))
-      const banner = page.locator('.permission-banner')
-      await expect(banner).not.toContainText('持续观察已打开', { timeout: 10_000 })
-      expect(await banner.innerText()).toMatch(/截取/)
+      const settings = await page.evaluate(() => window.murasame.settings.get())
+      expect(settings.screenWatchEnabled).toBe(false)
+      expect(settings.screenCaptureMode).toBe('region')
+      await expect(page.getByLabel('屏幕分析范围')).toHaveCount(0)
+      await expect(page.locator('.permission-banner')).toContainText('不自动截取画面')
+      await page.getByRole('button', { name: '管理权限' }).click()
+      await expect(page.getByText('持续观察', { exact: true })).toHaveCount(0)
     } finally {
       await closeApp(app)
     }
   })
 
-  test('[SCREEN-04] 截图外发文案跟随「允许截图发给模型」与默认模型名称', async () => {
+  test('[SCREEN-04] OCR 文字分析不受截图外发开关影响', async () => {
     const server = await startModelServer()
     const app = await launchApp()
     try {
@@ -92,9 +96,9 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
       await configureTestModel(page, server.url)
       await page.evaluate(() => window.murasame.settings.update({ outboundImages: true }))
       await page.getByTestId('nav-screen').click()
-      await expect(page.getByText(/截图会发给当前模型服务（端到端测试服务）/)).toBeVisible()
+      await expect(page.getByText(/仅将 OCR 文字发送给当前模型服务（端到端测试服务）/)).toBeVisible()
       await page.evaluate(() => window.murasame.settings.update({ outboundImages: false }))
-      await expect(page.getByText(/截图不会发给模型/)).toBeVisible()
+      await expect(page.getByText(/图片外发设置不影响本页的文字分析/)).toBeVisible()
     } finally {
       await closeApp(app)
       await server.close()

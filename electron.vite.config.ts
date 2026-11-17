@@ -22,6 +22,7 @@ export default defineConfig({
     }
   },
   preload: {
+    build: { rollupOptions: { input: { index: resolve('src/preload/index.ts'), region: resolve('src/preload/region.ts') } } },
     plugins: [externalizeDepsPlugin()],
     resolve: { alias: sharedAlias }
   },

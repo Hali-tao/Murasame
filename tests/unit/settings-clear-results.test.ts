@@ -15,7 +15,7 @@ beforeEach(() => {
   data.memories = [{ id: 'm', text: '保留白茶', category: '偏好', source: 'a', updated: '' }]
   useAppStore.setState({ data, loading: false, selectedConversationId: 'b' })
   api = {
-    app: { hotkey: async () => 'Ctrl+Alt+M', clearLogs: vi.fn(async () => undefined) },
+    app: { hotkey: async () => 'Ctrl+Alt+M', screenHotkey: async () => 'Ctrl+Alt+Q 已注册，可触发屏幕辅助', clearLogs: vi.fn(async () => undefined) },
     voice: { readiness: async () => ({ detail: '独立测试' }) },
     core: {
       clearMemories: vi.fn(async () => ({ ok: false, error: '受控记忆写入失败' })),

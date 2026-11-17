@@ -87,6 +87,7 @@ export class MurasameCore implements CoreApi {
   onConversationDeleted?: (event: { id: string; activeConversationId: string | null }) => void
   onScreenAnalysis?: (analysis: ScreenAnalysis) => void
   onMemoryExtractionStatus?: (status: MemoryExtractionStatus) => void
+  private latestScreen: ScreenAnalysis = emptyScreen()
   private screenJob: Promise<Result<ScreenAnalysis>> | null = null
   private presentationVersion = 0
   private memoryStatusVersion = 0
@@ -417,7 +418,7 @@ export class MurasameCore implements CoreApi {
         tasks: this.tasks.list(),
         tools: this.tools.list(),
         models: this.modelService.list(),
-        screenAnalysis: emptyScreen(),
+        screenAnalysis: this.latestScreen,
         character: this.characterService.load(),
         settings: getSettings(),
         activeConversationId,
@@ -629,7 +630,7 @@ export class MurasameCore implements CoreApi {
     if (this.screenJob) return this.screenJob
     const controller = new AbortController()
     this.imageRequests.add(controller)
-    this.screenJob = captureScreen(this.screen, this.modelService, { continuous, locked: () => this.locked, signal: controller.signal }).then(result => { if (result.ok) this.onScreenAnalysis?.(result.data); return result }).finally(() => { this.imageRequests.delete(controller); this.screenJob = null })
+    this.screenJob = captureScreen(this.screen, this.modelService, { continuous, locked: () => this.locked, signal: controller.signal }).then(result => { if (result.ok && !result.data.cancelled) { this.latestScreen = result.data; this.onScreenAnalysis?.(result.data) }; return result }).finally(() => { this.imageRequests.delete(controller); this.screenJob = null })
     return this.screenJob
   }
 

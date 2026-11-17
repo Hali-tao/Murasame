@@ -207,21 +207,12 @@ if (!gotSingleInstanceLock) {
     } catch {
       // 日志文件还不存在时不清理。
     }
-    let lastWatch = 0
-    const watchTimer = setInterval(() => {
-      const current = getSettings()
-      if (!current.screenWatchEnabled || !current.permissions.screen || current.doNotDisturb) return
-      if (Date.now() - lastWatch < current.screenWatchSeconds * 1000) return
-      lastWatch = Date.now()
-      void core.analyzeScreen(true).catch(error => log.warn('持续观察暂停', error))
-    }, 5000)
     let healthPending = false
     const healthTimer = setInterval(() => {
       if (healthPending || !core.autonomy.status().running) return
       healthPending = true
       void core.autonomy.health().catch(error => log.warn('活动健康检查失败', error)).finally(() => { healthPending = false })
     }, 5000)
-    app.on('before-quit', () => clearInterval(watchTimer))
     let cleanupStarted = false
     let cleanupFinished = false
     app.on('before-quit', event => {

@@ -19,3 +19,7 @@ electron-v*-win32-x64.zip
 build/bundled-models/
 tmp-zh.wav
 tts-err.txt
+
+# Local OCR verification assets and downloaded weights/runtime never belong in Git.
+.ocr-build/
+*.onnx

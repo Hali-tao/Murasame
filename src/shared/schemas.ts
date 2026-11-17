@@ -88,6 +88,7 @@ export const settingsPatchSchema = z.object({
   fileApproval: z.enum(['ask', 'allow']).optional(),
   petHotkey: z.string().trim().min(1).max(40).optional(),
   screenHotkey: z.string().trim().min(1).max(40).optional(),
+  screenCaptureMode: z.enum(['window', 'region']).optional(),
   proactivePace: z.enum(['low', 'mid', 'high']).optional(),
   onboardingDone: z.boolean().optional(),
   permissions: z

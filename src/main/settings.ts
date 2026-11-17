@@ -55,6 +55,9 @@ export function onSettingsChanged(listener: SettingsListener): () => void {
 const mergeSettings = (value: Partial<AppSettings> | undefined): AppSettings => ({
   ...initialSettings,
   ...(value ?? {}),
+  // Ignore retired capture modes, including settings saved by older versions.
+  screenCaptureMode: 'region',
+  screenWatchEnabled: false,
   permissions: {
     ...initialSettings.permissions,
     ...(value?.permissions ?? {})

@@ -184,6 +184,12 @@ export interface ChatTurnFailed {
 }
 
 export interface ScreenAnalysis {
+  ocrEngine?: 'ppocrv5' | 'windows' | 'unavailable'
+  ocrDetail?: string
+  /** Latest cropped screenshot, memory only; never persist with application data. */
+  previewDataUrl?: string
+  observedText?: string
+  cancelled?: boolean
   title: string
   confidence: string
   summary: string
@@ -236,6 +242,7 @@ export interface AppSettings {
   /** 唤起桌宠对话的全局快捷键，Electron accelerator 写法。 */
   petHotkey: string
   screenHotkey: string
+  screenCaptureMode: 'window' | 'region'
   importedModelUrl: string
   importedCharacterName: string
   screenWatchEnabled: boolean
@@ -448,6 +455,9 @@ export interface MurasameCore {
 
 export interface MurasameApi {
   app: {
+    ocrStatus(): Promise<OcrModelStatus>
+    checkOcrModel(): Promise<OcrModelStatus>
+    installOcrModel(): Promise<OcrModelStatus>
     getInfo(): Promise<AppInfo>
     changeStorageLocation(): Promise<void>
     openStorageBackup(): Promise<void>
@@ -551,4 +561,13 @@ export interface MurasameApi {
     onMemoryIndexStatus(listener: (status: MemoryIndexStatus) => void): () => void
     onActiveConversation(listener: (payload: { id: string }) => void): () => void
   }
+}
+
+export interface OcrModelStatus {
+  state: 'missing' | 'installed' | 'installing' | 'loading' | 'ready' | 'failed'
+  engine: 'ppocrv5' | 'windows'
+  directory: string
+  detail: string
+  progress: number
+  downloadBytes: number
 }

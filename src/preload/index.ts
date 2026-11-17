@@ -39,6 +39,9 @@ function subscribe<T>(channel: string, listener: (payload: T) => void): () => vo
 
 const api: MurasameApi = {
   app: {
+    ocrStatus: () => ipcRenderer.invoke(IPC.app.ocrStatus),
+    checkOcrModel: () => ipcRenderer.invoke(IPC.app.checkOcrModel),
+    installOcrModel: () => ipcRenderer.invoke(IPC.app.installOcrModel),
     openStorageBackup: (): Promise<void> => ipcRenderer.invoke(IPC.app.openStorageBackup),
     changeStorageLocation: (): Promise<void> => ipcRenderer.invoke(IPC.app.changeStorageLocation),
     getInfo: (): Promise<AppInfo> => ipcRenderer.invoke(IPC.app.getInfo),

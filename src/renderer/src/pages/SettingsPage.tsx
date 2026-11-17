@@ -2,6 +2,7 @@ import { Download, FolderOpen, HelpCircle, Power, ShieldCheck, Trash2 } from 'lu
 import { useEffect, useState } from 'react'
 import type { DeleteScope, Permissions } from '@shared/types'
 import { ClearScopeDialog } from '../components/dialogs'
+import { OcrSettings } from '../components/OcrSettings'
 import { Button, Card, CardHead, ConfirmDialog, Field, Input, Modal, Pill, ToggleRow } from '../components/ui'
 import { StatusPill } from '../components/StatusPill'
 import { PLATFORM_CAPABILITIES } from '@shared/platform'
@@ -232,7 +233,7 @@ export function SettingsPage(): React.JSX.Element {
           <Card>
             <CardHead title="系统权限" subtitle="拒绝授权后仍可使用不依赖该权限的功能" />
             <div className="permission-row">
-              <div><strong>屏幕读取</strong><span>{data.settings.screenWatchEnabled ? `持续观察，每 ${data.settings.screenWatchSeconds} 秒一次；勿扰或桌宠隐藏时暂停` : '只在你提问时截取一次'}</span></div>
+              <div><strong>屏幕读取</strong><span>由你手动框选并确认，只分析选中区域</span></div>
               <StatusPill status={data.settings.permissions.screen ? 'granted' : 'denied'} />
               <Button size="sm" onClick={() => void updatePermission('screen', !data.settings.permissions.screen)}>{data.settings.permissions.screen ? '撤销' : '申请'}</Button>
             </div>
@@ -257,26 +258,16 @@ export function SettingsPage(): React.JSX.Element {
                 <option value="allow">写图免问。选定之后，画到桌面或图片文件夹不再询问</option>
               </select>
             </Field>
-            <Field label="持续观察" className="settings-select-field">
-              <select className="select" value={data.settings.screenWatchEnabled ? String(data.settings.screenWatchSeconds) : 'off'} onChange={(event) => {
-                const value = event.target.value
-                if (value === 'off') void update({ screenWatchEnabled: false })
-                else void update({ screenWatchEnabled: true, screenWatchSeconds: Number(value) as 5 | 15 | 60 })
-              }}>
-                <option value="off">关闭，只在分析时截取</option>
-                <option value="5">每 5 秒</option>
-                <option value="15">每 15 秒</option>
-                <option value="60">每 60 秒</option>
-              </select>
-            </Field>
+
           </Card>
         </div>
 
         <div className="settings-right">
+          <OcrSettings />
           <Card>
             <CardHead title="数据与隐私" subtitle="本地存储 · 清除范围明确" />
             <ToggleRow title="加密本地数据" description="数据库始终加密，不能关闭。" checked disabled onCheckedChange={() => undefined} />
-            <ToggleRow title="允许把截图发给模型" description="屏幕分析会把画面发给当前模型服务。关掉后只在本机阅读文字，不会外发截图。" checked={data.settings.outboundImages} onCheckedChange={(checked) => void update({ outboundImages: checked })} />
+            <ToggleRow title="允许把截图发给模型" description="用于隔离桌面等看图功能。屏幕辅助只发送 OCR 文字，不发送截图，不受此开关影响。" checked={data.settings.outboundImages} onCheckedChange={(checked) => void update({ outboundImages: checked })} />
             <Field label="运行日志保留" hint="日志不记录完整 API Key、原始截图或不必要个人信息。">
               <select className="select" value={data.settings.logRetentionDays} onChange={(event) => void update({ logRetentionDays: Number(event.target.value) })}>
                 {[7, 14, 30, 90, 180].map((days) => <option key={days} value={days}>{days} 天</option>)}
@@ -321,7 +312,7 @@ export function SettingsPage(): React.JSX.Element {
                 <input className="input" value={screenHotkeyDraft} onChange={event => setScreenHotkeyDraft(event.target.value)} aria-label="屏幕辅助的快捷键" placeholder="例如 Ctrl+Alt+Q" maxLength={40} />
                 <Button size="sm" onClick={() => void applyScreenHotkeyDraft()} disabled={savingScreenHotkey || !screenHotkeyDraft.trim() || screenHotkeyDraft.trim() === data.settings.screenHotkey}>应用屏幕快捷键</Button>
               </strong></div>
-              <div><span>使用方式</span><strong>停留在目标窗口按快捷键，分析后打开结果。未授权时会引导到设置。</strong></div>
+              <div><span>使用方式</span><strong>按快捷键开始框选屏幕区域，确认后分析；Esc 取消。未授权时会引导到设置。</strong></div>
               <div><span>语音</span><strong>{voiceDetail || '正在检查本地语音文件'}</strong></div>
               <div><span>数据位置</span><strong className="path-text">{info?.userDataPath ?? '加载中…'}</strong></div>
               <div><span>日志位置</span><strong className="path-text">{info?.logsPath ?? '加载中…'}</strong></div>
