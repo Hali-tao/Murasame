@@ -1174,3 +1174,28 @@ a:focus-visible {
 .task-clarification textarea { flex: 1 1 300px; min-height: 72px; padding: 10px; }
 
 .settings-page .storage-backup-note { overflow-wrap: anywhere; }
+
+/* Model settings follow the same single-column rhythm as runtime and character settings. */
+.models-page { display: flex; flex-direction: column; gap: 28px; width: 100%; max-width: 900px; margin: 0 auto; }
+.models-page .model-layout { display: flex; flex-direction: column; gap: 28px; margin: 0; }
+.models-page .card { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; padding-bottom: 24px; }
+.models-page .card-head, .models-page .model-editor-head { padding: 0 0 18px; }
+.models-page .card-head h2, .models-page .model-editor-head h2 { font-size: 16px; }
+.models-page .card-head p, .models-page .model-editor-head p { font-size: 12px; line-height: 1.6; }
+.models-page .current-service-banner { margin: 0; flex-wrap: wrap; }
+.models-page .current-service-banner > div:nth-child(2) { min-width: 180px; }
+.models-page .model-list { padding: 0; }
+.models-page .model-list-item { padding: 14px; margin-bottom: 8px; }
+.models-page .model-list-card > .fineprint { padding: 0; margin: 14px 0 0; }
+.models-page .model-editor-head { border: 0; }
+.models-page .model-step { margin: 0; padding: 22px 0; border-top: 1px solid var(--line-soft); }
+.models-page .form-grid, .models-page .provider-grid { grid-template-columns: minmax(0, 1fr); }
+.models-page .provider-card { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+.models-page .provider-card span { overflow-wrap: anywhere; text-align: right; }
+.models-page .field { min-width: 0; }
+.models-page .model-actions { padding: 0; justify-content: flex-start; flex-wrap: wrap; border: 0; }
+.models-page .use-result { margin: 16px 0 0; }
+.models-page .model-editor-pills { flex-wrap: wrap; }
+.models-page .model-delete-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 22px; border-top: 1px solid var(--line-soft); }
+.models-page .model-delete-row strong { font-size: 13px; }
+.models-page .model-delete-row p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }

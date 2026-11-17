@@ -11,6 +11,18 @@ test.describe('[FULL-QA] 模型页边界', () => {
     try {
       const page = await findMainPage(app)
       await configureTestModel(page, server.url)
+      const sections = await page.locator('.model-layout > .card').evaluateAll(cards => cards.map(card => {
+        const rect = card.getBoundingClientRect()
+        return { left: rect.left, top: rect.top, bottom: rect.bottom, width: rect.width }
+      }))
+      expect(sections).toHaveLength(2)
+      expect(sections[1].top).toBeGreaterThanOrEqual(sections[0].bottom)
+      expect(Math.abs(sections[0].left - sections[1].left)).toBeLessThan(1)
+      expect(Math.abs(sections[0].width - sections[1].width)).toBeLessThan(1)
+      await expect(page.getByTestId('model-item').filter({ hasText: '端到端测试服务' })).toHaveAttribute('aria-pressed', 'true')
+      await expect(page.getByTestId('set-default-model')).toBeDisabled()
+      await page.locator('.content-scroll').evaluate(element => { element.scrollTop = 0 })
+      await page.screenshot({ path: test.info().outputPath('models-single-column.png') })
       const html = await page.content()
       expect(html).not.toContain('test-key')
       const models = await page.evaluate(async () => {

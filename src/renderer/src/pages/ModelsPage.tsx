@@ -56,13 +56,13 @@ function hostOf(endpoint: string): string {
 
 function friendlyFailure(detail: string, modelName: string): string {
   if (/401|403|API Key/.test(detail)) {
-    return `密钥没有通过。确认贴的是这家运营商的 Key，前后没有空格。${detail}`
+    return `密钥没有通过。确认贴的是这家服务商的 Key，前后没有空格。${detail}`
   }
   if (modelName === 'deepseek' || (/HTTP 400/.test(detail) && /deepseek/i.test(`${detail} ${modelName}`) && !/deepseek-flash|deepseek-v4-pro|deepseek-chat/.test(modelName))) {
     return `模型名称不对。DeepSeek 不能填 deepseek，请改成 deepseek-flash 或 deepseek-v4-pro 后再验证。${detail}`
   }
   if (/模型名称不存在|model.+not found|HTTP 404/i.test(detail)) {
-    return `模型名称在这家服务里不存在。请改成上面列出的名称，或按运营商文档填写。${detail}`
+    return `模型名称在这家服务里不存在。请改成上面列出的名称，或按服务商文档填写。${detail}`
   }
   return detail
 }
@@ -166,7 +166,7 @@ export function ModelsPage(): React.JSX.Element {
 
   const verifyAndUse = async (): Promise<void> => {
     if (!draft.name.trim() || !draft.endpoint.trim() || !draft.model.trim()) {
-      const text = '还不能验证：先点一个运营商。服务地址和模型名称都会自动填上，确认无误后再验证。'
+      const text = '还不能验证：先点一个服务商。服务地址和模型名称都会自动填上，确认无误后再验证。'
       setLocalFailure(text)
       notify(text, 'amber')
       return
@@ -275,7 +275,7 @@ export function ModelsPage(): React.JSX.Element {
   const verifiedNotCurrent = Boolean(selected && selected.status === '在线' && !selected.default && !dirty && !shownFailure)
 
   return (
-    <fieldset className="page models-page" disabled={formBusy} aria-busy={formBusy} aria-label="模型配置" style={{ border: 0, margin: 0, minWidth: 0 }}>
+    <fieldset className="page models-page" disabled={formBusy} aria-busy={formBusy} aria-label="模型配置" style={{ border: 0, minWidth: 0 }}>
       <div className={`current-service-banner${using && !failedCurrentVerification ? ' ready' : ' pending'}`}>
         <div className="current-service-icon">{using && !failedCurrentVerification ? <CheckCircle2 size={18} /> : <PlugZap size={18} />}</div>
         <div>
@@ -288,7 +288,7 @@ export function ModelsPage(): React.JSX.Element {
               ? `${defaultModel?.model} · 最近请求未成功，配置已保留。检查网络与服务后，可以重试对话或再测一次。`
               : using
               ? `${defaultModel?.model} · 验证成功 · 响应 ${defaultModel?.latency}。左侧「交流」会走这个服务。`
-              : '选运营商，贴上 API Key，点「验证并开始使用」。这里变成绿色，才算开始用。'}
+              : '选服务商，贴上 API Key，点「验证并开始使用」。这里变成绿色，才算开始用。'}
           </p>
         </div>
         {failedCurrentVerification ? <Pill tone="amber">连接待确认</Pill> : currentOffline ? <Pill tone="red">离线</Pill> : <StatusPill status={using ? 'in-use' : 'not-started'} />}
@@ -301,8 +301,8 @@ export function ModelsPage(): React.JSX.Element {
         <Card className="model-list-card">
           <CardHead
             title="已保存的配置"
-            subtitle="对话使用当前服务配置；服务离线后可检查并重试"
-            aside={<Button size="sm" onClick={() => void runFormAction('正在添加配置…', addModel)} disabled={Boolean(busy['model:create'])} icon={<Plus size={15} />} aria-label="添加模型配置" data-testid="add-model" />}
+            subtitle="选择配置可在下方编辑，不会切换当前服务。验证并启用后，对话才会使用它。"
+            aside={<Button size="sm" onClick={() => void runFormAction('正在添加配置…', addModel)} disabled={Boolean(busy['model:create'])} icon={<Plus size={15} />} aria-label="添加模型配置" data-testid="add-model">添加配置</Button>}
           />
           <div className="model-list">
             {data.models.map((model) => (
@@ -311,6 +311,7 @@ export function ModelsPage(): React.JSX.Element {
                 key={model.id}
                 data-testid="model-item"
                 className={`model-list-item${model.id === selected?.id ? ' active' : ''}`}
+                aria-pressed={model.id === selected?.id}
                 onClick={() => chooseModel(model)}
               >
                 <div className="model-list-top">
@@ -327,7 +328,7 @@ export function ModelsPage(): React.JSX.Element {
             {!data.models.length ? (
               <EmptyState
                 title="还没有保存的配置"
-                description="右边选一个运营商，贴上 Key，验证成功后会出现在这里。"
+                description="在下方选择服务商并填写连接信息，验证后会保存配置。"
               />
             ) : null}
           </div>
@@ -337,8 +338,8 @@ export function ModelsPage(): React.JSX.Element {
         <Card className="model-editor-card">
           <div className="model-editor-head">
             <div>
-              <h2>{draft.name.trim() || '接入一个模型'}</h2>
-              <p>先选运营商，地址和推荐模型会自动填上。验证变绿之后，对话才用它。</p>
+              <h2>{selected ? '编辑配置' : '添加模型服务'}</h2>
+              <p>选择服务商，确认连接信息，再验证并启用。修改后需重新验证才会生效。</p>
             </div>
             <div className="model-editor-pills">
               {readyHere ? <StatusPill status="in-use" /> : null}
@@ -346,53 +347,8 @@ export function ModelsPage(): React.JSX.Element {
             </div>
           </div>
 
-          <section className={`use-result${formBusy ? ' wait' : shownFailure ? ' bad' : readyHere ? ' ok' : verifiedNotCurrent ? ' wait' : dirty ? ' wait' : ' guide'}`}>
-            {verifying ? (
-              <>
-                <strong><Spinner size={14} /> 正在验证 {draft.model || '模型'}…</strong>
-                <p>会真实请求 {draft.endpoint || '服务地址'}。通了就自动设为当前服务，不通会把原因留在这里。</p>
-              </>
-            ) : formBusy ? (
-              <>
-                <strong><Spinner size={14} /> {formAction || '正在更新模型配置…'}</strong>
-                <p>完成后即可继续编辑。</p>
-              </>
-            ) : shownFailure ? (
-              <>
-                <strong><AlertCircle size={16} /> {failureTitle}</strong>
-                {failureRetention ? <p>{failureRetention}</p> : null}
-                <p>{shownFailure}</p>
-              </>
-            ) : readyHere ? (
-              <>
-                <strong><CheckCircle2 size={16} /> 验证成功，已经开始使用</strong>
-                <p>{selected?.name} · {selected?.model} · 响应 {selected?.latency}。打开左侧「交流」发一句话，就会走这个服务。</p>
-                <Button variant="primary" onClick={() => void useAppStore.getState().createConversation().then((created) => { if (created) navigate('/chat') })}>开始第一次对话</Button>
-              </>
-            ) : verifiedNotCurrent ? (
-              <>
-                <strong>验证成功，但对话还没在用它</strong>
-                <p>点下面的「设为当前使用」。只有标成正在使用的配置才会接到对话。</p>
-              </>
-            ) : dirty && selected?.status === '在线' ? (
-              <>
-                <strong>改过配置，还没生效</strong>
-                <p>再点一次「验证并开始使用」。变成绿色，才算开始用新的地址或模型。</p>
-              </>
-            ) : (
-              <>
-                <strong>怎样才算能用</strong>
-                <ol>
-                  <li>点选运营商，例如 DeepSeek。服务地址会自动变成 api.deepseek.com。</li>
-                  <li>模型名称用 deepseek-flash，不要只写 deepseek。再贴上 API Key。</li>
-                  <li>点「验证并开始使用」。这里变成绿色，并写着「验证成功，已经开始使用」，然后去「交流」发消息。</li>
-                </ol>
-              </>
-            )}
-          </section>
-
           <section className="model-step">
-            <div className="model-step-title"><span>1</span>选择运营商</div>
+            <div className="model-step-title"><span>1</span>选择服务商</div>
             <div className="provider-grid">
               {MODEL_PRESETS.map((item) => (
                 <button
@@ -412,19 +368,19 @@ export function ModelsPage(): React.JSX.Element {
 
           <section className="model-step">
             <div className="model-step-title"><span>2</span>确认地址、模型和密钥</div>
-            <div className="form-grid two">
+            <div className="form-grid">
               <Field label="配置名称">
                 <Input value={draft.name} onChange={(event) => updateDraft({ name: event.target.value })} maxLength={80} data-testid="model-config-name" />
               </Field>
-              <Field label="接口协议" hint="选了运营商后会自动对上，一般不用改。">
+              <Field label="接口协议" hint="选了服务商后会自动对上，一般不用改。">
                 <select className="select" value={draft.provider} onChange={(event) => updateDraft({ provider: event.target.value })} data-testid="model-provider">
                   {providerOptions.map((provider) => <option key={provider.value} value={provider.value}>{provider.label}</option>)}
                 </select>
               </Field>
-              <Field label="服务地址" className="span-two" hint={preset?.endpoint ? `已按${preset.label}填好，可以改。` : '兼容接口一般填到 /v1。'}>
+              <Field label="服务地址"  hint={preset?.endpoint ? `已按${preset.label}填好，可以改。` : '兼容接口一般填到 /v1。'}>
                 <Input value={draft.endpoint} onChange={(event) => updateDraft({ endpoint: event.target.value })} maxLength={500} placeholder="https://api.deepseek.com" data-testid="model-endpoint" />
               </Field>
-              <Field label="模型名称" className="span-two" hint="必须是运营商文档里的完整 ID。">
+              <Field label="模型名称"  hint="填写服务商提供的完整模型 ID，也可选择推荐模型。">
                 {preset && preset.models.length > 0 ? (
                   <div className="model-choice-row">
                     {preset.models.map((model) => (
@@ -443,8 +399,8 @@ export function ModelsPage(): React.JSX.Element {
               </Field>
               <Field
                 label="API Key"
-                className="span-two"
-                hint={preset?.needsKey === false ? '本机 Ollama 通常留空。' : selected?.hasKey ? '已经加密保存。留空表示继续用原来的密钥。' : '只发到本机主进程加密保存，不会出现在日志里。'}
+
+                hint={preset?.needsKey === false ? '本机 Ollama 通常留空。' : selected?.hasKey ? '已经加密保存。留空表示继续用原来的密钥。' : '密钥加密保存在本机，用于向所填服务地址发送请求，不会写入日志。'}
               >
                 <div className="secret-field">
                   <Input
@@ -466,7 +422,7 @@ export function ModelsPage(): React.JSX.Element {
           </section>
 
           <section className="model-step">
-            <div className="model-step-title"><span>3</span>验证成功后才会开始使用</div>
+            <div className="model-step-title"><span>3</span>验证与启用</div>
             <div className="model-actions model-actions-primary">
               <Button
                 variant="primary"
@@ -480,11 +436,69 @@ export function ModelsPage(): React.JSX.Element {
               </Button>
               <Button
                 onClick={() => void runFormAction('正在切换当前服务…', activateSaved)}
-                disabled={!selected || selected.status !== '在线' || dirty || Boolean(busy['model:default']) || verifying}
+                disabled={!selected || selected.default || selected.status !== '在线' || dirty || Boolean(busy['model:default']) || verifying}
                 data-testid="set-default-model"
               >
                 设为当前使用
               </Button>
+
+            </div>
+            <section className={`use-result${formBusy ? ' wait' : shownFailure ? ' bad' : readyHere ? ' ok' : verifiedNotCurrent ? ' wait' : dirty ? ' wait' : ' guide'}`}>
+              {verifying ? (
+                <>
+                  <strong><Spinner size={14} /> 正在验证 {draft.model || '模型'}…</strong>
+                  <p>{failureContext === 'current' ? '正在重新检查当前服务的连接，不会切换配置。' : `会向 ${draft.endpoint || '服务地址'} 发送测试请求，通过后自动设为当前服务。`}</p>
+                </>
+              ) : formBusy ? (
+                <>
+                  <strong><Spinner size={14} /> {formAction || '正在更新模型配置…'}</strong>
+                  <p>完成后即可继续编辑。</p>
+                </>
+              ) : shownFailure ? (
+                <>
+                  <strong><AlertCircle size={16} /> {failureTitle}</strong>
+                  {failureRetention ? <p>{failureRetention}</p> : null}
+                  <p>{shownFailure}</p>
+                </>
+              ) : readyHere ? (
+                <>
+                  <strong><CheckCircle2 size={16} /> 验证成功，已经开始使用</strong>
+                  <p>{selected?.name} · {selected?.model} · 响应 {selected?.latency}。打开左侧「交流」发一句话，就会走这个服务。</p>
+                  <Button variant="primary" onClick={() => void useAppStore.getState().createConversation().then((created) => { if (created) navigate('/chat') })}>开始第一次对话</Button>
+                </>
+              ) : verifiedNotCurrent ? (
+                <>
+                  <strong>验证成功，但对话还没在用它</strong>
+                  <p>点击「设为当前使用」。只有标成正在使用的配置才会接到对话。</p>
+                </>
+              ) : dirty && selected?.status === '在线' ? (
+                <>
+                  <strong>改过配置，还没生效</strong>
+                  <p>再点一次「验证并开始使用」。变成绿色，才算开始用新的地址或模型。</p>
+                </>
+              ) : (
+                <>
+                  <strong>等待验证</strong>
+                  <p>验证会向所填服务地址发出测试请求。通过后保存配置并设为当前服务；失败时不会切换到这条配置。</p>
+                </>
+              )}
+            </section>
+
+            {selected && selected.capabilities.length > 0 ? (
+              <div>
+                <p className="model-step-note">{dirty ? '上次验证的能力 · 当前修改尚未验证' : '上次验证的能力'}</p>
+                <div className="capability-chips probed-caps">
+                  {selected.capabilities.map((item) => (
+                    <span key={item.id} className="cap-chip">
+                      {capabilityLabel[item.id] ?? item.id} · {item.status === 'verified' ? '可用' : item.status === 'unsupported' ? '不支持' : '未确认'}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </section>
+          <div className="model-delete-row">
+            <div><strong>删除这条配置</strong><p>移除连接信息和保存的密钥，不会删除聊天历史。</p></div>
               <Button
                 variant="danger"
                 onClick={() => void runFormAction('正在删除配置…', removeModel)}
@@ -494,17 +508,7 @@ export function ModelsPage(): React.JSX.Element {
               >
                 删除
               </Button>
-            </div>
-            {selected && selected.capabilities.length > 0 ? (
-              <div className="capability-chips probed-caps">
-                {selected.capabilities.map((item) => (
-                  <span key={item.id} className="cap-chip">
-                    {capabilityLabel[item.id] ?? item.id} · {item.status === 'verified' ? '可用' : item.status === 'unsupported' ? '不支持' : '未确认'}
-                  </span>
-                ))}
-              </div>
-            ) : null}
-          </section>
+          </div>
         </Card>
       </div>
     </fieldset>
