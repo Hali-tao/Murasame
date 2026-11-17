@@ -75,3 +75,28 @@ describe('[QA-SEARCH-03] 反斜杠查询', () => {
     expect(conversations.search('\\').status).toBe('empty')
   })
 })
+
+describe('[FR-12] 历史正文 Unicode 大小写搜索', () => {
+  it.each([
+    ['ÉCOLE', 'école'],
+    ['МОСКВА', 'москва'],
+    ['ΑΘΗΝΑ', 'αθηνα']
+  ])('正文 %s 能被小写关键词 %s 检索，且不返回无关会话', (body, keyword) => {
+    const db = databaseWithMessages()
+    db.prepare('UPDATE messages SET text = ? WHERE id = ?').run(`正文中的地点：${body}`, 'msg-1')
+    const conversations = new ConversationService(db, new ModelRegistry())
+    const result = conversations.search(keyword)
+    expect(result.status).toBe('ok')
+    expect(result.status === 'ok' ? result.items.map(hit => hit.id) : []).toEqual(['chat-1'])
+    expect(conversations.search(`不存在${keyword}`).status).toBe('empty')
+  })
+
+  it('标题与正文采用相同的大小写匹配语义，保留字面量符号', () => {
+    const db = databaseWithMessages()
+    db.prepare('UPDATE conversations SET title = ? WHERE id = ?').run('ÉCOLE 100%_\\', 'chat-2')
+    db.prepare('UPDATE messages SET text = ? WHERE id = ?').run('ÉCOLE 100%_\\', 'msg-1')
+    const conversations = new ConversationService(db, new ModelRegistry())
+    const result = conversations.search('école 100%_\\')
+    expect(result.status === 'ok' ? result.items.map(hit => hit.id).sort() : []).toEqual(['chat-1', 'chat-2'])
+  })
+})
