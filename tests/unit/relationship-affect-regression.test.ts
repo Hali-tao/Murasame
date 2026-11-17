@@ -32,6 +32,29 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('relationship management with explicit appearance choice', () => {
+  it('names the two appearances distinctly and does not mark a preset active for an imported model', async () => {
+    useAppStore.setState(state => ({ data: { ...state.data!, settings: { ...state.data!.settings, importedModelUrl: 'custom/model.model3.json', importedCharacterName: '自定义伙伴' } } }))
+    render(createElement(CharacterPage))
+    await screen.findByText('熟悉')
+    expect(screen.getByTestId('pet-preset-naiwa').textContent).toContain('奶娃')
+    expect(screen.getByTestId('pet-preset-nailong').textContent).toContain('奶龙')
+    for (const preset of PET_PRESETS) expect(screen.getByTestId(`pet-preset-${preset.id}`).getAttribute('aria-pressed')).toBe('false')
+    expect(screen.getByText('当前外观：自定义伙伴')).toBeTruthy()
+  })
+
+  it('invalidates an imported resource when its selected path changes', async () => {
+    api.character = { importAsset: vi.fn(async () => ({ ok: true, data: { modelUrl: 'custom/model.model3.json' } })) } as unknown as MurasameApi['character']
+    render(createElement(CharacterPage))
+    await screen.findByText('熟悉')
+    const path = screen.getByPlaceholderText('用下面的按钮选择目录或 zip')
+    fireEvent.change(path, { target: { value: 'C:/first.zip' } })
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: '校验并导入' })) })
+    expect((screen.getByRole('button', { name: '使用该形象' }) as HTMLButtonElement).disabled).toBe(false)
+    fireEvent.change(path, { target: { value: 'C:/second.zip' } })
+    expect((screen.getByRole('button', { name: '使用该形象' }) as HTMLButtonElement).disabled).toBe(true)
+    expect(api.relationship.changeAppearance).not.toHaveBeenCalled()
+  })
+
   it('shows current stage, evolution history and a reset that keeps history', async () => {
     render(createElement(CharacterPage))
     await screen.findByText('熟悉')

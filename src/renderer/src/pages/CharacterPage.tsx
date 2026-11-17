@@ -19,6 +19,7 @@ export function CharacterPage(): React.JSX.Element {
   const [importPath, setImportPath] = useState('')
   const [importNote, setImportNote] = useState('')
   const [importedUrl, setImportedUrl] = useState('')
+  const [importing, setImporting] = useState(false)
   const [switching, setSwitching] = useState(false)
   const [relationship, setRelationship] = useState<RelationshipView | null>(null)
   const [relationshipError, setRelationshipError] = useState('')
@@ -75,18 +76,30 @@ export function CharacterPage(): React.JSX.Element {
 
   const reset = (): void => setDraft(data.character)
 
+  const changeImportPath = (path: string): void => {
+    setImportPath(path)
+    setImportedUrl('')
+    setImportNote('')
+  }
+
   const importAsset = async (): Promise<void> => {
     const path = importPath.trim()
-    if (!path) return
-    const result = await window.murasame.character.importAsset(path)
-    if (!result.ok) {
-      setImportedUrl('')
-      setImportNote(result.error)
-      notify(result.error, 'red')
-      return
-    }
-    setImportedUrl(result.data.modelUrl)
-    setImportNote('资源已校验并复制。当前形象保持不变，确认使用后才会替换。')
+    if (!path || importing) return
+    setImporting(true)
+    setImportedUrl('')
+    try {
+      const result = await window.murasame.character.importAsset(path)
+      if (!result.ok) {
+        setImportedUrl('')
+        setImportNote(result.error)
+        notify(result.error, 'red')
+        return
+      }
+      setImportedUrl(result.data.modelUrl)
+      setImportNote('资源已校验并复制。当前形象保持不变，确认使用后才会替换。')
+    } catch (error) {
+      setImportNote(error instanceof Error ? error.message : '导入失败，请重试')
+    } finally { setImporting(false) }
   }
 
   const requestAppearance = (patch: Pick<Partial<AppSettings>, 'petPreset' | 'importedModelUrl' | 'importedCharacterName'>): void => {
@@ -96,7 +109,7 @@ export function CharacterPage(): React.JSX.Element {
   }
 
   const applyImported = (): void => {
-    if (importedUrl) requestAppearance({ importedModelUrl: importedUrl, importedCharacterName: draft.name || '导入的形象' })
+    if (importedUrl) requestAppearance({ importedModelUrl: importedUrl, importedCharacterName: data.character.name || '导入的形象' })
   }
 
   const selectPreset = (presetId: (typeof PET_PRESETS)[number]['id']): void => {
@@ -134,13 +147,14 @@ export function CharacterPage(): React.JSX.Element {
 
   return (
     <div className="page character-page">
+      <div className="character-overview"><div><strong>当前外观：{data.settings.importedModelUrl ? (data.settings.importedCharacterName || '自定义形象') : activePreset.name}</strong><p>外观决定桌宠的样子，交流设定决定称呼和语气。聊天历史与长期记忆会保留。</p></div><Pill tone={dirty ? 'amber' : 'green'}>{dirty ? '交流设定尚未保存' : '交流设定已保存'}</Pill></div>
       <div className="character-layout">
         <div className="character-left">
           <Card>
-            <CardHead title="预置形象" subtitle="选择桌宠窗口中显示的角色" />
+            <CardHead title="桌宠外观" subtitle="选择形象后确认切换，不改变交流设定" />
             <div className="preset-list">
               {PET_PRESETS.map((preset) => {
-                const active = preset.id === data.settings.petPreset
+                const active = preset.id === data.settings.petPreset && !data.settings.importedModelUrl
                 return (
                   <button
                     key={preset.id}
@@ -154,7 +168,6 @@ export function CharacterPage(): React.JSX.Element {
                     <span className="preset-copy">
                       <strong>{preset.name}</strong>
                       <span>{preset.summary}</span>
-                      <span className="preset-meta">{preset.format} · {preset.license}</span>
                     </span>
                     <span className="preset-state">
                       {active ? <><Check size={13} />使用中</> : '选择'}
@@ -163,53 +176,16 @@ export function CharacterPage(): React.JSX.Element {
                 )
               })}
             </div>
-            <p className="fineprint">奶龙只用于课程演示，公开安装包不应包含它。鲸鱼娘是 CC BY-NC-SA，非商业并需署名。</p>
+            <p className="fineprint">奶娃、奶龙仅用于课程演示；鲸鱼娘为 CC BY-NC-SA，非商业使用并需署名。</p>
           </Card>
 
-          <Card>
-            <CardHead title="关系演变" subtitle="随相处自然变化，历史始终可追溯" aside={<Button size="sm" onClick={() => setResetOpen(true)} disabled={!relationship || relationshipBusy}>重置关系</Button>} />
-            {relationship ? (
-              <div className="relationship-history">
-                <strong>当前阶段：{relationship.stage}</strong>
-                <p>从 {dateLabel(relationship.since)} 开始，称呼与语气以当前阶段为参考。</p>
-                <ul>{relationship.history.map((item, index) => <li key={`${item.since}-${index}`}><span>{item.stage}</span> · <time>{dateLabel(item.since)}</time></li>)}</ul>
-                {relationship.archivedLines?.length ? <details><summary>之前的关系线</summary>{relationship.archivedLines.map(line => <ul key={line.lineId}>{line.history.map((item, index) => <li key={`${item.since}-${index}`}>{item.stage} · {dateLabel(item.since)}</li>)}</ul>)}</details> : null}
-              </div>
-            ) : <p className="muted">{relationshipError || '正在读取关系状态…'}</p>}
-            <p className="fineprint">短期情绪会随空闲逐渐回归平静；重启从平静状态开始，长期关系与记忆不受影响。</p>
-          </Card>
 
-          <Card>
-            <CardHead title="资源包格式" subtitle="可导入带 model3.json、moc3 和贴图的 Cubism 4/5 目录或 zip" />
-            <div className="resource-list">
-              <div><span>当前模型</span><Pill tone="green">{activePreset.name}</Pill></div>
-              <div><span>模型描述</span><Pill tone="violet">{activePreset.format}</Pill></div>
-              <div><span>必要文件</span><span>model3.json + moc3</span></div>
-              <div><span>可选文件</span><span>纹理 / physics / motion3 / exp3</span></div>
-              <div><span>表现资源</span><span>{activePreset.motionCount} · {activePreset.expressionCount}</span></div>
-              <div><span>素材来源</span><span>{activePreset.source}</span></div>
-              <div><span>许可说明</span><span>{activePreset.license}</span></div>
-            </div>
-            <p className="fineprint">Cubism 2.1 的 .moc 和缺少贴图的包会被拒绝，原来的角色保持不变。未确认使用前，不会把新资源显示为当前形象。</p>
-            <Field label="形象文件">
-              <div className="editor-actions">
-                <Input value={importPath} placeholder="用下面的按钮选择目录或 zip" onChange={(event) => setImportPath(event.target.value)} />
-                <Button onClick={() => void window.murasame.app.pickOpen({ title: '选择形象目录或 zip', filters: [{ name: 'Live2D', extensions: ['zip'] }] }).then((path) => { if (path) setImportPath(path) })}>选择文件</Button>
-                <Button onClick={() => void window.murasame.app.pickOpen({ title: '选择形象目录', directory: true }).then((path) => { if (path) setImportPath(path) })}>选择目录</Button>
-              </div>
-            </Field>
-            <div className="editor-actions">
-              <Button onClick={() => void importAsset()} disabled={!importPath.trim()}>校验并导入</Button>
-              <Button variant="primary" onClick={() => void applyImported()} disabled={!importedUrl}>使用该形象</Button>
-            </div>
-            {importNote ? <p className="fineprint">{importNote}</p> : null}
-          </Card>
         </div>
 
         <Card className="character-editor">
           <CardHead
-            title="角色设定"
-            subtitle="后续交流使用新的有效配置；取消不会保存未确认修改"
+            title="交流设定"
+            subtitle="名称、语气和互动偏好在点击「保存设定」后生效"
             aside={<StatusPill status={dirty ? 'unsaved' : 'saved'} />}
           />
           <Field label="名称"><Input value={draft.name} maxLength={40} onChange={(event) => update({ name: event.target.value })} /></Field>
@@ -242,8 +218,21 @@ export function CharacterPage(): React.JSX.Element {
           </div>
         </Card>
       </div>
+      <div className="character-secondary">
+        <Card>
+            <CardHead title="熟悉程度" subtitle="随互动逐渐变化；重置不会删除聊天历史或长期记忆" aside={<Button size="sm" onClick={() => setResetOpen(true)} disabled={!relationship || relationshipBusy}>重置关系</Button>} />
+            {relationship ? (
+              <div className="relationship-history">
+                <strong>当前阶段：{relationship.stage}</strong>
+                <p>从 {dateLabel(relationship.since)} 开始，称呼与语气以当前阶段为参考。</p>
+                <ul>{relationship.history.map((item, index) => <li key={`${item.since}-${index}`}><span>{item.stage}</span> · <time>{dateLabel(item.since)}</time></li>)}</ul>
+                {relationship.archivedLines?.length ? <details><summary>之前的关系线</summary>{relationship.archivedLines.map(line => <ul key={line.lineId}>{line.history.map((item, index) => <li key={`${item.since}-${index}`}>{item.stage} · {dateLabel(item.since)}</li>)}</ul>)}</details> : null}
+              </div>
+            ) : <p className="muted">{relationshipError || '正在读取关系状态…'}</p>}
+            <p className="fineprint">短期情绪会随空闲逐渐回归平静；重启从平静状态开始，长期关系与记忆不受影响。</p>
+          </Card>
       <Card className="character-theater">
-        <CardHead title="表现与打扰" subtitle="这些开关立即生效，不需要保存角色设定" />
+        <CardHead title="桌面表现" subtitle="此处开关立即生效，不需要点击「保存设定」" />
         <ToggleRow
           title="桌面小剧场"
           description="任务进入终态时在桌宠脚边演一句真实结果；关闭后不再自动演出，可随时恢复。"
@@ -251,6 +240,33 @@ export function CharacterPage(): React.JSX.Element {
           onCheckedChange={(checked) => void updateSettings({ theaterEnabled: checked })}
         />
       </Card>
+      </div>
+        <Card>
+            <CardHead title="导入自定义形象" subtitle="选择资源 → 校验并导入 → 使用该形象；确认后才替换当前外观" />
+            <details className="character-resource-details"><summary>支持的格式与当前形象信息</summary>
+            <div className="resource-list">
+              <div><span>当前模型</span><Pill tone="green">{data.settings.importedModelUrl ? (data.settings.importedCharacterName || '自定义形象') : activePreset.name}</Pill></div>
+              <div><span>模型描述</span><Pill tone="violet">{data.settings.importedModelUrl ? '导入的 Live2D 模型' : activePreset.format}</Pill></div>
+              <div><span>必要文件</span><span>model3.json、moc3 和贴图</span></div>
+              <div><span>可选文件</span><span>物理 / 动作 / 表情</span></div>
+              {!data.settings.importedModelUrl ? <><div><span>表现资源</span><span>{activePreset.motionCount} · {activePreset.expressionCount}</span></div>
+              <div><span>素材来源</span><span>{activePreset.source}</span></div>
+              <div><span>许可说明</span><span>{activePreset.license}</span></div></> : null}
+            </div>
+            <p className="fineprint">Cubism 2.1 的 .moc 和缺少贴图的包会被拒绝，原来的角色保持不变。未确认使用前，不会把新资源显示为当前形象。</p></details>
+            <Field label="形象文件">
+              <div className="character-import-picker">
+                <Input disabled={importing} value={importPath} placeholder="用下面的按钮选择目录或 zip" onChange={(event) => changeImportPath(event.target.value)} />
+                <Button disabled={importing} onClick={() => void window.murasame.app.pickOpen({ title: '选择形象目录或 zip', filters: [{ name: 'Live2D', extensions: ['zip'] }] }).then((path) => { if (path) changeImportPath(path) })}>选择文件</Button>
+                <Button disabled={importing} onClick={() => void window.murasame.app.pickOpen({ title: '选择形象目录', directory: true }).then((path) => { if (path) changeImportPath(path) })}>选择目录</Button>
+              </div>
+            </Field>
+            <div className="editor-actions">
+              <Button onClick={() => void importAsset()} disabled={importing || !importPath.trim()}>{importing ? '正在校验…' : '校验并导入'}</Button>
+              <Button variant="primary" onClick={() => void applyImported()} disabled={importing || !importedUrl}>使用该形象</Button>
+            </div>
+            {importNote ? <p className="fineprint">{importNote}</p> : null}
+          </Card>
       <ConfirmDialog open={resetOpen} onOpenChange={setResetOpen} title="重置当前关系？" description="回到初识。原有对话、记忆和演变记录会保留。" confirmLabel="确认重置" onConfirm={confirmReset} busy={relationshipBusy} />
       <Modal open={Boolean(appearance)} onOpenChange={(open) => { if (!open && !switching) setAppearance(null) }} title="更换形象" description="选择更换外观后是否保留当前的熟悉程度。无论选择哪一项，聊天历史和长期记忆都会保留。" footer={<><Button disabled={switching} onClick={() => setAppearance(null)}>取消</Button><Button variant="primary" disabled={switching} onClick={() => void confirmAppearance()}>确认更换</Button></>}>
         <fieldset className="relationship-choice">

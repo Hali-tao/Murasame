@@ -10,6 +10,19 @@ test.describe('[FULL-QA] 角色页校验与持久化', () => {
     try {
       const page = await findMainPage(app)
       await page.getByTestId('nav-character').click()
+      await expect(page.getByTestId('pet-preset-naiwa')).toContainText('奶娃')
+      await expect(page.getByTestId('pet-preset-nailong')).toContainText('奶龙')
+      await expect(page.getByRole('heading', { name: '交流设定', exact: true })).toBeVisible()
+      const layout = await page.locator('.character-page').evaluate(element => {
+        const appearance = element.querySelector('.character-left')!.getBoundingClientRect()
+        const editor = element.querySelector('.character-editor')!.getBoundingClientRect()
+        const sections = Array.from(element.querySelector('.character-secondary')!.children).map(item => item.getBoundingClientRect())
+        return { stacked: editor.top >= appearance.bottom && sections[1].top >= sections[0].bottom, aligned: Math.abs(editor.left - appearance.left) < 1 }
+      })
+      expect(layout).toEqual({ stacked: true, aligned: true })
+      await page.screenshot({ path: test.info().outputPath('character-reorganized.png'), fullPage: true })
+      await page.locator('.character-secondary').scrollIntoViewIfNeeded()
+      await page.screenshot({ path: test.info().outputPath('character-secondary.png') })
       await page.getByLabel('名称', { exact: true }).fill('测试角色')
       await page.getByLabel('交流风格', { exact: true }).fill('简洁直接')
       await page.getByPlaceholder('添加自定义关键词').fill('葱花')

@@ -59,7 +59,7 @@ export const PET_PRESETS: readonly PetPreset[] = [
   },
   {
     id: 'naiwa',
-    name: '奶龙',
+    name: '奶娃',
     summary: '连续呼吸、思考与工作动作，身体和手臂自然跟随。',
     modelUrl: 'live2d/naiwa/奶蛙.model3.json',
     idleMotion: 'Idle',
@@ -68,7 +68,7 @@ export const PET_PRESETS: readonly PetPreset[] = [
     format: 'Cubism 5 · model3',
     source: '课程项目本地资源',
     license: '仅用于本项目课程演示',
-    mark: '龙',
+    mark: '娃',
     tone: 'amber',
     motions: {
       tap: 'Greet',
@@ -79,7 +79,7 @@ export const PET_PRESETS: readonly PetPreset[] = [
   },
   {
     id: 'nailong',
-    name: '奶龙（官方形象）',
+    name: '奶龙',
     summary: '官方渲染外观的连续网格形象，呼吸、重心、眨眼与说话口型都跟随。',
     modelUrl: 'pets/nailong/nailong_front_official_1000.png',
     idleMotion: 'Idle',

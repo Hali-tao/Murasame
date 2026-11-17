@@ -851,7 +851,23 @@ a:focus-visible {
 .model-editor-head p { font-size: 12px; line-height: 1.5; }
 
 /* Character */
-.character-layout { display: grid; grid-template-columns: 360px minmax(0,1fr); gap: 14px; align-items: start; }
+.character-overview { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 18px 22px; background: var(--card-alt); border: 1px solid var(--line); border-radius: 12px; }
+.character-overview strong { font-size: 15px; }
+.character-overview p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.character-layout, .character-secondary { display: flex; flex-direction: column; gap: 28px; }
+.character-resource-details { margin: 0 22px 16px; }
+.character-resource-details > summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+.character-page > .card > .field, .character-page > .card > .editor-actions, .character-page > .card > .fineprint { margin: 14px 22px; }
+.character-page { display: flex; flex-direction: column; gap: 28px; width: 100%; max-width: 900px; margin: 0 auto; }
+.character-secondary .fineprint { padding: 8px 22px 16px; }
+.relationship-history { padding: 0 22px 8px; font-size: 12px; line-height: 1.6; }
+.relationship-history p { margin: 6px 0 10px; color: var(--muted); }
+.relationship-history ul { margin: 8px 0; padding-left: 18px; list-style: disc; }
+.relationship-history summary { cursor: pointer; color: var(--muted); }
+.character-secondary .card > .muted { margin: 0 22px 14px; }
+.character-theater > .toggle-row { margin: 0 22px; padding-bottom: 18px; }
+.character-import-picker { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.character-import-picker > input { flex: 1 1 240px; min-width: 0; }
 .character-left { display: flex; flex-direction: column; gap: 14px; }
 .preset-list { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 4px; }
 .preset-option { display: flex; width: 100%; align-items: center; gap: 11px; padding: 11px 12px; cursor: pointer; text-align: left; background: #fff; border: 1px solid var(--line); border-radius: 10px; transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease; }
@@ -865,7 +881,7 @@ a:focus-visible {
 .preset-copy strong { color: var(--text); font-size: 12px; }
 .preset-copy > span { color: var(--muted); font-size: 9.5px; line-height: 1.45; }
 .preset-meta { color: #8c8174 !important; font-size: 8.5px !important; letter-spacing: .02em; }
-.preset-state { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 3px; color: var(--coral-dark); font-size: 9px; font-weight: 600; }
+.preset-state { display: inline-flex; flex: 0 0 auto; margin-left: auto; align-items: center; gap: 3px; color: var(--coral-dark); font-size: 9px; font-weight: 600; }
 .preset-option:not(.active) .preset-state { color: var(--faint); font-weight: 400; }
 .character-left .card > .fineprint { padding: 8px 16px 16px; }
 .resource-list { padding: 0 18px 16px; }
@@ -887,6 +903,24 @@ a:focus-visible {
 .editor-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; padding: 14px 22px 18px; border-top: 1px solid var(--line-soft); }
 
 /* Settings */
+.character-page .card { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; padding-bottom: 24px; }
+.character-page .card-head { padding: 0 0 18px; }
+.character-page .card-head h2 { font-size: 16px; }
+.character-page .card-head p { font-size: 12px; line-height: 1.6; }
+.character-page .character-overview { padding: 0 0 24px; flex-wrap: wrap; background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+.character-page .preset-list { padding: 0; gap: 0; }
+.character-page .preset-option { padding: 14px 12px; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; background: transparent; box-shadow: none; }
+.character-page .preset-option.active { background: var(--coral-soft); border-radius: 8px; }
+.character-page .preset-option:hover { background: var(--card-alt); }
+.character-page .preset-copy strong { font-size: 13px; }
+.character-page .preset-copy > span { font-size: 11px; }
+.character-page .character-editor > .field, .character-page .field-block, .character-page .character-toggles, .character-page .character-theater > .toggle-row, .character-page > .card > .field { margin-left: 0; margin-right: 0; }
+.character-page .editor-actions { padding: 16px 0 0; margin: 0; border-top: 0; }
+.character-page .relationship-history { padding-left: 0; padding-right: 0; }
+.character-page .card > .fineprint { padding: 12px 0 0; margin: 0; }
+.character-page .character-resource-details { margin-left: 0; margin-right: 0; }
+.character-page .resource-list { padding-left: 0; padding-right: 0; }
+
 .runtime-banner { background: #fbfaf6; border-color: var(--line); }
 .runtime-banner > div:first-child { flex: 1; }
 .runtime-banner strong { margin-left: 8px; font-size: 12.5px; }
