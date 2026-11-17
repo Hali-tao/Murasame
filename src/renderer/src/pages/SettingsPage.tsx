@@ -187,7 +187,7 @@ export function SettingsPage(): React.JSX.Element {
       <div className="settings-columns">
         <div className="settings-left">
           <Card>
-            <CardHead title="运行行为" subtitle="常驻桌面时保持低打扰" />
+            <CardHead title="运行行为" subtitle="开关与下拉选项修改后立即保存，无需额外点击保存" />
             <ToggleRow title="开机时启动" description="仅在登录后加载轻量控制台。" checked={data.settings.startAtLogin} onCheckedChange={(checked) => void update({ startAtLogin: checked })} />
             <ToggleRow title="最小化到托盘" description="隐藏后仍可从托盘重新唤醒。" checked={data.settings.minimizeToTray} onCheckedChange={(checked) => void update({ minimizeToTray: checked })} />
             <ToggleRow title="忙时免打扰" description="全屏应用或正在输入时暂停主动互动。" checked={data.settings.doNotDisturb} onCheckedChange={(checked) => void update({ doNotDisturb: checked })} />
@@ -248,16 +248,6 @@ export function SettingsPage(): React.JSX.Element {
 
         <div className="settings-right">
           <Card>
-            <CardHead title="平台能力" subtitle="非 Windows 上不支持的能力标成不可用" />
-            {PLATFORM_CAPABILITIES.map((item) => (
-              <div className="permission-row" key={item.id}>
-                <div><strong>{item.label}</strong><span>{item.note}</span></div>
-                <Pill tone={item.windows === '可用' ? 'green' : 'amber'}>{item.windows}</Pill>
-              </div>
-            ))}
-            <Button onClick={() => void update({ onboardingDone: false })}>重新查看使用说明</Button>
-          </Card>
-          <Card>
             <CardHead title="数据与隐私" subtitle="本地存储 · 清除范围明确" />
             <ToggleRow title="加密本地数据" description="数据库始终加密，不能关闭。" checked disabled onCheckedChange={() => undefined} />
             <ToggleRow title="允许把截图发给模型" description="屏幕分析会把画面发给当前模型服务。关掉后只在本机阅读文字，不会外发截图。" checked={data.settings.outboundImages} onCheckedChange={(checked) => void update({ outboundImages: checked })} />
@@ -273,6 +263,17 @@ export function SettingsPage(): React.JSX.Element {
               <Button onClick={() => void importPackage()}>导入数据包</Button>
             </div>
             <p className="fineprint">导出不包含手动移出应用的文档；备份是否包含在清除范围内需单独确认。</p>
+          </Card>
+
+          <Card>
+            <CardHead title="平台能力" subtitle="非 Windows 上不支持的能力标成不可用" />
+            {PLATFORM_CAPABILITIES.map((item) => (
+              <div className="permission-row" key={item.id}>
+                <div><strong>{item.label}</strong><span>{item.note}</span></div>
+                <Pill tone={item.windows === '可用' ? 'green' : 'amber'}>{item.windows}</Pill>
+              </div>
+            ))}
+            <Button onClick={() => void update({ onboardingDone: false })}>重新查看使用说明</Button>
           </Card>
 
           <Card className="about-card">

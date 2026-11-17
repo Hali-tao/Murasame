@@ -935,7 +935,7 @@ a:focus-visible {
 .permission-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto; align-items: center; gap: 10px; margin: 0 20px; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
 .permission-row > div { display: flex; flex-direction: column; gap: 3px; }
 .permission-row strong { font-size: 11.5px; }
-.permission-row span { color: var(--muted); font-size: 9.5px; }
+.permission-row > div > span { color: var(--muted); font-size: 9.5px; }
 .settings-left .card > .fineprint { padding: 0 20px 17px; }
 .data-actions { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 20px 0; }
 .about-list { padding: 0 20px; }
@@ -947,6 +947,37 @@ a:focus-visible {
 .security-line { display: flex; align-items: center; gap: 6px; margin: 0 20px 17px; padding: 9px 10px; color: #687a70; background: var(--green-soft); border-radius: 7px; font-size: 9.5px; }
 .help-copy p { margin: 0 0 10px; color: #5b5d65; font-size: 11px; line-height: 1.65; }
 .help-copy strong { color: #33353d; }
+
+/* Match the character page's single-column settings surface. */
+.settings-page { display: flex; flex-direction: column; gap: 28px; width: 100%; max-width: 900px; margin: 0 auto; }
+.settings-page .settings-columns, .settings-page .settings-left, .settings-page .settings-right { display: flex; flex-direction: column; gap: 28px; margin: 0; }
+.settings-page .card { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; padding-bottom: 24px; }
+.settings-page .card-head { padding: 0 0 18px; }
+.settings-page .card-head h2 { font-size: 16px; }
+.settings-page .card-head p { font-size: 12px; line-height: 1.6; }
+.settings-page .runtime-banner { padding: 0 0 24px; background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; flex-wrap: wrap; }
+.settings-page .runtime-banner > div:first-child { min-width: 240px; }
+.settings-page .runtime-banner p { font-size: 12px; line-height: 1.6; }
+.settings-page .runtime-actions { flex-wrap: wrap; }
+.settings-page .card > .toggle-row, .settings-page .card > .field, .settings-page .permission-row { margin-left: 0; margin-right: 0; }
+.settings-page .card > .field { margin-top: 18px; }
+.settings-page .card > .fineprint { margin: 14px 0 0; padding: 0; line-height: 1.6; }
+.settings-page .permission-row { padding: 14px 0; }
+.settings-page .permission-row > div { min-width: 0; }
+.settings-page .permission-row strong { font-size: 12px; }
+.settings-page .permission-row > div > span { font-size: 11px; line-height: 1.6; }
+.settings-page .permission-row > .pill { justify-self: end; }
+.settings-page .select { width: 100%; max-width: 420px; }
+.settings-page .data-actions { margin: 18px 0 0; gap: 8px; }
+.settings-page .about-list { padding: 0; }
+.settings-page .about-list > div { padding: 14px 0; font-size: 12px; }
+.settings-page .about-list strong { min-width: 0; overflow-wrap: anywhere; }
+.settings-page .path-text { max-width: 65%; white-space: normal; font-size: 11px; }
+.settings-page .hotkey-edit { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.settings-page .hotkey-edit input { flex: 1 1 180px; min-width: 0; }
+.settings-page .about-actions { padding: 16px 0; gap: 8px; }
+.settings-page .security-line { margin: 0; align-items: flex-start; line-height: 1.6; }
+.settings-page .security-line svg { flex-shrink: 0; }
 
 .memory-model-status { padding: 18px 20px; }
 .memory-model-status p { margin: 10px 0; font-size: 13px; line-height: 1.7; }

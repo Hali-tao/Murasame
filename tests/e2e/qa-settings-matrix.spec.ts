@@ -11,6 +11,17 @@ test.describe('[FULL-QA] 设置页全开关矩阵', () => {
     try {
       const page = await findMainPage(app)
       await page.getByTestId('nav-settings').click()
+      const sections = await page.locator('.settings-page .card').evaluateAll(cards => cards.map(card => {
+        const rect = card.getBoundingClientRect()
+        return { left: rect.left, top: rect.top, bottom: rect.bottom }
+      }))
+      for (let index = 1; index < sections.length; index++) {
+        expect(sections[index].top).toBeGreaterThanOrEqual(sections[index - 1].bottom)
+        expect(Math.abs(sections[index].left - sections[0].left)).toBeLessThan(1)
+      }
+      await page.screenshot({ path: test.info().outputPath('settings-single-column.png') })
+      await page.getByRole('heading', { name: '数据与隐私', exact: true }).scrollIntoViewIfNeeded()
+      await page.screenshot({ path: test.info().outputPath('settings-data-section.png') })
       const dnd = page.getByRole('switch', { name: '忙时免打扰' })
       await expect(dnd).not.toBeChecked()
       await dnd.click()
