@@ -252,12 +252,12 @@ export function CharacterPage(): React.JSX.Element {
         />
       </Card>
       <ConfirmDialog open={resetOpen} onOpenChange={setResetOpen} title="重置当前关系？" description="回到初识。原有对话、记忆和演变记录会保留。" confirmLabel="确认重置" onConfirm={confirmReset} busy={relationshipBusy} />
-      <Modal open={Boolean(appearance)} onOpenChange={(open) => { if (!open && !switching) setAppearance(null) }} title="更换形象" description="选择新形象如何承接当前的相处。已有对话和长期记忆都会保留。" footer={<><Button disabled={switching} onClick={() => setAppearance(null)}>取消</Button><Button variant="primary" disabled={switching} onClick={() => void confirmAppearance()}>确认更换</Button></>}>
+      <Modal open={Boolean(appearance)} onOpenChange={(open) => { if (!open && !switching) setAppearance(null) }} title="更换形象" description="选择更换外观后是否保留当前的熟悉程度。无论选择哪一项，聊天历史和长期记忆都会保留。" footer={<><Button disabled={switching} onClick={() => setAppearance(null)}>取消</Button><Button variant="primary" disabled={switching} onClick={() => void confirmAppearance()}>确认更换</Button></>}>
         <fieldset className="relationship-choice">
-          <legend>记忆与关系</legend>
-          <label><input type="radio" name="relationship-mode" checked={relationshipMode === 'continue'} onChange={() => setRelationshipMode('continue')} />延续现有记忆与关系</label>
-          <label><input type="radio" name="relationship-mode" checked={relationshipMode === 'new'} onChange={() => setRelationshipMode('new')} />作为新角色重新开始</label>
-          <p className="muted">重新开始只建立新的关系线，之前的演变记录仍可查看，不会删除你的数据。</p>
+          <legend>熟悉程度</legend>
+          <label><input type="radio" name="relationship-mode" checked={relationshipMode === 'continue'} onChange={() => setRelationshipMode('continue')} /><span>只更换外观，保留熟悉程度</span></label>
+          <label><input type="radio" name="relationship-mode" checked={relationshipMode === 'new'} onChange={() => setRelationshipMode('new')} /><span>更换外观，熟悉程度从初识开始</span></label>
+          <p className="muted">从初识开始会重新累计互动，之前的关系演变记录仍可查看，不会清空聊天历史或长期记忆。</p>
         </fieldset>
       </Modal>
     </div>
