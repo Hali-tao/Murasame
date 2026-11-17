@@ -156,7 +156,7 @@
 | FR-09 | tests/unit/mesh-pet.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts |
 | FR-10 | tests/unit/p7-p8.test.ts |
 | FR-11 | tests/unit/p1-p3.test.ts |
-| FR-12 | tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/p1-p3.test.ts |
+| FR-12 | tests/e2e/history-unicode-search.spec.ts<br>tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/history-search-wildcards.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-13 | tests/unit/p1-p3.test.ts |
 | FR-14 | tests/e2e/local-memory.spec.ts<br>tests/e2e/memory-model-status.spec.ts<br>tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/embedding-runtime.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/memory-model-install.test.ts<br>tests/unit/memory-model-status.test.ts<br>tests/unit/p1-p3.test.ts |
 | FR-15 | tests/e2e/memory-category-filter.spec.ts<br>tests/e2e/memory-clear-ui.spec.ts<br>tests/e2e/memory-correction-source.spec.ts<br>tests/e2e/pet-history-sync.spec.ts<br>tests/unit/conversation-memory-maturity.test.ts<br>tests/unit/memory-category-filter.test.ts<br>tests/unit/memory-extraction.test.ts<br>tests/unit/p1-p3.test.ts<br>tests/unit/p4-p6.test.ts<br>tests/unit/settings-clear-results.test.ts |

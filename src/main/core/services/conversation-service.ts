@@ -133,24 +133,9 @@ export class ConversationService {
 
   search(keyword: string): HistorySearchResult {
     try {
-      const conversations = this.list()
-      const needle = keyword.trim().toLowerCase()
-      if (!needle) {
-        return searchHistory(conversations.map((item) => ({
-          id: item.id,
-          title: item.title,
-          preview: item.messages.map((message) => message.text).join(' ')
-        })), keyword)
-      }
-      // % 和 _ 是 SQL LIKE 通配符：转义后按字面匹配，避免「只输入 %」被当成全匹配。
-      const escapeLike = (value: string): string => value.replace(/[\\%_]/g, (match) => `\\${match}`)
-      const like = `%${escapeLike(needle)}%`
-      const hits = this.db.prepare(
-        `SELECT conversation_id AS id, text AS preview FROM messages WHERE lower(text) LIKE ? ESCAPE '\\'`
-      ).all(like) as Array<{ id: string; preview: string }>
-      const ids = new Set(hits.map((hit) => hit.id))
-      const matched = conversations.filter((item) => ids.has(item.id) || item.title.toLowerCase().includes(needle))
-      return searchHistory(matched.map((item) => ({
+      // list() already hydrates every message. Match once in JavaScript so titles
+      // and bodies share Unicode case handling and literal %, _ and backslashes.
+      return searchHistory(this.list().map((item) => ({
         id: item.id,
         title: item.title,
         preview: item.messages.map((message) => message.text).join(' ')
