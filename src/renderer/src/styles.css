@@ -464,8 +464,8 @@ a:focus-visible {
 
 .chat-thread-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 16px 20px 13px; border-bottom: 1px solid var(--line-soft); }
 .chat-thread-head h2 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
-.chat-thread-head span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
-.chat-thread-badges { display: flex; gap: 5px; }
+.chat-thread-head > div:first-child > span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+.chat-thread-badges { display: flex; align-items: center; gap: 5px; }
 .chat-messages, .history-messages { flex: 1; min-height: 0; padding: 16px 22px 10px; overflow-y: auto; }
 
 .message-row { display: flex; align-items: flex-start; gap: 9px; margin: 0 0 17px; animation: message-in 160ms ease-out; }
