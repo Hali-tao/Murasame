@@ -95,8 +95,9 @@ export function DailyRecapCard(): React.JSX.Element {
         </ul>
       )}
       {recap && !failed ? (
-        <div className="recap-note" data-testid="recap-note">
-          <label htmlFor="recap-note-input">留给明天的一句话</label>
+        <details className="recap-note" data-testid="recap-note">
+          <summary>留给明天的一句话</summary>
+          <label className="sr-only" htmlFor="recap-note-input">留给明天的一句话</label>
           <textarea
             id="recap-note-input"
             data-testid="recap-note-input"
@@ -125,7 +126,7 @@ export function DailyRecapCard(): React.JSX.Element {
             {noteStatus === 'failed' ? <span className="muted small" data-testid="recap-note-status">保存失败，稍后再试；内容不会上传。</span> : null}
             <span className="muted small">{noteDraft.length}/200</span>
           </div>
-        </div>
+        </details>
       ) : null}
     </Card>
   )

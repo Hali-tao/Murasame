@@ -17,6 +17,8 @@ test('[FR-RECAP-06] 仪表盘今日回顾：空状态诚实，新增记忆后显
 
     // 未保存草稿：回顾自动刷新不能覆盖用户正在输入的「留给明天」。
     const noteInput = page.getByTestId('recap-note-input')
+    await expect(noteInput).not.toBeVisible()
+    await page.locator('.recap-note summary').click()
     await noteInput.fill('草稿不能丢：还没保存')
     // 停留在仪表盘：直接新增一条记忆（模拟其它入口/自动提取），回顾应自动刷新，无需重新挂载。
     const added = await page.evaluate(() => window.murasame.core.addMemory('偏好', '回顾测试：我喜欢早上喝温水'))
@@ -37,6 +39,7 @@ test('[FR-RECAP-06] 仪表盘今日回顾：空状态诚实，新增记忆后显
     await expect(page.getByTestId('recap-note-status')).toContainText('已留给明天')
     await page.getByTestId('nav-memory').click()
     await page.getByTestId('nav-overview').click()
+    await page.locator('.recap-note summary').click()
     await expect(page.getByTestId('recap-note-input')).toHaveValue('明天先做最重要的一件事。')
     // 真实消息到达（例如桌宠聊天）时，停在同一仪表盘也要刷新「聊了 N 句」。
     await configureTestModel(page, server.url)

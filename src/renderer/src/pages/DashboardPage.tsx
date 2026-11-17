@@ -1,132 +1,106 @@
-import { ArrowUpRight, CheckCircle2, CircleDot, LockKeyhole, Sparkles } from 'lucide-react'
+import { ArrowUpRight, MessageCircle, Plus, ScanLine } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '../store'
 import { greeting, weekdayLabel, dateLabel } from '../lib/utils'
-import { Button, Card, CardHead, Pill, StatTile } from '../components/ui'
+import { Button, Card, CardHead, Pill } from '../components/ui'
 import { AffectWeatherCard } from '../components/AffectWeatherCard'
 import { DailyRecapCard } from '../components/DailyRecapCard'
+import type { TaskStatus } from '@shared/types'
+
+const pendingStatuses: TaskStatus[] = ['待确认', '等待批准']
+const runningStatuses: TaskStatus[] = ['已确认', '规划中', '执行中', '正在停止']
 
 export function DashboardPage(): React.JSX.Element {
   const navigate = useNavigate()
   const data = useAppStore((state) => state.data)!
-  const characterName = data.character.name
-  const activeTask = data.tasks.find((task) => task.status === '执行中' || task.status === '等待批准') ?? data.tasks[0]
-  const runningTasks = data.tasks.filter((task) => task.status === '执行中' || task.status === '等待批准').length
-  const conversationMessages = data.conversations.reduce((sum, conversation) => sum + conversation.count, 0)
-  const enabledTools = data.tools.filter((tool) => tool.enabled).length
-  const selectedConversation = data.conversations[0]
-
-  // 最近记录只来自真实数据，没有就显示为空。
-  const recent = [
-    ...data.tasks.slice(0, 3).map((task) => ({
-      id: `task-${task.id}`,
-      time: task.created.slice(11, 16) || '刚刚',
-      tone: task.tone,
-      category: '任务',
-      text: `${task.title} · ${task.status}`
-    })),
-    ...data.conversations.slice(0, 3).map((conversation) => ({
-      id: `chat-${conversation.id}`,
-      time: conversation.time,
-      tone: 'blue' as const,
-      category: '对话',
-      text: conversation.preview
-    }))
-  ].slice(0, 6)
+  const selectConversation = useAppStore((state) => state.selectConversation)
+  const pending = data.tasks.filter(task => pendingStatuses.includes(task.status))
+  const running = data.tasks.filter(task => runningStatuses.includes(task.status))
+  const activeTasks = [...pending, ...running]
+  const conversations = data.conversations.filter(item => item.messages.some(message => message.role === 'user'))
+  const latest = conversations[0]
+  const recent = conversations.slice(1, 4)
+  const createConversation = useAppStore(state => state.createConversation)
+  const [creating, setCreating] = useState(false)
+  const startConversation = async (): Promise<void> => {
+    if (creating) return
+    setCreating(true)
+    try {
+      const conversation = await createConversation()
+      if (conversation) navigate('/chat')
+    } finally { setCreating(false) }
+  }
+  const defaultModel = data.models.find(model => model.default)
+  const openConversation = (id?: string): void => {
+    if (id) selectConversation(id)
+    navigate('/chat')
+  }
 
   return (
     <div className="page dashboard-page">
-      <section className="hero-card">
-        <div className="hero-copy">
-          <div className="hero-date">{weekdayLabel()} · {dateLabel()}</div>
+      <header className="dashboard-heading">
+          <div className="dashboard-date">{dateLabel()} · {weekdayLabel()}</div>
           <h2>{greeting()}，{data.settings.userName.trim() || '你'}。</h2>
-          <p>{characterName.trim() || '桌宠'}会接着上次的对话。敏感操作仍然要你确认后才执行。</p>
-          <div className="hero-pills">
-            <Pill tone={data.models.some((model) => model.default && model.status === '在线') ? 'green' : 'amber'}><i className="tiny-dot" />{data.models.some((model) => model.default && model.status === '在线') ? '模型已验证' : '模型待验证'}</Pill>
-            <Pill tone="violet">{data.settings.memoryEnabled ? '记忆已启用' : '记忆已停用'}</Pill>
-            <Pill tone="blue">{data.settings.permissions.screen ? '屏幕权限已授权' : '屏幕权限未授权'}</Pill>
-          </div>
-          <div className="hero-actions">
-            <Button variant="primary" onClick={() => navigate('/chat')} icon={<Sparkles size={16} />}>
-              继续交流
-            </Button>
-            <Button variant="dark" onClick={() => navigate('/tasks')}>查看今日任务</Button>
-          </div>
-        </div>
-        <div className="hero-orbit" aria-hidden="true">
-          <div className="orbit-ring ring-one" />
-          <div className="orbit-ring ring-two" />
-          <div className="orbit-ring ring-three" />
-          <span className="orbit-satellite sat-one" />
-          <span className="orbit-satellite sat-two" />
-          <div className="orbit-core">雨</div>
-        </div>
-      </section>
+      </header>
 
-      <div className="stat-grid four">
-        <StatTile label="进行中任务" value={runningTasks} caption={`${data.tasks.filter((task) => task.status === '等待批准').length} 项等待批准`} tone="blue" />
-        <StatTile label="长期记忆" value={data.memories.length} caption="可逐条查看与删除" tone="violet" />
-        <StatTile label="本机消息" value={conversationMessages} caption={`${data.conversations.length} 个会话`} tone="coral" />
-        <StatTile label="可用能力" value={`${enabledTools} / ${data.tools.length}`} caption={`${data.tools.length - enabledTools} 项权限停用`} tone="green" />
-      </div>
+      {(!defaultModel || defaultModel.status !== '在线') && <div className="dashboard-service" role="status">
+        <span>{!defaultModel ? '开始交流前，请先配置模型服务。' : `${defaultModel.name} · ${defaultModel.status}，可到模型服务检查连接。`}</span>
+        <Button size="sm" onClick={() => navigate('/models')}>{defaultModel ? '检查连接' : '配置模型服务'}</Button>
+      </div>}
 
-      <div className="dashboard-columns">
-        <Card className="dashboard-activity">
-          <CardHead title="正在发生" subtitle="来自对话、任务、屏幕与工具的最近记录" />
-          <div className="activity-list">
-            {recent.length ? recent.map((item) => (
-              <div className="activity-row" key={item.id}>
-                <time>{item.time}</time>
-                <Pill tone={item.tone}>{item.category}</Pill>
-                <div className="activity-copy">
-                  <span>{item.text}</span>
-                </div>
-              </div>
-            )) : <span className="muted">还没有可展示的记录。</span>}
-          </div>
-        </Card>
-
-        <div className="dashboard-side">
-          <Card>
-            <CardHead
-              title="当前任务"
-              subtitle="执行期间仍可继续交流"
-              aside={activeTask ? <Pill tone={activeTask.tone}>{activeTask.status}</Pill> : null}
-            />
-            {activeTask ? (
-              <div className="active-task">
-                <h3>{activeTask.title}</h3>
-                <p>{activeTask.summary}</p>
-                <div className="progress-line">
-                  <div className="progress-track"><span style={{ width: `${activeTask.progress}%` }} /></div>
-                  <small>{activeTask.progress}%</small>
-                </div>
-                <p className="muted small">当前：{activeTask.steps.find((step) => step.state === '进行中')?.title ?? '等待下一步安排'}</p>
-                <Button onClick={() => navigate('/tasks')} icon={<ArrowUpRight size={15} />}>打开任务详情</Button>
-              </div>
-            ) : (
-              <p className="muted">当前没有运行中的任务。</p>
-            )}
-          </Card>
-
-          <Card>
-            <CardHead title="运行状态" subtitle="本地能力不受在线服务短暂波动影响" />
-            <div className="runtime-list">
-              <div><span><CircleDot size={14} />桌面应用</span><strong>正在运行</strong></div>
-              <div><span><LockKeyhole size={14} />本地数据</span><strong>已加密 · 仅此设备</strong></div>
-              <div><span><CheckCircle2 size={14} />屏幕采集</span><strong>{data.settings.permissions.screen ? '已授权 · 单次分析' : '已关闭'}</strong></div>
+      <div className="dashboard-layout">
+        <div className="dashboard-primary">
+          <section className="dashboard-resume">
+            <span className="dashboard-eyebrow">{latest ? '继续上次交流' : '开始一段交流'}</span>
+            <h2>{latest?.title || '有什么想聊的？'}</h2>
+            <p className="dashboard-resume-preview">{latest?.preview || '提出一个问题，或说说你正在做的事。'}</p>
+            {latest && <div className="dashboard-conversation-meta"><time>{latest.time}</time><span>{latest.count} 条消息</span></div>}
+            <div className="dashboard-actions">
+              {latest ? <Button variant="primary" onClick={() => openConversation(latest.id)} icon={<MessageCircle size={16} />}>继续交流</Button> : <Button variant="primary" onClick={() => void startConversation()} disabled={creating} icon={<Plus size={16} />}>开始交流</Button>}
+              {latest && <Button onClick={() => void startConversation()} disabled={creating} icon={<Plus size={16} />}>新对话</Button>}
             </div>
-          </Card>
+          </section>
 
-          <AffectWeatherCard />
-          <DailyRecapCard />
+          {recent.length > 0 && <section className="dashboard-recent">
+            <div className="dashboard-section-heading"><h2>其他最近会话</h2><Button size="sm" onClick={() => navigate('/history')}>全部历史</Button></div>
+            <div className="dashboard-conversations">{recent.map(conversation => (
+              <button type="button" key={conversation.id} className="dashboard-conversation" onClick={() => openConversation(conversation.id)}>
+                <span className="dashboard-item-heading"><strong>{conversation.title}</strong><ArrowUpRight size={15} /></span>
+                <span className="dashboard-preview">{conversation.preview}</span>
+                <span className="dashboard-conversation-meta"><time>{conversation.time}</time></span>
+              </button>
+            ))}</div>
+          </section>}
+          <div className="dashboard-shortcuts"><Button size="sm" onClick={() => navigate('/screen')} icon={<ScanLine size={15} />}>框选屏幕并分析</Button><Button size="sm" onClick={() => navigate('/history')}>查看聊天历史</Button></div>
         </div>
-      </div>
 
-      <div className="dashboard-footnote">
-        <span>{characterName} 正在本地运行。</span>
-        <span>{selectedConversation ? `最近会话：${selectedConversation.title}` : '尚未创建会话'}</span>
-        <button type="button" onClick={() => navigate('/chat')}>继续上次工作 →</button>
+        <aside className="dashboard-secondary">
+        {activeTasks.length > 0 ? <Card className={pending.length ? 'dashboard-needs-attention' : ''}>
+          <CardHead title={pending.length ? '需要你确认' : '进行中的任务'} subtitle={`${pending.length} 项待确认 · ${running.length} 项进行中`} aside={<Button size="sm" onClick={() => navigate('/tasks')}>全部任务</Button>} />
+          <div className="dashboard-card-body">
+            <div className="dashboard-task-list">{activeTasks.slice(0, 3).map(task => (
+              <div className="dashboard-task" key={task.id}>
+                <div className="dashboard-item-heading"><h3>{task.title}</h3><Pill tone={task.tone}>{task.status}</Pill></div>
+                <p>{task.summary}</p>
+                {runningStatuses.includes(task.status) && <div className="progress-line">
+                  <div className="progress-track"><span style={{ width: `${Math.min(100, Math.max(0, task.progress))}%` }} /></div>
+                  <small>{Number(task.progress.toFixed(1))}%</small>
+                </div>}
+                <Button size="sm" onClick={() => navigate(`/tasks?focus=${encodeURIComponent(task.id)}`)} icon={<ArrowUpRight size={14} />}>{pendingStatuses.includes(task.status) ? '查看并确认' : '查看进度'}</Button>
+              </div>
+            ))}</div>
+          </div>
+        </Card> : <div className="dashboard-task-idle"><span>暂无待处理任务</span><button type="button" onClick={() => navigate('/tasks')}>全部任务 →</button></div>}
+        <DailyRecapCard />
+        <AffectWeatherCard />
+        </aside>
+      </div>
+      <div className="dashboard-stats" aria-label="数据与设置入口">
+        <button type="button" onClick={() => navigate('/history')}>聊天记录 <strong>{data.conversations.length}</strong> 个会话</button>
+        <button type="button" onClick={() => navigate('/memory')}>长期记忆 <strong>{data.memories.length}</strong> 条</button>
+        <button type="button" onClick={() => navigate('/tools')}>已启用工具 <strong>{data.tools.filter(tool => tool.enabled).length} / {data.tools.length}</strong></button>
+        <button type="button" onClick={() => navigate('/models')}>模型服务 · {defaultModel?.name || '未配置'}</button>
       </div>
     </div>
   )
