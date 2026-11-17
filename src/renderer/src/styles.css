@@ -1199,3 +1199,37 @@ a:focus-visible {
 .models-page .model-delete-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 22px; border-top: 1px solid var(--line-soft); }
 .models-page .model-delete-row strong { font-size: 13px; }
 .models-page .model-delete-row p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+/* Tools use the same single-column settings surface. */
+.tools-page { display: flex; flex-direction: column; gap: 28px; width: 100%; max-width: 900px; margin: 0 auto; }
+.tools-page .tools-columns, .tools-page .tools-side { display: flex; flex-direction: column; gap: 28px; }
+.tools-page .card { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; padding-bottom: 24px; }
+.tools-page .card-head { padding: 0 0 18px; flex-wrap: wrap; }
+.tools-page .card-head h2, .tools-overview h2 { margin: 0; font-size: 16px; }
+.tools-page .card-head p, .tools-overview p { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.tools-overview { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.tools-overview p { margin: 8px 0 0; }
+.tools-overview > .pill { flex-shrink: 0; }
+.tools-page .tool-list, .tools-page .call-list, .tools-page .boundary-list { padding: 0; }
+.tools-page .tool-row { padding: 18px 0; }
+.tools-page .tool-row.disabled { opacity: 1; }
+.tools-page .tool-titleline strong { font-size: 13px; }
+.tools-page .tool-main > p { font-size: 12px; line-height: 1.6; }
+.tools-page .tool-note, .tools-page .tool-state, .tools-page .text-button { font-size: 11px; }
+.tools-page .tool-note { overflow-wrap: anywhere; }
+.tools-page .call-row { grid-template-columns: minmax(90px, 150px) minmax(0, 1fr) auto; padding: 14px 0; }
+.tools-page .call-row time { font-size: 11px; overflow-wrap: anywhere; }
+.tools-page .call-row strong { font-size: 12px; white-space: normal; overflow-wrap: anywhere; }
+.tools-page .call-row span { font-size: 11px; overflow-wrap: anywhere; }
+.tools-page .call-list + .fineprint { padding: 0; margin: 14px 0 0; }
+.tools-page .boundary-list > div { padding: 12px 0; align-items: flex-start; }
+.tools-page .boundary-list > div > .pill { flex-shrink: 0; }
+.tools-page .boundary-list > div > span { font-size: 12px; line-height: 1.6; }
+.tools-page .security-hint { margin: 14px 0 0; font-size: 12px; }
+.tools-empty { margin: 0; padding: 20px 0; color: var(--muted); font-size: 12px; }
+@media (max-width: 760px) {
+  .tools-overview, .tools-page .tool-row { flex-wrap: wrap; }
+  .tools-page .tool-actions { margin-left: auto; }
+  .tools-page .call-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .tools-page .call-row time { grid-column: 1 / -1; }
+}

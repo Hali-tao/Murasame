@@ -97,6 +97,26 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
     try {
       const page = await findMainPage(app)
       await page.getByTestId('nav-tools').click()
+      const cards = await page.locator('.tools-page .card').evaluateAll(items => items.map(item => {
+        const bounds = item.getBoundingClientRect()
+        return { top: bounds.top, bottom: bounds.bottom, left: bounds.left, width: bounds.width }
+      }))
+      expect(cards).toHaveLength(3)
+      for (let index = 1; index < cards.length; index++) {
+        expect(cards[index].top).toBeGreaterThanOrEqual(cards[index - 1].bottom)
+        expect(Math.abs(cards[index].left - cards[0].left)).toBeLessThan(1)
+        expect(Math.abs(cards[index].width - cards[0].width)).toBeLessThan(1)
+      }
+      await expect(page.locator('.tools-page')).not.toContainText('今日调用')
+      await expect(page.locator('.tools-page')).not.toContainText('过去 24 小时')
+      await page.getByLabel('筛选能力类型').selectOption('插件')
+      const expectedPlugins = await page.evaluate(async () => {
+        const state = await window.murasame.core.getBootstrap()
+        return state.ok ? state.data.tools.filter(tool => tool.kind === '插件').length : 0
+      })
+      await expect(page.locator('.tool-row')).toHaveCount(expectedPlugins)
+      await page.getByLabel('筛选能力类型').selectOption('全部')
+      await page.screenshot({ path: test.info().outputPath('tools-single-column.png') })
       const row = page.locator('.tool-row').filter({ hasText: '文件系统' })
       await expect(row).toContainText('已启用')
       await row.getByRole('switch', { name: '停用文件系统' }).click()
@@ -112,6 +132,8 @@ test.describe('[FULL-QA] 屏幕感知与工具页', () => {
       await expect(page.locator('.tool-row').filter({ hasText: '文件系统' })).toContainText('已停用')
       await page.locator('.tool-row').filter({ hasText: '文件系统' }).getByRole('switch', { name: '启用文件系统' }).click()
       await expect(page.locator('.tool-row').filter({ hasText: '文件系统' })).toContainText('已启用')
+      await page.getByRole('button', { name: '管理系统权限' }).click()
+      await expect(page.locator('.settings-page')).toBeVisible()
     } finally {
       await closeApp(app)
     }
