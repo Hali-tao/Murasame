@@ -24,7 +24,7 @@ export function Sidebar(): React.JSX.Element {
       <nav className="nav" aria-label="主导航">
         {navigation.map((group) => (
           <div className="nav-group" key={group.label}>
-            <div className="nav-label">{group.label}</div>
+            {group.label ? <div className="nav-label">{group.label}</div> : null}
             {group.items.map((item) => {
               const Icon = item.icon
               return (
