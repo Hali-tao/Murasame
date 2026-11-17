@@ -340,20 +340,20 @@ export function ChatPage(): React.JSX.Element {
 
         <div className="chat-context" id="chat-context-panel" hidden={!contextOpen}>
           <Card>
-            <CardHead title="本轮上下文" subtitle="显示最近一次已完成回复的记忆使用情况" aside={<Pill tone="gray">仅本机</Pill>} />
+            <CardHead title="对话上下文" subtitle="当前配置与最近一次已完成回复的记忆使用情况" />
+            <p className="context-data-note">记忆保存在本机；使用远程模型时，消息和相关上下文会联网发送给模型服务。</p>
             <div className="context-list">
               <div><span>角色</span><strong>{data.character.name.trim() || '未命名'}{data.character.style ? ` · ${data.character.style}` : ''}</strong></div>
               <div><span>模型</span><strong>{defaultModel?.name ?? '尚未配置'}</strong></div>
               <div><span>已保存记忆</span><strong>{data.memories.length} 条</strong></div>
-              <div><span>屏幕</span><strong>{data.settings.permissions.screen ? '按需附加画面' : '未附加入口'}</strong></div>
+              <div><span>屏幕权限</span><strong>{data.settings.permissions.screen ? '已开启，可按需附加画面' : '未开启'}</strong></div>
             </div>
-            <div className="subheading">已召回的记忆</div>
+            <div className="subheading">最近一次回复使用的记忆</div>
             <MemoryRecallStatus status={conversation?.memoryRecallStatus} recorded={Boolean(conversation?.recalledAtMessageId)} count={recalledIds.size} />
             <div className="memory-chips">
               {recalledMemories.map((memory) => (
                 <Pill key={memory.id} tone="coral">{memory.text}</Pill>
               ))}
-              {recalledIds.size === 0 ? <p className="muted">本轮未注入长期记忆</p> : null}
               {recalledIds.size > recalledMemories.length ? <p className="muted">部分曾注入的记忆已更正或删除，当前列表不再展示。</p> : null}
             </div>
             <div className="subheading">快捷动作</div>
