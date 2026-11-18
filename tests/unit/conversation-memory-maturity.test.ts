@@ -388,6 +388,7 @@ describe('bounded background memory indexing', () => {
     const db = database(); const memory = new MemoryService(db)
     embedding.mockResolvedValue(null)
     await memory.ingestProposed('synthetic bulk', async () => Array.from({ length: 35 }, (_, index) => proposal(`合成事实${index}`)))
+    vi.useFakeTimers()
     embedding.mockImplementation(async () => vector())
     const progress: Array<{ completed: number; total: number; state: string }> = []
     let factEvents = 0
@@ -395,7 +396,8 @@ describe('bounded background memory indexing', () => {
     const unsubscribe = memory.subscribeIndex((status) => { progress.push(status) })
     const first = await memory.recall('查询')
     expect(first.degraded).toBe(true)
-    await vi.waitFor(() => expect(memory.indexStatus()).toMatchObject({ state: 'idle', completed: 35, total: 35 }))
+    await vi.runAllTimersAsync()
+    expect(memory.indexStatus()).toMatchObject({ state: 'idle', completed: 35, total: 35 })
     expect(progress.some((status) => status.completed === 16 && status.state === 'rebuilding')).toBe(true)
     expect(progress.some((status) => status.completed === 32)).toBe(true)
     expect(factEvents).toBe(0)
