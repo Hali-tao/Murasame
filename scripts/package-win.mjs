@@ -27,7 +27,8 @@ const systemRoot = process.env.SystemRoot ?? 'C:\\Windows'
 // electron-builder 会调用 powershell.exe 收集依赖树，这里确保它在 PATH 上。
 const powershellDir = join(systemRoot, 'System32', 'WindowsPowerShell', 'v1.0')
 
-const child = spawn(process.execPath, [command, '--win', 'nsis', `--config.directories.output=${output}`], {
+const builderArgs = [command, '--win', 'nsis', '--publish', 'never', `--config.directories.output=${output}`]
+const child = spawn(process.execPath, builderArgs, {
   stdio: 'inherit',
   env: {
     ...process.env,
@@ -35,7 +36,9 @@ const child = spawn(process.execPath, [command, '--win', 'nsis', `--config.direc
     MURASAME_STAGED_MODELS: relative(process.cwd(), staging),
     PATH: `${process.env.PATH ?? ''};${join(systemRoot, 'System32')};${powershellDir}`,
     CSC_IDENTITY_AUTO_DISCOVERY: 'false',
-    ELECTRON_BUILDER_BINARIES_MIRROR: 'https://npmmirror.com/mirrors/electron-builder-binaries/'
+    // CI uses electron-builder's upstream toolset URLs unless a mirror was explicitly configured.
+    ELECTRON_BUILDER_BINARIES_MIRROR: process.env.ELECTRON_BUILDER_BINARIES_MIRROR ??
+      (process.env.CI === 'true' ? undefined : 'https://npmmirror.com/mirrors/electron-builder-binaries/')
   }
 })
 

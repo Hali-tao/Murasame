@@ -68,7 +68,28 @@ python -m pip install "misaki[zh]"
 npm run package:win
 ```
 
-产物在 `release\Murasame-Setup-0.9.0.exe`。没有代码签名证书，打包脚本关闭了自动签名，安装器以当前用户权限安装，卸载默认保留数据。
+产物在 `release/build-*/Murasame-Setup-0.9.0.exe`。安装包未签名，以当前用户权限安装，卸载默认保留数据。
+
+### GitHub Actions 与 Release
+
+[Windows 流水线](.github/workflows/windows.yml) 在提交到 `main` 或向 `main` 发起 PR 时验证代码并构建应用。可在 **Actions → Windows CI and release build → Run workflow** 试打包。推送 `v*` 标签会先核对 `package.json` 版本，再构建 Windows x64 安装包和 SHA-256 校验文件。CI 安装包不内置语音和记忆向量模型。
+
+当前完整安装包含有公开分发受限的资源。公开发布前，须按 [许可清单](docs/05-LICENSES.md) 确认授权或移除受限资源，并检查 GitHub Release 自动附带的源码归档。公开仓库仅在 Actions 仓库变量 `MURASAME_PUBLIC_RELEASE_TAG` 与本次标签一致时上传安装包。
+
+1. 将工作流和准备发布的代码合入 `main`。检查远端标签，确认 `v0.9.0` 可用，并在 GitHub **Settings → Secrets and variables → Actions → Variables** 将 `MURASAME_PUBLIC_RELEASE_TAG` 设为 `v0.9.0`。
+2. 基于包含工作流的发布提交创建并推送标签。
+
+   ```powershell
+   git switch main
+   git pull --ff-only origin main
+   git ls-remote --tags origin refs/tags/v0.9.0
+   # 确认远端没有该标签后，再执行以下两行。
+   git tag -a v0.9.0 -m "Murasame 0.9.0"
+   git push origin refs/tags/v0.9.0
+   ```
+
+3. 在该标签的 **Actions** 运行页下载 `Murasame-v0.9.0-windows-x64`，解压后取得 `Murasame-Setup-0.9.0.exe` 及其 `.sha256` 文件。
+4. 打开仓库的 **Releases → Draft a new release**，选择已推送的 `v0.9.0`，填写发布说明，上传上述两个文件，再点击 **Publish release**。
 
 ## 环境要求
 

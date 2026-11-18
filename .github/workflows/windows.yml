@@ -1,0 +1,91 @@
+name: Windows CI and release build
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows x64
+    runs-on: windows-2022
+    timeout-minutes: 45
+    env:
+      MURASAME_PACKAGE_OUTPUT: release/actions
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Check release version
+        id: release
+        if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
+        run: |
+          $version = (Get-Content -Raw -LiteralPath package.json | ConvertFrom-Json).version
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -cne "v$version") {
+            throw "Tag '$env:GITHUB_REF_NAME' must match package.json (v$version)."
+          }
+          "installer=Murasame-Setup-$version.exe" >> $env:GITHUB_OUTPUT
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          architecture: x64
+          cache: npm
+
+      - name: Install locked dependencies and rebuild SQLite
+        run: npm ci
+
+      # The Electron npm package downloads the runtime separately.
+      - name: Install the pinned Electron runtime
+        run: node node_modules/electron/install.js
+
+      - name: Typecheck, lint, test and check traceability
+        run: npm run verify
+
+      - name: Verify Electron SQLCipher binding
+        run: npm run verify:native
+
+      - name: Build application
+        if: github.ref_type != 'tag' && github.event_name != 'workflow_dispatch'
+        run: npm run build
+
+      - name: Build Windows installer
+        if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
+        run: npm run package:win
+
+      - name: Generate installer SHA-256
+        if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
+        env:
+          INSTALLER: ${{ steps.release.outputs.installer }}
+        run: |
+          $installer = Get-Item -LiteralPath (Join-Path $env:MURASAME_PACKAGE_OUTPUT $env:INSTALLER)
+          if ($installer.PSIsContainer -or $installer.Length -eq 0) {
+            throw "Invalid installer at $($installer.FullName)."
+          }
+          $hash = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $($installer.Name)" | Set-Content -LiteralPath "$($installer.FullName).sha256" -Encoding ascii
+
+      - name: Upload tagged installer and checksum
+        # Public Actions artifacts are downloadable. See docs/05-LICENSES.md.
+        if: github.ref_type == 'tag' && (github.event.repository.private || vars.MURASAME_PUBLIC_RELEASE_TAG == github.ref_name)
+        uses: actions/upload-artifact@v6
+        with:
+          name: Murasame-${{ github.ref_name }}-windows-x64
+          path: |
+            ${{ env.MURASAME_PACKAGE_OUTPUT }}/${{ steps.release.outputs.installer }}
+            ${{ env.MURASAME_PACKAGE_OUTPUT }}/${{ steps.release.outputs.installer }}.sha256
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+      - name: Explain restricted artifact upload
+        if: github.ref_type == 'tag' && !github.event.repository.private && vars.MURASAME_PUBLIC_RELEASE_TAG != github.ref_name
+        run: Write-Warning "Installer built. Public upload requires MURASAME_PUBLIC_RELEASE_TAG to match this tag after resolving docs/05-LICENSES.md."

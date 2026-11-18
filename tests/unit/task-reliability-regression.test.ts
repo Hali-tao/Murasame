@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
@@ -42,7 +42,15 @@ describe('task reliability: preserve actual filesystem effects', () => {
   })
   it('independently verifies every moved output, including a missing second output', async () => {
     const root = temp(); writeFileSync(join(root, 'a.txt'), 'a'); writeFileSync(join(root, 'b.txt'), 'b')
-    const result = await executeGoal({ goal: `按类型整理 ${root}`, root, approved: true, cancelled: false, control: { stopped: () => false, progress: (n) => { if (n === 2) rmSync(join(root, '文档/b.txt')) } } })
+    const result = await executeGoal({
+      goal: `按类型整理 ${root}`, root, approved: true, cancelled: false,
+      control: {
+        stopped: () => false,
+        progress: (done) => {
+          if (done === 2) renameSync(join(root, '文档/b.txt'), join(root, 'moved-elsewhere.txt'))
+        }
+      }
+    })
     expect(result.status).toBe('部分完成'); expect(result.calls.filter((c) => c.agentRole === 'Critic').flatMap((c) => c.evidence).some((e) => e.target.endsWith('b.txt') && !e.matched)).toBe(true)
   })
   it('does not treat planning or zero output as partial success', () => {
